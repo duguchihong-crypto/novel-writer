@@ -102,6 +102,7 @@ button {
     align-items: center;
     justify-content: center;
     padding: 20px;
+    z-index: 10;
 }
 
 .modal-box {
@@ -114,6 +115,22 @@ button {
 
 .modal-box h2 {
     margin-top: 0;
+}
+
+.menu-button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin: 10px 0;
+    background: #f5f5f5;
+    border: none;
+    border-radius: 9px;
+    text-align: left;
+    font-size: 16px;
+}
+
+.menu-button:hover {
+    background: #eaeaea;
 }
 
 label {
@@ -195,7 +212,7 @@ textarea {
     <div class="top">
         <h2>📚 我的小说</h2>
 
-        <button class="new-button" onclick="showModal()">
+        <button class="new-button" onclick="showCreateMenu()">
             ＋ 新建
         </button>
     </div>
@@ -205,37 +222,86 @@ textarea {
 </main>
 
 
-<!-- 新建小说窗口 -->
+<!-- 新建菜单 -->
 
-<div id="modal" class="modal">
+<div id="createMenu" class="modal">
 
     <div class="modal-box">
 
         <h2>新建</h2>
 
-        <label>小说名称</label>
-        <input id="novelName" type="text" placeholder="请输入小说名称">
+        <button class="menu-button" onclick="showNovelModal()">
+            📖 新建作品
+        </button>
 
-        <label>小说类型</label>
-
-        <select id="novelType">
-            <option value="原创小说">原创小说</option>
-            <option value="同人小说">同人小说</option>
-        </select>
-
-        <label>小说简介</label>
-
-        <textarea id="novelDescription"
-                  placeholder="简单介绍一下你的小说"></textarea>
+        <button class="menu-button" onclick="createGroup()">
+            📁 新建分组
+        </button>
 
         <div class="actions">
 
-            <button class="cancel" onclick="hideModal()">
+            <button class="cancel" onclick="hideCreateMenu()">
                 取消
             </button>
 
-            <button class="create" onclick="createNovel()">
-                创建小说
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- 新建作品 -->
+
+<div id="novelModal" class="modal">
+
+    <div class="modal-box">
+
+        <h2>新建作品</h2>
+
+        <label>作品名称</label>
+
+        <input
+            id="novelName"
+            type="text"
+            placeholder="请输入作品名称"
+        >
+
+        <label>作品类型</label>
+
+        <select id="novelType">
+
+            <option value="原创小说">
+                原创小说
+            </option>
+
+            <option value="同人小说">
+                同人小说
+            </option>
+
+        </select>
+
+        <label>作品简介</label>
+
+        <textarea
+            id="novelDescription"
+            placeholder="简单介绍一下你的作品"
+        ></textarea>
+
+        <div class="actions">
+
+            <button
+                class="cancel"
+                onclick="hideNovelModal()"
+            >
+                取消
+            </button>
+
+            <button
+                class="create"
+                onclick="createNovel()"
+            >
+                创建作品
             </button>
 
         </div>
@@ -252,6 +318,8 @@ let novels = JSON.parse(
 );
 
 
+/* 保存作品 */
+
 function saveNovels() {
 
     localStorage.setItem(
@@ -262,41 +330,89 @@ function saveNovels() {
 }
 
 
-function showModal() {
+/* 打开「新建」菜单 */
 
-    document.getElementById("modal").style.display = "flex";
+function showCreateMenu() {
 
-    document.getElementById("novelName").focus();
+    document.getElementById(
+        "createMenu"
+    ).style.display = "flex";
+
+}
+
+
+/* 关闭「新建」菜单 */
+
+function hideCreateMenu() {
+
+    document.getElementById(
+        "createMenu"
+    ).style.display = "none";
 
 }
 
 
-function hideModal() {
+/* 点击「新建作品」 */
 
-    document.getElementById("modal").style.display = "none";
+function showNovelModal() {
 
-    document.getElementById("novelName").value = "";
+    hideCreateMenu();
 
-    document.getElementById("novelDescription").value = "";
+    document.getElementById(
+        "novelModal"
+    ).style.display = "flex";
+
+    document.getElementById(
+        "novelName"
+    ).focus();
 
 }
 
+
+/* 关闭新建作品 */
+
+function hideNovelModal() {
+
+    document.getElementById(
+        "novelModal"
+    ).style.display = "none";
+
+    document.getElementById(
+        "novelName"
+    ).value = "";
+
+    document.getElementById(
+        "novelDescription"
+    ).value = "";
+
+}
+
+
+/* 创建作品 */
 
 function createNovel() {
 
     const name =
-        document.getElementById("novelName").value.trim();
+        document
+        .getElementById("novelName")
+        .value
+        .trim();
 
     const type =
-        document.getElementById("novelType").value;
+        document
+        .getElementById("novelType")
+        .value;
 
     const description =
-        document.getElementById("novelDescription").value.trim();
+        document
+        .getElementById("novelDescription")
+        .value
+        .trim();
 
 
     if (!name) {
 
-        alert("请输入小说名称");
+        alert("请输入作品名称");
 
         return;
 
@@ -315,7 +431,8 @@ function createNovel() {
 
         chapters: [],
 
-        createdAt: new Date().toLocaleDateString(),
+        createdAt:
+            new Date().toLocaleDateString(),
 
         updatedAt: "刚刚"
 
@@ -326,27 +443,56 @@ function createNovel() {
 
     saveNovels();
 
-    hideModal();
+    hideNovelModal();
 
     renderNovels();
 
 }
 
 
+/* 新建分组 */
+
+function createGroup() {
+
+    hideCreateMenu();
+
+    alert(
+        "分组功能正在开发中。"
+    );
+
+}
+
+
+/* 显示作品 */
+
 function renderNovels() {
 
     const list =
-        document.getElementById("novelList");
+        document.getElementById(
+            "novelList"
+        );
 
 
     if (novels.length === 0) {
 
         list.innerHTML = `
+
             <div class="empty">
-                <div style="font-size:40px;">📚</div>
-                <p>还没有小说</p>
-                <p>点击「＋ 新建小说」开始创作</p>
+
+                <div style="font-size:40px;">
+                    📚
+                </div>
+
+                <p>
+                    还没有作品
+                </p>
+
+                <p>
+                    点击「＋ 新建」开始创作
+                </p>
+
             </div>
+
         `;
 
         return;
@@ -354,55 +500,91 @@ function renderNovels() {
     }
 
 
-    list.innerHTML = novels.map(novel => `
+    list.innerHTML = novels.map(
+        novel => `
 
         <div class="novel">
 
-            <h3>${escapeHTML(novel.name)}</h3>
+            <h3>
+                ${escapeHTML(novel.name)}
+            </h3>
 
-            <p>${escapeHTML(novel.type)}</p>
+            <p>
+                ${escapeHTML(novel.type)}
+            </p>
 
-            <p>章节：${novel.chapters.length}章</p>
+            <p>
+                章节：${novel.chapters.length}章
+            </p>
 
-            <p>最近编辑：${escapeHTML(novel.updatedAt)}</p>
+            <p>
+                最近编辑：
+                ${escapeHTML(novel.updatedAt)}
+            </p>
 
-            <button class="continue"
-                    onclick="openNovel(${novel.id})">
-
+            <button
+                class="continue"
+                onclick="openNovel(${novel.id})"
+            >
                 继续写作 →
-
             </button>
 
         </div>
 
-    `).join("");
+    `
+    ).join("");
 
 }
 
 
+/* 打开作品 */
+
 function openNovel(id) {
 
     const novel =
-        novels.find(item => item.id === id);
+        novels.find(
+            item => item.id === id
+        );
 
     if (!novel) return;
 
+
     alert(
-        "《" + novel.name +
+        "《" +
+        novel.name +
         "》的写作页面下一步制作。"
     );
 
 }
 
 
+/* 防止特殊字符破坏页面 */
+
 function escapeHTML(text) {
 
     return text
+
         .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 
 }
 
