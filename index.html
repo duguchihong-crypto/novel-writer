@@ -10,8 +10,7 @@
     box-sizing: border-box;
 }
 
-html,
-body {
+html, body {
     margin: 0;
     padding: 0;
     font-family:
@@ -25,9 +24,11 @@ body {
     color: #222;
 }
 
-/* =========================
-   页面
-========================= */
+button,
+input,
+textarea {
+    font-family: inherit;
+}
 
 .page {
     display: none;
@@ -38,10 +39,6 @@ body {
 .page.active {
     display: block;
 }
-
-/* =========================
-   顶部
-========================= */
 
 .header {
     height: 62px;
@@ -61,10 +58,6 @@ body {
     font-weight: 700;
 }
 
-/* =========================
-   主体
-========================= */
-
 .container {
     max-width: 1100px;
     margin: 0 auto;
@@ -79,7 +72,7 @@ body {
 }
 
 /* =========================
-   顶部新建
+   新建
 ========================= */
 
 .create-menu-wrap {
@@ -222,7 +215,6 @@ body {
 
 .novels.grid-mode .novel-card:hover .novel-cover {
     transform: translateY(-4px);
-    box-shadow: 0 7px 18px rgba(0,0,0,.13);
 }
 
 .novels.grid-mode .novel-name {
@@ -240,10 +232,6 @@ body {
 .novels.grid-mode .continue-btn {
     display: none;
 }
-
-/* =========================
-   列表
-========================= */
 
 .novels.list-mode {
     display: flex;
@@ -296,10 +284,6 @@ body {
     border-radius: 7px;
     padding: 8px 13px;
 }
-
-/* =========================
-   空书架
-========================= */
 
 .empty-state {
     text-align: center;
@@ -360,7 +344,6 @@ body {
 
 .nav-icon {
     font-size: 22px;
-    line-height: 1;
 }
 
 .nav-item.active {
@@ -368,229 +351,205 @@ body {
     font-weight: 600;
 }
 
-/* ==================================================
-   字数统计
-================================================== */
+/* =========================
+   工具
+========================= */
 
-.stats-intro {
-    margin-bottom: 24px;
+.tool-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
 }
 
-.stats-title {
-    font-size: 27px;
-    font-weight: 700;
-}
-
-.stats-subtitle {
-    margin-top: 7px;
-    color: #999;
-    font-size: 14px;
-}
-
-.stats-card {
+.tool-card {
     background: #fff;
     border: 1px solid #eee;
-    border-radius: 15px;
-    padding: 22px;
-    margin-bottom: 18px;
+    border-radius: 14px;
+    padding: 28px 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: .2s;
 }
 
-.stats-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+.tool-card:hover {
+    transform: translateY(-2px);
 }
 
-.stats-card-title {
+.tool-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+}
+
+.tool-name {
     font-size: 16px;
     font-weight: 600;
 }
 
-.stats-period {
-    border: none;
-    background: transparent;
-    color: #888;
+.tool-desc {
+    margin-top: 7px;
+    color: #999;
+    font-size: 12px;
+}
+
+/* =========================
+   字数统计
+========================= */
+
+.stats-section {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 22px;
+    margin-bottom: 20px;
+}
+
+.stats-section-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+}
+
+.stats-section-title strong {
+    font-size: 18px;
+}
+
+.stats-more {
+    color: #777;
     font-size: 13px;
-    padding: 4px;
 }
 
-.big-number {
-    font-size: 31px;
-    font-weight: 700;
-    margin-top: 12px;
-}
-
-.chart-area {
-    display: flex;
-    height: 220px;
-    margin-top: 18px;
-}
-
-.chart-y-axis {
-    width: 45px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 2px 0 20px;
-    color: #aaa;
-    font-size: 11px;
-}
-
-.chart-line-area {
-    position: relative;
-    flex: 1;
-    height: 100%;
-}
-
-.chart-lines {
-    position: absolute;
-    inset: 0 0 20px 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-.chart-lines i {
+.chart-box {
     width: 100%;
-    border-top: 1px dashed #e8e8e8;
+    height: 220px;
+    position: relative;
 }
 
 .chart-svg {
-    position: absolute;
-    left: 0;
-    top: 0;
     width: 100%;
-    height: calc(100% - 20px);
-    overflow: visible;
+    height: 100%;
 }
 
-.chart-line {
-    fill: none;
-    stroke: #222;
-    stroke-width: 3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.chart-point {
-    fill: #fff;
-    stroke: #222;
-    stroke-width: 3;
-}
-
-.chart-dates {
-    margin-left: 45px;
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    text-align: center;
-    color: #999;
+.chart-label {
     font-size: 11px;
-    margin-top: -4px;
+    fill: #999;
 }
 
-.daily-summary {
-    text-align: center;
-    color: #999;
-    font-size: 13px;
-    margin-top: 4px;
+.chart-value {
+    font-size: 11px;
+    fill: #777;
 }
 
-.distribution-content {
-    display: flex;
-    align-items: center;
-    gap: 45px;
-    margin-top: 25px;
+/* =========================
+   圆环
+========================= */
+
+.distribution-box {
+    padding-top: 5px;
 }
 
 .donut-area {
-    width: 230px;
-    min-width: 230px;
     display: flex;
     justify-content: center;
+    align-items: center;
+    min-height: 330px;
+    position: relative;
 }
 
-.donut-chart {
-    width: 190px;
-    height: 190px;
+.donut {
+    width: 270px;
+    height: 270px;
     border-radius: 50%;
     position: relative;
-    background: #e9e9e9;
+    cursor: pointer;
+    transition: .25s;
 }
 
-.donut-chart::after {
-    content: "";
+.donut-hole {
     position: absolute;
-    width: 120px;
-    height: 120px;
-    background: #fff;
+    width: 164px;
+    height: 164px;
+    left: 53px;
+    top: 53px;
     border-radius: 50%;
-    left: 35px;
-    top: 35px;
-}
-
-.donut-center {
-    position: absolute;
-    z-index: 2;
-    inset: 0;
+    background: #fff;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
-    align-items: center;
+    text-align: center;
+    padding: 15px;
+    pointer-events: none;
 }
 
-.donut-center strong {
-    font-size: 27px;
-}
-
-.donut-center span {
-    color: #999;
-    font-size: 12px;
-    margin-top: 4px;
-}
-
-.distribution-list {
-    flex: 1;
-}
-
-.distribution-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 15px;
-    padding: 8px 0;
-    font-size: 13px;
-}
-
-.distribution-name {
-    display: flex;
-    align-items: center;
-    min-width: 0;
-}
-
-.distribution-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    margin-right: 9px;
-    flex-shrink: 0;
-}
-
-.distribution-name span {
+.donut-name {
+    font-size: 16px;
+    font-weight: 700;
+    max-width: 130px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
-.distribution-number {
-    color: #888;
-    white-space: nowrap;
+.donut-count {
+    margin-top: 8px;
+    font-size: 18px;
+    font-weight: 700;
 }
 
-.stats-empty {
-    text-align: center;
+.donut-percent {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #888;
+}
+
+.distribution-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px 18px;
+    margin-top: 8px;
+}
+
+.distribution-item {
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 4px;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 7px;
+    min-width: 0;
+}
+
+.distribution-item:hover {
+    background: #f7f7f7;
+}
+
+.distribution-item.active {
+    background: #f1f1f1;
+}
+
+.color-dot {
+    width: 11px;
+    height: 11px;
+    min-width: 11px;
+    border-radius: 50%;
+}
+
+.distribution-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 13px;
+}
+
+.distribution-count {
     color: #999;
-    padding: 40px 10px;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 /* =========================
@@ -629,7 +588,7 @@ body {
 }
 
 /* =========================
-   新建作品弹窗
+   弹窗
 ========================= */
 
 .modal-mask {
@@ -744,7 +703,7 @@ body {
 }
 
 /* =========================
-   作品页
+   作品
 ========================= */
 
 .work-header {
@@ -922,6 +881,26 @@ body {
         font-size: 13px;
     }
 
+    .tool-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .distribution-list {
+        grid-template-columns: 1fr;
+    }
+
+    .donut {
+        width: 250px;
+        height: 250px;
+    }
+
+    .donut-hole {
+        width: 152px;
+        height: 152px;
+        left: 49px;
+        top: 49px;
+    }
+
     .work-header {
         padding: 15px;
         gap: 15px;
@@ -936,737 +915,548 @@ body {
         width: 180px;
     }
 
-    .stats-card {
-        padding: 17px;
-    }
-
-    .distribution-content {
-        display: block;
-    }
-
-    .donut-area {
-        width: 100%;
-        margin-bottom: 25px;
-    }
-
-    .distribution-list {
-        width: 100%;
-    }
-
-    .big-number {
-        font-size: 27px;
-    }
-
 }
 </style>
 </head>
 
 <body>
 
-
-<!-- ==================================================
+<!-- =========================
      书架
-================================================== -->
+========================= -->
 
 <div id="libraryPage" class="page active">
 
-    <header class="header">
+<header class="header">
 
-        <div class="logo">
-            小说家
-        </div>
+<div class="logo">小说家</div>
 
-        <div class="create-menu-wrap">
+<div class="create-menu-wrap">
 
-            <button
-                class="create-btn"
-                onclick="toggleCreateMenu()">
-                ＋ 新建
-            </button>
+<button class="create-btn"
+onclick="toggleCreateMenu()">
+＋ 新建
+</button>
 
-            <div
-                id="createMenu"
-                class="create-menu">
+<div id="createMenu" class="create-menu">
 
-                <button onclick="openNovelModal()">
-                    📖 新建作品
-                </button>
+<button onclick="openNovelModal()">
+📖 新建作品
+</button>
 
-                <button onclick="createGroup()">
-                    📁 新建分组
-                </button>
+<button onclick="createGroup()">
+📁 新建分组
+</button>
 
-                <button onclick="closeCreateMenu()">
-                    取消
-                </button>
+<button onclick="closeCreateMenu()">
+取消
+</button>
 
-            </div>
+</div>
 
-        </div>
+</div>
 
-    </header>
+</header>
 
+<main class="container">
 
-    <main class="container">
+<div class="page-title">
+我的小说
+</div>
 
-        <div class="page-title">
-            我的小说
-        </div>
+<div class="library-toolbar">
 
+<div class="library-settings">
 
-        <div class="library-toolbar">
+<button class="settings-btn"
+onclick="toggleSettings()">
+⚙️ 书架设置
+</button>
 
-            <div class="library-settings">
+<div id="settingsPanel"
+class="settings-panel">
 
-                <button
-                    class="settings-btn"
-                    onclick="toggleSettings()">
-                    ⚙️ 书架设置
-                </button>
+<div class="settings-title">
+书架模式
+</div>
 
-                <div
-                    id="settingsPanel"
-                    class="settings-panel">
+<div class="mode-buttons">
 
-                    <div class="settings-title">
-                        书架模式
-                    </div>
+<button id="gridModeBtn"
+class="mode-btn"
+onclick="setLibraryMode('grid')">
+▦ 网格
+</button>
 
-                    <div class="mode-buttons">
+<button id="listModeBtn"
+class="mode-btn"
+onclick="setLibraryMode('list')">
+☰ 列表
+</button>
 
-                        <button
-                            id="gridModeBtn"
-                            class="mode-btn"
-                            onclick="setLibraryMode('grid')">
-                            ▦ 网格
-                        </button>
+</div>
 
-                        <button
-                            id="listModeBtn"
-                            class="mode-btn"
-                            onclick="setLibraryMode('list')">
-                            ☰ 列表
-                        </button>
+</div>
 
-                    </div>
+</div>
 
-                </div>
+</div>
 
-            </div>
+<div id="emptyState"
+class="empty-state">
 
-        </div>
+<div class="empty-icon">
+📚
+</div>
 
+<div class="empty-title">
+还没有作品
+</div>
 
-        <div
-            id="emptyState"
-            class="empty-state">
+<div>
+点击右上角「＋ 新建」开始创作
+</div>
 
-            <div class="empty-icon">
-                📚
-            </div>
+</div>
 
-            <div class="empty-title">
-                还没有作品
-            </div>
+<div id="novels"
+class="novels grid-mode">
+</div>
 
-            <div>
-                点击右上角「＋ 新建」开始创作
-            </div>
-
-        </div>
-
-
-        <div
-            id="novels"
-            class="novels grid-mode">
-        </div>
-
-    </main>
+</main>
 
 </div>
 
 
-<!-- ==================================================
-     工具 / 字数统计
-================================================== -->
+<!-- =========================
+     工具
+========================= -->
 
 <div id="toolsPage" class="page">
 
-    <header class="header">
+<header class="header">
+<div class="logo">小说家</div>
+</header>
 
-        <div class="logo">
-            小说家
-        </div>
+<main class="container">
 
-    </header>
+<div class="page-title">
+工具
+</div>
 
-    <main class="container">
+<div class="tool-grid">
 
-        <div class="stats-intro">
+<div class="tool-card"
+onclick="openWordStats()">
 
-            <div class="stats-title">
-                字数统计
-            </div>
+<div class="tool-icon">
+🔢
+</div>
 
-            <div class="stats-subtitle">
-                统计每日码字字数
-            </div>
+<div class="tool-name">
+字数统计
+</div>
 
-        </div>
+<div class="tool-desc">
+统计每日码字字数
+</div>
 
+</div>
 
-        <!-- =========================
-             累计字数
-        ========================= -->
+</div>
 
-        <section class="stats-card">
-
-            <div class="stats-card-header">
-
-                <div class="stats-card-title">
-                    累计字数
-                </div>
-
-                <button
-                    class="stats-period"
-                    onclick="showStatsInfo('累计字数')">
-                    近7天 ＞
-                </button>
-
-            </div>
-
-
-            <div
-                id="totalWordsNumber"
-                class="big-number">
-                0
-            </div>
-
-
-            <div class="chart-area">
-
-                <div class="chart-y-axis">
-
-                    <span id="totalY1">
-                        0
-                    </span>
-
-                    <span id="totalY2">
-                        0
-                    </span>
-
-                    <span id="totalY3">
-                        0
-                    </span>
-
-                    <span id="totalY4">
-                        0
-                    </span>
-
-                    <span>
-                        0
-                    </span>
-
-                </div>
-
-
-                <div class="chart-line-area">
-
-                    <div class="chart-lines">
-
-                        <i></i>
-                        <i></i>
-                        <i></i>
-                        <i></i>
-                        <i></i>
-
-                    </div>
-
-
-                    <svg
-                        id="totalWordsChart"
-                        class="chart-svg"
-                        viewBox="0 0 700 200"
-                        preserveAspectRatio="none">
-                    </svg>
-
-                </div>
-
-            </div>
-
-
-            <div
-                id="totalWordsDates"
-                class="chart-dates">
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             输入字数
-        ========================= -->
-
-        <section class="stats-card">
-
-            <div class="stats-card-header">
-
-                <div class="stats-card-title">
-                    输入字数
-                </div>
-
-                <button
-                    class="stats-period"
-                    onclick="showStatsInfo('输入字数')">
-                    近7天 ＞
-                </button>
-
-            </div>
-
-
-            <div class="chart-area">
-
-                <div class="chart-y-axis">
-
-                    <span id="dailyY1">
-                        0
-                    </span>
-
-                    <span id="dailyY2">
-                        0
-                    </span>
-
-                    <span id="dailyY3">
-                        0
-                    </span>
-
-                    <span id="dailyY4">
-                        0
-                    </span>
-
-                    <span>
-                        0
-                    </span>
-
-                </div>
-
-
-                <div class="chart-line-area">
-
-                    <div class="chart-lines">
-
-                        <i></i>
-                        <i></i>
-                        <i></i>
-                        <i></i>
-                        <i></i>
-
-                    </div>
-
-
-                    <svg
-                        id="dailyWordsChart"
-                        class="chart-svg"
-                        viewBox="0 0 700 200"
-                        preserveAspectRatio="none">
-                    </svg>
-
-                </div>
-
-            </div>
-
-
-            <div
-                id="dailyWordsDates"
-                class="chart-dates">
-            </div>
-
-
-            <div
-                id="dailyWordsSummary"
-                class="daily-summary">
-                今天 0 字
-            </div>
-
-        </section>
-
-
-        <!-- =========================
-             字数分布
-        ========================= -->
-
-        <section class="stats-card">
-
-            <div class="stats-card-header">
-
-                <div class="stats-card-title">
-                    字数分布
-                </div>
-
-            </div>
-
-
-            <div class="distribution-content">
-
-                <div class="donut-area">
-
-                    <div
-                        id="donutChart"
-                        class="donut-chart">
-
-                        <div class="donut-center">
-
-                            <strong
-                                id="donutPercent">
-                                0%
-                            </strong>
-
-                            <span>
-                                作品字数
-                            </span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="distributionList"
-                    class="distribution-list">
-
-                    <div class="stats-empty">
-                        暂无作品字数
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-    </main>
+</main>
 
 </div>
 
 
-<!-- ==================================================
+<!-- =========================
+     字数统计
+========================= -->
+
+<div id="statsPage" class="page">
+
+<header class="header">
+
+<div class="logo">
+小说家
+</div>
+
+</header>
+
+<main class="container">
+
+<button class="back-btn"
+onclick="backToTools()">
+← 返回工具
+</button>
+
+<div class="page-title">
+字数统计
+</div>
+
+
+<!-- 累计字数 -->
+
+<section class="stats-section">
+
+<div class="stats-section-title">
+
+<strong>
+累计字数
+</strong>
+
+<div class="stats-more">
+近7天 ＞
+</div>
+
+</div>
+
+<div id="totalChart"
+class="chart-box">
+</div>
+
+</section>
+
+
+<!-- 输入字数 -->
+
+<section class="stats-section">
+
+<div class="stats-section-title">
+
+<strong>
+输入字数
+</strong>
+
+<div class="stats-more">
+近7天 ＞
+</div>
+
+</div>
+
+<div id="dailyChart"
+class="chart-box">
+</div>
+
+</section>
+
+
+<!-- 字数分布 -->
+
+<section class="stats-section distribution-box">
+
+<div class="stats-section-title">
+
+<strong>
+字数分布
+</strong>
+
+</div>
+
+<div class="donut-area">
+
+<div id="donut"
+class="donut">
+
+<div class="donut-hole">
+
+<div id="donutName"
+class="donut-name">
+暂无作品
+</div>
+
+<div id="donutCount"
+class="donut-count">
+0 字
+</div>
+
+<div id="donutPercent"
+class="donut-percent">
+0%
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<div id="distributionList"
+class="distribution-list">
+</div>
+
+</section>
+
+</main>
+
+</div>
+
+
+<!-- =========================
      我的
-================================================== -->
+========================= -->
 
 <div id="profilePage" class="page">
 
-    <header class="header">
+<header class="header">
+<div class="logo">小说家</div>
+</header>
 
-        <div class="logo">
-            小说家
-        </div>
+<main class="container">
 
-    </header>
+<div class="page-title">
+我的
+</div>
 
-    <main class="container">
+<div class="profile-card">
 
-        <div class="page-title">
-            我的
-        </div>
+<div class="avatar">
+👤
+</div>
 
-        <div class="profile-card">
+<div class="profile-name">
+小说作者
+</div>
 
-            <div class="avatar">
-                👤
-            </div>
+<div class="profile-subtitle">
+开始你的创作之旅
+</div>
 
-            <div class="profile-name">
-                小说作者
-            </div>
+</div>
 
-            <div class="profile-subtitle">
-                开始你的创作之旅
-            </div>
-
-        </div>
-
-    </main>
+</main>
 
 </div>
 
 
-<!-- ==================================================
+<!-- =========================
      作品
-================================================== -->
+========================= -->
 
 <div id="workPage" class="page">
 
-    <header class="header">
+<header class="header">
+<div class="logo">小说家</div>
+</header>
 
-        <div class="logo">
-            小说家
-        </div>
+<main class="container">
 
-    </header>
+<button class="back-btn"
+onclick="backToLibrary()">
+← 返回书架
+</button>
 
-    <main class="container">
+<div class="work-header">
 
-        <button
-            class="back-btn"
-            onclick="backToLibrary()">
-            ← 返回书架
-        </button>
+<img id="workCover"
+class="work-cover">
 
-        <div class="work-header">
+<div class="work-info">
 
-            <img
-                id="workCover"
-                class="work-cover">
+<h1 id="workName"></h1>
 
-            <div class="work-info">
+<p id="workDescription"></p>
 
-                <h1 id="workName"></h1>
+</div>
 
-                <p id="workDescription"></p>
+</div>
 
-            </div>
+<div class="chapter-header">
 
-        </div>
+<h2>
+章节
+</h2>
 
+<button class="new-chapter-btn"
+onclick="newChapter()">
+＋ 新建章节
+</button>
 
-        <div class="chapter-header">
+</div>
 
-            <h2>
-                章节
-            </h2>
+<div id="chapterList"
+class="chapter-list">
+</div>
 
-            <button
-                class="new-chapter-btn"
-                onclick="newChapter()">
-                ＋ 新建章节
-            </button>
-
-        </div>
-
-
-        <div
-            id="chapterList"
-            class="chapter-list">
-        </div>
-
-    </main>
+</main>
 
 </div>
 
 
-<!-- ==================================================
+<!-- =========================
      编辑器
-================================================== -->
+========================= -->
 
-<div id="editorPage" class="page">
+<div id="editorPage"
+class="page">
 
-    <div class="editor-toolbar">
+<div class="editor-toolbar">
 
-        <div class="editor-left">
+<div class="editor-left">
 
-            <button
-                class="back-btn"
-                style="margin:0"
-                onclick="backToWork()">
-                ← 返回
-            </button>
+<button class="back-btn"
+style="margin:0"
+onclick="backToWork()">
+← 返回
+</button>
 
-            <input
-                id="chapterTitle"
-                class="editor-title"
-                placeholder="章节标题">
+<input id="chapterTitle"
+class="editor-title"
+placeholder="章节标题">
 
-        </div>
+</div>
 
-        <button
-            class="save-btn"
-            onclick="saveChapter()">
-            保存
-        </button>
+<button class="save-btn"
+onclick="saveChapter()">
+保存
+</button>
 
-    </div>
+</div>
 
+<div class="editor-area">
 
-    <div class="editor-area">
+<textarea id="chapterContent"
+class="editor-content"
+placeholder="开始写作……"
+oninput="updateWordCount()"></textarea>
 
-        <textarea
-            id="chapterContent"
-            class="editor-content"
-            placeholder="开始写作……"
-            oninput="updateWordCount()"></textarea>
+</div>
 
-    </div>
-
-
-    <div
-        id="wordCount"
-        class="word-count">
-        0 字
-    </div>
+<div id="wordCount"
+class="word-count">
+0 字
+</div>
 
 </div>
 
 
-<!-- ==================================================
+<!-- =========================
      新建作品
-================================================== -->
+========================= -->
 
-<div
-    id="novelModal"
-    class="modal-mask">
+<div id="novelModal"
+class="modal-mask">
 
-    <div class="modal">
+<div class="modal">
 
-        <h2>
-            新建作品
-        </h2>
+<h2>
+新建作品
+</h2>
 
-        <label>
-            作品名称
-        </label>
+<label>
+作品名称
+</label>
 
-        <input
-            id="novelName"
-            type="text"
-            placeholder="请输入作品名称">
+<input id="novelName"
+type="text"
+placeholder="请输入作品名称">
 
+<label>
+添加封面
+</label>
 
-        <label>
-            添加封面
-        </label>
+<label class="cover-upload"
+for="coverInput">
 
-        <label
-            class="cover-upload"
-            for="coverInput">
+<span id="coverText">
 
-            <span id="coverText">
+<strong>＋</strong>
 
-                <strong>
-                    ＋
-                </strong>
+<small>
+添加封面
+</small>
 
-                <small>
-                    添加封面
-                </small>
+</span>
 
-            </span>
+<img id="coverPreview"
+style="display:none;">
 
-            <img
-                id="coverPreview"
-                style="display:none;">
+</label>
 
-        </label>
+<input id="coverInput"
+type="file"
+accept="image/*"
+style="display:none"
+onchange="previewCover(event)">
 
-        <input
-            id="coverInput"
-            type="file"
-            accept="image/*"
-            style="display:none"
-            onchange="previewCover(event)">
+<label>
+简介
+</label>
 
+<textarea id="novelDescription"
+placeholder="简介内容"></textarea>
 
-        <label>
-            简介
-        </label>
+<div class="actions">
 
-        <textarea
-            id="novelDescription"
-            placeholder="简介内容"></textarea>
+<button class="cancel"
+onclick="hideNovelModal()">
+取消
+</button>
 
+<button class="create"
+onclick="createNovel()">
+创建作品
+</button>
 
-        <div class="actions">
+</div>
 
-            <button
-                class="cancel"
-                onclick="hideNovelModal()">
-                取消
-            </button>
-
-            <button
-                class="create"
-                onclick="createNovel()">
-                创建作品
-            </button>
-
-        </div>
-
-    </div>
+</div>
 
 </div>
 
 
-<!-- ==================================================
+<!-- =========================
      底部导航
-================================================== -->
+========================= -->
 
 <nav class="bottom-nav">
 
-    <div class="nav-inner">
+<div class="nav-inner">
 
-        <button
-            id="navLibrary"
-            class="nav-item active"
-            onclick="switchPage('library')">
+<button id="navLibrary"
+class="nav-item active"
+onclick="switchPage('library')">
 
-            <div class="nav-icon">
-                📚
-            </div>
+<div class="nav-icon">📚</div>
+<div>书架</div>
 
-            <div>
-                书架
-            </div>
+</button>
 
-        </button>
+<button id="navTools"
+class="nav-item"
+onclick="switchPage('tools')">
 
+<div class="nav-icon">🛠</div>
+<div>工具</div>
 
-        <button
-            id="navTools"
-            class="nav-item"
-            onclick="switchPage('tools')">
+</button>
 
-            <div class="nav-icon">
-                🛠
-            </div>
+<button id="navProfile"
+class="nav-item"
+onclick="switchPage('profile')">
 
-            <div>
-                工具
-            </div>
+<div class="nav-icon">👤</div>
+<div>我的</div>
 
-        </button>
+</button>
 
-
-        <button
-            id="navProfile"
-            class="nav-item"
-            onclick="switchPage('profile')">
-
-            <div class="nav-icon">
-                👤
-            </div>
-
-            <div>
-                我的
-            </div>
-
-        </button>
-
-    </div>
+</div>
 
 </nav>
 
 
 <script>
 
-/* ==================================================
+/* =========================
    数据
-================================================== */
+========================= */
 
 let novels =
-    JSON.parse(
-        localStorage.getItem("novels") || "[]"
-    );
+JSON.parse(localStorage.getItem("novels") || "[]");
+
+let writingStats =
+JSON.parse(localStorage.getItem("writingStats") || "{}");
 
 let selectedCover = "";
 
@@ -1674,1710 +1464,1519 @@ let currentNovelId = null;
 
 let currentChapterId = null;
 
-let currentChapterOldWordCount = 0;
+let currentStatsIndex = 0;
 
 let libraryMode =
-    localStorage.getItem("libraryMode") || "grid";
+localStorage.getItem("libraryMode") || "grid";
 
 
-/* ==================================================
-   每日码字记录
-================================================== */
-
-let dailyWordStats =
-    JSON.parse(
-        localStorage.getItem("dailyWordStats") || "{}"
-    );
-
-
-/* ==================================================
-   页面切换
-================================================== */
+/* =========================
+   页面
+========================= */
 
 function switchPage(page) {
 
-    document
-        .querySelectorAll(".page")
-        .forEach(function(el) {
+document.querySelectorAll(".page")
+.forEach(el => el.classList.remove("active"));
 
-            el.classList.remove("active");
+if (page === "library") {
+document.getElementById("libraryPage")
+.classList.add("active");
+}
 
-        });
+if (page === "tools") {
+document.getElementById("toolsPage")
+.classList.add("active");
+}
 
+if (page === "profile") {
+document.getElementById("profilePage")
+.classList.add("active");
+}
 
-    if (page === "library") {
+document.getElementById("navLibrary")
+.classList.toggle("active", page === "library");
 
-        document
-            .getElementById("libraryPage")
-            .classList.add("active");
+document.getElementById("navTools")
+.classList.toggle("active", page === "tools");
 
-    }
-
-    if (page === "tools") {
-
-        document
-            .getElementById("toolsPage")
-            .classList.add("active");
-
-        renderWordStatistics();
-
-    }
-
-    if (page === "profile") {
-
-        document
-            .getElementById("profilePage")
-            .classList.add("active");
-
-    }
-
-
-    document
-        .getElementById("navLibrary")
-        .classList.toggle(
-            "active",
-            page === "library"
-        );
-
-    document
-        .getElementById("navTools")
-        .classList.toggle(
-            "active",
-            page === "tools"
-        );
-
-    document
-        .getElementById("navProfile")
-        .classList.toggle(
-            "active",
-            page === "profile"
-        );
+document.getElementById("navProfile")
+.classList.toggle("active", page === "profile");
 
 }
 
 
-/* ==================================================
-   保存作品
-================================================== */
+/* =========================
+   保存
+========================= */
 
 function saveNovels() {
 
-    localStorage.setItem(
-        "novels",
-        JSON.stringify(novels)
-    );
+localStorage.setItem(
+"novels",
+JSON.stringify(novels)
+);
 
 }
 
 
-/* ==================================================
-   保存每日统计
-================================================== */
-
-function saveDailyWordStats() {
-
-    localStorage.setItem(
-        "dailyWordStats",
-        JSON.stringify(dailyWordStats)
-    );
-
-}
-
-
-/* ==================================================
-   新建菜单
-================================================== */
+/* =========================
+   新建
+========================= */
 
 function toggleCreateMenu() {
 
-    document
-        .getElementById("createMenu")
-        .classList.toggle("show");
+document.getElementById("createMenu")
+.classList.toggle("show");
 
 }
-
 
 function closeCreateMenu() {
 
-    document
-        .getElementById("createMenu")
-        .classList.remove("show");
+document.getElementById("createMenu")
+.classList.remove("show");
 
 }
-
 
 function createGroup() {
 
-    closeCreateMenu();
+closeCreateMenu();
 
-    alert("分组功能正在开发中。");
+alert("分组功能正在开发中。");
 
 }
 
 
-/* ==================================================
-   书架设置
-================================================== */
+/* =========================
+   书架
+========================= */
 
 function toggleSettings() {
 
-    document
-        .getElementById("settingsPanel")
-        .classList.toggle("show");
+document.getElementById("settingsPanel")
+.classList.toggle("show");
 
 }
-
 
 function setLibraryMode(mode) {
 
-    libraryMode = mode;
+libraryMode = mode;
 
-    localStorage.setItem(
-        "libraryMode",
-        mode
-    );
+localStorage.setItem(
+"libraryMode",
+mode
+);
 
-    renderNovels();
+renderNovels();
 
 }
-
 
 function updateModeButtons() {
 
-    document
-        .getElementById("gridModeBtn")
-        .classList.toggle(
-            "active",
-            libraryMode === "grid"
-        );
+document.getElementById("gridModeBtn")
+.classList.toggle(
+"active",
+libraryMode === "grid"
+);
 
-    document
-        .getElementById("listModeBtn")
-        .classList.toggle(
-            "active",
-            libraryMode === "list"
-        );
+document.getElementById("listModeBtn")
+.classList.toggle(
+"active",
+libraryMode === "list"
+);
 
 }
 
 
-/* ==================================================
+/* =========================
    新建作品
-================================================== */
+========================= */
 
 function openNovelModal() {
 
-    closeCreateMenu();
+closeCreateMenu();
 
-    document
-        .getElementById("novelModal")
-        .classList.add("show");
+document.getElementById("novelModal")
+.classList.add("show");
 
-    document
-        .getElementById("novelName")
-        .value = "";
+document.getElementById("novelName").value = "";
 
-    document
-        .getElementById("novelDescription")
-        .value = "";
+document.getElementById("novelDescription").value = "";
 
-    selectedCover = "";
+selectedCover = "";
 
-    document
-        .getElementById("coverPreview")
-        .style.display = "none";
+document.getElementById("coverPreview")
+.style.display = "none";
 
-    document
-        .getElementById("coverText")
-        .style.display = "flex";
+document.getElementById("coverText")
+.style.display = "flex";
 
 }
-
 
 function hideNovelModal() {
 
-    document
-        .getElementById("novelModal")
-        .classList.remove("show");
+document.getElementById("novelModal")
+.classList.remove("show");
 
 }
-
 
 function previewCover(event) {
 
-    const file =
-        event.target.files[0];
+const file = event.target.files[0];
 
-    if (!file) return;
+if (!file) return;
 
-    const reader =
-        new FileReader();
+const reader = new FileReader();
 
-    reader.onload =
-        function(e) {
+reader.onload = function(e) {
 
-            selectedCover =
-                e.target.result;
+selectedCover = e.target.result;
 
-            document
-                .getElementById("coverPreview")
-                .src =
-                selectedCover;
+document.getElementById("coverPreview").src =
+selectedCover;
 
-            document
-                .getElementById("coverPreview")
-                .style.display =
-                "block";
+document.getElementById("coverPreview")
+.style.display = "block";
 
-            document
-                .getElementById("coverText")
-                .style.display =
-                "none";
+document.getElementById("coverText")
+.style.display = "none";
 
-        };
+};
 
-    reader.readAsDataURL(file);
+reader.readAsDataURL(file);
 
 }
 
 
-/* ==================================================
+/* =========================
    默认封面
-================================================== */
+========================= */
 
 function createDefaultCover(name) {
 
-    const canvas =
-        document.createElement("canvas");
+const canvas =
+document.createElement("canvas");
 
-    canvas.width = 300;
+canvas.width = 300;
+canvas.height = 400;
 
-    canvas.height = 400;
+const ctx = canvas.getContext("2d");
 
-    const ctx =
-        canvas.getContext("2d");
+ctx.fillStyle = "#eeeeee";
 
-    ctx.fillStyle = "#eeeeee";
+ctx.fillRect(0,0,300,400);
 
-    ctx.fillRect(
-        0,
-        0,
-        300,
-        400
-    );
+ctx.fillStyle = "#555";
 
-    ctx.fillStyle = "#555";
+ctx.font = "bold 28px sans-serif";
 
-    ctx.font =
-        "bold 28px sans-serif";
+ctx.textAlign = "center";
 
-    ctx.textAlign =
-        "center";
+ctx.textBaseline = "middle";
 
-    ctx.textBaseline =
-        "middle";
+let title = name || "未命名作品";
 
-    let title =
-        name || "未命名作品";
+if (title.length > 8) {
+title = title.substring(0,8) + "…";
+}
 
-    if (title.length > 8) {
+ctx.fillText(title,150,200);
 
-        title =
-            title.substring(0, 8) + "…";
-
-    }
-
-    ctx.fillText(
-        title,
-        150,
-        200
-    );
-
-    return canvas.toDataURL(
-        "image/jpeg",
-        .8
-    );
+return canvas.toDataURL(
+"image/jpeg",
+.8
+);
 
 }
 
 
-/* ==================================================
+/* =========================
    创建作品
-================================================== */
+========================= */
 
 function createNovel() {
 
-    const name =
-        document
-            .getElementById("novelName")
-            .value
-            .trim();
+const name =
+document.getElementById("novelName")
+.value.trim();
 
-    const description =
-        document
-            .getElementById("novelDescription")
-            .value
-            .trim();
+const description =
+document.getElementById("novelDescription")
+.value.trim();
 
-    if (!name) {
+if (!name) {
 
-        alert("请输入作品名称");
+alert("请输入作品名称");
 
-        return;
+return;
 
-    }
+}
 
-    novels.unshift({
+novels.unshift({
 
-        id:
-            Date.now().toString(),
+id: Date.now().toString(),
 
-        name:
-            name,
+name: name,
 
-        description:
-            description,
+description: description,
 
-        cover:
-            selectedCover ||
-            createDefaultCover(name),
+cover:
+selectedCover ||
+createDefaultCover(name),
 
-        chapters: [],
+chapters: [],
 
-        created:
-            Date.now(),
+created: Date.now(),
 
-        updated:
-            Date.now()
+updated: Date.now()
 
-    });
+});
 
-    saveNovels();
+saveNovels();
 
-    hideNovelModal();
+hideNovelModal();
 
-    renderNovels();
+renderNovels();
 
 }
 
 
-/* ==================================================
+/* =========================
    书架
-================================================== */
+========================= */
 
 function renderNovels() {
 
-    const container =
-        document.getElementById("novels");
+const container =
+document.getElementById("novels");
 
-    const empty =
-        document.getElementById("emptyState");
+const empty =
+document.getElementById("emptyState");
 
-    container.className =
-        "novels " +
-        (
-            libraryMode === "grid"
-            ? "grid-mode"
-            : "list-mode"
-        );
+container.className =
+"novels " +
+(
+libraryMode === "grid"
+? "grid-mode"
+: "list-mode"
+);
 
-    updateModeButtons();
+updateModeButtons();
 
+if (!novels.length) {
 
-    if (!novels.length) {
+container.innerHTML = "";
 
-        container.innerHTML = "";
+empty.style.display = "block";
 
-        empty.style.display =
-            "block";
+return;
 
-        return;
+}
 
-    }
+empty.style.display = "none";
 
+container.innerHTML =
+novels.map(function(novel) {
 
-    empty.style.display =
-        "none";
+const chapterCount =
+novel.chapters
+? novel.chapters.length
+: 0;
 
+return `
 
-    container.innerHTML =
-        novels.map(
-            function(novel) {
+<div class="novel-card"
+onclick="openWork('${novel.id}')">
 
-                const chapterCount =
-                    novel.chapters
-                        ? novel.chapters.length
-                        : 0;
+<img class="novel-cover"
+src="${novel.cover}">
 
-                return `
+<div class="novel-info">
 
-                    <div
-                        class="novel-card"
-                        onclick="openWork('${novel.id}')">
+<div class="novel-name">
+${escapeHTML(novel.name)}
+</div>
 
-                        <img
-                            class="novel-cover"
-                            src="${novel.cover}">
+<div class="novel-description">
+${escapeHTML(
+novel.description || "暂无简介"
+)}
+</div>
 
-                        <div class="novel-info">
+<div class="novel-meta">
+${chapterCount} 章
+</div>
 
-                            <div class="novel-name">
-                                ${escapeHTML(novel.name)}
-                            </div>
+</div>
 
-                            <div class="novel-description">
-                                ${escapeHTML(
-                                    novel.description ||
-                                    "暂无简介"
-                                )}
-                            </div>
+<button class="continue-btn"
+onclick="
+event.stopPropagation();
+openWork('${novel.id}');
+">
+继续写作
+</button>
 
-                            <div class="novel-meta">
-                                ${chapterCount} 章
-                            </div>
+</div>
 
-                        </div>
+`;
 
-                        <button
-                            class="continue-btn"
-                            onclick="
-                                event.stopPropagation();
-                                openWork('${novel.id}');
-                            ">
-                            继续写作
-                        </button>
-
-                    </div>
-
-                `;
-
-            }
-        ).join("");
+}).join("");
 
 }
 
 
-/* ==================================================
+/* =========================
    作品
-================================================== */
+========================= */
 
 function openWork(id) {
 
-    currentNovelId = id;
+currentNovelId = id;
 
-    const novel =
-        novels.find(
-            n => n.id === id
-        );
+const novel =
+novels.find(n => n.id === id);
 
-    if (!novel) return;
+if (!novel) return;
 
-    document
-        .querySelectorAll(".page")
-        .forEach(
-            el => el.classList.remove("active")
-        );
+document.querySelectorAll(".page")
+.forEach(el => el.classList.remove("active"));
 
-    document
-        .getElementById("workPage")
-        .classList.add("active");
+document.getElementById("workPage")
+.classList.add("active");
 
-    document
-        .getElementById("workName")
-        .textContent =
-        novel.name;
+document.getElementById("workName")
+.textContent = novel.name;
 
-    document
-        .getElementById("workDescription")
-        .textContent =
-        novel.description ||
-        "暂无简介";
+document.getElementById("workDescription")
+.textContent =
+novel.description || "暂无简介";
 
-    document
-        .getElementById("workCover")
-        .src =
-        novel.cover;
+document.getElementById("workCover")
+.src = novel.cover;
 
-    renderChapters();
+renderChapters();
 
 }
-
 
 function backToLibrary() {
 
-    document
-        .getElementById("workPage")
-        .classList.remove("active");
+document.getElementById("workPage")
+.classList.remove("active");
 
-    document
-        .getElementById("libraryPage")
-        .classList.add("active");
+document.getElementById("libraryPage")
+.classList.add("active");
 
-    document
-        .getElementById("navLibrary")
-        .classList.add("active");
-
-    document
-        .getElementById("navTools")
-        .classList.remove("active");
-
-    document
-        .getElementById("navProfile")
-        .classList.remove("active");
-
-    renderNovels();
+renderNovels();
 
 }
 
 
-/* ==================================================
+/* =========================
    章节
-================================================== */
+========================= */
 
 function renderChapters() {
 
-    const novel =
-        novels.find(
-            n => n.id === currentNovelId
-        );
+const novel =
+novels.find(n => n.id === currentNovelId);
 
-    const list =
-        document.getElementById("chapterList");
+const list =
+document.getElementById("chapterList");
 
-    if (
-        !novel ||
-        !novel.chapters ||
-        !novel.chapters.length
-    ) {
+if (
+!novel ||
+!novel.chapters ||
+!novel.chapters.length
+) {
 
-        list.innerHTML = `
+list.innerHTML = `
 
-            <div
-                style="
-                    padding:50px;
-                    text-align:center;
-                    color:#999;
-                ">
-                还没有章节
-            </div>
+<div style="
+padding:50px;
+text-align:center;
+color:#999;
+">
+还没有章节
+</div>
 
-        `;
+`;
 
-        return;
+return;
 
-    }
+}
 
+list.innerHTML =
+novel.chapters.map(
+function(chapter,index) {
 
-    list.innerHTML =
-        novel.chapters
-            .map(
-                function(chapter,index) {
+return `
 
-                    return `
+<div class="chapter-item"
+onclick="openChapter('${chapter.id}')">
 
-                        <div
-                            class="chapter-item"
-                            onclick="
-                                openChapter('${chapter.id}')
-                            ">
+<div>
+第 ${index + 1} 章
+${escapeHTML(
+chapter.title || "未命名章节"
+)}
+</div>
 
-                            <div>
-                                第 ${index + 1} 章
-                                ${escapeHTML(
-                                    chapter.title ||
-                                    "未命名章节"
-                                )}
-                            </div>
+<div class="chapter-date">
+${formatDate(chapter.updated)}
+</div>
 
-                            <div class="chapter-date">
-                                ${formatDate(
-                                    chapter.updated
-                                )}
-                            </div>
+</div>
 
-                        </div>
+`;
 
-                    `;
-
-                }
-            )
-            .join("");
+}).join("");
 
 }
 
 
-/* ==================================================
+/* =========================
    新建章节
-================================================== */
+========================= */
 
 function newChapter() {
 
-    currentChapterId = null;
+currentChapterId = null;
 
-    currentChapterOldWordCount = 0;
+document.getElementById("workPage")
+.classList.remove("active");
 
-    document
-        .getElementById("workPage")
-        .classList.remove("active");
+document.getElementById("editorPage")
+.classList.add("active");
 
-    document
-        .getElementById("editorPage")
-        .classList.add("active");
+document.getElementById("chapterTitle")
+.value = "";
 
-    document
-        .getElementById("chapterTitle")
-        .value = "";
+document.getElementById("chapterContent")
+.value = "";
 
-    document
-        .getElementById("chapterContent")
-        .value = "";
-
-    updateWordCount();
+updateWordCount();
 
 }
 
 
-/* ==================================================
+/* =========================
    打开章节
-================================================== */
+========================= */
 
 function openChapter(id) {
 
-    const novel =
-        novels.find(
-            n => n.id === currentNovelId
-        );
+const novel =
+novels.find(n => n.id === currentNovelId);
 
-    if (!novel) return;
+if (!novel) return;
 
-    const chapter =
-        novel.chapters.find(
-            c => c.id === id
-        );
+const chapter =
+novel.chapters.find(c => c.id === id);
 
-    if (!chapter) return;
+if (!chapter) return;
 
-    currentChapterId = id;
+currentChapterId = id;
 
-    currentChapterOldWordCount =
-        countWords(
-            chapter.content || ""
-        );
+document.getElementById("workPage")
+.classList.remove("active");
 
-    document
-        .getElementById("workPage")
-        .classList.remove("active");
+document.getElementById("editorPage")
+.classList.add("active");
 
-    document
-        .getElementById("editorPage")
-        .classList.add("active");
+document.getElementById("chapterTitle")
+.value =
+chapter.title || "";
 
-    document
-        .getElementById("chapterTitle")
-        .value =
-        chapter.title || "";
+document.getElementById("chapterContent")
+.value =
+chapter.content || "";
 
-    document
-        .getElementById("chapterContent")
-        .value =
-        chapter.content || "";
-
-    updateWordCount();
+updateWordCount();
 
 }
 
 
-/* ==================================================
-   保存章节
-================================================== */
+/* =========================
+   保存章节 + 每日字数
+========================= */
 
 function saveChapter() {
 
-    const novel =
-        novels.find(
-            n => n.id === currentNovelId
-        );
+const novel =
+novels.find(n => n.id === currentNovelId);
 
-    if (!novel) return;
+if (!novel) return;
 
-    const title =
-        document
-            .getElementById("chapterTitle")
-            .value
-            .trim();
+const title =
+document.getElementById("chapterTitle")
+.value.trim();
 
-    const content =
-        document
-            .getElementById("chapterContent")
-            .value;
+const content =
+document.getElementById("chapterContent")
+.value;
 
-    if (!title) {
+if (!title) {
 
-        alert("请输入章节标题");
+alert("请输入章节标题");
 
-        return;
+return;
 
-    }
+}
 
+if (!novel.chapters) {
+novel.chapters = [];
+}
 
-    const newWordCount =
-        countWords(content);
+const newCount =
+countWords(content);
 
+let oldCount = 0;
 
-    /*
-       计算本次新增字数。
+if (currentChapterId) {
 
-       如果是新章节：
-       新增字数 = 当前章节字数
+const chapter =
+novel.chapters.find(
+c => c.id === currentChapterId
+);
 
-       如果是修改旧章节：
-       新增字数 = 新字数 - 原字数
+if (chapter) {
 
-       删除文字不会产生负数。
-    */
+oldCount =
+countWords(chapter.content || "");
 
-    let addedWords = 0;
+chapter.title = title;
 
-    if (currentChapterId) {
+chapter.content = content;
 
-        addedWords =
-            Math.max(
-                0,
-                newWordCount -
-                currentChapterOldWordCount
-            );
+chapter.updated = Date.now();
 
-    } else {
+}
 
-        addedWords =
-            newWordCount;
+} else {
 
-    }
+novel.chapters.push({
 
+id: Date.now().toString(),
 
-    if (!novel.chapters) {
+title: title,
 
-        novel.chapters = [];
+content: content,
 
-    }
+updated: Date.now()
 
+});
 
-    if (currentChapterId) {
+}
 
-        const chapter =
-            novel.chapters.find(
-                c => c.id === currentChapterId
-            );
+const addedWords =
+Math.max(0, newCount - oldCount);
 
-        if (chapter) {
+recordDailyWords(addedWords);
 
-            chapter.title =
-                title;
+novel.updated = Date.now();
 
-            chapter.content =
-                content;
+saveNovels();
 
-            chapter.updated =
-                Date.now();
-
-        }
-
-    } else {
-
-        novel.chapters.push({
-
-            id:
-                Date.now().toString(),
-
-            title:
-                title,
-
-            content:
-                content,
-
-            updated:
-                Date.now()
-
-        });
-
-    }
-
-
-    /*
-       记录今天新增字数
-    */
-
-    if (addedWords > 0) {
-
-        const today =
-            getDateKey(
-                new Date()
-            );
-
-        dailyWordStats[today] =
-            (
-                dailyWordStats[today] || 0
-            ) +
-            addedWords;
-
-        saveDailyWordStats();
-
-    }
-
-
-    novel.updated =
-        Date.now();
-
-    saveNovels();
-
-    alert(
-        "已保存\n本次新增 " +
-        addedWords.toLocaleString() +
-        " 字"
-    );
-
-    backToWork();
+backToWork();
 
 }
 
 
-/* ==================================================
+/* =========================
+   每日码字
+========================= */
+
+function getDateKey(date = new Date()) {
+
+return (
+date.getFullYear() +
+"-" +
+String(date.getMonth() + 1).padStart(2,"0") +
+"-" +
+String(date.getDate()).padStart(2,"0")
+);
+
+}
+
+function recordDailyWords(words) {
+
+if (words <= 0) return;
+
+const key = getDateKey();
+
+writingStats[key] =
+(writingStats[key] || 0) + words;
+
+localStorage.setItem(
+"writingStats",
+JSON.stringify(writingStats)
+);
+
+}
+
+
+/* =========================
    返回作品
-================================================== */
+========================= */
 
 function backToWork() {
 
-    document
-        .getElementById("editorPage")
-        .classList.remove("active");
+document.getElementById("editorPage")
+.classList.remove("active");
 
-    document
-        .getElementById("workPage")
-        .classList.add("active");
+document.getElementById("workPage")
+.classList.add("active");
 
-    renderChapters();
+renderChapters();
 
 }
 
 
-/* ==================================================
+/* =========================
    字数
-================================================== */
+========================= */
 
 function countWords(text) {
 
-    return String(text || "")
-        .replace(/\s/g, "")
-        .length;
+return String(text || "")
+.replace(/\s/g,"")
+.length;
 
 }
-
 
 function updateWordCount() {
 
-    const text =
-        document
-            .getElementById("chapterContent")
-            .value;
+const text =
+document.getElementById("chapterContent")
+.value;
 
-    const count =
-        countWords(text);
+const count =
+countWords(text);
 
-    document
-        .getElementById("wordCount")
-        .textContent =
-        count.toLocaleString() +
-        " 字";
+document.getElementById("wordCount")
+.textContent =
+count + " 字";
 
 }
 
 
-/* ==================================================
-   字数统计：日期
-================================================== */
+/* =========================
+   字数统计页面
+========================= */
 
-function getDateKey(date) {
+function openWordStats() {
 
-    return (
-        date.getFullYear() +
-        "-" +
-        String(
-            date.getMonth() + 1
-        ).padStart(2, "0") +
-        "-" +
-        String(
-            date.getDate()
-        ).padStart(2, "0")
-    );
+document.querySelectorAll(".page")
+.forEach(el => el.classList.remove("active"));
+
+document.getElementById("statsPage")
+.classList.add("active");
+
+document.getElementById("navLibrary")
+.classList.remove("active");
+
+document.getElementById("navTools")
+.classList.add("active");
+
+document.getElementById("navProfile")
+.classList.remove("active");
+
+renderWordStats();
 
 }
 
+
+function backToTools() {
+
+document.getElementById("statsPage")
+.classList.remove("active");
+
+document.getElementById("toolsPage")
+.classList.add("active");
+
+document.getElementById("navTools")
+.classList.add("active");
+
+}
+
+
+/* =========================
+   最近7天
+========================= */
 
 function getLast7Days() {
 
-    const days = [];
+const result = [];
 
-    const now =
-        new Date();
+for (let i = 6; i >= 0; i--) {
 
-    for (
-        let i = 6;
-        i >= 0;
-        i--
-    ) {
+const d = new Date();
 
-        const date =
-            new Date(now);
+d.setDate(d.getDate() - i);
 
-        date.setDate(
-            now.getDate() - i
-        );
+const key = getDateKey(d);
 
-        const key =
-            getDateKey(date);
+result.push({
 
-        const label =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0") +
-            "/" +
-            String(
-                date.getDate()
-            ).padStart(2, "0");
+key: key,
 
-        days.push({
-            key: key,
-            label: label
-        });
+label:
+String(d.getMonth() + 1)
+.padStart(2,"0")
++
+"/"
++
+String(d.getDate())
+.padStart(2,"0"),
 
-    }
+value:
+writingStats[key] || 0
 
-    return days;
+});
+
+}
+
+return result;
 
 }
 
 
-/* ==================================================
-   字数统计：所有作品
-================================================== */
-
-function getNovelWordStats() {
-
-    return novels
-        .map(
-            function(novel) {
-
-                let total = 0;
-
-                if (novel.chapters) {
-
-                    novel.chapters.forEach(
-                        function(chapter) {
-
-                            total +=
-                                countWords(
-                                    chapter.content || ""
-                                );
-
-                        }
-                    );
-
-                }
-
-                return {
-                    name: novel.name,
-                    words: total
-                };
-
-            }
-        )
-        .filter(
-            item => item.words > 0
-        )
-        .sort(
-            (a,b) =>
-                b.words - a.words
-        );
-
-}
-
-
-/* ==================================================
-   字数统计：总字数
-================================================== */
+/* =========================
+   累计字数
+========================= */
 
 function getTotalWords() {
 
-    return getNovelWordStats()
-        .reduce(
-            (sum,item) =>
-                sum + item.words,
-            0
-        );
+let total = 0;
+
+novels.forEach(novel => {
+
+(novel.chapters || []).forEach(chapter => {
+
+total += countWords(
+chapter.content || ""
+);
+
+});
+
+});
+
+return total;
 
 }
 
 
-/* ==================================================
-   字数单位
-================================================== */
+/* =========================
+   SVG折线图
+========================= */
 
-function formatCompactNumber(number) {
+function renderTotalChart() {
 
-    number =
-        Number(number) || 0;
+const box =
+document.getElementById("totalChart");
 
-    if (number >= 1000000) {
+const days = getLast7Days();
 
-        return (
-            (number / 1000000)
-                .toFixed(1)
-                .replace(".0","")
-            + "M"
-        );
+const total =
+getTotalWords();
 
-    }
+let previous =
+Math.max(0, total -
+days.reduce(
+(sum,d) => sum + d.value,
+0
+));
 
-    if (number >= 1000) {
+const cumulative =
+days.map(d => {
 
-        return (
-            (number / 1000)
-                .toFixed(1)
-                .replace(".0","")
-            + "K"
-        );
+previous += d.value;
 
-    }
+return previous;
 
-    return number.toString();
+});
+
+const width = 800;
+
+const height = 220;
+
+const left = 48;
+
+const right = 15;
+
+const top = 15;
+
+const bottom = 35;
+
+const chartW =
+width - left - right;
+
+const chartH =
+height - top - bottom;
+
+const max =
+Math.max(
+50,
+...cumulative
+);
+
+const points =
+cumulative.map(
+(value,index) => {
+
+const x =
+left +
+(index / 6) * chartW;
+
+const y =
+top +
+chartH -
+(value / max) * chartH;
+
+return {
+x:x,
+y:y,
+value:value
+};
+
+});
+
+const path =
+points.map(
+(p,i) =>
+(i === 0 ? "M" : "L")
++
+p.x +
+" " +
+p.y
+).join(" ");
+
+let svg = `
+
+<svg class="chart-svg"
+viewBox="0 0 ${width} ${height}"
+preserveAspectRatio="none">
+
+`;
+
+for (let i=0;i<5;i++) {
+
+const y =
+top +
+(i / 4) * chartH;
+
+const value =
+Math.round(
+max * (1 - i / 4)
+);
+
+svg += `
+
+<line
+x1="${left}"
+y1="${y}"
+x2="${width-right}"
+y2="${y}"
+stroke="#eeeeee"
+/>
+
+<text
+x="4"
+y="${y+4}"
+class="chart-label">
+${formatCompact(value)}
+</text>
+
+`;
+
+}
+
+svg += `
+
+<path
+d="${path}"
+fill="none"
+stroke="#222"
+stroke-width="3"
+stroke-linecap="round"
+stroke-linejoin="round"
+/>
+
+`;
+
+points.forEach(p => {
+
+svg += `
+
+<circle
+cx="${p.x}"
+cy="${p.y}"
+r="4"
+fill="#222"
+/>
+
+`;
+
+});
+
+days.forEach((d,i) => {
+
+svg += `
+
+<text
+x="${points[i].x}"
+y="${height-8}"
+text-anchor="middle"
+class="chart-label">
+${d.label}
+</text>
+
+`;
+
+});
+
+svg += "</svg>";
+
+box.innerHTML = svg;
 
 }
 
 
-/* ==================================================
-   Y轴数字
-================================================== */
+/* =========================
+   每日输入图
+========================= */
 
-function renderYAxis(
-    prefix,
-    maxValue
-) {
+function renderDailyChart() {
 
-    const step =
-        maxValue / 4;
+const box =
+document.getElementById("dailyChart");
 
-    for (
-        let i = 1;
-        i <= 4;
-        i++
-    ) {
+const days = getLast7Days();
 
-        const element =
-            document.getElementById(
-                prefix + "Y" + i
-            );
+const maxValue =
+Math.max(
+10,
+...days.map(d => d.value)
+);
 
-        if (!element) continue;
+const width = 800;
 
-        element.textContent =
-            formatCompactNumber(
-                step * (5 - i)
-            );
+const height = 220;
 
-    }
+const left = 48;
+
+const right = 15;
+
+const top = 15;
+
+const bottom = 35;
+
+const chartW =
+width - left - right;
+
+const chartH =
+height - top - bottom;
+
+let svg = `
+
+<svg class="chart-svg"
+viewBox="0 0 ${width} ${height}"
+preserveAspectRatio="none">
+
+`;
+
+for (let i=0;i<5;i++) {
+
+const y =
+top +
+(i / 4) * chartH;
+
+const value =
+Math.round(
+maxValue * (1 - i / 4)
+);
+
+svg += `
+
+<line
+x1="${left}"
+y1="${y}"
+x2="${width-right}"
+y2="${y}"
+stroke="#eeeeee"
+/>
+
+<text
+x="4"
+y="${y+4}"
+class="chart-label">
+${formatCompact(value)}
+</text>
+
+`;
+
+}
+
+days.forEach((d,i) => {
+
+const x =
+left +
+((i + .5) / 7) * chartW;
+
+const barW =
+Math.min(
+50,
+chartW / 10
+);
+
+const barH =
+(d.value / maxValue) * chartH;
+
+const y =
+top +
+chartH -
+barH;
+
+svg += `
+
+<rect
+x="${x - barW/2}"
+y="${y}"
+width="${barW}"
+height="${Math.max(barH,1)}"
+rx="5"
+fill="#222"
+/>
+
+<text
+x="${x}"
+y="${height-8}"
+text-anchor="middle"
+class="chart-label">
+${d.label}
+</text>
+
+`;
+
+});
+
+svg += "</svg>";
+
+box.innerHTML = svg;
 
 }
 
 
-/* ==================================================
-   折线图
-================================================== */
+/* =========================
+   字数分布
+========================= */
 
-function drawLineChart(
-    svgId,
-    values,
-    maxValue
-) {
+/*
+   颜色顺序：
 
-    const svg =
-        document.getElementById(
-            svgId
-        );
+   红
+   橙
+   黄
+   绿
+   青
+   蓝
+   紫
 
-    if (!svg) return;
+   然后浅色版本
+   再逐渐变化
+*/
 
-    svg.innerHTML = "";
+const distributionColors = [
 
-    const width = 700;
+"#ef4444",
+"#f97316",
+"#eab308",
+"#22c55e",
+"#06b6d4",
+"#3b82f6",
+"#8b5cf6",
 
-    const height = 200;
+"#fca5a5",
+"#fdba74",
+"#fde68a",
+"#86efac",
+"#67e8f9",
+"#93c5fd",
+"#c4b5fd",
 
-    const paddingX = 10;
+"#dc2626",
+"#ea580c",
+"#ca8a04",
+"#16a34a",
+"#0891b2",
+"#2563eb",
+"#7c3aed"
 
-    const usableWidth =
-        width -
-        paddingX * 2;
-
-    const usableHeight =
-        height - 15;
-
-
-    if (!values.length) return;
-
-
-    const points =
-        values.map(
-            function(value,index) {
-
-                const x =
-                    paddingX +
-                    index *
-                    (
-                        usableWidth / 6
-                    );
-
-                const y =
-                    maxValue <= 0
-                    ? usableHeight
-                    : usableHeight -
-                        (
-                            value /
-                            maxValue
-                        ) *
-                        usableHeight;
-
-                return {
-                    x: x,
-                    y: y
-                };
-
-            }
-        );
+];
 
 
-    let path = "";
+function getNovelDistribution() {
 
-    points.forEach(
-        function(point,index) {
+return novels
+.map(novel => {
 
-            if (index === 0) {
+let words = 0;
 
-                path =
-                    "M " +
-                    point.x +
-                    " " +
-                    point.y;
+(novel.chapters || [])
+.forEach(chapter => {
 
-            } else {
+words += countWords(
+chapter.content || ""
+);
 
-                path +=
-                    " L " +
-                    point.x +
-                    " " +
-                    point.y;
+});
 
-            }
+return {
 
-        }
-    );
+id: novel.id,
 
+name: novel.name,
 
-    const pathElement =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path"
-        );
+words: words
 
-    pathElement.setAttribute(
-        "d",
-        path
-    );
+};
 
-    pathElement.setAttribute(
-        "class",
-        "chart-line"
-    );
-
-    svg.appendChild(
-        pathElement
-    );
-
-
-    points.forEach(
-        function(point) {
-
-            const circle =
-                document.createElementNS(
-                    "http://www.w3.org/2000/svg",
-                    "circle"
-                );
-
-            circle.setAttribute(
-                "cx",
-                point.x
-            );
-
-            circle.setAttribute(
-                "cy",
-                point.y
-            );
-
-            circle.setAttribute(
-                "r",
-                "4"
-            );
-
-            circle.setAttribute(
-                "class",
-                "chart-point"
-            );
-
-            svg.appendChild(
-                circle
-            );
-
-        }
-    );
+})
+.filter(item => item.words > 0)
+.sort((a,b) => b.words - a.words);
 
 }
 
-
-/* ==================================================
-   日期
-================================================== */
-
-function renderChartDates(
-    elementId,
-    days
-) {
-
-    const element =
-        document.getElementById(
-            elementId
-        );
-
-    if (!element) return;
-
-    element.innerHTML =
-        days
-            .map(
-                day =>
-                    `<span>${day.label}</span>`
-            )
-            .join("");
-
-}
-
-
-/* ==================================================
-   字数分布圆环
-================================================== */
 
 function renderDistribution() {
 
-    const items =
-        getNovelWordStats();
+const data =
+getNovelDistribution();
 
-    const list =
-        document.getElementById(
-            "distributionList"
-        );
+const donut =
+document.getElementById("donut");
 
-    const donut =
-        document.getElementById(
-            "donutChart"
-        );
+const list =
+document.getElementById("distributionList");
 
-    const percent =
-        document.getElementById(
-            "donutPercent"
-        );
+if (!data.length) {
 
+donut.style.background =
+"#eeeeee";
 
-    if (!items.length) {
+document.getElementById("donutName")
+.textContent = "暂无作品";
 
-        list.innerHTML = `
+document.getElementById("donutCount")
+.textContent = "0 字";
 
-            <div class="stats-empty">
-                暂无作品字数
-            </div>
+document.getElementById("donutPercent")
+.textContent = "0%";
 
-        `;
+list.innerHTML = `
 
-        donut.style.background =
-            "#e9e9e9";
+<div style="
+grid-column:1/-1;
+text-align:center;
+padding:20px;
+color:#999;
+">
+写完章节后，这里会显示作品字数分布
+</div>
 
-        percent.textContent =
-            "0%";
+`;
 
-        return;
+return;
 
-    }
+}
 
+if (
+currentStatsIndex >= data.length
+) {
 
-    const total =
-        items.reduce(
-            (sum,item) =>
-                sum + item.words,
-            0
-        );
+currentStatsIndex = 0;
 
+}
 
-    const colors = [
-        "#222",
-        "#444",
-        "#666",
-        "#888",
-        "#999",
-        "#aaa",
-        "#bbb",
-        "#ccc"
-    ];
+const total =
+data.reduce(
+(sum,item) => sum + item.words,
+0
+);
 
+const segments = [];
 
-    let current = 0;
+let start = 0;
 
-    const gradients = [];
+data.forEach((item,index) => {
 
+const percent =
+item.words / total * 100;
 
-    items.forEach(
-        function(item,index) {
+const end =
+start + percent;
 
-            const percentage =
-                item.words /
-                total *
-                100;
+segments.push(
+`${getDistributionColor(index)}
+${start}% ${end}%`
+);
 
-            const start =
-                current;
+start = end;
 
-            current +=
-                percentage;
+});
 
-            gradients.push(
-                colors[
-                    index %
-                    colors.length
-                ] +
-                " " +
-                start +
-                "% " +
-                current +
-                "%"
-            );
+donut.style.background =
+`conic-gradient(
+${segments.join(",")}
+)`;
 
-        }
-    );
+updateDonutCenter(
+data,
+total,
+currentStatsIndex
+);
 
+list.innerHTML =
+data.map(
+(item,index) => {
 
-    donut.style.background =
-        "conic-gradient(" +
-        gradients.join(",") +
-        ")";
+const percent =
+item.words / total * 100;
 
+return `
 
-    const largestPercentage =
-        items[0].words /
-        total *
-        100;
+<button
+class="distribution-item
+${index === currentStatsIndex ? "active" : ""}"
+onclick="selectDistribution(${index})">
 
+<span
+class="color-dot"
+style="
+background:${getDistributionColor(index)}
+">
+</span>
 
-    percent.textContent =
-        largestPercentage
-            .toFixed(1)
-            .replace(".0","") +
-        "%";
+<span class="distribution-name">
+${escapeHTML(item.name)}
+</span>
 
+<span class="distribution-count">
+${formatNumber(item.words)}
+</span>
 
-    list.innerHTML =
-        items
-            .map(
-                function(item,index) {
+</button>
 
-                    return `
+`;
 
-                        <div
-                            class="distribution-item">
+}
+).join("");
 
-                            <div
-                                class="distribution-name">
+/*
+   点击圆环：
+   根据鼠标位置计算点击的是哪个扇区
+*/
 
-                                <i
-                                    class="distribution-dot"
-                                    style="
-                                        background:
-                                        ${
-                                            colors[
-                                                index %
-                                                colors.length
-                                            ]
-                                        };
-                                    ">
-                                </i>
+donut.onclick = function(event) {
 
-                                <span>
-                                    ${
-                                        escapeHTML(
-                                            item.name
-                                        )
-                                    }
-                                </span>
+const rect =
+donut.getBoundingClientRect();
 
-                            </div>
+const cx =
+rect.left + rect.width / 2;
 
-                            <div
-                                class="distribution-number">
+const cy =
+rect.top + rect.height / 2;
 
-                                ${
-                                    item.words
-                                        .toLocaleString()
-                                }字
+const x =
+event.clientX - cx;
 
-                            </div>
+const y =
+event.clientY - cy;
 
-                        </div>
+let angle =
+Math.atan2(y,x)
+* 180 / Math.PI;
 
-                    `;
+angle += 90;
 
-                }
-            )
-            .join("");
+if (angle < 0) {
+angle += 360;
+}
+
+let currentAngle = 0;
+
+for (
+let i=0;
+i<data.length;
+i++
+) {
+
+const percent =
+data[i].words / total * 100;
+
+const degree =
+percent * 3.6;
+
+if (
+angle >= currentAngle &&
+angle < currentAngle + degree
+) {
+
+selectDistribution(i);
+
+break;
+
+}
+
+currentAngle += degree;
+
+}
+
+};
 
 }
 
 
-/* ==================================================
-   字数统计主程序
-================================================== */
+function selectDistribution(index) {
 
-function renderWordStatistics() {
+currentStatsIndex = index;
 
-    /*
-       总字数
-    */
-
-    const totalWords =
-        getTotalWords();
-
-
-    document
-        .getElementById(
-            "totalWordsNumber"
-        )
-        .textContent =
-        totalWords.toLocaleString();
-
-
-    /*
-       最近7天
-    */
-
-    const days =
-        getLast7Days();
-
-
-    const dailyValues =
-        days.map(
-            day =>
-                dailyWordStats[
-                    day.key
-                ] || 0
-        );
-
-
-    /*
-       累计曲线
-
-       注意：
-       这里统计的是你每天实际
-       新增的码字数量。
-
-       从今天往前没有记录的日期
-       会显示为0。
-    */
-
-    let runningTotal = 0;
-
-    const cumulativeValues =
-        dailyValues.map(
-            value => {
-
-                runningTotal +=
-                    value;
-
-                return runningTotal;
-
-            }
-        );
-
-
-    /*
-       累计字数图
-    */
-
-    const cumulativeMax =
-        Math.max(
-            ...cumulativeValues,
-            1
-        );
-
-
-    renderYAxis(
-        "total",
-        cumulativeMax
-    );
-
-
-    drawLineChart(
-        "totalWordsChart",
-        cumulativeValues,
-        cumulativeMax
-    );
-
-
-    /*
-       每日输入字数图
-    */
-
-    const dailyMax =
-        Math.max(
-            ...dailyValues,
-            1
-        );
-
-
-    renderYAxis(
-        "daily",
-        dailyMax
-    );
-
-
-    drawLineChart(
-        "dailyWordsChart",
-        dailyValues,
-        dailyMax
-    );
-
-
-    /*
-       日期
-    */
-
-    renderChartDates(
-        "totalWordsDates",
-        days
-    );
-
-    renderChartDates(
-        "dailyWordsDates",
-        days
-    );
-
-
-    /*
-       今天
-    */
-
-    const todayKey =
-        getDateKey(
-            new Date()
-        );
-
-    const todayWords =
-        dailyWordStats[
-            todayKey
-        ] || 0;
-
-
-    document
-        .getElementById(
-            "dailyWordsSummary"
-        )
-        .textContent =
-        "今天 " +
-        todayWords.toLocaleString() +
-        " 字";
-
-
-    /*
-       作品字数分布
-    */
-
-    renderDistribution();
+renderDistribution();
 
 }
 
 
-/* ==================================================
-   近7天提示
-================================================== */
+function updateDonutCenter(
+data,
+total,
+index
+) {
 
-function showStatsInfo(type) {
+const item = data[index];
 
-    alert(
-        type +
-        "\n\n当前显示最近7天的数据。"
-    );
+if (!item) return;
+
+const percent =
+item.words / total * 100;
+
+document.getElementById("donutName")
+.textContent =
+item.name;
+
+document.getElementById("donutCount")
+.textContent =
+formatNumber(item.words) + " 字";
+
+document.getElementById("donutPercent")
+.textContent =
+percent.toFixed(1) + "%";
 
 }
 
 
-/* ==================================================
+function getDistributionColor(index) {
+
+return distributionColors[
+index % distributionColors.length
+];
+
+}
+
+
+/* =========================
+   字数统计总入口
+========================= */
+
+function renderWordStats() {
+
+renderTotalChart();
+
+renderDailyChart();
+
+renderDistribution();
+
+}
+
+
+/* =========================
    工具
-================================================== */
+========================= */
+
+function formatNumber(number) {
+
+return Number(number)
+.toLocaleString("zh-CN");
+
+}
+
+function formatCompact(number) {
+
+if (number >= 1000000) {
+
+return (
+(number / 1000000)
+.toFixed(1)
+.replace(".0","")
++
+"M"
+);
+
+}
+
+if (number >= 1000) {
+
+return (
+(number / 1000)
+.toFixed(1)
+.replace(".0","")
++
+"K"
+);
+
+}
+
+return String(number);
+
+}
 
 function escapeHTML(text) {
 
-    return String(text)
-        .replace(
-            /&/g,
-            "&amp;"
-        )
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+return String(text)
+.replace(/&/g,"&amp;")
+.replace(/</g,"&lt;")
+.replace(/>/g,"&gt;")
+.replace(/"/g,"&quot;")
+.replace(/'/g,"&#039;");
 
 }
-
 
 function formatDate(timestamp) {
 
-    if (!timestamp) return "";
+if (!timestamp) return "";
 
-    const date =
-        new Date(timestamp);
+const date =
+new Date(timestamp);
 
-    return (
-        date.getFullYear() +
-        "/" +
-        String(
-            date.getMonth() + 1
-        ).padStart(2,"0") +
-        "/" +
-        String(
-            date.getDate()
-        ).padStart(2,"0")
-    );
+return (
+date.getFullYear() +
+"/" +
+String(
+date.getMonth()+1
+).padStart(2,"0") +
+"/" +
+String(
+date.getDate()
+).padStart(2,"0")
+);
 
 }
 
 
-/* ==================================================
+/* =========================
    初始化
-================================================== */
+========================= */
 
 renderNovels();
 
