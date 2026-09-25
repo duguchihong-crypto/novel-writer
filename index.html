@@ -2,11 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0,
-      maximum-scale=1.0, user-scalable=no">
-
-<title>小说家</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小说创作</title>
 
 <style>
 * {
@@ -14,7 +11,8 @@
     -webkit-tap-highlight-color: transparent;
 }
 
-html, body {
+html,
+body {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -25,23 +23,19 @@ html, body {
         "PingFang SC",
         "Microsoft YaHei",
         sans-serif;
-    background: #f5f5f7;
-    color: #222;
-}
-
-body {
-    overflow: hidden;
+    background: #f5f6fa;
+    color: #202124;
 }
 
 /* =========================
-   整体 APP
+   整体
 ========================= */
 
 .app {
-    width: 100%;
     height: 100vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 /* =========================
@@ -51,42 +45,32 @@ body {
 .topbar {
     height: 58px;
     flex-shrink: 0;
-    background: #ffffff;
-    border-bottom: 1px solid #e8e8e8;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
-
     padding: 0 18px;
-
-    position: relative;
+    background: #ffffff;
+    border-bottom: 1px solid #e7e7eb;
     z-index: 20;
 }
 
 .topbar-title {
-    font-size: 23px;
+    font-size: 20px;
     font-weight: 700;
-    letter-spacing: -0.5px;
 }
 
-.more-button {
-    width: 42px;
-    height: 42px;
-    border: 0;
+.more-btn {
+    width: 40px;
+    height: 40px;
+    border: none;
     background: transparent;
     border-radius: 50%;
-
-    font-size: 25px;
-    font-weight: bold;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-size: 24px;
+    cursor: pointer;
 }
 
-.more-button:active {
-    background: #eeeeee;
+.more-btn:active {
+    background: #eeeeef;
 }
 
 /* =========================
@@ -96,134 +80,98 @@ body {
 .content {
     flex: 1;
     overflow-y: auto;
-    padding: 18px 16px 100px;
+    padding: 18px 16px 90px;
 }
 
-/* 分组标题 */
+/* =========================
+   书架
+========================= */
 
-.group-title {
+.shelf-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    margin: 6px 2px 14px;
+    margin-bottom: 16px;
 }
 
-.group-name {
-    font-size: 18px;
-    font-weight: 700;
+.shelf-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #555;
 }
 
-.group-count {
+.book-count {
     font-size: 13px;
     color: #999;
 }
 
 /* =========================
-   网格书架
+   网格
 ========================= */
 
-.book-grid {
+.books {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 14px;
 }
+
+/* =========================
+   小说卡片
+========================= */
 
 .book {
-    position: relative;
+    cursor: grab;
     user-select: none;
-    cursor: pointer;
 }
 
-.book-cover {
+.book:active {
+    cursor: grabbing;
+}
+
+.cover {
     width: 100%;
-    aspect-ratio: 0.70;
-
-    border-radius: 7px;
-
+    aspect-ratio: 0.72;
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    padding: 10px;
-
-    text-align: center;
-
-    color: white;
-
-    font-size: 16px;
-    font-weight: 700;
-
+    background: linear-gradient(
+        145deg,
+        #6875e8,
+        #9b72cf
+    );
     box-shadow:
-        0 2px 6px rgba(0,0,0,.12);
-
-    overflow: hidden;
+        0 5px 15px rgba(0, 0, 0, 0.12);
 }
 
-.cover1 {
-    background: linear-gradient(
-        145deg,
-        #5967d9,
-        #3949ab
-    );
+.cover-title {
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    line-height: 1.5;
+    font-weight: 700;
+    word-break: break-all;
 }
 
-.cover2 {
-    background: linear-gradient(
-        145deg,
-        #d66b7d,
-        #a72f49
-    );
+.book-info {
+    padding: 8px 3px 0;
 }
 
-.cover3 {
-    background: linear-gradient(
-        145deg,
-        #54a97a,
-        #247451
-    );
-}
-
-.cover4 {
-    background: linear-gradient(
-        145deg,
-        #d69a4b,
-        #a8601b
-    );
-}
-
-.cover5 {
-    background: linear-gradient(
-        145deg,
-        #7562aa,
-        #40326f
-    );
-}
-
-.cover6 {
-    background: linear-gradient(
-        145deg,
-        #5d9eaf,
-        #286274
-    );
-}
-
-.book-name {
-    margin-top: 7px;
-
-    font-size: 14px;
-    line-height: 20px;
-
-    overflow: hidden;
+.book-title {
+    font-size: 15px;
+    font-weight: 600;
     white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.book-author {
-    margin-top: 2px;
-
-    color: #999;
+.book-meta {
+    margin-top: 4px;
     font-size: 12px;
+    color: #999;
 }
 
 /* =========================
@@ -231,9 +179,10 @@ body {
 ========================= */
 
 .empty {
+    display: none;
     text-align: center;
+    padding: 90px 20px;
     color: #999;
-    padding: 100px 20px;
 }
 
 .empty-icon {
@@ -241,8 +190,15 @@ body {
     margin-bottom: 15px;
 }
 
+.empty-title {
+    font-size: 17px;
+    color: #555;
+    font-weight: 600;
+}
+
 .empty-text {
-    font-size: 15px;
+    margin-top: 8px;
+    font-size: 13px;
 }
 
 /* =========================
@@ -250,563 +206,457 @@ body {
 ========================= */
 
 .bottom-nav {
-    height: 72px;
+    height: 68px;
     flex-shrink: 0;
-
-    background: #ffffff;
-
-    border-top: 1px solid #e5e5e5;
-
     display: flex;
-
-    position: relative;
+    background: rgba(255,255,255,0.96);
+    border-top: 1px solid #e7e7eb;
     z-index: 20;
-
-    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .nav-item {
     flex: 1;
-
+    border: none;
+    background: transparent;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
-    color: #888;
-
-    font-size: 12px;
-
     gap: 4px;
-
+    color: #8a8a8f;
+    font-size: 11px;
     cursor: pointer;
 }
 
 .nav-icon {
     font-size: 22px;
-    line-height: 22px;
 }
 
 .nav-item.active {
-    color: #222;
+    color: #5865d9;
     font-weight: 600;
 }
 
 /* =========================
-   更多菜单
+   弹出菜单
 ========================= */
 
-.menu-overlay {
-    position: fixed;
-
-    inset: 0;
-
-    background: rgba(0,0,0,.18);
-
-    z-index: 50;
-
+.menu-mask {
     display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.15);
+    z-index: 30;
 }
 
-.menu-overlay.show {
-    display: block;
-}
-
-.more-menu {
+.menu {
     position: absolute;
-
-    top: 56px;
+    top: 58px;
     right: 12px;
-
-    width: 210px;
-
+    width: 190px;
     background: white;
-
-    border-radius: 12px;
-
+    border-radius: 14px;
+    padding: 7px;
     box-shadow:
-        0 8px 30px rgba(0,0,0,.18);
-
-    overflow: hidden;
+        0 10px 35px rgba(0,0,0,0.18);
 }
 
-.menu-section {
-    padding: 7px 0;
+.menu-title {
+    padding: 10px 12px 7px;
+    font-size: 12px;
+    color: #999;
 }
 
 .menu-item {
-    height: 48px;
-
-    padding: 0 17px;
-
-    display: flex;
-    align-items: center;
-
-    font-size: 15px;
-
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 12px;
+    text-align: left;
+    border-radius: 9px;
+    font-size: 14px;
     cursor: pointer;
+}
+
+.menu-item:hover {
+    background: #f3f3f5;
 }
 
 .menu-item:active {
-    background: #f1f1f1;
-}
-
-.menu-icon {
-    width: 30px;
-    font-size: 19px;
-}
-
-.menu-divider {
-    height: 1px;
-    background: #eeeeee;
+    background: #e9e9ed;
 }
 
 /* =========================
-   设置页面
+   弹窗
 ========================= */
 
-.page {
-    position: fixed;
-
-    inset: 0;
-
-    background: #f5f5f7;
-
-    z-index: 100;
-
+.modal-mask {
     display: none;
-
-    flex-direction: column;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.42);
+    z-index: 50;
+    align-items: flex-end;
+    justify-content: center;
 }
 
-.page.show {
-    display: flex;
-}
-
-.page-header {
-    height: 58px;
-
+.modal {
+    width: 100%;
+    max-width: 520px;
     background: white;
-
-    display: flex;
-    align-items: center;
-
-    border-bottom: 1px solid #e5e5e5;
-
-    padding: 0 16px;
+    border-radius: 22px 22px 0 0;
+    padding: 22px 20px 28px;
+    animation: slideUp .2s ease;
 }
 
-.back {
-    width: 40px;
-    font-size: 27px;
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.modal h2 {
+    margin: 0 0 20px;
+    font-size: 20px;
+}
+
+.input {
+    width: 100%;
+    height: 46px;
+    border: 1px solid #dddde2;
+    border-radius: 10px;
+    padding: 0 13px;
+    font-size: 15px;
+    outline: none;
+    margin-bottom: 13px;
+}
+
+.input:focus {
+    border-color: #6875e8;
+}
+
+.textarea {
+    width: 100%;
+    min-height: 90px;
+    border: 1px solid #dddde2;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 15px;
+    resize: none;
+    outline: none;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.modal-btn {
+    flex: 1;
+    height: 46px;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
     cursor: pointer;
 }
 
-.page-title {
-    font-size: 19px;
-    font-weight: 700;
+.cancel {
+    background: #f0f0f2;
 }
 
-.page-body {
-    padding: 15px;
-    overflow-y: auto;
+.confirm {
+    background: #5865d9;
+    color: white;
 }
 
-.setting-card {
-    background: white;
-
-    border-radius: 12px;
-
-    overflow: hidden;
-
-    margin-bottom: 15px;
-}
-
-.setting-title {
-    padding: 15px;
-
-    font-size: 14px;
-    color: #888;
-
-    background: #fafafa;
-}
+/* =========================
+   设置
+========================= */
 
 .setting-row {
-    height: 55px;
-
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #eee;
+}
 
-    padding: 0 15px;
+.setting-label {
+    font-size: 15px;
+}
 
-    border-top: 1px solid #eeeeee;
+.segment {
+    display: flex;
+    background: #f0f0f2;
+    padding: 3px;
+    border-radius: 9px;
+}
 
-    font-size: 16px;
-
+.segment button {
+    border: none;
+    background: transparent;
+    padding: 7px 11px;
+    border-radius: 7px;
     cursor: pointer;
 }
 
-.setting-row:active {
-    background: #f4f4f4;
-}
-
-.setting-right {
-    color: #888;
-    font-size: 14px;
-}
-
-/* =========================
-   排序模式
-========================= */
-
-.sort-mode .book {
-    animation: shake .15s infinite alternate;
-}
-
-@keyframes shake {
-    from {
-        transform: rotate(-0.5deg);
-    }
-    to {
-        transform: rotate(0.5deg);
-    }
-}
-
-.sort-hint {
-    position: fixed;
-
-    left: 50%;
-    bottom: 90px;
-
-    transform: translateX(-50%);
-
-    background: rgba(0,0,0,.75);
-
-    color: white;
-
-    padding: 9px 16px;
-
-    border-radius: 20px;
-
-    font-size: 13px;
-
-    z-index: 80;
-
-    display: none;
-}
-
-.sort-hint.show {
-    display: block;
-}
-
-/* =========================
-   工具页面
-========================= */
-
-.tools-page,
-.my-page {
-    padding: 20px 16px;
-}
-
-.tool-card {
+.segment button.active {
     background: white;
-
-    border-radius: 14px;
-
-    padding: 18px;
-
-    margin-bottom: 12px;
-
-    font-size: 16px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.1);
 }
 
-.tool-card small {
-    display: block;
+/* =========================
+   列表模式
+========================= */
 
-    margin-top: 5px;
+.books.list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-    color: #999;
+.books.list .book {
+    display: flex;
+    align-items: center;
+    padding: 9px;
+    background: white;
+    border-radius: 12px;
+}
+
+.books.list .cover {
+    width: 58px;
+    height: 78px;
+    flex-shrink: 0;
+    aspect-ratio: auto;
+    border-radius: 7px;
+}
+
+.books.list .cover-title {
+    font-size: 10px;
+    padding: 5px;
+}
+
+.books.list .book-info {
+    padding: 0 0 0 12px;
+}
+
+.books.list .book-title {
+    font-size: 15px;
+}
+
+@media (min-width: 700px) {
+    .books {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .content {
+        max-width: 1000px;
+        width: 100%;
+        margin: auto;
+    }
 }
 </style>
 </head>
-
 
 <body>
 
 <div class="app">
 
-    <!-- =====================
-         顶部
-    ====================== -->
-
+    <!-- 顶部 -->
     <header class="topbar">
+        <div class="topbar-title">书架</div>
 
-        <div class="topbar-title">
-            书架
-        </div>
-
-        <button
-            class="more-button"
-            onclick="openMenu()">
+        <button class="more-btn" onclick="openMenu()">
             …
         </button>
-
     </header>
 
+    <!-- 内容 -->
+    <main class="content">
 
-    <!-- =====================
-         内容
-    ====================== -->
+        <div class="shelf-header">
+            <div class="shelf-name">全部作品</div>
+            <div class="book-count" id="bookCount">4 本作品</div>
+        </div>
 
-    <main class="content" id="mainContent">
+        <div class="books" id="books">
 
-        <div class="group-title">
+            <div class="book" draggable="true">
+                <div class="cover">
+                    <div class="cover-title">
+                        我的第一本小说
+                    </div>
+                </div>
 
-            <div class="group-name">
-                全部作品
+                <div class="book-info">
+                    <div class="book-title">
+                        我的第一本小说
+                    </div>
+
+                    <div class="book-meta">
+                        12章 · 3.2万字
+                    </div>
+                </div>
             </div>
 
-            <div class="group-count"
-                 id="bookCount">
-                6 本
+            <div class="book" draggable="true">
+                <div class="cover">
+                    <div class="cover-title">
+                        宝可梦：赤红传
+                    </div>
+                </div>
+
+                <div class="book-info">
+                    <div class="book-title">
+                        宝可梦：赤红传
+                    </div>
+
+                    <div class="book-meta">
+                        3章 · 1.8万字
+                    </div>
+                </div>
+            </div>
+
+            <div class="book" draggable="true">
+                <div class="cover">
+                    <div class="cover-title">
+                        界囚
+                    </div>
+                </div>
+
+                <div class="book-info">
+                    <div class="book-title">
+                        界囚
+                    </div>
+
+                    <div class="book-meta">
+                        0章 · 0字
+                    </div>
+                </div>
+            </div>
+
+            <div class="book" draggable="true">
+                <div class="cover">
+                    <div class="cover-title">
+                        未命名作品
+                    </div>
+                </div>
+
+                <div class="book-info">
+                    <div class="book-title">
+                        未命名作品
+                    </div>
+
+                    <div class="book-meta">
+                        草稿
+                    </div>
+                </div>
             </div>
 
         </div>
 
-
-        <div
-            class="book-grid"
-            id="bookGrid">
-
-
-            <div class="book"
-                 draggable="true"
-                 data-id="1">
-
-                <div class="book-cover cover1">
-                    我，野比海皇
-                </div>
-
-                <div class="book-name">
-                    我，野比海皇，从今天开始开后宫
-                </div>
-
-                <div class="book-author">
-                    作者：小说家
-                </div>
-
+        <div class="empty" id="empty">
+            <div class="empty-icon">📚</div>
+            <div class="empty-title">书架还是空的</div>
+            <div class="empty-text">
+                创建你的第一部小说吧
             </div>
-
-
-            <div class="book"
-                 draggable="true"
-                 data-id="2">
-
-                <div class="book-cover cover2">
-                    宝可梦
-                </div>
-
-                <div class="book-name">
-                    宝可梦：赤红传
-                </div>
-
-                <div class="book-author">
-                    作者：小说家
-                </div>
-
-            </div>
-
-
-            <div class="book"
-                 draggable="true"
-                 data-id="3">
-
-                <div class="book-cover cover3">
-                    界囚
-                </div>
-
-                <div class="book-name">
-                    界囚
-                </div>
-
-                <div class="book-author">
-                    作者：小说家
-                </div>
-
-            </div>
-
-
-            <div class="book"
-                 draggable="true"
-                 data-id="4">
-
-                <div class="book-cover cover4">
-                    新世界
-                </div>
-
-                <div class="book-name">
-                    新世界
-                </div>
-
-                <div class="book-author">
-                    作者：小说家
-                </div>
-
-            </div>
-
-
-            <div class="book"
-                 draggable="true"
-                 data-id="5">
-
-                <div class="book-cover cover5">
-                    未命名
-                </div>
-
-                <div class="book-name">
-                    未命名作品
-                </div>
-
-                <div class="book-author">
-                    作者：小说家
-                </div>
-
-            </div>
-
-
-            <div class="book"
-                 draggable="true"
-                 data-id="6">
-
-                <div class="book-cover cover6">
-                    草稿
-                </div>
-
-                <div class="book-name">
-                    我的新小说
-                </div>
-
-                <div class="book-author">
-                    作者：小说家
-                </div>
-
-            </div>
-
         </div>
 
     </main>
 
-
-    <!-- =====================
-         底部导航
-    ====================== -->
-
+    <!-- 底部 -->
     <nav class="bottom-nav">
 
-        <div
-            class="nav-item active"
-            onclick="switchTab('shelf')">
+        <button class="nav-item active">
+            <div class="nav-icon">📚</div>
+            <div>书架</div>
+        </button>
 
-            <div class="nav-icon">▦</div>
+        <button class="nav-item">
+            <div class="nav-icon">🛠</div>
+            <div>工具</div>
+        </button>
 
-            <div>
-                书架
-            </div>
-
-        </div>
-
-
-        <div
-            class="nav-item"
-            onclick="switchTab('tools')">
-
-            <div class="nav-icon">⚒</div>
-
-            <div>
-                工具
-            </div>
-
-        </div>
-
-
-        <div
-            class="nav-item"
-            onclick="switchTab('my')">
-
-            <div class="nav-icon">●</div>
-
-            <div>
-                我的
-            </div>
-
-        </div>
+        <button class="nav-item">
+            <div class="nav-icon">👤</div>
+            <div>我的</div>
+        </button>
 
     </nav>
 
 </div>
 
 
-<!-- =========================
-     更多菜单
-========================= -->
+<!-- 顶部菜单 -->
+<div class="menu-mask" id="menuMask" onclick="closeMenu(event)">
 
-<div
-    class="menu-overlay"
-    id="menuOverlay"
-    onclick="closeMenu(event)">
+    <div class="menu" onclick="event.stopPropagation()">
 
-    <div
-        class="more-menu"
-        onclick="event.stopPropagation()">
-
-
-        <div class="menu-section">
-
-            <div
-                class="menu-item"
-                onclick="newBook()">
-
-                <span class="menu-icon">＋</span>
-
-                <span>
-                    新建作品
-                </span>
-
-            </div>
-
-
-            <div
-                class="menu-item"
-                onclick="newGroup()">
-
-                <span class="menu-icon">▦</span>
-
-                <span>
-                    新建分组
-                </span>
-
-            </div>
-
+        <div class="menu-title">
+            新建
         </div>
 
+        <button class="menu-item" onclick="newBook()">
+            ＋ 新建作品
+        </button>
 
-        <div class="menu-divider"></div>
+        <button class="menu-item" onclick="newGroup()">
+            ＋ 新建分组
+        </button>
+
+        <button class="menu-item" onclick="openSettings()">
+            ⚙ 书架设置
+        </button>
+
+    </div>
+
+</div>
 
 
-        <div class="menu-section">
+<!-- 新建作品 -->
+<div class="modal-mask" id="newBookModal">
 
-            <div
-                class="menu-item"
-                onclick="openSettings()">
+    <div class="modal">
 
-                <span class="menu-icon">⚙</span>
+        <h2>新建作品</h2>
 
-                <span>
-                    书架设置
-                </span>
+        <input
+            class="input"
+            id="bookName"
+            placeholder="作品名称"
+        >
 
-            </div>
+        <input
+            class="input"
+            id="bookAuthor"
+            placeholder="作者名称"
+        >
+
+        <textarea
+            class="textarea"
+            id="bookIntro"
+            placeholder="作品简介"
+        ></textarea>
+
+        <div class="modal-buttons">
+
+            <button
+                class="modal-btn cancel"
+                onclick="closeModal('newBookModal')">
+                取消
+            </button>
+
+            <button
+                class="modal-btn confirm"
+                onclick="createBook()">
+                创建作品
+            </button>
 
         </div>
 
@@ -815,272 +665,210 @@ body {
 </div>
 
 
-<!-- =========================
-     书架设置页面
-========================= -->
+<!-- 新建分组 -->
+<div class="modal-mask" id="groupModal">
 
-<div
-    class="page"
-    id="settingsPage">
+    <div class="modal">
 
+        <h2>新建分组</h2>
 
-    <header class="page-header">
+        <input
+            class="input"
+            id="groupName"
+            placeholder="例如：长篇小说"
+        >
 
-        <div
-            class="back"
-            onclick="closeSettings()">
-            ‹
+        <div class="modal-buttons">
+
+            <button
+                class="modal-btn cancel"
+                onclick="closeModal('groupModal')">
+                取消
+            </button>
+
+            <button
+                class="modal-btn confirm"
+                onclick="createGroup()">
+                创建分组
+            </button>
+
         </div>
 
-        <div class="page-title">
-            书架设置
-        </div>
+    </div>
 
-    </header>
+</div>
 
 
-    <div class="page-body">
+<!-- 书架设置 -->
+<div class="modal-mask" id="settingsModal">
 
+    <div class="modal">
 
-        <div class="setting-card">
+        <h2>书架设置</h2>
 
-            <div class="setting-title">
+        <div class="setting-row">
+
+            <div class="setting-label">
                 显示方式
             </div>
 
+            <div class="segment">
 
-            <div
-                class="setting-row"
-                onclick="setView('grid')">
-
-                <span>
+                <button
+                    id="gridBtn"
+                    class="active"
+                    onclick="setView('grid')">
                     网格
-                </span>
+                </button>
 
-                <span
-                    class="setting-right"
-                    id="gridCheck">
-                    ✓
-                </span>
-
-            </div>
-
-
-            <div
-                class="setting-row"
-                onclick="setView('list')">
-
-                <span>
+                <button
+                    id="listBtn"
+                    onclick="setView('list')">
                     列表
-                </span>
-
-                <span
-                    class="setting-right"
-                    id="listCheck">
-                </span>
+                </button>
 
             </div>
 
         </div>
 
+        <div class="setting-row">
 
-        <div class="setting-card">
-
-            <div class="setting-title">
+            <div class="setting-label">
                 书架排序
             </div>
 
-
-            <div
-                class="setting-row"
-                onclick="startSort()">
-
-                <span>
-                    自定义排序
-                </span>
-
-                <span class="setting-right">
-                    ›
-                </span>
-
-            </div>
-
-
-            <div
-                class="setting-row"
-                onclick="sortLatest()">
-
-                <span>
-                    最近阅读
-                </span>
-
-                <span class="setting-right">
-                    ›
-                </span>
-
+            <div style="font-size:13px;color:#999;">
+                自定义拖动
             </div>
 
         </div>
 
-    </div>
+        <div class="modal-buttons">
 
-</div>
+            <button
+                class="modal-btn confirm"
+                onclick="closeModal('settingsModal')">
+                完成
+            </button>
 
-
-<!-- =========================
-     工具
-========================= -->
-
-<div
-    class="page"
-    id="toolsPage">
-
-
-    <header class="page-header">
-
-        <div class="page-title">
-            工具
-        </div>
-
-    </header>
-
-
-    <div class="page-body tools-page">
-
-        <div class="tool-card">
-            ✍️ 写作
-            <small>
-                创建和管理你的小说
-            </small>
-        </div>
-
-        <div class="tool-card">
-            🔎 搜索
-            <small>
-                搜索作品和章节
-            </small>
-        </div>
-
-        <div class="tool-card">
-            📊 数据
-            <small>
-                查看作品阅读数据
-            </small>
         </div>
 
     </div>
 
-</div>
-
-
-<!-- =========================
-     我的
-========================= -->
-
-<div
-    class="page"
-    id="myPage">
-
-
-    <header class="page-header">
-
-        <div class="page-title">
-            我的
-        </div>
-
-    </header>
-
-
-    <div class="page-body my-page">
-
-        <div class="tool-card">
-            👤 我的账号
-        </div>
-
-        <div class="tool-card">
-            📚 我的作品
-        </div>
-
-        <div class="tool-card">
-            ⚙️ 设置
-        </div>
-
-    </div>
-
-</div>
-
-
-<div
-    class="sort-hint"
-    id="sortHint">
-    拖动小说调整顺序
 </div>
 
 
 <script>
 
 /* =========================
-   更多菜单
+   菜单
 ========================= */
 
 function openMenu() {
-
-    document
-        .getElementById("menuOverlay")
-        .classList.add("show");
-
+    document.getElementById("menuMask").style.display = "block";
 }
-
 
 function closeMenu(event) {
 
     if (
-        !event ||
-        event.target.id === "menuOverlay"
+        event &&
+        event.target !== document.getElementById("menuMask")
     ) {
-
-        document
-            .getElementById("menuOverlay")
-            .classList.remove("show");
-
+        return;
     }
 
+    document.getElementById("menuMask").style.display = "none";
 }
 
 
 /* =========================
-   新建
+   新建作品
 ========================= */
 
 function newBook() {
 
     closeMenu();
 
-    alert(
-        "这里以后进入「新建作品」页面"
-    );
-
+    document.getElementById("newBookModal").style.display = "flex";
 }
 
+function createBook() {
+
+    const name =
+        document.getElementById("bookName").value.trim();
+
+    if (!name) {
+        alert("请输入作品名称");
+        return;
+    }
+
+    const books =
+        document.getElementById("books");
+
+    const book =
+        document.createElement("div");
+
+    book.className = "book";
+    book.draggable = true;
+
+    book.innerHTML = `
+        <div class="cover">
+            <div class="cover-title">
+                ${escapeHTML(name)}
+            </div>
+        </div>
+
+        <div class="book-info">
+            <div class="book-title">
+                ${escapeHTML(name)}
+            </div>
+
+            <div class="book-meta">
+                0章 · 0字
+            </div>
+        </div>
+    `;
+
+    books.appendChild(book);
+
+    updateCount();
+
+    closeModal("newBookModal");
+
+    document.getElementById("bookName").value = "";
+    document.getElementById("bookAuthor").value = "";
+    document.getElementById("bookIntro").value = "";
+
+    initDrag();
+}
+
+
+/* =========================
+   新建分组
+========================= */
 
 function newGroup() {
 
     closeMenu();
 
-    const name = prompt(
-        "请输入新分组名称："
-    );
+    document.getElementById("groupModal").style.display = "flex";
+}
 
-    if (name) {
+function createGroup() {
 
-        alert(
-            "已创建分组：「" +
-            name +
-            "」"
-        );
+    const name =
+        document.getElementById("groupName").value.trim();
 
+    if (!name) {
+        alert("请输入分组名称");
+        return;
     }
 
+    alert("分组「" + name + "」已创建");
+
+    document.getElementById("groupName").value = "";
+
+    closeModal("groupModal");
 }
 
 
@@ -1092,90 +880,73 @@ function openSettings() {
 
     closeMenu();
 
-    document
-        .getElementById("settingsPage")
-        .classList.add("show");
-
+    document.getElementById("settingsModal").style.display = "flex";
 }
-
-
-function closeSettings() {
-
-    document
-        .getElementById("settingsPage")
-        .classList.remove("show");
-
-}
-
-
-/* =========================
-   网格 / 列表
-========================= */
 
 function setView(type) {
 
-    const grid =
-        document.getElementById("bookGrid");
+    const books =
+        document.getElementById("books");
 
-    if (type === "grid") {
+    const gridBtn =
+        document.getElementById("gridBtn");
 
-        grid.style.display = "grid";
-
-        document
-            .getElementById("gridCheck")
-            .innerText = "✓";
-
-        document
-            .getElementById("listCheck")
-            .innerText = "";
-
-    }
+    const listBtn =
+        document.getElementById("listBtn");
 
     if (type === "list") {
 
-        grid.style.display = "flex";
+        books.classList.add("list");
 
-        grid.style.flexDirection = "column";
+        gridBtn.classList.remove("active");
+        listBtn.classList.add("active");
 
-        grid.style.gap = "10px";
+    } else {
 
-        document
-            .getElementById("gridCheck")
-            .innerText = "";
+        books.classList.remove("list");
 
-        document
-            .getElementById("listCheck")
-            .innerText = "✓";
-
+        listBtn.classList.remove("active");
+        gridBtn.classList.add("active");
     }
-
 }
 
 
 /* =========================
-   自定义排序
+   弹窗
 ========================= */
 
-function startSort() {
+function closeModal(id) {
 
-    closeSettings();
+    document.getElementById(id).style.display = "none";
+}
 
-    document
-        .getElementById("bookGrid")
-        .classList.add("sort-mode");
 
-    document
-        .getElementById("sortHint")
-        .classList.add("show");
+/* =========================
+   字数/作品数量
+========================= */
 
-    setTimeout(() => {
+function updateCount() {
 
-        document
-            .getElementById("sortHint")
-            .classList.remove("show");
+    const count =
+        document.querySelectorAll("#books .book").length;
 
-    }, 2500);
+    document.getElementById("bookCount").innerText =
+        count + " 本作品";
+}
 
+
+/* =========================
+   防止 HTML 注入
+========================= */
+
+function escapeHTML(text) {
+
+    return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
 
@@ -1183,161 +954,64 @@ function startSort() {
    拖动排序
 ========================= */
 
-let draggedBook = null;
-
-
-document
-    .querySelectorAll(".book")
-    .forEach(book => {
-
-
-        book.addEventListener(
-            "dragstart",
-            function() {
-
-                draggedBook = this;
-
-            }
-        );
-
-
-        book.addEventListener(
-            "dragover",
-            function(e) {
-
-                e.preventDefault();
-
-            }
-        );
-
-
-        book.addEventListener(
-            "drop",
-            function(e) {
-
-                e.preventDefault();
-
-                if (
-                    draggedBook &&
-                    draggedBook !== this
-                ) {
-
-                    const grid =
-                        document.getElementById(
-                            "bookGrid"
-                        );
-
-                    const books =
-                        [...grid.children];
-
-                    const from =
-                        books.indexOf(
-                            draggedBook
-                        );
-
-                    const to =
-                        books.indexOf(this);
-
-
-                    if (from < to) {
-
-                        grid.insertBefore(
-                            draggedBook,
-                            this.nextSibling
-                        );
-
-                    } else {
-
-                        grid.insertBefore(
-                            draggedBook,
-                            this
-                        );
-
-                    }
-
-                }
-
-            }
-        );
-
-    });
-
-
-/* =========================
-   最近阅读排序
-========================= */
-
-function sortLatest() {
-
-    const grid =
-        document.getElementById("bookGrid");
+function initDrag() {
 
     const books =
-        [...grid.children];
+        document.querySelectorAll(".book");
 
-    books.reverse()
-        .forEach(book =>
-            grid.appendChild(book)
-        );
+    let dragged = null;
 
+    books.forEach(book => {
+
+        book.addEventListener("dragstart", () => {
+
+            dragged = book;
+
+            book.style.opacity = "0.5";
+        });
+
+        book.addEventListener("dragend", () => {
+
+            book.style.opacity = "1";
+
+            dragged = null;
+        });
+
+        book.addEventListener("dragover", event => {
+
+            event.preventDefault();
+
+            if (!dragged || dragged === book) {
+                return;
+            }
+
+            const rect =
+                book.getBoundingClientRect();
+
+            const middle =
+                rect.left + rect.width / 2;
+
+            if (event.clientX < middle) {
+
+                book.parentNode.insertBefore(
+                    dragged,
+                    book
+                );
+
+            } else {
+
+                book.parentNode.insertBefore(
+                    dragged,
+                    book.nextSibling
+                );
+            }
+        });
+
+    });
 }
 
-
-/* =========================
-   底部导航
-========================= */
-
-function switchTab(tab) {
-
-    document
-        .querySelectorAll(".nav-item")
-        .forEach(item =>
-            item.classList.remove("active")
-        );
-
-
-    document
-        .querySelectorAll(".page")
-        .forEach(page =>
-            page.classList.remove("show")
-        );
-
-
-    if (tab === "shelf") {
-
-        document
-            .querySelector(".nav-item:nth-child(1)")
-            .classList.add("active");
-
-    }
-
-
-    if (tab === "tools") {
-
-        document
-            .querySelector(".nav-item:nth-child(2)")
-            .classList.add("active");
-
-        document
-            .getElementById("toolsPage")
-            .classList.add("show");
-
-    }
-
-
-    if (tab === "my") {
-
-        document
-            .querySelector(".nav-item:nth-child(3)")
-            .classList.add("active");
-
-        document
-            .getElementById("myPage")
-            .classList.add("show");
-
-    }
-
-}
+initDrag();
+updateCount();
 
 </script>
 
