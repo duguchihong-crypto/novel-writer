@@ -51,6 +51,10 @@ header p {
     margin: 0;
 }
 
+button {
+    cursor: pointer;
+}
+
 .new-button {
     background: #222;
     color: white;
@@ -90,10 +94,91 @@ header p {
     border-radius: 7px;
 }
 
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-box {
+    background: white;
+    width: 100%;
+    max-width: 500px;
+    border-radius: 14px;
+    padding: 25px;
+}
+
+.modal-box h2 {
+    margin-top: 0;
+}
+
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: bold;
+}
+
+input,
+textarea,
+select {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+}
+
+textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel {
+    background: #eee;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+}
+
+.create {
+    background: #222;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+}
+
 .empty {
+    background: white;
+    border: 1px dashed #ccc;
+    border-radius: 12px;
+    padding: 45px 20px;
     text-align: center;
     color: #999;
-    padding: 40px;
+}
+
+@media (max-width: 600px) {
+    .top {
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .new-button {
+        white-space: nowrap;
+    }
 }
 </style>
 </head>
@@ -110,39 +195,221 @@ header p {
     <div class="top">
         <h2>📚 我的小说</h2>
 
-        <button class="new-button"
-                onclick="alert('新建小说功能正在开发中！')">
+        <button class="new-button" onclick="showModal()">
             ＋ 新建小说
         </button>
     </div>
 
-    <div class="novel-list">
+    <div id="novelList" class="novel-list"></div>
 
-        <div class="novel">
-            <h3>原创小说</h3>
-            <p>章节：一章</p>
-            <p>最近编辑：今天</p>
+</main>
 
-            <button class="continue"
-                    onclick="alert('小说编辑页面正在开发中！')">
-                继续写作 →
+
+<!-- 新建小说窗口 -->
+
+<div id="modal" class="modal">
+
+    <div class="modal-box">
+
+        <h2>新建小说</h2>
+
+        <label>小说名称</label>
+        <input id="novelName" type="text" placeholder="请输入小说名称">
+
+        <label>小说类型</label>
+
+        <select id="novelType">
+            <option value="原创小说">原创小说</option>
+            <option value="同人小说">同人小说</option>
+        </select>
+
+        <label>小说简介</label>
+
+        <textarea id="novelDescription"
+                  placeholder="简单介绍一下你的小说"></textarea>
+
+        <div class="actions">
+
+            <button class="cancel" onclick="hideModal()">
+                取消
             </button>
-        </div>
 
-        <div class="novel">
-            <h3>同人小说</h3>
-            <p>章节：一章</p>
-            <p>最近编辑：昨天</p>
-
-            <button class="continue"
-                    onclick="alert('小说编辑页面正在开发中！')">
-                继续写作 →
+            <button class="create" onclick="createNovel()">
+                创建小说
             </button>
+
         </div>
 
     </div>
 
-</main>
+</div>
+
+
+<script>
+
+let novels = JSON.parse(
+    localStorage.getItem("novels") || "[]"
+);
+
+
+function saveNovels() {
+
+    localStorage.setItem(
+        "novels",
+        JSON.stringify(novels)
+    );
+
+}
+
+
+function showModal() {
+
+    document.getElementById("modal").style.display = "flex";
+
+    document.getElementById("novelName").focus();
+
+}
+
+
+function hideModal() {
+
+    document.getElementById("modal").style.display = "none";
+
+    document.getElementById("novelName").value = "";
+
+    document.getElementById("novelDescription").value = "";
+
+}
+
+
+function createNovel() {
+
+    const name =
+        document.getElementById("novelName").value.trim();
+
+    const type =
+        document.getElementById("novelType").value;
+
+    const description =
+        document.getElementById("novelDescription").value.trim();
+
+
+    if (!name) {
+
+        alert("请输入小说名称");
+
+        return;
+
+    }
+
+
+    const novel = {
+
+        id: Date.now(),
+
+        name: name,
+
+        type: type,
+
+        description: description,
+
+        chapters: [],
+
+        createdAt: new Date().toLocaleDateString(),
+
+        updatedAt: "刚刚"
+
+    };
+
+
+    novels.unshift(novel);
+
+    saveNovels();
+
+    hideModal();
+
+    renderNovels();
+
+}
+
+
+function renderNovels() {
+
+    const list =
+        document.getElementById("novelList");
+
+
+    if (novels.length === 0) {
+
+        list.innerHTML = `
+            <div class="empty">
+                <div style="font-size:40px;">📚</div>
+                <p>还没有小说</p>
+                <p>点击「＋ 新建小说」开始创作</p>
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    list.innerHTML = novels.map(novel => `
+
+        <div class="novel">
+
+            <h3>${escapeHTML(novel.name)}</h3>
+
+            <p>${escapeHTML(novel.type)}</p>
+
+            <p>章节：${novel.chapters.length}章</p>
+
+            <p>最近编辑：${escapeHTML(novel.updatedAt)}</p>
+
+            <button class="continue"
+                    onclick="openNovel(${novel.id})">
+
+                继续写作 →
+
+            </button>
+
+        </div>
+
+    `).join("");
+
+}
+
+
+function openNovel(id) {
+
+    const novel =
+        novels.find(item => item.id === id);
+
+    if (!novel) return;
+
+    alert(
+        "《" + novel.name +
+        "》的写作页面下一步制作。"
+    );
+
+}
+
+
+function escapeHTML(text) {
+
+    return text
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+renderNovels();
+
+</script>
 
 </body>
 </html>
