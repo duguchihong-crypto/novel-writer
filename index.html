@@ -2,17 +2,22 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0,
+      maximum-scale=1.0, user-scalable=no">
+
 <title>小说家</title>
 
 <style>
 * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -20,286 +25,224 @@ html, body {
         "PingFang SC",
         "Microsoft YaHei",
         sans-serif;
-    background: #f7f7f8;
+    background: #f5f5f7;
     color: #222;
 }
 
-button,
-input,
-textarea {
-    font-family: inherit;
+body {
+    overflow: hidden;
 }
 
-.page {
-    display: none;
-    min-height: 100vh;
-    padding-bottom: 90px;
+/* =========================
+   整体 APP
+========================= */
+
+.app {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
-.page.active {
-    display: block;
-}
+/* =========================
+   顶部
+========================= */
 
-.header {
-    height: 62px;
-    background: #fff;
-    border-bottom: 1px solid #eee;
+.topbar {
+    height: 58px;
+    flex-shrink: 0;
+    background: #ffffff;
+    border-bottom: 1px solid #e8e8e8;
+
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 22px;
-    position: sticky;
-    top: 0;
+
+    padding: 0 18px;
+
+    position: relative;
     z-index: 20;
 }
 
-.logo {
-    font-size: 20px;
+.topbar-title {
+    font-size: 23px;
     font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 32px 22px 50px;
-}
-
-.page-title {
-    text-align: center;
-    font-size: 26px;
-    font-weight: 700;
-    margin: 10px 0 30px;
-}
-
-/* =========================
-   新建
-========================= */
-
-.create-menu-wrap {
-    position: relative;
-}
-
-.create-btn {
-    border: none;
-    background: #222;
-    color: #fff;
-    padding: 9px 15px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.create-menu {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 44px;
-    width: 165px;
-    background: #fff;
-    border: 1px solid #e5e5e5;
-    border-radius: 10px;
-    box-shadow: 0 8px 25px rgba(0,0,0,.12);
-    padding: 6px;
-    z-index: 50;
-}
-
-.create-menu.show {
-    display: block;
-}
-
-.create-menu button {
-    width: 100%;
-    border: none;
+.more-button {
+    width: 42px;
+    height: 42px;
+    border: 0;
     background: transparent;
-    text-align: left;
-    padding: 11px 12px;
-    border-radius: 7px;
-    cursor: pointer;
+    border-radius: 50%;
+
+    font-size: 25px;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.create-menu button:hover {
-    background: #f5f5f5;
+.more-button:active {
+    background: #eeeeee;
 }
 
 /* =========================
-   书架设置
+   主内容
 ========================= */
 
-.library-toolbar {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 20px;
-}
-
-.library-settings {
-    position: relative;
-}
-
-.settings-btn {
-    border: 1px solid #ddd;
-    background: #fff;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-}
-
-.settings-panel {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 43px;
-    width: 180px;
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 10px;
-    padding: 13px;
-    box-shadow: 0 8px 25px rgba(0,0,0,.1);
-    z-index: 40;
-}
-
-.settings-panel.show {
-    display: block;
-}
-
-.settings-title {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 10px;
-}
-
-.mode-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-.mode-btn {
+.content {
     flex: 1;
-    border: 1px solid #ddd;
-    background: #fff;
-    border-radius: 7px;
-    padding: 8px 4px;
-    cursor: pointer;
+    overflow-y: auto;
+    padding: 18px 16px 100px;
 }
 
-.mode-btn.active {
-    background: #222;
-    color: #fff;
-    border-color: #222;
+/* 分组标题 */
+
+.group-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin: 6px 2px 14px;
+}
+
+.group-name {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.group-count {
+    font-size: 13px;
+    color: #999;
 }
 
 /* =========================
-   书架
+   网格书架
 ========================= */
 
-.novels.grid-mode {
+.book-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 34px 25px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px 12px;
 }
 
-.novels.grid-mode .novel-card {
-    text-align: center;
-    min-width: 0;
+.book {
+    position: relative;
+    user-select: none;
     cursor: pointer;
 }
 
-.novels.grid-mode .novel-cover {
+.book-cover {
     width: 100%;
-    aspect-ratio: 3 / 4;
-    object-fit: cover;
-    display: block;
-    border-radius: 9px;
-    background: #eee;
-    box-shadow: 0 2px 8px rgba(0,0,0,.08);
-    transition: .2s;
-}
+    aspect-ratio: 0.70;
 
-.novels.grid-mode .novel-card:hover .novel-cover {
-    transform: translateY(-4px);
-}
+    border-radius: 7px;
 
-.novels.grid-mode .novel-name {
-    margin-top: 10px;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.4;
-    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 10px;
+
+    text-align: center;
+
+    color: white;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,.12);
+
     overflow: hidden;
+}
+
+.cover1 {
+    background: linear-gradient(
+        145deg,
+        #5967d9,
+        #3949ab
+    );
+}
+
+.cover2 {
+    background: linear-gradient(
+        145deg,
+        #d66b7d,
+        #a72f49
+    );
+}
+
+.cover3 {
+    background: linear-gradient(
+        145deg,
+        #54a97a,
+        #247451
+    );
+}
+
+.cover4 {
+    background: linear-gradient(
+        145deg,
+        #d69a4b,
+        #a8601b
+    );
+}
+
+.cover5 {
+    background: linear-gradient(
+        145deg,
+        #7562aa,
+        #40326f
+    );
+}
+
+.cover6 {
+    background: linear-gradient(
+        145deg,
+        #5d9eaf,
+        #286274
+    );
+}
+
+.book-name {
+    margin-top: 7px;
+
+    font-size: 14px;
+    line-height: 20px;
+
+    overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
 }
 
-.novels.grid-mode .novel-description,
-.novels.grid-mode .novel-meta,
-.novels.grid-mode .continue-btn {
-    display: none;
-}
+.book-author {
+    margin-top: 2px;
 
-.novels.list-mode {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.novels.list-mode .novel-card {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-}
-
-.novels.list-mode .novel-cover {
-    width: 88px;
-    height: 118px;
-    object-fit: cover;
-    border-radius: 7px;
-    flex-shrink: 0;
-}
-
-.novels.list-mode .novel-info {
-    flex: 1;
-}
-
-.novels.list-mode .novel-name {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-
-.novels.list-mode .novel-description {
-    font-size: 14px;
-    color: #888;
-    margin-bottom: 8px;
-}
-
-.novels.list-mode .novel-meta {
+    color: #999;
     font-size: 12px;
-    color: #aaa;
 }
 
-.continue-btn {
-    border: 1px solid #ddd;
-    background: #fff;
-    border-radius: 7px;
-    padding: 8px 13px;
-}
+/* =========================
+   空书架
+========================= */
 
-.empty-state {
+.empty {
     text-align: center;
     color: #999;
-    padding: 90px 20px;
+    padding: 100px 20px;
 }
 
 .empty-icon {
-    font-size: 45px;
+    font-size: 48px;
     margin-bottom: 15px;
 }
 
-.empty-title {
-    font-size: 18px;
-    color: #555;
-    margin-bottom: 8px;
+.empty-text {
+    font-size: 15px;
 }
 
 /* =========================
@@ -307,43 +250,41 @@ textarea {
 ========================= */
 
 .bottom-nav {
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
     height: 72px;
-    background: rgba(255,255,255,.97);
-    border-top: 1px solid #e8e8e8;
-    display: flex;
-    justify-content: center;
-    z-index: 200;
-    padding-bottom: env(safe-area-inset-bottom);
-}
+    flex-shrink: 0;
 
-.nav-inner {
-    width: 100%;
-    max-width: 600px;
+    background: #ffffff;
+
+    border-top: 1px solid #e5e5e5;
+
     display: flex;
-    justify-content: space-around;
+
+    position: relative;
+    z-index: 20;
+
+    padding-bottom: env(safe-area-inset-bottom);
 }
 
 .nav-item {
     flex: 1;
-    max-width: 180px;
-    border: none;
-    background: transparent;
-    color: #999;
+
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-    cursor: pointer;
+
+    color: #888;
+
     font-size: 12px;
+
+    gap: 4px;
+
+    cursor: pointer;
 }
 
 .nav-icon {
     font-size: 22px;
+    line-height: 22px;
 }
 
 .nav-item.active {
@@ -352,679 +293,636 @@ textarea {
 }
 
 /* =========================
-   工具
+   更多菜单
 ========================= */
 
-.tool-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+.menu-overlay {
+    position: fixed;
+
+    inset: 0;
+
+    background: rgba(0,0,0,.18);
+
+    z-index: 50;
+
+    display: none;
 }
 
-.tool-card {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 14px;
-    padding: 28px 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: .2s;
+.menu-overlay.show {
+    display: block;
 }
 
-.tool-card:hover {
-    transform: translateY(-2px);
-}
-
-.tool-icon {
-    font-size: 32px;
-    margin-bottom: 12px;
-}
-
-.tool-name {
-    font-size: 16px;
-    font-weight: 600;
-}
-
-.tool-desc {
-    margin-top: 7px;
-    color: #999;
-    font-size: 12px;
-}
-
-/* =========================
-   字数统计
-========================= */
-
-.stats-section {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 16px;
-    padding: 22px;
-    margin-bottom: 20px;
-}
-
-.stats-section-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 18px;
-}
-
-.stats-section-title strong {
-    font-size: 18px;
-}
-
-.stats-more {
-    color: #777;
-    font-size: 13px;
-}
-
-.chart-box {
-    width: 100%;
-    height: 220px;
-    position: relative;
-}
-
-.chart-svg {
-    width: 100%;
-    height: 100%;
-}
-
-.chart-label {
-    font-size: 11px;
-    fill: #999;
-}
-
-/* =========================
-   圆环
-========================= */
-
-.distribution-box {
-    padding-top: 5px;
-}
-
-.donut-area {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 330px;
-    position: relative;
-}
-
-.donut {
-    width: 270px;
-    height: 270px;
-    border-radius: 50%;
-    position: relative;
-    cursor: pointer;
-    transition: .25s;
-}
-
-.donut-hole {
+.more-menu {
     position: absolute;
-    width: 164px;
-    height: 164px;
-    left: 53px;
-    top: 53px;
-    border-radius: 50%;
-    background: #fff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 15px;
-    pointer-events: none;
-}
 
-.donut-name {
-    font-size: 16px;
-    font-weight: 700;
-    max-width: 130px;
+    top: 56px;
+    right: 12px;
+
+    width: 210px;
+
+    background: white;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.18);
+
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
-.donut-count {
-    margin-top: 8px;
-    font-size: 18px;
-    font-weight: 700;
+.menu-section {
+    padding: 7px 0;
 }
 
-.donut-percent {
-    margin-top: 5px;
-    font-size: 13px;
-    color: #888;
-}
+.menu-item {
+    height: 48px;
 
-.distribution-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px 18px;
-    margin-top: 8px;
-}
+    padding: 0 17px;
 
-.distribution-item {
-    border: none;
-    background: transparent;
     display: flex;
     align-items: center;
-    gap: 9px;
-    padding: 8px 4px;
-    text-align: left;
+
+    font-size: 15px;
+
     cursor: pointer;
-    border-radius: 7px;
-    min-width: 0;
 }
 
-.distribution-item:hover {
-    background: #f7f7f7;
-}
-
-.distribution-item.active {
+.menu-item:active {
     background: #f1f1f1;
 }
 
-.color-dot {
-    width: 11px;
-    height: 11px;
-    min-width: 11px;
-    border-radius: 50%;
-}
-
-.distribution-name {
-    flex: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 13px;
-}
-
-.distribution-count {
-    color: #999;
-    font-size: 12px;
-}
-
-/* =========================
-   我的
-========================= */
-
-.profile-card {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 14px;
-    padding: 30px;
-    text-align: center;
-}
-
-.avatar {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: #eee;
-    margin: 0 auto 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-}
-
-.profile-name {
+.menu-icon {
+    width: 30px;
     font-size: 19px;
-    font-weight: 600;
 }
 
-.profile-subtitle {
-    color: #999;
-    font-size: 13px;
-    margin-top: 7px;
+.menu-divider {
+    height: 1px;
+    background: #eeeeee;
 }
 
 /* =========================
-   弹窗
+   设置页面
 ========================= */
 
-.modal-mask {
-    display: none;
+.page {
     position: fixed;
+
     inset: 0;
-    background: rgba(0,0,0,.45);
-    z-index: 300;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
+
+    background: #f5f5f7;
+
+    z-index: 100;
+
+    display: none;
+
+    flex-direction: column;
 }
 
-.modal-mask.show {
+.page.show {
     display: flex;
 }
 
-.modal {
-    width: 100%;
-    max-width: 500px;
-    background: #fff;
-    border-radius: 14px;
-    padding: 25px;
-}
+.page-header {
+    height: 58px;
 
-.modal h2 {
-    margin: 0 0 22px;
-}
+    background: white;
 
-.modal label {
-    display: block;
-    font-size: 14px;
-    font-weight: 600;
-    margin: 18px 0 8px;
-}
-
-.modal input[type="text"],
-.modal textarea {
-    width: 100%;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 11px;
-    outline: none;
-}
-
-.modal textarea {
-    min-height: 110px;
-    resize: vertical;
-}
-
-.cover-upload {
-    width: 120px;
-    height: 160px;
-    border: 1px dashed #d5d5d5;
-    border-radius: 13px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: #999;
+
+    border-bottom: 1px solid #e5e5e5;
+
+    padding: 0 16px;
+}
+
+.back {
+    width: 40px;
+    font-size: 27px;
     cursor: pointer;
+}
+
+.page-title {
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.page-body {
+    padding: 15px;
+    overflow-y: auto;
+}
+
+.setting-card {
+    background: white;
+
+    border-radius: 12px;
+
     overflow: hidden;
+
+    margin-bottom: 15px;
+}
+
+.setting-title {
+    padding: 15px;
+
+    font-size: 14px;
+    color: #888;
+
     background: #fafafa;
 }
 
-.cover-upload span {
-    width: 100%;
-    height: 100%;
+.setting-row {
+    height: 55px;
+
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 7px;
+    justify-content: space-between;
+
+    padding: 0 15px;
+
+    border-top: 1px solid #eeeeee;
+
+    font-size: 16px;
+
+    cursor: pointer;
 }
 
-.cover-upload strong {
-    font-size: 27px;
-    font-weight: 300;
+.setting-row:active {
+    background: #f4f4f4;
 }
 
-.cover-upload small {
-    font-size: 13px;
-}
-
-.cover-upload img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 9px;
-    margin-top: 25px;
-}
-
-.actions button {
-    padding: 9px 16px;
-    border-radius: 8px;
-}
-
-.actions .cancel {
-    background: #fff;
-    border: 1px solid #ddd;
-}
-
-.actions .create {
-    background: #222;
-    color: #fff;
-    border: none;
-}
-
-/* =========================
-   作品
-========================= */
-
-.work-header {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 14px;
-    padding: 22px;
-    display: flex;
-    gap: 22px;
-}
-
-.work-cover {
-    width: 130px;
-    height: 175px;
-    object-fit: cover;
-    border-radius: 9px;
-}
-
-.work-info {
-    flex: 1;
-}
-
-.work-info h1 {
-    margin: 5px 0 12px;
-}
-
-.work-info p {
+.setting-right {
     color: #888;
-    line-height: 1.7;
-}
-
-.back-btn {
-    border: none;
-    background: transparent;
-    color: #666;
-    padding: 0;
-    margin-bottom: 22px;
-    cursor: pointer;
-}
-
-.chapter-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 25px 0 15px;
-}
-
-.new-chapter-btn {
-    border: none;
-    background: #222;
-    color: #fff;
-    border-radius: 8px;
-    padding: 9px 14px;
+    font-size: 14px;
 }
 
 /* =========================
-   章节
+   排序模式
 ========================= */
 
-.chapter-list {
-    background: #fff;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    overflow: hidden;
+.sort-mode .book {
+    animation: shake .15s infinite alternate;
 }
 
-.chapter-item {
-    padding: 16px 18px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
+@keyframes shake {
+    from {
+        transform: rotate(-0.5deg);
+    }
+    to {
+        transform: rotate(0.5deg);
+    }
 }
 
-.chapter-item:last-child {
-    border-bottom: none;
-}
-
-.chapter-date {
-    color: #aaa;
-    font-size: 12px;
-}
-
-/* =========================
-   编辑器
-========================= */
-
-.editor-page {
-    background: #fff;
-}
-
-.editor-toolbar {
-    height: 62px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 22px;
-}
-
-.editor-left {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.editor-title {
-    width: 300px;
-    border: none;
-    outline: none;
-    font-size: 17px;
-    font-weight: 600;
-}
-
-.save-btn {
-    border: none;
-    background: #222;
-    color: #fff;
-    border-radius: 8px;
-    padding: 9px 17px;
-    cursor: pointer;
-}
-
-.editor-area {
-    max-width: 850px;
-    margin: auto;
-    padding: 45px 25px;
-}
-
-.editor-content {
-    width: 100%;
-    min-height: 65vh;
-    border: none;
-    outline: none;
-    resize: none;
-    font-size: 17px;
-    line-height: 2;
-}
-
-.word-count {
+.sort-hint {
     position: fixed;
-    right: 18px;
-    bottom: 82px;
-    color: #999;
-    font-size: 12px;
+
+    left: 50%;
+    bottom: 90px;
+
+    transform: translateX(-50%);
+
+    background: rgba(0,0,0,.75);
+
+    color: white;
+
+    padding: 9px 16px;
+
+    border-radius: 20px;
+
+    font-size: 13px;
+
+    z-index: 80;
+
+    display: none;
+}
+
+.sort-hint.show {
+    display: block;
 }
 
 /* =========================
-   手机
+   工具页面
 ========================= */
 
-@media (max-width: 900px) {
-
-    .novels.grid-mode {
-        grid-template-columns: repeat(4, 1fr);
-    }
-
+.tools-page,
+.my-page {
+    padding: 20px 16px;
 }
 
-@media (max-width: 600px) {
+.tool-card {
+    background: white;
 
-    .header {
-        padding: 0 15px;
-    }
+    border-radius: 14px;
 
-    .container {
-        padding: 25px 15px 45px;
-    }
+    padding: 18px;
 
-    .page-title {
-        font-size: 24px;
-        margin-bottom: 25px;
-    }
+    margin-bottom: 12px;
 
-    .novels.grid-mode {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 25px 12px;
-    }
+    font-size: 16px;
+}
 
-    .novels.grid-mode .novel-name {
-        font-size: 13px;
-    }
+.tool-card small {
+    display: block;
 
-    .tool-grid {
-        grid-template-columns: 1fr;
-    }
+    margin-top: 5px;
 
-    .distribution-list {
-        grid-template-columns: 1fr;
-    }
-
-    .donut {
-        width: 250px;
-        height: 250px;
-    }
-
-    .donut-hole {
-        width: 152px;
-        height: 152px;
-        left: 49px;
-        top: 49px;
-    }
-
-    .work-header {
-        padding: 15px;
-        gap: 15px;
-    }
-
-    .work-cover {
-        width: 95px;
-        height: 128px;
-    }
-
-    .editor-title {
-        width: 180px;
-    }
-
+    color: #999;
 }
 </style>
 </head>
 
+
 <body>
 
+<div class="app">
+
+    <!-- =====================
+         顶部
+    ====================== -->
+
+    <header class="topbar">
+
+        <div class="topbar-title">
+            书架
+        </div>
+
+        <button
+            class="more-button"
+            onclick="openMenu()">
+            …
+        </button>
+
+    </header>
+
+
+    <!-- =====================
+         内容
+    ====================== -->
+
+    <main class="content" id="mainContent">
+
+        <div class="group-title">
+
+            <div class="group-name">
+                全部作品
+            </div>
+
+            <div class="group-count"
+                 id="bookCount">
+                6 本
+            </div>
+
+        </div>
+
+
+        <div
+            class="book-grid"
+            id="bookGrid">
+
+
+            <div class="book"
+                 draggable="true"
+                 data-id="1">
+
+                <div class="book-cover cover1">
+                    我，野比海皇
+                </div>
+
+                <div class="book-name">
+                    我，野比海皇，从今天开始开后宫
+                </div>
+
+                <div class="book-author">
+                    作者：小说家
+                </div>
+
+            </div>
+
+
+            <div class="book"
+                 draggable="true"
+                 data-id="2">
+
+                <div class="book-cover cover2">
+                    宝可梦
+                </div>
+
+                <div class="book-name">
+                    宝可梦：赤红传
+                </div>
+
+                <div class="book-author">
+                    作者：小说家
+                </div>
+
+            </div>
+
+
+            <div class="book"
+                 draggable="true"
+                 data-id="3">
+
+                <div class="book-cover cover3">
+                    界囚
+                </div>
+
+                <div class="book-name">
+                    界囚
+                </div>
+
+                <div class="book-author">
+                    作者：小说家
+                </div>
+
+            </div>
+
+
+            <div class="book"
+                 draggable="true"
+                 data-id="4">
+
+                <div class="book-cover cover4">
+                    新世界
+                </div>
+
+                <div class="book-name">
+                    新世界
+                </div>
+
+                <div class="book-author">
+                    作者：小说家
+                </div>
+
+            </div>
+
+
+            <div class="book"
+                 draggable="true"
+                 data-id="5">
+
+                <div class="book-cover cover5">
+                    未命名
+                </div>
+
+                <div class="book-name">
+                    未命名作品
+                </div>
+
+                <div class="book-author">
+                    作者：小说家
+                </div>
+
+            </div>
+
+
+            <div class="book"
+                 draggable="true"
+                 data-id="6">
+
+                <div class="book-cover cover6">
+                    草稿
+                </div>
+
+                <div class="book-name">
+                    我的新小说
+                </div>
+
+                <div class="book-author">
+                    作者：小说家
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================
+         底部导航
+    ====================== -->
+
+    <nav class="bottom-nav">
+
+        <div
+            class="nav-item active"
+            onclick="switchTab('shelf')">
+
+            <div class="nav-icon">▦</div>
+
+            <div>
+                书架
+            </div>
+
+        </div>
+
+
+        <div
+            class="nav-item"
+            onclick="switchTab('tools')">
+
+            <div class="nav-icon">⚒</div>
+
+            <div>
+                工具
+            </div>
+
+        </div>
+
+
+        <div
+            class="nav-item"
+            onclick="switchTab('my')">
+
+            <div class="nav-icon">●</div>
+
+            <div>
+                我的
+            </div>
+
+        </div>
+
+    </nav>
+
+</div>
+
+
 <!-- =========================
-     书架
+     更多菜单
 ========================= -->
 
-<div id="libraryPage" class="page active">
+<div
+    class="menu-overlay"
+    id="menuOverlay"
+    onclick="closeMenu(event)">
 
-<header class="header">
+    <div
+        class="more-menu"
+        onclick="event.stopPropagation()">
 
-<div class="logo">小说家</div>
 
-<div class="create-menu-wrap">
+        <div class="menu-section">
 
-<button class="create-btn"
-onclick="toggleCreateMenu()">
-＋ 新建
-</button>
+            <div
+                class="menu-item"
+                onclick="newBook()">
 
-<div id="createMenu" class="create-menu">
+                <span class="menu-icon">＋</span>
 
-<button onclick="openNovelModal()">
-📖 新建作品
-</button>
+                <span>
+                    新建作品
+                </span>
 
-<button onclick="createGroup()">
-📁 新建分组
-</button>
+            </div>
 
-<button onclick="closeCreateMenu()">
-取消
-</button>
 
-</div>
+            <div
+                class="menu-item"
+                onclick="newGroup()">
 
-</div>
+                <span class="menu-icon">▦</span>
 
-</header>
+                <span>
+                    新建分组
+                </span>
 
-<main class="container">
+            </div>
 
-<div class="page-title">
-我的小说
-</div>
+        </div>
 
-<div class="library-toolbar">
 
-<div class="library-settings">
+        <div class="menu-divider"></div>
 
-<button class="settings-btn"
-onclick="toggleSettings()">
-⚙️ 书架设置
-</button>
 
-<div id="settingsPanel"
-class="settings-panel">
+        <div class="menu-section">
 
-<div class="settings-title">
-书架模式
-</div>
+            <div
+                class="menu-item"
+                onclick="openSettings()">
 
-<div class="mode-buttons">
+                <span class="menu-icon">⚙</span>
 
-<button id="gridModeBtn"
-class="mode-btn"
-onclick="setLibraryMode('grid')">
-▦ 网格
-</button>
+                <span>
+                    书架设置
+                </span>
 
-<button id="listModeBtn"
-class="mode-btn"
-onclick="setLibraryMode('list')">
-☰ 列表
-</button>
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
-</div>
 
-</div>
+<!-- =========================
+     书架设置页面
+========================= -->
 
-</div>
+<div
+    class="page"
+    id="settingsPage">
 
-<div id="emptyState"
-class="empty-state">
 
-<div class="empty-icon">
-📚
-</div>
+    <header class="page-header">
 
-<div class="empty-title">
-还没有作品
-</div>
+        <div
+            class="back"
+            onclick="closeSettings()">
+            ‹
+        </div>
 
-<div>
-点击右上角「＋ 新建」开始创作
-</div>
+        <div class="page-title">
+            书架设置
+        </div>
 
-</div>
+    </header>
 
-<div id="novels"
-class="novels grid-mode">
-</div>
 
-</main>
+    <div class="page-body">
+
+
+        <div class="setting-card">
+
+            <div class="setting-title">
+                显示方式
+            </div>
+
+
+            <div
+                class="setting-row"
+                onclick="setView('grid')">
+
+                <span>
+                    网格
+                </span>
+
+                <span
+                    class="setting-right"
+                    id="gridCheck">
+                    ✓
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-row"
+                onclick="setView('list')">
+
+                <span>
+                    列表
+                </span>
+
+                <span
+                    class="setting-right"
+                    id="listCheck">
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="setting-card">
+
+            <div class="setting-title">
+                书架排序
+            </div>
+
+
+            <div
+                class="setting-row"
+                onclick="startSort()">
+
+                <span>
+                    自定义排序
+                </span>
+
+                <span class="setting-right">
+                    ›
+                </span>
+
+            </div>
+
+
+            <div
+                class="setting-row"
+                onclick="sortLatest()">
+
+                <span>
+                    最近阅读
+                </span>
+
+                <span class="setting-right">
+                    ›
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -1033,156 +931,44 @@ class="novels grid-mode">
      工具
 ========================= -->
 
-<div id="toolsPage" class="page">
-
-<header class="header">
-<div class="logo">小说家</div>
-</header>
-
-<main class="container">
-
-<div class="page-title">
-工具
-</div>
-
-<div class="tool-grid">
-
-<div class="tool-card"
-onclick="openWordStats()">
-
-<div class="tool-icon">
-🔢
-</div>
-
-<div class="tool-name">
-字数统计
-</div>
-
-<div class="tool-desc">
-统计每日码字字数
-</div>
-
-</div>
-
-</div>
-
-</main>
-
-</div>
+<div
+    class="page"
+    id="toolsPage">
 
 
-<!-- =========================
-     字数统计
-========================= -->
+    <header class="page-header">
 
-<div id="statsPage" class="page">
+        <div class="page-title">
+            工具
+        </div>
 
-<header class="header">
-
-<div class="logo">
-小说家
-</div>
-
-</header>
-
-<main class="container">
-
-<button class="back-btn"
-onclick="backToTools()">
-← 返回工具
-</button>
-
-<div class="page-title">
-字数统计
-</div>
-
-<section class="stats-section">
-
-<div class="stats-section-title">
-
-<strong>
-累计字数
-</strong>
-
-<div class="stats-more">
-近7天 ＞
-</div>
-
-</div>
-
-<div id="totalChart"
-class="chart-box">
-</div>
-
-</section>
+    </header>
 
 
-<section class="stats-section">
+    <div class="page-body tools-page">
 
-<div class="stats-section-title">
+        <div class="tool-card">
+            ✍️ 写作
+            <small>
+                创建和管理你的小说
+            </small>
+        </div>
 
-<strong>
-输入字数
-</strong>
+        <div class="tool-card">
+            🔎 搜索
+            <small>
+                搜索作品和章节
+            </small>
+        </div>
 
-<div class="stats-more">
-近7天 ＞
-</div>
+        <div class="tool-card">
+            📊 数据
+            <small>
+                查看作品阅读数据
+            </small>
+        </div>
 
-</div>
-
-<div id="dailyChart"
-class="chart-box">
-</div>
-
-</section>
-
-
-<section class="stats-section distribution-box">
-
-<div class="stats-section-title">
-
-<strong>
-字数分布
-</strong>
-
-</div>
-
-<div class="donut-area">
-
-<div id="donut"
-class="donut">
-
-<div class="donut-hole">
-
-<div id="donutName"
-class="donut-name">
-暂无作品
-</div>
-
-<div id="donutCount"
-class="donut-count">
-0 字
-</div>
-
-<div id="donutPercent"
-class="donut-percent">
-0%
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div id="distributionList"
-class="distribution-list">
-</div>
-
-</section>
-
-</main>
+    </div>
 
 </div>
 
@@ -1191,322 +977,73 @@ class="distribution-list">
      我的
 ========================= -->
 
-<div id="profilePage" class="page">
-
-<header class="header">
-<div class="logo">小说家</div>
-</header>
-
-<main class="container">
-
-<div class="page-title">
-我的
-</div>
-
-<div class="profile-card">
-
-<div class="avatar">
-👤
-</div>
-
-<div class="profile-name">
-小说作者
-</div>
-
-<div class="profile-subtitle">
-开始你的创作之旅
-</div>
-
-</div>
-
-</main>
-
-</div>
+<div
+    class="page"
+    id="myPage">
 
 
-<!-- =========================
-     作品
-========================= -->
+    <header class="page-header">
 
-<div id="workPage" class="page">
+        <div class="page-title">
+            我的
+        </div>
 
-<header class="header">
-<div class="logo">小说家</div>
-</header>
+    </header>
 
-<main class="container">
 
-<button class="back-btn"
-onclick="backToLibrary()">
-← 返回书架
-</button>
+    <div class="page-body my-page">
 
-<div class="work-header">
+        <div class="tool-card">
+            👤 我的账号
+        </div>
 
-<img id="workCover"
-class="work-cover">
+        <div class="tool-card">
+            📚 我的作品
+        </div>
 
-<div class="work-info">
+        <div class="tool-card">
+            ⚙️ 设置
+        </div>
 
-<h1 id="workName"></h1>
-
-<p id="workDescription"></p>
-
-</div>
-
-</div>
-
-<div class="chapter-header">
-
-<h2>
-章节
-</h2>
-
-<button class="new-chapter-btn"
-onclick="newChapter()">
-＋ 新建章节
-</button>
-
-</div>
-
-<div id="chapterList"
-class="chapter-list">
-</div>
-
-</main>
+    </div>
 
 </div>
 
 
-<!-- =========================
-     编辑器
-========================= -->
-
-<div id="editorPage" class="page">
-
-<div class="editor-toolbar">
-
-<div class="editor-left">
-
-<button class="back-btn"
-style="margin:0"
-onclick="backToWork()">
-← 返回
-</button>
-
-<input id="chapterTitle"
-class="editor-title"
-placeholder="章节标题">
-
+<div
+    class="sort-hint"
+    id="sortHint">
+    拖动小说调整顺序
 </div>
-
-<button class="save-btn"
-onclick="saveChapter()">
-保存
-</button>
-
-</div>
-
-<div class="editor-area">
-
-<textarea id="chapterContent"
-class="editor-content"
-placeholder="开始写作……"
-oninput="updateWordCount()"></textarea>
-
-</div>
-
-<div id="wordCount"
-class="word-count">
-0 字
-</div>
-
-</div>
-
-
-<!-- =========================
-     新建作品
-========================= -->
-
-<div id="novelModal"
-class="modal-mask">
-
-<div class="modal">
-
-<h2>
-新建作品
-</h2>
-
-<label>
-作品名称
-</label>
-
-<input id="novelName"
-type="text"
-placeholder="请输入作品名称">
-
-<label>
-添加封面
-</label>
-
-<label class="cover-upload"
-for="coverInput">
-
-<span id="coverText">
-
-<strong>＋</strong>
-
-<small>
-添加封面
-</small>
-
-</span>
-
-<img id="coverPreview"
-style="display:none;">
-
-</label>
-
-<input id="coverInput"
-type="file"
-accept="image/*"
-style="display:none"
-onchange="previewCover(event)">
-
-<label>
-简介
-</label>
-
-<textarea id="novelDescription"
-placeholder="简介内容"></textarea>
-
-<div class="actions">
-
-<button class="cancel"
-onclick="hideNovelModal()">
-取消
-</button>
-
-<button class="create"
-onclick="createNovel()">
-创建作品
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- =========================
-     底部导航
-========================= -->
-
-<nav class="bottom-nav">
-
-<div class="nav-inner">
-
-<button id="navLibrary"
-class="nav-item active"
-onclick="switchPage('library')">
-
-<div class="nav-icon">📚</div>
-<div>书架</div>
-
-</button>
-
-<button id="navTools"
-class="nav-item"
-onclick="switchPage('tools')">
-
-<div class="nav-icon">🛠</div>
-<div>工具</div>
-
-</button>
-
-<button id="navProfile"
-class="nav-item"
-onclick="switchPage('profile')">
-
-<div class="nav-icon">👤</div>
-<div>我的</div>
-
-</button>
-
-</div>
-
-</nav>
 
 
 <script>
 
 /* =========================
-   数据
+   更多菜单
 ========================= */
 
-let novels =
-JSON.parse(localStorage.getItem("novels") || "[]");
+function openMenu() {
 
-let writingStats =
-JSON.parse(localStorage.getItem("writingStats") || "{}");
-
-let selectedCover = "";
-
-let currentNovelId = null;
-
-let currentStatsIndex = 0;
-
-let libraryMode =
-localStorage.getItem("libraryMode") || "grid";
-
-
-/* =========================
-   页面
-========================= */
-
-function switchPage(page) {
-
-document.querySelectorAll(".page")
-.forEach(el => el.classList.remove("active"));
-
-if (page === "library") {
-document.getElementById("libraryPage")
-.classList.add("active");
-}
-
-if (page === "tools") {
-document.getElementById("toolsPage")
-.classList.add("active");
-}
-
-if (page === "profile") {
-document.getElementById("profilePage")
-.classList.add("active");
-}
-
-document.getElementById("navLibrary")
-.classList.toggle("active", page === "library");
-
-document.getElementById("navTools")
-.classList.toggle("active", page === "tools");
-
-document.getElementById("navProfile")
-.classList.toggle("active", page === "profile");
+    document
+        .getElementById("menuOverlay")
+        .classList.add("show");
 
 }
 
 
-/* =========================
-   保存作品
-========================= */
+function closeMenu(event) {
 
-function saveNovels() {
+    if (
+        !event ||
+        event.target.id === "menuOverlay"
+    ) {
 
-localStorage.setItem(
-"novels",
-JSON.stringify(novels)
-);
+        document
+            .getElementById("menuOverlay")
+            .classList.remove("show");
+
+    }
 
 }
 
@@ -1515,1229 +1052,294 @@ JSON.stringify(novels)
    新建
 ========================= */
 
-function toggleCreateMenu() {
+function newBook() {
 
-document.getElementById("createMenu")
-.classList.toggle("show");
+    closeMenu();
 
-}
-
-function closeCreateMenu() {
-
-document.getElementById("createMenu")
-.classList.remove("show");
-
-}
-
-function createGroup() {
-
-closeCreateMenu();
-
-alert("分组功能正在开发中。");
+    alert(
+        "这里以后进入「新建作品」页面"
+    );
 
 }
 
 
-/* =========================
-   书架设置
-========================= */
+function newGroup() {
 
-function toggleSettings() {
+    closeMenu();
 
-document.getElementById("settingsPanel")
-.classList.toggle("show");
+    const name = prompt(
+        "请输入新分组名称："
+    );
 
-}
+    if (name) {
 
-function setLibraryMode(mode) {
+        alert(
+            "已创建分组：「" +
+            name +
+            "」"
+        );
 
-libraryMode = mode;
-
-localStorage.setItem(
-"libraryMode",
-mode
-);
-
-renderNovels();
-
-}
-
-function updateModeButtons() {
-
-document.getElementById("gridModeBtn")
-.classList.toggle(
-"active",
-libraryMode === "grid"
-);
-
-document.getElementById("listModeBtn")
-.classList.toggle(
-"active",
-libraryMode === "list"
-);
+    }
 
 }
 
 
 /* =========================
-   新建作品
+   设置
 ========================= */
 
-function openNovelModal() {
+function openSettings() {
 
-closeCreateMenu();
+    closeMenu();
 
-document.getElementById("novelModal")
-.classList.add("show");
-
-document.getElementById("novelName").value = "";
-
-document.getElementById("novelDescription").value = "";
-
-selectedCover = "";
-
-document.getElementById("coverPreview")
-.style.display = "none";
-
-document.getElementById("coverText")
-.style.display = "flex";
+    document
+        .getElementById("settingsPage")
+        .classList.add("show");
 
 }
 
-function hideNovelModal() {
 
-document.getElementById("novelModal")
-.classList.remove("show");
+function closeSettings() {
 
-}
-
-function previewCover(event) {
-
-const file = event.target.files[0];
-
-if (!file) return;
-
-const reader = new FileReader();
-
-reader.onload = function(e) {
-
-selectedCover = e.target.result;
-
-document.getElementById("coverPreview").src =
-selectedCover;
-
-document.getElementById("coverPreview")
-.style.display = "block";
-
-document.getElementById("coverText")
-.style.display = "none";
-
-};
-
-reader.readAsDataURL(file);
+    document
+        .getElementById("settingsPage")
+        .classList.remove("show");
 
 }
 
 
 /* =========================
-   默认封面
+   网格 / 列表
 ========================= */
 
-function createDefaultCover(name) {
+function setView(type) {
 
-const canvas =
-document.createElement("canvas");
+    const grid =
+        document.getElementById("bookGrid");
 
-canvas.width = 300;
-canvas.height = 400;
+    if (type === "grid") {
 
-const ctx = canvas.getContext("2d");
+        grid.style.display = "grid";
 
-ctx.fillStyle = "#eeeeee";
+        document
+            .getElementById("gridCheck")
+            .innerText = "✓";
 
-ctx.fillRect(0,0,300,400);
+        document
+            .getElementById("listCheck")
+            .innerText = "";
 
-ctx.fillStyle = "#555";
+    }
 
-ctx.font = "bold 28px sans-serif";
+    if (type === "list") {
 
-ctx.textAlign = "center";
+        grid.style.display = "flex";
 
-ctx.textBaseline = "middle";
+        grid.style.flexDirection = "column";
 
-let title = name || "未命名作品";
+        grid.style.gap = "10px";
 
-if (title.length > 8) {
-title = title.substring(0,8) + "…";
-}
+        document
+            .getElementById("gridCheck")
+            .innerText = "";
 
-ctx.fillText(title,150,200);
+        document
+            .getElementById("listCheck")
+            .innerText = "✓";
 
-return canvas.toDataURL(
-"image/jpeg",
-.8
-);
+    }
 
 }
 
 
 /* =========================
-   创建作品
+   自定义排序
 ========================= */
 
-function createNovel() {
+function startSort() {
 
-const name =
-document.getElementById("novelName")
-.value.trim();
+    closeSettings();
 
-const description =
-document.getElementById("novelDescription")
-.value.trim();
+    document
+        .getElementById("bookGrid")
+        .classList.add("sort-mode");
 
-if (!name) {
+    document
+        .getElementById("sortHint")
+        .classList.add("show");
 
-alert("请输入作品名称");
+    setTimeout(() => {
 
-return;
+        document
+            .getElementById("sortHint")
+            .classList.remove("show");
 
-}
-
-novels.unshift({
-
-id: Date.now().toString(),
-
-name: name,
-
-description: description,
-
-cover:
-selectedCover ||
-createDefaultCover(name),
-
-chapters: [],
-
-created: Date.now(),
-
-updated: Date.now()
-
-});
-
-saveNovels();
-
-hideNovelModal();
-
-renderNovels();
+    }, 2500);
 
 }
 
 
 /* =========================
-   书架
+   拖动排序
 ========================= */
 
-function renderNovels() {
+let draggedBook = null;
 
-const container =
-document.getElementById("novels");
 
-const empty =
-document.getElementById("emptyState");
+document
+    .querySelectorAll(".book")
+    .forEach(book => {
 
-container.className =
-"novels " +
-(
-libraryMode === "grid"
-? "grid-mode"
-: "list-mode"
-);
 
-updateModeButtons();
+        book.addEventListener(
+            "dragstart",
+            function() {
 
-if (!novels.length) {
+                draggedBook = this;
 
-container.innerHTML = "";
+            }
+        );
 
-empty.style.display = "block";
 
-return;
+        book.addEventListener(
+            "dragover",
+            function(e) {
 
-}
+                e.preventDefault();
 
-empty.style.display = "none";
+            }
+        );
 
-container.innerHTML =
-novels.map(function(novel) {
 
-const chapterCount =
-novel.chapters
-? novel.chapters.length
-: 0;
+        book.addEventListener(
+            "drop",
+            function(e) {
 
-return `
+                e.preventDefault();
 
-<div class="novel-card"
-onclick="openWork('${novel.id}')">
+                if (
+                    draggedBook &&
+                    draggedBook !== this
+                ) {
 
-<img class="novel-cover"
-src="${novel.cover}">
+                    const grid =
+                        document.getElementById(
+                            "bookGrid"
+                        );
 
-<div class="novel-info">
+                    const books =
+                        [...grid.children];
 
-<div class="novel-name">
-${escapeHTML(novel.name)}
-</div>
+                    const from =
+                        books.indexOf(
+                            draggedBook
+                        );
 
-<div class="novel-description">
-${escapeHTML(
-novel.description || "暂无简介"
-)}
-</div>
+                    const to =
+                        books.indexOf(this);
 
-<div class="novel-meta">
-${chapterCount} 章
-</div>
 
-</div>
+                    if (from < to) {
 
-<button class="continue-btn"
-onclick="
-event.stopPropagation();
-openWork('${novel.id}');
-">
-继续写作
-</button>
+                        grid.insertBefore(
+                            draggedBook,
+                            this.nextSibling
+                        );
 
-</div>
+                    } else {
 
-`;
+                        grid.insertBefore(
+                            draggedBook,
+                            this
+                        );
 
-}).join("");
+                    }
+
+                }
+
+            }
+        );
+
+    });
+
+
+/* =========================
+   最近阅读排序
+========================= */
+
+function sortLatest() {
+
+    const grid =
+        document.getElementById("bookGrid");
+
+    const books =
+        [...grid.children];
+
+    books.reverse()
+        .forEach(book =>
+            grid.appendChild(book)
+        );
 
 }
 
 
 /* =========================
-   作品
+   底部导航
 ========================= */
 
-function openWork(id) {
+function switchTab(tab) {
 
-currentNovelId = id;
-
-const novel =
-novels.find(n => n.id === id);
-
-if (!novel) return;
-
-document.querySelectorAll(".page")
-.forEach(el => el.classList.remove("active"));
-
-document.getElementById("workPage")
-.classList.add("active");
-
-document.getElementById("workName")
-.textContent = novel.name;
-
-document.getElementById("workDescription")
-.textContent =
-novel.description || "暂无简介";
-
-document.getElementById("workCover")
-.src = novel.cover;
-
-renderChapters();
-
-}
-
-function backToLibrary() {
-
-document.getElementById("workPage")
-.classList.remove("active");
-
-document.getElementById("libraryPage")
-.classList.add("active");
-
-renderNovels();
-
-}
+    document
+        .querySelectorAll(".nav-item")
+        .forEach(item =>
+            item.classList.remove("active")
+        );
 
 
-/* =========================
-   章节列表
-========================= */
+    document
+        .querySelectorAll(".page")
+        .forEach(page =>
+            page.classList.remove("show")
+        );
 
-function renderChapters() {
 
-const novel =
-novels.find(n => n.id === currentNovelId);
+    if (tab === "shelf") {
 
-const list =
-document.getElementById("chapterList");
+        document
+            .querySelector(".nav-item:nth-child(1)")
+            .classList.add("active");
 
-if (
-!novel ||
-!novel.chapters ||
-!novel.chapters.length
-) {
+    }
 
-list.innerHTML = `
 
-<div style="
-padding:50px;
-text-align:center;
-color:#999;
-">
-还没有章节
-</div>
+    if (tab === "tools") {
 
-`;
+        document
+            .querySelector(".nav-item:nth-child(2)")
+            .classList.add("active");
 
-return;
+        document
+            .getElementById("toolsPage")
+            .classList.add("show");
+
+    }
+
+
+    if (tab === "my") {
+
+        document
+            .querySelector(".nav-item:nth-child(3)")
+            .classList.add("active");
+
+        document
+            .getElementById("myPage")
+            .classList.add("show");
+
+    }
 
 }
-
-list.innerHTML =
-novel.chapters.map(
-function(chapter,index) {
-
-return `
-
-<div class="chapter-item"
-onclick="openChapter('${chapter.id}')">
-
-<div>
-第 ${index + 1} 章
-${escapeHTML(
-chapter.title || "未命名章节"
-)}
-</div>
-
-<div class="chapter-date">
-${formatDate(chapter.updated)}
-</div>
-
-</div>
-
-`;
-
-}).join("");
-
-}
-
-
-/* =========================
-   字数统计页面
-========================= */
-
-function openWordStats() {
-
-document.querySelectorAll(".page")
-.forEach(el => el.classList.remove("active"));
-
-document.getElementById("statsPage")
-.classList.add("active");
-
-document.getElementById("navLibrary")
-.classList.remove("active");
-
-document.getElementById("navTools")
-.classList.add("active");
-
-document.getElementById("navProfile")
-.classList.remove("active");
-
-renderWordStats();
-
-}
-
-
-function backToTools() {
-
-document.getElementById("statsPage")
-.classList.remove("active");
-
-document.getElementById("toolsPage")
-.classList.add("active");
-
-document.getElementById("navTools")
-.classList.add("active");
-
-}
-
-
-/* =========================
-   日期
-========================= */
-
-function getDateKey(date = new Date()) {
-
-return (
-date.getFullYear() +
-"-" +
-String(date.getMonth() + 1).padStart(2,"0") +
-"-" +
-String(date.getDate()).padStart(2,"0")
-);
-
-}
-
-
-/* =========================
-   最近7天
-========================= */
-
-function getLast7Days() {
-
-const result = [];
-
-for (let i = 6; i >= 0; i--) {
-
-const d = new Date();
-
-d.setDate(d.getDate() - i);
-
-const key = getDateKey(d);
-
-result.push({
-
-key: key,
-
-label:
-String(d.getMonth() + 1)
-.padStart(2,"0")
-+
-"/"
-+
-String(d.getDate())
-.padStart(2,"0"),
-
-value:
-writingStats[key] || 0
-
-});
-
-}
-
-return result;
-
-}
-
-
-/* =========================
-   累计字数
-========================= */
-
-function getTotalWords() {
-
-let total = 0;
-
-novels.forEach(novel => {
-
-(novel.chapters || []).forEach(chapter => {
-
-total += countWords(
-chapter.content || ""
-);
-
-});
-
-});
-
-return total;
-
-}
-
-
-/* =========================
-   SVG折线图
-========================= */
-
-function renderTotalChart() {
-
-const box =
-document.getElementById("totalChart");
-
-const days = getLast7Days();
-
-const total =
-getTotalWords();
-
-let previous =
-Math.max(
-0,
-total -
-days.reduce(
-(sum,d) => sum + d.value,
-0
-)
-);
-
-const cumulative =
-days.map(d => {
-
-previous += d.value;
-
-return previous;
-
-});
-
-const width = 800;
-const height = 220;
-
-const left = 48;
-const right = 15;
-const top = 15;
-const bottom = 35;
-
-const chartW =
-width - left - right;
-
-const chartH =
-height - top - bottom;
-
-const max =
-Math.max(
-50,
-...cumulative
-);
-
-const points =
-cumulative.map(
-(value,index) => {
-
-const x =
-left +
-(index / 6) * chartW;
-
-const y =
-top +
-chartH -
-(value / max) * chartH;
-
-return {
-x:x,
-y:y,
-value:value
-};
-
-});
-
-const path =
-points.map(
-(p,i) =>
-(i === 0 ? "M" : "L")
-+
-p.x +
-" " +
-p.y
-).join(" ");
-
-let svg = `
-
-<svg class="chart-svg"
-viewBox="0 0 ${width} ${height}"
-preserveAspectRatio="none">
-
-`;
-
-for (let i=0;i<5;i++) {
-
-const y =
-top +
-(i / 4) * chartH;
-
-const value =
-Math.round(
-max * (1 - i / 4)
-);
-
-svg += `
-
-<line
-x1="${left}"
-y1="${y}"
-x2="${width-right}"
-y2="${y}"
-stroke="#eeeeee"
-/>
-
-<text
-x="4"
-y="${y+4}"
-class="chart-label">
-${formatCompact(value)}
-</text>
-
-`;
-
-}
-
-svg += `
-
-<path
-d="${path}"
-fill="none"
-stroke="#222"
-stroke-width="3"
-stroke-linecap="round"
-stroke-linejoin="round"
-/>
-
-`;
-
-points.forEach(p => {
-
-svg += `
-
-<circle
-cx="${p.x}"
-cy="${p.y}"
-r="4"
-fill="#222"
-/>
-
-`;
-
-});
-
-days.forEach((d,i) => {
-
-svg += `
-
-<text
-x="${points[i].x}"
-y="${height-8}"
-text-anchor="middle"
-class="chart-label">
-${d.label}
-</text>
-
-`;
-
-});
-
-svg += "</svg>";
-
-box.innerHTML = svg;
-
-}
-
-
-/* =========================
-   每日输入图
-========================= */
-
-function renderDailyChart() {
-
-const box =
-document.getElementById("dailyChart");
-
-const days = getLast7Days();
-
-const maxValue =
-Math.max(
-10,
-...days.map(d => d.value)
-);
-
-const width = 800;
-const height = 220;
-
-const left = 48;
-const right = 15;
-const top = 15;
-const bottom = 35;
-
-const chartW =
-width - left - right;
-
-const chartH =
-height - top - bottom;
-
-let svg = `
-
-<svg class="chart-svg"
-viewBox="0 0 ${width} ${height}"
-preserveAspectRatio="none">
-
-`;
-
-for (let i=0;i<5;i++) {
-
-const y =
-top +
-(i / 4) * chartH;
-
-const value =
-Math.round(
-maxValue * (1 - i / 4)
-);
-
-svg += `
-
-<line
-x1="${left}"
-y1="${y}"
-x2="${width-right}"
-y2="${y}"
-stroke="#eeeeee"
-/>
-
-<text
-x="4"
-y="${y+4}"
-class="chart-label">
-${formatCompact(value)}
-</text>
-
-`;
-
-}
-
-days.forEach((d,i) => {
-
-const x =
-left +
-((i + .5) / 7) * chartW;
-
-const barW =
-Math.min(
-50,
-chartW / 10
-);
-
-const barH =
-(d.value / maxValue) * chartH;
-
-const y =
-top +
-chartH -
-barH;
-
-svg += `
-
-<rect
-x="${x - barW/2}"
-y="${y}"
-width="${barW}"
-height="${Math.max(barH,1)}"
-rx="5"
-fill="#222"
-/>
-
-<text
-x="${x}"
-y="${height-8}"
-text-anchor="middle"
-class="chart-label">
-${d.label}
-</text>
-
-`;
-
-});
-
-svg += "</svg>";
-
-box.innerHTML = svg;
-
-}
-
-
-/* =========================
-   字数分布
-========================= */
-
-const distributionColors = [
-
-"#ef4444",
-"#f97316",
-"#eab308",
-"#22c55e",
-"#06b6d4",
-"#3b82f6",
-"#8b5cf6",
-
-"#fca5a5",
-"#fdba74",
-"#fde68a",
-"#86efac",
-"#67e8f9",
-"#93c5fd",
-"#c4b5fd",
-
-"#dc2626",
-"#ea580c",
-"#ca8a04",
-"#16a34a",
-"#0891b2",
-"#2563eb",
-"#7c3aed"
-
-];
-
-
-function getNovelDistribution() {
-
-return novels
-.map(novel => {
-
-let words = 0;
-
-(novel.chapters || [])
-.forEach(chapter => {
-
-words += countWords(
-chapter.content || ""
-);
-
-});
-
-return {
-
-id: novel.id,
-name: novel.name,
-words: words
-
-};
-
-})
-.filter(item => item.words > 0)
-.sort((a,b) => b.words - a.words);
-
-}
-
-
-function renderDistribution() {
-
-const data =
-getNovelDistribution();
-
-const donut =
-document.getElementById("donut");
-
-const list =
-document.getElementById("distributionList");
-
-if (!data.length) {
-
-donut.style.background =
-"#eeeeee";
-
-document.getElementById("donutName")
-.textContent = "暂无作品";
-
-document.getElementById("donutCount")
-.textContent = "0 字";
-
-document.getElementById("donutPercent")
-.textContent = "0%";
-
-list.innerHTML = `
-
-<div style="
-grid-column:1/-1;
-text-align:center;
-padding:20px;
-color:#999;
-">
-写完章节后，这里会显示作品字数分布
-</div>
-
-`;
-
-return;
-
-}
-
-if (
-currentStatsIndex >= data.length
-) {
-
-currentStatsIndex = 0;
-
-}
-
-const total =
-data.reduce(
-(sum,item) => sum + item.words,
-0
-);
-
-const segments = [];
-
-let start = 0;
-
-data.forEach((item,index) => {
-
-const percent =
-item.words / total * 100;
-
-const end =
-start + percent;
-
-segments.push(
-`${getDistributionColor(index)}
-${start}% ${end}%`
-);
-
-start = end;
-
-});
-
-donut.style.background =
-`conic-gradient(
-${segments.join(",")}
-)`;
-
-updateDonutCenter(
-data,
-total,
-currentStatsIndex
-);
-
-list.innerHTML =
-data.map(
-(item,index) => {
-
-const percent =
-item.words / total * 100;
-
-return `
-
-<button
-class="distribution-item
-${index === currentStatsIndex ? "active" : ""}"
-onclick="selectDistribution(${index})">
-
-<span
-class="color-dot"
-style="
-background:${getDistributionColor(index)}
-">
-</span>
-
-<span class="distribution-name">
-${escapeHTML(item.name)}
-</span>
-
-<span class="distribution-count">
-${formatNumber(item.words)}
-</span>
-
-</button>
-
-`;
-
-}
-).join("");
-
-donut.onclick = function(event) {
-
-const rect =
-donut.getBoundingClientRect();
-
-const cx =
-rect.left + rect.width / 2;
-
-const cy =
-rect.top + rect.height / 2;
-
-const x =
-event.clientX - cx;
-
-const y =
-event.clientY - cy;
-
-let angle =
-Math.atan2(y,x)
-* 180 / Math.PI;
-
-angle += 90;
-
-if (angle < 0) {
-angle += 360;
-}
-
-let currentAngle = 0;
-
-for (
-let i=0;
-i<data.length;
-i++
-) {
-
-const percent =
-data[i].words / total * 100;
-
-const degree =
-percent * 3.6;
-
-if (
-angle >= currentAngle &&
-angle < currentAngle + degree
-) {
-
-selectDistribution(i);
-
-break;
-
-}
-
-currentAngle += degree;
-
-}
-
-};
-
-}
-
-
-function selectDistribution(index) {
-
-currentStatsIndex = index;
-
-renderDistribution();
-
-}
-
-
-function updateDonutCenter(
-data,
-total,
-index
-) {
-
-const item = data[index];
-
-if (!item) return;
-
-const percent =
-item.words / total * 100;
-
-document.getElementById("donutName")
-.textContent =
-item.name;
-
-document.getElementById("donutCount")
-.textContent =
-formatNumber(item.words) + " 字";
-
-document.getElementById("donutPercent")
-.textContent =
-percent.toFixed(1) + "%";
-
-}
-
-
-function getDistributionColor(index) {
-
-return distributionColors[
-index % distributionColors.length
-];
-
-}
-
-
-/* =========================
-   字数统计总入口
-========================= */
-
-function renderWordStats() {
-
-renderTotalChart();
-
-renderDailyChart();
-
-renderDistribution();
-
-}
-
-
-/* =========================
-   工具函数
-========================= */
-
-function formatNumber(number) {
-
-return Number(number)
-.toLocaleString("zh-CN");
-
-}
-
-function formatCompact(number) {
-
-if (number >= 1000000) {
-
-return (
-(number / 1000000)
-.toFixed(1)
-.replace(".0","")
-+
-"M"
-);
-
-}
-
-if (number >= 1000) {
-
-return (
-(number / 1000)
-.toFixed(1)
-.replace(".0","")
-+
-"K"
-);
-
-}
-
-return String(number);
-
-}
-
-function escapeHTML(text) {
-
-return String(text)
-.replace(/&/g,"&amp;")
-.replace(/</g,"&lt;")
-.replace(/>/g,"&gt;")
-.replace(/"/g,"&quot;")
-.replace(/'/g,"&#039;");
-
-}
-
-function formatDate(timestamp) {
-
-if (!timestamp) return "";
-
-const date =
-new Date(timestamp);
-
-return (
-date.getFullYear() +
-"/" +
-String(
-date.getMonth()+1
-).padStart(2,"0") +
-"/" +
-String(
-date.getDate()
-).padStart(2,"0")
-);
-
-}
-
-
-/* =========================
-   初始化
-========================= */
-
-renderNovels();
 
 </script>
-
-<script src="js/editor.js"></script>
 
 </body>
 </html>
