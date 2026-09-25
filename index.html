@@ -28,145 +28,193 @@ button {
     cursor: pointer;
 }
 
-/* =========================
-   顶部
-========================= */
-
 .header {
-    height: 70px;
-    background: white;
+    height: 64px;
+    background: #fff;
     border-bottom: 1px solid #eee;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 28px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
 }
 
 .logo {
-    font-size: 22px;
+    font-size: 21px;
     font-weight: 700;
 }
 
-.subtitle {
-    font-size: 13px;
-    color: #999;
-    margin-top: 3px;
-}
-
-.header-left {
+.header-right {
     display: flex;
-    flex-direction: column;
-}
-
-.new-btn {
-    border: none;
-    background: #222;
-    color: white;
-    border-radius: 9px;
-    padding: 11px 17px;
-    font-size: 14px;
-}
-
-/* =========================
-   首页
-========================= */
-
-.container {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 35px 20px;
-}
-
-.page-title {
-    display: flex;
+    gap: 10px;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 25px;
 }
 
-.page-title h1 {
-    font-size: 24px;
-    margin: 0;
-}
-
-/* 书架工具栏 */
-
-.library-toolbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 18px;
-}
-
-.library-setting-btn {
+.top-btn {
     border: 1px solid #ddd;
-    background: white;
+    background: #fff;
+    padding: 9px 15px;
     border-radius: 8px;
-    padding: 8px 13px;
-    color: #555;
-    font-size: 13px;
+    color: #333;
 }
 
-.library-setting-btn:hover {
+.top-btn:hover {
     background: #f5f5f5;
 }
 
-/* 书架设置 */
+.container {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 35px 24px 60px;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.page-subtitle {
+    color: #888;
+    font-size: 14px;
+    margin-bottom: 28px;
+}
+
+/* =========================
+   书架工具栏
+========================= */
+
+.library-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.library-title {
+    font-size: 17px;
+    font-weight: 600;
+}
+
+.toolbar-right {
+    display: flex;
+    gap: 8px;
+}
 
 .library-settings {
+    position: relative;
+}
+
+.settings-btn {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+}
+
+.settings-panel {
     display: none;
-    background: white;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    padding: 17px 18px;
-    margin-bottom: 18px;
+    position: absolute;
+    right: 0;
+    top: 44px;
+    width: 190px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.1);
+    padding: 14px;
+    z-index: 30;
 }
 
-.library-settings-title {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 14px;
+.settings-panel.show {
+    display: block;
 }
 
-.setting-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.setting-label {
+.settings-title {
     font-size: 13px;
-    color: #555;
+    color: #888;
+    margin-bottom: 10px;
 }
 
 .mode-buttons {
     display: flex;
-    gap: 6px;
+    gap: 8px;
 }
 
 .mode-btn {
+    flex: 1;
     border: 1px solid #ddd;
-    background: white;
-    color: #666;
+    background: #fff;
     border-radius: 7px;
-    padding: 7px 12px;
-    font-size: 12px;
+    padding: 8px 4px;
 }
 
 .mode-btn.active {
     background: #222;
-    color: white;
+    color: #fff;
     border-color: #222;
 }
 
-/* 空状态 */
+/* =========================
+   新建菜单
+========================= */
 
-.empty {
-    background: white;
-    border: 1px solid #eee;
-    border-radius: 14px;
-    padding: 70px 20px;
+.create-menu-wrap {
+    position: relative;
+}
+
+.create-btn {
+    border: none;
+    background: #222;
+    color: #fff;
+    padding: 9px 16px;
+    border-radius: 8px;
+}
+
+.create-btn:hover {
+    background: #333;
+}
+
+.create-menu {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 45px;
+    width: 170px;
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,.1);
+    padding: 6px;
+    z-index: 40;
+}
+
+.create-menu.show {
+    display: block;
+}
+
+.create-menu button {
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    padding: 11px 12px;
+    border-radius: 7px;
+}
+
+.create-menu button:hover {
+    background: #f5f5f5;
+}
+
+/* =========================
+   空书架
+========================= */
+
+.empty-state {
     text-align: center;
+    padding: 100px 20px;
     color: #999;
 }
 
@@ -176,214 +224,209 @@ button {
 }
 
 .empty-title {
-    color: #444;
-    font-size: 17px;
+    font-size: 18px;
+    color: #555;
     margin-bottom: 8px;
 }
 
-/* =========================
-   网格模式
-========================= */
-
-.novels.grid-mode {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 18px;
-}
-
-.novels.grid-mode .novel-card {
-    background: white;
-    border: 1px solid #eee;
-    border-radius: 14px;
-    padding: 16px;
-    display: flex;
-    gap: 15px;
-    transition: 0.2s;
-}
-
-.novels.grid-mode .novel-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
-}
-
-.novels.grid-mode .novel-cover {
-    width: 82px;
-    height: 112px;
+.empty-text {
+    font-size: 14px;
 }
 
 /* =========================
-   列表模式
+   普通列表模式
 ========================= */
 
 .novels.list-mode {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 }
 
 .novels.list-mode .novel-card {
-    background: white;
+    background: #fff;
     border: 1px solid #eee;
     border-radius: 12px;
-    padding: 12px 15px;
+    padding: 15px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 18px;
+    transition: .2s;
+}
+
+.novels.list-mode .novel-card:hover {
+    box-shadow: 0 5px 18px rgba(0,0,0,.06);
 }
 
 .novels.list-mode .novel-cover {
-    width: 55px;
-    height: 75px;
+    width: 88px;
+    height: 118px;
+    flex-shrink: 0;
+    border-radius: 7px;
+    object-fit: cover;
+    background: #eee;
 }
 
 .novels.list-mode .novel-info {
-    display: grid;
-    grid-template-columns: minmax(140px, 1.5fr) minmax(180px, 2fr) 90px 90px;
-    align-items: center;
-    gap: 15px;
-    width: 100%;
-}
-
-.novels.list-mode .novel-description {
-    height: auto;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.novels.list-mode .novel-meta {
-    margin-top: 0;
-}
-
-.novels.list-mode .continue-btn {
-    margin-top: 0;
-}
-
-/* 作品卡片 */
-
-.novel-cover {
-    border-radius: 8px;
-    background: #f1f1f1;
-    object-fit: cover;
-    flex-shrink: 0;
-}
-
-.novel-info {
     flex: 1;
     min-width: 0;
 }
 
-.novel-name {
+.novels.list-mode .novel-name {
+    font-size: 18px;
     font-weight: 600;
-    font-size: 17px;
     margin-bottom: 9px;
-    word-break: break-all;
 }
 
-.novel-description {
-    color: #999;
-    font-size: 13px;
-    line-height: 1.5;
-    height: 40px;
-    overflow: hidden;
+.novels.list-mode .novel-description {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 9px;
 }
 
-.novel-meta {
+.novels.list-mode .novel-meta {
     color: #aaa;
     font-size: 12px;
-    margin-top: 8px;
 }
 
-.continue-btn {
-    margin-top: 12px;
-    border: none;
-    background: #222;
-    color: white;
-    padding: 7px 12px;
+.novels.list-mode .continue-btn {
+    border: 1px solid #ddd;
+    background: #fff;
+    padding: 8px 13px;
     border-radius: 7px;
-    font-size: 12px;
+    white-space: nowrap;
 }
 
-/* =========================
-   新建菜单
-========================= */
-
-.menu-bg {
-    position: fixed;
-    inset: 0;
-    display: none;
-    z-index: 90;
-}
-
-.new-menu {
-    position: absolute;
-    top: 62px;
-    right: 28px;
-    width: 170px;
-    background: white;
-    border: 1px solid #eee;
-    border-radius: 12px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
-    padding: 7px;
-}
-
-.menu-item {
-    padding: 11px 12px;
-    border-radius: 8px;
-    font-size: 14px;
-}
-
-.menu-item:hover {
+.novels.list-mode .continue-btn:hover {
     background: #f5f5f5;
 }
 
 /* =========================
-   弹窗
+   ★ 网格书架模式
+   封面在上
+   作品名在下
 ========================= */
 
-.modal-bg {
+.novels.grid-mode {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 34px 26px;
+}
+
+.novels.grid-mode .novel-card {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    display: block;
+    text-align: center;
+    min-width: 0;
+}
+
+.novels.grid-mode .novel-card:hover {
+    box-shadow: none;
+}
+
+.novels.grid-mode .novel-cover {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    height: auto;
+    display: block;
+    object-fit: cover;
+    border-radius: 9px;
+    background: #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,.08);
+    transition: .2s;
+}
+
+.novels.grid-mode .novel-card:hover .novel-cover {
+    transform: translateY(-4px);
+    box-shadow: 0 7px 18px rgba(0,0,0,.13);
+}
+
+.novels.grid-mode .novel-info {
+    width: 100%;
+}
+
+.novels.grid-mode .novel-name {
+    margin-top: 11px;
+    margin-bottom: 0;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.novels.grid-mode .novel-description,
+.novels.grid-mode .novel-meta,
+.novels.grid-mode .continue-btn {
+    display: none;
+}
+
+/* =========================
+   新建作品弹窗
+========================= */
+
+.modal-mask {
+    display: none;
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.45);
-    display: none;
+    background: rgba(0,0,0,.45);
+    z-index: 100;
     align-items: center;
     justify-content: center;
     padding: 20px;
-    z-index: 100;
+}
+
+.modal-mask.show {
+    display: flex;
 }
 
 .modal {
     width: 100%;
-    max-width: 460px;
-    background: white;
-    border-radius: 16px;
+    max-width: 500px;
+    background: #fff;
+    border-radius: 14px;
     padding: 25px;
+    box-shadow: 0 15px 50px rgba(0,0,0,.2);
 }
 
 .modal h2 {
-    margin-top: 0;
-    margin-bottom: 22px;
+    margin: 0 0 23px;
+    font-size: 21px;
 }
 
 .modal label {
     display: block;
     font-size: 14px;
-    margin: 16px 0 8px;
-    color: #444;
+    font-weight: 600;
+    margin-bottom: 8px;
+    margin-top: 18px;
 }
 
-.modal input,
+.modal input[type="text"],
 .modal textarea {
     width: 100%;
     border: 1px solid #ddd;
-    border-radius: 9px;
+    border-radius: 8px;
     padding: 11px 12px;
     outline: none;
 }
 
+.modal input[type="text"]:focus,
+.modal textarea:focus {
+    border-color: #999;
+}
+
 .modal textarea {
-    min-height: 100px;
+    min-height: 110px;
     resize: vertical;
 }
+
+/* 封面 */
 
 .cover-upload {
     width: 120px;
@@ -398,6 +441,14 @@ button {
     cursor: pointer;
     overflow: hidden;
     background: #fafafa;
+    transition: .2s;
+    padding: 0;
+    margin: 0 !important;
+}
+
+.cover-upload:hover {
+    border-color: #aaa;
+    background: #f7f7f7;
 }
 
 .cover-upload span {
@@ -408,15 +459,17 @@ button {
     align-items: center;
     justify-content: center;
     gap: 7px;
+    text-align: center;
 }
 
 .cover-upload strong {
-    font-size: 30px;
+    font-size: 27px;
     font-weight: 300;
+    line-height: 1;
 }
 
 .cover-upload small {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 .cover-upload img {
@@ -425,61 +478,67 @@ button {
     object-fit: cover;
 }
 
+/* 弹窗按钮 */
+
 .actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 22px;
+    gap: 9px;
+    margin-top: 25px;
 }
 
-.cancel,
-.create {
-    border: none;
+.actions button {
     border-radius: 8px;
-    padding: 10px 16px;
+    padding: 9px 16px;
 }
 
-.cancel {
-    background: #f1f1f1;
+.actions .cancel {
+    background: #fff;
+    border: 1px solid #ddd;
 }
 
-.create {
+.actions .create {
     background: #222;
-    color: white;
+    color: #fff;
+    border: 1px solid #222;
 }
 
 /* =========================
    作品页面
 ========================= */
 
-.work-page {
+.page {
     display: none;
+}
+
+.page.active {
+    display: block;
 }
 
 .back-btn {
     border: none;
     background: transparent;
-    color: #666;
     padding: 0;
-    margin-bottom: 22px;
+    color: #666;
+    margin-bottom: 25px;
 }
 
 .work-header {
-    background: white;
+    background: #fff;
     border: 1px solid #eee;
-    border-radius: 15px;
+    border-radius: 14px;
     padding: 22px;
     display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
+    gap: 22px;
+    margin-bottom: 25px;
 }
 
 .work-cover {
-    width: 100px;
-    height: 135px;
+    width: 130px;
+    height: 175px;
     border-radius: 9px;
     object-fit: cover;
-    background: #eee;
+    flex-shrink: 0;
 }
 
 .work-info {
@@ -487,144 +546,130 @@ button {
 }
 
 .work-info h1 {
-    margin: 5px 0 10px;
-    font-size: 25px;
+    margin: 5px 0 12px;
+    font-size: 26px;
 }
 
 .work-info p {
     color: #888;
-    line-height: 1.6;
-    margin: 0;
+    line-height: 1.7;
+    white-space: pre-wrap;
 }
 
-.chapter-box {
-    background: white;
+.chapter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.chapter-header h2 {
+    font-size: 19px;
+}
+
+.new-chapter-btn {
+    border: none;
+    background: #222;
+    color: #fff;
+    padding: 9px 14px;
+    border-radius: 8px;
+}
+
+.chapter-list {
+    background: #fff;
     border: 1px solid #eee;
-    border-radius: 15px;
+    border-radius: 12px;
     overflow: hidden;
 }
 
-.chapter-title {
-    padding: 20px;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.chapter-title h2 {
-    margin: 0;
-    font-size: 18px;
-}
-
-.add-chapter {
-    border: none;
-    background: #222;
-    color: white;
-    border-radius: 8px;
-    padding: 9px 14px;
-    font-size: 13px;
-}
-
-.chapter-empty {
-    padding: 55px 20px;
-    text-align: center;
-    color: #999;
-}
-
 .chapter-item {
-    padding: 17px 20px;
+    padding: 16px 18px;
     border-bottom: 1px solid #eee;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    cursor: pointer;
 }
 
 .chapter-item:last-child {
     border-bottom: none;
 }
 
-.chapter-name {
-    font-size: 15px;
+.chapter-item:hover {
+    background: #fafafa;
+}
+
+.chapter-title {
+    font-weight: 500;
 }
 
 .chapter-date {
     color: #aaa;
     font-size: 12px;
-    margin-top: 4px;
-}
-
-.chapter-open {
-    border: none;
-    background: #f3f3f3;
-    border-radius: 7px;
-    padding: 7px 11px;
-    font-size: 12px;
 }
 
 /* =========================
-   写作页面
+   编辑器
 ========================= */
 
 .editor-page {
-    display: none;
-    min-height: calc(100vh - 70px);
+    min-height: calc(100vh - 64px);
 }
 
-.editor-top {
-    height: 65px;
-    background: white;
+.editor-toolbar {
+    height: 64px;
+    background: #fff;
     border-bottom: 1px solid #eee;
     display: flex;
     align-items: center;
-    padding: 0 20px;
+    justify-content: space-between;
+    padding: 0 24px;
+}
+
+.editor-left {
+    display: flex;
+    align-items: center;
     gap: 15px;
 }
 
-.editor-back {
-    border: none;
-    background: transparent;
-    color: #666;
-}
-
-.chapter-input {
+.editor-title {
     border: none;
     outline: none;
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
-    flex: 1;
+    width: 300px;
 }
 
 .save-btn {
     border: none;
     background: #222;
-    color: white;
-    padding: 9px 15px;
+    color: #fff;
+    padding: 9px 17px;
     border-radius: 8px;
 }
 
 .editor-area {
     max-width: 850px;
-    margin: 35px auto;
-    padding: 0 20px;
+    margin: 0 auto;
+    padding: 45px 25px;
 }
 
-.content-editor {
+.editor-content {
     width: 100%;
     min-height: 65vh;
     border: none;
     outline: none;
-    resize: none;
     background: transparent;
+    resize: none;
     font-size: 17px;
     line-height: 2;
+    color: #222;
 }
 
 .word-count {
     position: fixed;
-    right: 20px;
     bottom: 15px;
-    color: #aaa;
+    right: 20px;
+    color: #999;
     font-size: 12px;
 }
 
@@ -632,47 +677,75 @@ button {
    手机
 ========================= */
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
+    .novels.grid-mode {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
 
     .header {
         padding: 0 15px;
     }
 
     .container {
-        padding: 25px 15px;
+        padding: 25px 15px 45px;
     }
 
-    .novels.list-mode .novel-info {
-        display: block;
+    .page-title {
+        font-size: 24px;
+    }
+
+    .novels.grid-mode {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 25px 12px;
+    }
+
+    .novels.grid-mode .novel-name {
+        font-size: 13px;
+        margin-top: 8px;
+    }
+
+    .novels.list-mode .novel-card {
+        padding: 12px;
+        gap: 12px;
+    }
+
+    .novels.list-mode .novel-cover {
+        width: 70px;
+        height: 95px;
     }
 
     .novels.list-mode .novel-description {
-        margin-top: 5px;
+        display: none;
     }
 
-    .novels.list-mode .novel-meta {
-        margin-top: 6px;
+    .novels.list-mode .novel-name {
+        font-size: 15px;
     }
 
     .novels.list-mode .continue-btn {
-        margin-top: 9px;
+        padding: 7px 9px;
+        font-size: 12px;
     }
 
     .work-header {
-        padding: 16px;
+        padding: 15px;
+        gap: 15px;
     }
 
     .work-cover {
-        width: 80px;
-        height: 108px;
+        width: 95px;
+        height: 128px;
     }
 
     .work-info h1 {
-        font-size: 20px;
+        font-size: 21px;
     }
 
-    .editor-area {
-        margin-top: 20px;
+    .editor-title {
+        width: 180px;
     }
 }
 </style>
@@ -681,151 +754,123 @@ button {
 <body>
 
 <!-- =========================
-     首页
+     主页面
 ========================= -->
 
-<div id="homePage">
+<div id="homePage" class="page active">
 
-<header class="header">
-
-    <div class="header-left">
+    <header class="header">
         <div class="logo">小说家</div>
-        <div class="subtitle">小说作者创作平台</div>
-    </div>
 
-    <button
-        class="new-btn"
-        onclick="showNewMenu()"
-    >
-        ＋ 新建
-    </button>
+        <div class="header-right">
 
-</header>
+            <div class="create-menu-wrap">
 
-
-<div class="container">
-
-    <div class="page-title">
-
-        <h1>📚 我的小说</h1>
-
-    </div>
-
-
-    <!-- 书架工具栏 -->
-
-    <div class="library-toolbar">
-
-        <div></div>
-
-        <button
-            class="library-setting-btn"
-            onclick="toggleLibrarySettings()"
-        >
-            ⚙️ 书架设置
-        </button>
-
-    </div>
-
-
-    <!-- 书架设置 -->
-
-    <div
-        id="librarySettings"
-        class="library-settings"
-    >
-
-        <div class="library-settings-title">
-            书架设置
-        </div>
-
-        <div class="setting-row">
-
-            <div class="setting-label">
-                书架模式
-            </div>
-
-            <div class="mode-buttons">
-
-                <button
-                    id="gridModeBtn"
-                    class="mode-btn"
-                    onclick="setLibraryMode('grid')"
-                >
-                    ▦ 网格
+                <button class="create-btn" onclick="toggleCreateMenu()">
+                    ＋ 新建
                 </button>
 
-                <button
-                    id="listModeBtn"
-                    class="mode-btn"
-                    onclick="setLibraryMode('list')"
-                >
-                    ☰ 列表
-                </button>
+                <div id="createMenu" class="create-menu">
+
+                    <button onclick="openNovelModal()">
+                        📖 新建作品
+                    </button>
+
+                    <button onclick="createGroup()">
+                        📁 新建分组
+                    </button>
+
+                    <button onclick="closeCreateMenu()">
+                        取消
+                    </button>
+
+                </div>
 
             </div>
 
         </div>
+    </header>
 
-    </div>
+    <main class="container">
 
+        <div class="page-title">我的小说</div>
 
-    <div id="novelList"></div>
+        <div class="page-subtitle">
+            创作、管理你的作品
+        </div>
 
-</div>
+        <div class="library-toolbar">
+
+            <div class="library-title">
+                我的书架
+            </div>
+
+            <div class="toolbar-right">
+
+                <div class="library-settings">
+
+                    <button class="settings-btn" onclick="toggleSettings()">
+                        ⚙️ 书架设置
+                    </button>
+
+                    <div id="settingsPanel" class="settings-panel">
+
+                        <div class="settings-title">
+                            书架模式
+                        </div>
+
+                        <div class="mode-buttons">
+
+                            <button
+                                id="gridModeBtn"
+                                class="mode-btn"
+                                onclick="setLibraryMode('grid')">
+                                ▦ 网格
+                            </button>
+
+                            <button
+                                id="listModeBtn"
+                                class="mode-btn"
+                                onclick="setLibraryMode('list')">
+                                ☰ 列表
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div id="emptyState" class="empty-state">
+
+            <div class="empty-icon">📚</div>
+
+            <div class="empty-title">
+                还没有作品
+            </div>
+
+            <div class="empty-text">
+                点击右上角「＋ 新建」开始创作
+            </div>
+
+        </div>
+
+        <div id="novels" class="novels grid-mode"></div>
+
+    </main>
 
 </div>
 
 
 <!-- =========================
-     新建菜单
+     新建作品弹窗
 ========================= -->
 
-<div
-    id="menuBg"
-    class="menu-bg"
-    onclick="hideNewMenu()"
->
-
-    <div
-        class="new-menu"
-        onclick="event.stopPropagation()"
-    >
-
-        <div
-            class="menu-item"
-            onclick="showNovelModal()"
-        >
-            📖 新建作品
-        </div>
-
-        <div
-            class="menu-item"
-            onclick="createGroup()"
-        >
-            📁 新建分组
-        </div>
-
-        <div
-            class="menu-item"
-            onclick="hideNewMenu()"
-        >
-            取消
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =========================
-     新建作品
-========================= -->
-
-<div
-    id="novelModal"
-    class="modal-bg"
->
+<div id="novelModal" class="modal-mask">
 
     <div class="modal">
 
@@ -836,30 +881,20 @@ button {
         <input
             id="novelName"
             type="text"
-            placeholder="请输入作品名称"
-        >
+            placeholder="请输入作品名称">
 
         <label>添加封面</label>
 
-        <label
-            class="cover-upload"
-            for="coverInput"
-        >
+        <label class="cover-upload" for="coverInput">
 
             <span id="coverText">
-
                 <strong>＋</strong>
-
-                <small>
-                    添加封面
-                </small>
-
+                <small>添加封面</small>
             </span>
 
             <img
                 id="coverPreview"
-                style="display:none;"
-            >
+                style="display:none;">
 
         </label>
 
@@ -868,29 +903,25 @@ button {
             type="file"
             accept="image/*"
             style="display:none;"
-            onchange="previewCover(event)"
-        >
+            onchange="previewCover(event)">
 
         <label>简介</label>
 
         <textarea
             id="novelDescription"
-            placeholder="简介内容"
-        ></textarea>
+            placeholder="简介内容"></textarea>
 
         <div class="actions">
 
             <button
                 class="cancel"
-                onclick="hideNovelModal()"
-            >
+                onclick="hideNovelModal()">
                 取消
             </button>
 
             <button
                 class="create"
-                onclick="createNovel()"
-            >
+                onclick="createNovel()">
                 创建作品
             </button>
 
@@ -905,125 +936,109 @@ button {
      作品页面
 ========================= -->
 
-<div
-    id="workPage"
-    class="work-page"
->
+<div id="workPage" class="page">
 
-<header class="header">
+    <header class="header">
 
-    <div class="header-left">
-        <div class="logo">小说家</div>
-        <div class="subtitle">作品管理</div>
-    </div>
+        <div class="logo">
+            小说家
+        </div>
 
-</header>
+    </header>
 
+    <main class="container">
 
-<div class="container">
+        <button
+            class="back-btn"
+            onclick="backHome()">
+            ← 返回书架
+        </button>
 
-    <button
-        class="back-btn"
-        onclick="backHome()"
-    >
-        ← 返回我的小说
-    </button>
+        <div class="work-header">
 
+            <img
+                id="workCover"
+                class="work-cover">
 
-    <div class="work-header">
+            <div class="work-info">
 
-        <img
-            id="workCover"
-            class="work-cover"
-        >
+                <h1 id="workName"></h1>
 
-        <div class="work-info">
+                <p id="workDescription"></p>
 
-            <h1 id="workName"></h1>
-
-            <p id="workDescription"></p>
+            </div>
 
         </div>
 
-    </div>
+        <div class="chapter-header">
 
-
-    <div class="chapter-box">
-
-        <div class="chapter-title">
-
-            <h2>📖 章节</h2>
+            <h2>章节</h2>
 
             <button
-                class="add-chapter"
-                onclick="newChapter()"
-            >
+                class="new-chapter-btn"
+                onclick="newChapter()">
                 ＋ 新建章节
             </button>
 
         </div>
 
-        <div id="chapterList"></div>
+        <div
+            id="chapterList"
+            class="chapter-list">
+        </div>
 
-    </div>
-
-</div>
+    </main>
 
 </div>
 
 
 <!-- =========================
-     写作页面
+     编辑器
 ========================= -->
 
-<div
-    id="editorPage"
-    class="editor-page"
->
+<div id="editorPage" class="page editor-page">
 
-<div class="editor-top">
+    <div class="editor-toolbar">
 
-    <button
-        class="editor-back"
-        onclick="backToWork()"
-    >
-        ← 返回
-    </button>
+        <div class="editor-left">
 
-    <input
-        id="chapterTitle"
-        class="chapter-input"
-        placeholder="章节标题"
-    >
+            <button
+                class="back-btn"
+                style="margin:0"
+                onclick="backToWork()">
+                ← 返回
+            </button>
 
-    <button
-        class="save-btn"
-        onclick="saveChapter()"
-    >
-        保存
-    </button>
+            <input
+                id="chapterTitle"
+                class="editor-title"
+                placeholder="章节标题">
 
-</div>
+        </div>
 
+        <button
+            class="save-btn"
+            onclick="saveChapter()">
+            保存
+        </button>
 
-<div class="editor-area">
+    </div>
 
-    <textarea
-        id="chapterContent"
-        class="content-editor"
-        placeholder="在这里开始写作……"
-        oninput="updateWordCount()"
-    ></textarea>
+    <div class="editor-area">
 
-</div>
+        <textarea
+            id="chapterContent"
+            class="editor-content"
+            placeholder="开始写作……"
+            oninput="updateWordCount()"></textarea>
 
+    </div>
 
-<div
-    id="wordCount"
-    class="word-count"
->
-    0 字
-</div>
+    <div
+        id="wordCount"
+        class="word-count">
+        0 字
+    </div>
 
 </div>
 
@@ -1035,9 +1050,7 @@ button {
 ========================= */
 
 let novels =
-    JSON.parse(
-        localStorage.getItem("novels") || "[]"
-    );
+    JSON.parse(localStorage.getItem("novels") || "[]");
 
 let selectedCover = "";
 
@@ -1045,14 +1058,27 @@ let currentNovelId = null;
 
 let currentChapterId = null;
 
+let libraryMode =
+    localStorage.getItem("libraryMode") || "grid";
+
+
+/* =========================
+   工具
+========================= */
+
+function saveNovels() {
+
+    localStorage.setItem(
+        "novels",
+        JSON.stringify(novels)
+    );
+
+}
+
 
 /* =========================
    书架模式
 ========================= */
-
-let libraryMode =
-    localStorage.getItem("libraryMode") || "grid";
-
 
 function setLibraryMode(mode) {
 
@@ -1065,185 +1091,89 @@ function setLibraryMode(mode) {
 
     renderNovels();
 
-    updateModeButtons();
-}
-
-
-function toggleLibrarySettings() {
-
-    const settings =
-        document.getElementById(
-            "librarySettings"
-        );
-
-    if (
-        settings.style.display === "block"
-    ) {
-
-        settings.style.display = "none";
-
-    } else {
-
-        settings.style.display = "block";
-
-    }
 }
 
 
 function updateModeButtons() {
 
-    const grid =
-        document.getElementById(
-            "gridModeBtn"
-        );
+    const gridBtn =
+        document.getElementById("gridModeBtn");
 
-    const list =
-        document.getElementById(
-            "listModeBtn"
-        );
+    const listBtn =
+        document.getElementById("listModeBtn");
 
-    grid.classList.remove("active");
+    gridBtn.classList.toggle(
+        "active",
+        libraryMode === "grid"
+    );
 
-    list.classList.remove("active");
+    listBtn.classList.toggle(
+        "active",
+        libraryMode === "list"
+    );
 
-    if (libraryMode === "grid") {
-
-        grid.classList.add("active");
-
-    } else {
-
-        list.classList.add("active");
-
-    }
 }
 
 
-/* =========================
-   首页
-========================= */
+function toggleSettings() {
 
-function renderNovels() {
+    document
+        .getElementById("settingsPanel")
+        .classList.toggle("show");
 
-    const list =
-        document.getElementById(
-            "novelList"
-        );
-
-    if (novels.length === 0) {
-
-        list.innerHTML = `
-            <div class="empty">
-
-                <div class="empty-icon">
-                    📖
-                </div>
-
-                <div class="empty-title">
-                    还没有作品
-                </div>
-
-                <div>
-                    点击右上角「＋ 新建」开始创作
-                </div>
-
-            </div>
-        `;
-
-        updateModeButtons();
-
-        return;
-    }
-
-
-    list.innerHTML =
-        `<div class="novels ${libraryMode}-mode">
-
-            ${
-                novels.map(novel => `
-
-                    <div class="novel-card">
-
-                        <img
-                            class="novel-cover"
-                            src="${
-                                novel.cover ||
-                                createDefaultCover()
-                            }"
-                        >
-
-                        <div class="novel-info">
-
-                            <div class="novel-name">
-                                ${
-                                    escapeHTML(
-                                        novel.name
-                                    )
-                                }
-                            </div>
-
-                            <div class="novel-description">
-                                ${
-                                    escapeHTML(
-                                        novel.description ||
-                                        "暂无简介"
-                                    )
-                                }
-                            </div>
-
-                            <div class="novel-meta">
-                                ${
-                                    novel.chapters.length
-                                } 章
-                                ·
-                                ${
-                                    novel.updated
-                                }
-                            </div>
-
-                            <button
-                                class="continue-btn"
-                                onclick="openWork('${novel.id}')"
-                            >
-                                继续写作
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                `).join("")
-            }
-
-        </div>`;
-
-
-    updateModeButtons();
 }
+
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const settings =
+            document.querySelector(".library-settings");
+
+        if (
+            settings &&
+            !settings.contains(event.target)
+        ) {
+
+            document
+                .getElementById("settingsPanel")
+                .classList.remove("show");
+
+        }
+
+    }
+);
 
 
 /* =========================
    新建菜单
 ========================= */
 
-function showNewMenu() {
+function toggleCreateMenu() {
 
-    document.getElementById("menuBg")
-        .style.display = "block";
+    document
+        .getElementById("createMenu")
+        .classList.toggle("show");
+
 }
 
 
-function hideNewMenu() {
+function closeCreateMenu() {
 
-    document.getElementById("menuBg")
-        .style.display = "none";
+    document
+        .getElementById("createMenu")
+        .classList.remove("show");
+
 }
 
 
 function createGroup() {
 
-    hideNewMenu();
+    closeCreateMenu();
 
     alert("分组功能正在开发中。");
+
 }
 
 
@@ -1251,36 +1181,41 @@ function createGroup() {
    新建作品
 ========================= */
 
-function showNovelModal() {
+function openNovelModal() {
 
-    hideNewMenu();
+    closeCreateMenu();
 
-    document.getElementById("novelModal")
+    document
+        .getElementById("novelModal")
+        .classList.add("show");
+
+    document
+        .getElementById("novelName")
+        .value = "";
+
+    document
+        .getElementById("novelDescription")
+        .value = "";
+
+    selectedCover = "";
+
+    document
+        .getElementById("coverPreview")
+        .style.display = "none";
+
+    document
+        .getElementById("coverText")
         .style.display = "flex";
+
 }
 
 
 function hideNovelModal() {
 
-    document.getElementById("novelModal")
-        .style.display = "none";
+    document
+        .getElementById("novelModal")
+        .classList.remove("show");
 
-    document.getElementById("novelName")
-        .value = "";
-
-    document.getElementById("novelDescription")
-        .value = "";
-
-    selectedCover = "";
-
-    document.getElementById("coverInput")
-        .value = "";
-
-    document.getElementById("coverText")
-        .style.display = "flex";
-
-    document.getElementById("coverPreview")
-        .style.display = "none";
 }
 
 
@@ -1294,54 +1229,109 @@ function previewCover(event) {
     const reader =
         new FileReader();
 
-    reader.onload =
-        function(e) {
+    reader.onload = function(e) {
 
-            selectedCover =
-                e.target.result;
+        selectedCover =
+            e.target.result;
 
-            const preview =
-                document.getElementById(
-                    "coverPreview"
-                );
+        const preview =
+            document.getElementById("coverPreview");
 
-            preview.src =
-                selectedCover;
+        preview.src =
+            selectedCover;
 
-            preview.style.display =
-                "block";
+        preview.style.display =
+            "block";
 
-            document.getElementById(
-                "coverText"
-            ).style.display =
-                "none";
-        };
+        document
+            .getElementById("coverText")
+            .style.display = "none";
+
+    };
 
     reader.readAsDataURL(file);
+
 }
 
+
+/* =========================
+   默认封面
+========================= */
+
+function createDefaultCover(name) {
+
+    const canvas =
+        document.createElement("canvas");
+
+    canvas.width = 300;
+    canvas.height = 400;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.fillStyle = "#eeeeee";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.fillStyle = "#555";
+
+    ctx.font = "bold 28px sans-serif";
+
+    ctx.textAlign = "center";
+
+    ctx.textBaseline = "middle";
+
+    let title =
+        name || "未命名作品";
+
+    if (title.length > 8) {
+
+        title =
+            title.substring(0, 8) + "…";
+
+    }
+
+    ctx.fillText(
+        title,
+        150,
+        200
+    );
+
+    return canvas.toDataURL("image/jpeg", .8);
+
+}
+
+
+/* =========================
+   创建作品
+========================= */
 
 function createNovel() {
 
     const name =
-        document.getElementById(
-            "novelName"
-        ).value.trim();
+        document
+            .getElementById("novelName")
+            .value
+            .trim();
 
     const description =
-        document.getElementById(
-            "novelDescription"
-        ).value.trim();
+        document
+            .getElementById("novelDescription")
+            .value
+            .trim();
 
     if (!name) {
 
         alert("请输入作品名称");
 
         return;
-    }
 
-    const now =
-        new Date().toLocaleDateString();
+    }
 
     const novel = {
 
@@ -1355,35 +1345,127 @@ function createNovel() {
             description,
 
         cover:
-            selectedCover,
+            selectedCover ||
+            createDefaultCover(name),
 
-        chapters:
-            [],
+        chapters: [],
 
         created:
-            now,
+            Date.now(),
 
         updated:
-            now
+            Date.now()
+
     };
 
-    novels.push(novel);
+    novels.unshift(novel);
 
     saveNovels();
 
     hideNovelModal();
 
     renderNovels();
+
 }
 
 
 /* =========================
-   作品页面
+   渲染书架
+========================= */
+
+function renderNovels() {
+
+    const container =
+        document.getElementById("novels");
+
+    const empty =
+        document.getElementById("emptyState");
+
+    container.className =
+        "novels " +
+        (libraryMode === "grid"
+            ? "grid-mode"
+            : "list-mode");
+
+    updateModeButtons();
+
+    if (!novels.length) {
+
+        container.innerHTML = "";
+
+        empty.style.display =
+            "block";
+
+        return;
+
+    }
+
+    empty.style.display =
+        "none";
+
+    container.innerHTML =
+        novels.map(function(novel) {
+
+            const chapterCount =
+                novel.chapters
+                    ? novel.chapters.length
+                    : 0;
+
+            const safeName =
+                escapeHTML(novel.name);
+
+            const safeDescription =
+                escapeHTML(
+                    novel.description || "暂无简介"
+                );
+
+            return `
+
+                <div class="novel-card">
+
+                    <img
+                        class="novel-cover"
+                        src="${novel.cover}">
+
+                    <div class="novel-info">
+
+                        <div class="novel-name">
+                            ${safeName}
+                        </div>
+
+                        <div class="novel-description">
+                            ${safeDescription}
+                        </div>
+
+                        <div class="novel-meta">
+                            ${chapterCount} 章
+                        </div>
+
+                    </div>
+
+                    <button
+                        class="continue-btn"
+                        onclick="openWork('${novel.id}')">
+                        继续写作
+                    </button>
+
+                </div>
+
+            `;
+
+        }).join("");
+
+}
+
+
+/* =========================
+   打开作品
 ========================= */
 
 function openWork(id) {
 
-    currentNovelId = id;
+    currentNovelId =
+        id;
 
     const novel =
         novels.find(
@@ -1392,45 +1474,55 @@ function openWork(id) {
 
     if (!novel) return;
 
-    document.getElementById("homePage")
-        .style.display = "none";
+    document
+        .getElementById("homePage")
+        .classList.remove("active");
 
-    document.getElementById("workPage")
-        .style.display = "block";
+    document
+        .getElementById("editorPage")
+        .classList.remove("active");
 
-    document.getElementById("editorPage")
-        .style.display = "none";
+    document
+        .getElementById("workPage")
+        .classList.add("active");
 
-    document.getElementById("workName")
+    document
+        .getElementById("workName")
         .textContent =
             novel.name;
 
-    document.getElementById("workDescription")
+    document
+        .getElementById("workDescription")
         .textContent =
             novel.description ||
             "暂无简介";
 
-    document.getElementById("workCover")
+    document
+        .getElementById("workCover")
         .src =
-            novel.cover ||
-            createDefaultCover();
+            novel.cover;
 
     renderChapters();
+
 }
 
 
+/* =========================
+   返回书架
+========================= */
+
 function backHome() {
 
-    document.getElementById("workPage")
-        .style.display = "none";
+    document
+        .getElementById("workPage")
+        .classList.remove("active");
 
-    document.getElementById("editorPage")
-        .style.display = "none";
-
-    document.getElementById("homePage")
-        .style.display = "block";
+    document
+        .getElementById("homePage")
+        .classList.add("active");
 
     renderNovels();
+
 }
 
 
@@ -1446,93 +1538,108 @@ function renderChapters() {
         );
 
     const list =
-        document.getElementById(
-            "chapterList"
-        );
+        document.getElementById("chapterList");
 
-    if (!novel ||
-        novel.chapters.length === 0) {
+    if (
+        !novel ||
+        !novel.chapters ||
+        !novel.chapters.length
+    ) {
 
         list.innerHTML = `
-            <div class="chapter-empty">
 
-                还没有章节
-
-                <br><br>
-
-                点击右上角「＋ 新建章节」
-                开始写作
-
+            <div
+                style="
+                    padding:50px;
+                    text-align:center;
+                    color:#999;
+                ">
+                还没有章节<br>
+                <span
+                    style="
+                        display:block;
+                        margin-top:8px;
+                        font-size:13px;
+                    ">
+                    点击右上角「＋ 新建章节」开始写作
+                </span>
             </div>
+
         `;
 
         return;
-    }
 
+    }
 
     list.innerHTML =
         novel.chapters
-            .map(
-                chapter => `
+            .map(function(chapter, index) {
 
-                <div class="chapter-item">
+                return `
 
-                    <div>
+                    <div
+                        class="chapter-item"
+                        onclick="openChapter('${chapter.id}')">
 
-                        <div class="chapter-name">
-                            ${
-                                escapeHTML(
-                                    chapter.title ||
-                                    "未命名章节"
-                                )
-                            }
+                        <div class="chapter-title">
+                            第 ${index + 1} 章
+                            ${escapeHTML(
+                                chapter.title ||
+                                "未命名章节"
+                            )}
                         </div>
 
                         <div class="chapter-date">
-                            ${
-                                chapter.updated
-                            }
+                            ${formatDate(chapter.updated)}
                         </div>
 
                     </div>
 
-                    <button
-                        class="chapter-open"
-                        onclick="openChapter('${chapter.id}')"
-                    >
-                        编辑
-                    </button>
+                `;
 
-                </div>
-
-            `
-            )
+            })
             .join("");
+
 }
 
 
+/* =========================
+   新建章节
+========================= */
+
 function newChapter() {
 
-    currentChapterId = null;
+    currentChapterId =
+        null;
 
-    document.getElementById("workPage")
-        .style.display = "none";
+    document
+        .getElementById("workPage")
+        .classList.remove("active");
 
-    document.getElementById("editorPage")
-        .style.display = "block";
+    document
+        .getElementById("editorPage")
+        .classList.add("active");
 
-    document.getElementById("chapterTitle")
+    document
+        .getElementById("chapterTitle")
         .value = "";
 
-    document.getElementById("chapterContent")
+    document
+        .getElementById("chapterContent")
         .value = "";
 
     updateWordCount();
 
-    document.getElementById("chapterTitle")
+    document
+        .getElementById("chapterTitle")
         .focus();
+
 }
 
+
+/* =========================
+   打开章节
+========================= */
 
 function openChapter(id) {
 
@@ -1550,23 +1657,29 @@ function openChapter(id) {
 
     if (!chapter) return;
 
-    currentChapterId = id;
+    currentChapterId =
+        id;
 
-    document.getElementById("workPage")
-        .style.display = "none";
+    document
+        .getElementById("workPage")
+        .classList.remove("active");
 
-    document.getElementById("editorPage")
-        .style.display = "block";
+    document
+        .getElementById("editorPage")
+        .classList.add("active");
 
-    document.getElementById("chapterTitle")
+    document
+        .getElementById("chapterTitle")
         .value =
-            chapter.title;
+            chapter.title || "";
 
-    document.getElementById("chapterContent")
+    document
+        .getElementById("chapterContent")
         .value =
-            chapter.content;
+            chapter.content || "";
 
     updateWordCount();
+
 }
 
 
@@ -1576,23 +1689,6 @@ function openChapter(id) {
 
 function saveChapter() {
 
-    const title =
-        document.getElementById(
-            "chapterTitle"
-        ).value.trim();
-
-    const content =
-        document.getElementById(
-            "chapterContent"
-        ).value;
-
-    if (!title) {
-
-        alert("请输入章节标题");
-
-        return;
-    }
-
     const novel =
         novels.find(
             n => n.id === currentNovelId
@@ -1600,17 +1696,36 @@ function saveChapter() {
 
     if (!novel) return;
 
-    const now =
-        new Date().toLocaleString();
+    const title =
+        document
+            .getElementById("chapterTitle")
+            .value
+            .trim();
 
+    const content =
+        document
+            .getElementById("chapterContent")
+            .value;
+
+    if (!title) {
+
+        alert("请输入章节标题");
+
+        return;
+
+    }
+
+    if (!novel.chapters) {
+
+        novel.chapters = [];
+
+    }
 
     if (currentChapterId) {
 
         const chapter =
             novel.chapters.find(
-                c =>
-                    c.id ===
-                    currentChapterId
+                c => c.id === currentChapterId
             );
 
         if (chapter) {
@@ -1622,12 +1737,13 @@ function saveChapter() {
                 content;
 
             chapter.updated =
-                now;
+                Date.now();
+
         }
 
     } else {
 
-        const chapter = {
+        novel.chapters.push({
 
             id:
                 Date.now().toString(),
@@ -1639,27 +1755,21 @@ function saveChapter() {
                 content,
 
             updated:
-                now
-        };
+                Date.now()
 
-        novel.chapters.push(
-            chapter
-        );
+        });
 
-        currentChapterId =
-            chapter.id;
     }
 
-
     novel.updated =
-        new Date()
-            .toLocaleDateString();
+        Date.now();
 
     saveNovels();
 
-    alert("章节已保存");
+    alert("已保存");
 
     backToWork();
+
 }
 
 
@@ -1669,114 +1779,80 @@ function saveChapter() {
 
 function backToWork() {
 
-    document.getElementById("editorPage")
-        .style.display = "none";
+    document
+        .getElementById("editorPage")
+        .classList.remove("active");
 
-    document.getElementById("workPage")
-        .style.display = "block";
+    document
+        .getElementById("workPage")
+        .classList.add("active");
 
     renderChapters();
+
 }
 
 
 /* =========================
-   字数
+   字数统计
 ========================= */
 
 function updateWordCount() {
 
-    const content =
-        document.getElementById(
-            "chapterContent"
-        ).value;
+    const text =
+        document
+            .getElementById("chapterContent")
+            .value;
 
     const count =
-        content
-            .replace(/\s/g, "")
-            .length;
+        text.replace(/\s/g, "").length;
 
-    document.getElementById(
-        "wordCount"
-    ).textContent =
-        count + " 字";
+    document
+        .getElementById("wordCount")
+        .textContent =
+            count + " 字";
+
 }
 
 
 /* =========================
-   数据保存
-========================= */
-
-function saveNovels() {
-
-    localStorage.setItem(
-        "novels",
-        JSON.stringify(novels)
-    );
-}
-
-
-/* =========================
-   默认封面
-========================= */
-
-function createDefaultCover() {
-
-    return "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(`
-
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="200"
-            height="280"
-        >
-
-            <rect
-                width="100%"
-                height="100%"
-                fill="#eeeeee"
-            />
-
-            <text
-                x="50%"
-                y="50%"
-                text-anchor="middle"
-                dominant-baseline="middle"
-                font-size="24"
-                fill="#999999"
-            >
-                小说
-            </text>
-
-        </svg>
-
-        `);
-}
-
-
-/* =========================
-   防止 HTML 注入
+   HTML安全处理
 ========================= */
 
 function escapeHTML(text) {
 
     return String(text)
         .replace(/&/g, "&amp;")
-        .replace(
-            /</g,
-            "&lt;"
-        )
-        .replace(
-            />/g,
-            "&gt;"
-        )
-        .replace(
-            /"/g,
-            "&quot;"
-        )
-        .replace(
-            /'/g,
-            "&#039;"
-        );
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================
+   日期
+========================= */
+
+function formatDate(timestamp) {
+
+    if (!timestamp) return "";
+
+    const date =
+        new Date(timestamp);
+
+    return (
+        date.getFullYear() +
+        "/" +
+        String(
+            date.getMonth() + 1
+        ).padStart(2, "0") +
+        "/" +
+        String(
+            date.getDate()
+        ).padStart(2, "0")
+    );
+
 }
 
 
