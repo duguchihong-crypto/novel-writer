@@ -1,92 +1,116 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小说作者创作平台</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小说作者创作平台</title>
 
-    <style>
-        * {
-            box-sizing: border-box;
-        }
+<style>
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                         "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: #f6f7f9;
-            color: #222;
-        }
+body {
+    margin: 0;
+    background: #f7f7f7;
+    color: #222;
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "PingFang SC", "Microsoft YaHei", sans-serif;
+}
 
-        header {
-            height: 64px;
-            background: white;
-            border-bottom: 1px solid #e5e5e5;
-            display: flex;
-            align-items: center;
-            padding: 0 28px;
-            font-size: 20px;
-            font-weight: 600;
-        }
+header {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-weight: bold;
+}
 
-        .container {
-            max-width: 1000px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
+.layout {
+    display: flex;
+    height: calc(100vh - 60px);
+}
 
-        .top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
+/* 左侧章节栏 */
+.sidebar {
+    width: 240px;
+    background: white;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    overflow-y: auto;
+}
 
-        h1 {
-            margin: 0;
-            font-size: 28px;
-        }
+.sidebar h2 {
+    font-size: 18px;
+}
 
-        button {
-            border: none;
-            background: #222;
-            color: white;
-            padding: 11px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-        }
+.chapter {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+}
 
-        button:hover {
-            opacity: 0.85;
-        }
+.chapter:hover {
+    background: #f0f0f0;
+}
 
-        .book {
-            background: white;
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-            padding: 22px;
-            margin-bottom: 15px;
-        }
+/* 中间编辑区 */
+.editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
 
-        .book h2 {
-            margin: 0 0 8px;
-            font-size: 19px;
-        }
+.title {
+    border: none;
+    outline: none;
+    background: white;
+    padding: 25px 40px;
+    font-size: 25px;
+    font-weight: bold;
+}
 
-        .info {
-            color: #777;
-            font-size: 14px;
-        }
+textarea {
+    flex: 1;
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    padding: 30px 40px;
+    font-size: 18px;
+    line-height: 2;
+    background: white;
+}
 
-        .empty {
-            text-align: center;
-            padding: 80px 20px;
-            background: white;
-            border-radius: 12px;
-            color: #888;
-        }
-    </style>
+.footer {
+    height: 45px;
+    background: white;
+    border-top: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    color: #777;
+    font-size: 13px;
+}
+
+button {
+    border: none;
+    background: #222;
+    color: white;
+    padding: 9px 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+button:hover {
+    opacity: .8;
+}
+</style>
 </head>
 
 <body>
@@ -95,54 +119,162 @@
     ✍️ 小说作者创作平台
 </header>
 
-<div class="container">
+<div class="layout">
 
-    <div class="top">
-        <h1>我的小说</h1>
-        <button onclick="newBook()">＋ 新建小说</button>
-    </div>
+    <aside class="sidebar">
 
-    <div id="books">
+        <h2>我的小说</h2>
 
-        <div class="book">
-            <h2>我的第一本小说</h2>
-            <div class="info">
-                12章 · 38,521字 · 最后编辑：今天
+        <button onclick="newChapter()">
+            ＋ 新建章节
+        </button>
+
+        <div id="chapters">
+
+            <div class="chapter"
+                 onclick="loadChapter('第一章')">
+                第一章
             </div>
+
         </div>
 
-        <div class="book">
-            <h2>第二个故事</h2>
-            <div class="info">
-                3章 · 8,421字 · 最后编辑：昨天
-            </div>
+    </aside>
+
+
+    <main class="editor">
+
+        <input
+            id="chapterTitle"
+            class="title"
+            value="第一章"
+            placeholder="章节标题"
+            oninput="save()"
+        >
+
+        <textarea
+            id="content"
+            placeholder="开始写你的小说……"
+            oninput="save()"
+        ></textarea>
+
+        <div class="footer">
+
+            <span id="wordCount">
+                0 字
+            </span>
+
+            <span id="status">
+                未保存
+            </span>
+
         </div>
 
-    </div>
+    </main>
 
 </div>
 
-<script>
-function newBook() {
-    const name = prompt("请输入小说名称：");
 
-    if (!name) {
-        return;
+<script>
+
+const title = document.getElementById("chapterTitle");
+const content = document.getElementById("content");
+const wordCount = document.getElementById("wordCount");
+const status = document.getElementById("status");
+
+
+function save() {
+
+    localStorage.setItem(
+        "novel_title",
+        title.value
+    );
+
+    localStorage.setItem(
+        "novel_content",
+        content.value
+    );
+
+    updateWordCount();
+
+    status.innerText = "✓ 已保存";
+
+}
+
+
+function updateWordCount() {
+
+    const text = content.value;
+
+    const count = text.replace(/\s/g, "").length;
+
+    wordCount.innerText =
+        count.toLocaleString() + " 字";
+
+}
+
+
+function load() {
+
+    const savedTitle =
+        localStorage.getItem("novel_title");
+
+    const savedContent =
+        localStorage.getItem("novel_content");
+
+    if (savedTitle) {
+        title.value = savedTitle;
     }
 
-    const book = document.createElement("div");
+    if (savedContent) {
+        content.value = savedContent;
+    }
 
-    book.className = "book";
+    updateWordCount();
 
-    book.innerHTML = `
-        <h2>${name}</h2>
-        <div class="info">
-            0章 · 0字 · 刚刚创建
-        </div>
-    `;
-
-    document.getElementById("books").prepend(book);
 }
+
+
+function newChapter() {
+
+    const name =
+        prompt("请输入章节名称");
+
+    if (!name) return;
+
+    const chapters =
+        document.getElementById("chapters");
+
+    const chapter =
+        document.createElement("div");
+
+    chapter.className = "chapter";
+
+    chapter.innerText = name;
+
+    chapter.onclick = function() {
+
+        loadChapter(name);
+
+    };
+
+    chapters.appendChild(chapter);
+
+}
+
+
+function loadChapter(name) {
+
+    title.value = name;
+
+    content.value = "";
+
+    save();
+
+}
+
+
+load();
+
 </script>
 
 </body>
