@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小说作者创作平台</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f7f7f7;
+    color: #222;
+    font-family: -apple-system, BlinkMacSystemFont,
+                 "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+header {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    font-weight: bold;
+}
+
+.layout {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+/* 左侧章节栏 */
+.sidebar {
+    width: 240px;
+    background: white;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    font-size: 18px;
+}
+
+.chapter {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.chapter:hover {
+    background: #f0f0f0;
+}
+
+/* 中间编辑区 */
+.editor {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    border: none;
+    outline: none;
+    background: white;
+    padding: 25px 40px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+textarea {
+    flex: 1;
+    width: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    padding: 30px 40px;
+    font-size: 18px;
+    line-height: 2;
+    background: white;
+}
+
+.footer {
+    height: 45px;
+    background: white;
+    border-top: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    color: #777;
+    font-size: 13px;
+}
+
+button {
+    border: none;
+    background: #222;
+    color: white;
+    padding: 9px 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+button:hover {
+    opacity: .8;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    ✍️ 小说作者创作平台
+</header>
+
+<div class="layout">
+
+    <aside class="sidebar">
+
+        <h2>我的小说</h2>
+
+        <button onclick="newChapter()">
+            ＋ 新建章节
+        </button>
+
+        <div id="chapters">
+
+            <div class="chapter"
+                 onclick="loadChapter('第一章')">
+                第一章
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <main class="editor">
+
+        <input
+            id="chapterTitle"
+            class="title"
+            value="第一章"
+            placeholder="章节标题"
+            oninput="save()"
+        >
+
+        <textarea
+            id="content"
+            placeholder="开始写你的小说……"
+            oninput="save()"
+        ></textarea>
+
+        <div class="footer">
+
+            <span id="wordCount">
+                0 字
+            </span>
+
+            <span id="status">
+                未保存
+            </span>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const title = document.getElementById("chapterTitle");
+const content = document.getElementById("content");
+const wordCount = document.getElementById("wordCount");
+const status = document.getElementById("status");
+
+
+function save() {
+
+    localStorage.setItem(
+        "novel_title",
+        title.value
+    );
+
+    localStorage.setItem(
+        "novel_content",
+        content.value
+    );
+
+    updateWordCount();
+
+    status.innerText = "✓ 已保存";
+
+}
+
+
+function updateWordCount() {
+
+    const text = content.value;
+
+    const count = text.replace(/\s/g, "").length;
+
+    wordCount.innerText =
+        count.toLocaleString() + " 字";
+
+}
+
+
+function load() {
+
+    const savedTitle =
+        localStorage.getItem("novel_title");
+
+    const savedContent =
+        localStorage.getItem("novel_content");
+
+    if (savedTitle) {
+        title.value = savedTitle;
+    }
+
+    if (savedContent) {
+        content.value = savedContent;
+    }
+
+    updateWordCount();
+
+}
+
+
+function newChapter() {
+
+    const name =
+        prompt("请输入章节名称");
+
+    if (!name) return;
+
+    const chapters =
+        document.getElementById("chapters");
+
+    const chapter =
+        document.createElement("div");
+
+    chapter.className = "chapter";
+
+    chapter.innerText = name;
+
+    chapter.onclick = function() {
+
+        loadChapter(name);
+
+    };
+
+    chapters.appendChild(chapter);
+
+}
+
+
+function loadChapter(name) {
+
+    title.value = name;
+
+    content.value = "";
+
+    save();
+
+}
+
+
+load();
+
+</script>
+
+</body>
+</html>
