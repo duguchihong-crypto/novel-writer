@@ -1066,3 +1066,30 @@ body {
         font-size: 13px;
     }
 }
+/* ==================================================
+   ★ 强制覆盖：底部四个新增按钮颜色
+================================================== */
+
+.book-actions #addPreface {
+    background-color: #f3fbfa !important;
+    border-color: #b7dfdc !important;
+    color: #5fa9a3 !important;
+}
+
+.book-actions #addChapter {
+    background-color: #f7f7f7 !important;
+    border-color: #c8c8c8 !important;
+    color: #777777 !important;
+}
+
+.book-actions #addPart {
+    background-color: #ffffff !important;
+    border-color: #dedede !important;
+    color: #b0b0b0 !important;
+}
+
+.book-actions #addVolume {
+    background-color: #fffdf3 !important;
+    border-color: #eadf9e !important;
+    color: #c8ae55 !important;
+}
