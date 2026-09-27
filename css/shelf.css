@@ -164,6 +164,13 @@ body {
 }
 
 
+/* ★ 新增：打开菜单时显示 */
+
+.menu.show {
+    display: block;
+}
+
+
 .create-menu {
     right: 100px;
 }
