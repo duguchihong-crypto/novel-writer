@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>正文</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f6f8;
+            color: #222;
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                "PingFang SC",
+                "Microsoft YaHei",
+                sans-serif;
+        }
+
+        .top-bar {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 60px;
+
+            background: #ffffff;
+
+            border-bottom:
+                1px solid #e5e5e5;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                0 18px;
+
+            z-index: 1000;
+        }
+
+        .back-button {
+
+            border: none;
+
+            background: transparent;
+
+            font-size: 15px;
+
+            cursor: pointer;
+
+            color: #555;
+        }
+
+        .chapter-title {
+
+            font-size: 17px;
+
+            font-weight: 600;
+
+            position: absolute;
+
+            left: 50%;
+
+            transform:
+                translateX(-50%);
+
+            white-space: nowrap;
+        }
+
+        .save-status {
+
+            font-size: 13px;
+
+            color: #999;
+        }
+
+        .editor-page {
+
+            padding-top: 60px;
+
+            min-height: 100vh;
+        }
+
+        .editor {
+
+            width: 100%;
+
+            max-width: 900px;
+
+            margin: 0 auto;
+
+            padding:
+                50px 24px 120px;
+        }
+
+        .chapter-name {
+
+            width: 100%;
+
+            border: none;
+
+            outline: none;
+
+            background: transparent;
+
+            font-size: 30px;
+
+            font-weight: 700;
+
+            margin-bottom: 30px;
+        }
+
+        .content {
+
+            width: 100%;
+
+            min-height: 70vh;
+
+            border: none;
+
+            outline: none;
+
+            resize: none;
+
+            background: transparent;
+
+            font-size: 18px;
+
+            line-height: 2;
+
+            font-family:
+                inherit;
+        }
+
+        @media (max-width: 600px) {
+
+            .editor {
+
+                padding:
+                    35px 20px 100px;
+            }
+
+            .chapter-name {
+
+                font-size: 26px;
+            }
+
+            .content {
+
+                font-size: 17px;
+
+                line-height: 1.9;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <header class="top-bar">
+
+        <button
+            id="backButton"
+            class="back-button"
+        >
+            ← 全书
+        </button>
+
+        <div
+            id="chapterTitle"
+            class="chapter-title"
+        >
+            正文
+        </div>
+
+        <div
+            id="saveStatus"
+            class="save-status"
+        >
+            已保存
+        </div>
+
+    </header>
+
+
+    <main class="editor-page">
+
+        <div class="editor">
+
+            <input
+                id="chapterName"
+                class="chapter-name"
+                type="text"
+                placeholder="章节标题"
+            >
+
+            <textarea
+                id="content"
+                class="content"
+                placeholder="开始写作……"
+            ></textarea>
+
+        </div>
+
+    </main>
+
+
+    <script>
+
+        let currentBook = null;
+        let currentChapter = null;
+
+
+        // ==============================
+        // 读取当前小说
+        // ==============================
+
+        function loadBook() {
+
+            const bookId =
+                localStorage.getItem(
+                    "currentBookId"
+                );
+
+            const chapterId =
+                localStorage.getItem(
+                    "currentChapterId"
+                );
+
+            if (
+                !bookId ||
+                !chapterId
+            ) {
+
+                return false;
+            }
+
+
+            const savedBooks =
+                localStorage.getItem(
+                    "novelBooks"
+                );
+
+            if (!savedBooks) {
+
+                return false;
+            }
+
+
+            try {
+
+                const books =
+                    JSON.parse(
+                        savedBooks
+                    );
+
+                currentBook =
+                    books.find(
+                        book =>
+                            String(book.id) ===
+                            String(bookId)
+                    );
+
+
+                if (!currentBook) {
+
+                    return false;
+                }
+
+
+                function findNode(
+                    nodes
+                ) {
+
+                    if (
+                        !Array.isArray(nodes)
+                    ) {
+
+                        return null;
+                    }
+
+
+                    for (
+                        const node of nodes
+                    ) {
+
+                        if (
+                            String(node.id) ===
+                            String(chapterId)
+                        ) {
+
+                            return node;
+                        }
+
+
+                        const result =
+                            findNode(
+                                node.children
+                            );
+
+
+                        if (result) {
+
+                            return result;
+                        }
+                    }
+
+
+                    return null;
+                }
+
+
+                currentChapter =
+                    findNode(
+                        currentBook.structure
+                    );
+
+
+                if (
+                    !currentChapter
+                ) {
+
+                    return false;
+                }
+
+
+                return true;
+
+            } catch (error) {
+
+                console.error(
+                    "读取小说失败",
+                    error
+                );
+
+                return false;
+            }
+        }
+
+
+        // ==============================
+        // 页面初始化
+        // ==============================
+
+        function init() {
+
+            if (!loadBook()) {
+
+                return;
+            }
+
+
+            document.title =
+                currentChapter.title ||
+                "正文";
+
+
+            document.querySelector(
+                "#chapterTitle"
+            ).textContent =
+                currentChapter.title ||
+                "正文";
+
+
+            document.querySelector(
+                "#chapterName"
+            ).value =
+                currentChapter.title ||
+                "";
+
+
+            document.querySelector(
+                "#content"
+            ).value =
+                currentChapter.content ||
+                "";
+        }
+
+
+        // ==============================
+        // 保存
+        // ==============================
+
+        function saveChapter() {
+
+            if (
+                !currentBook ||
+                !currentChapter
+            ) {
+
+                return;
+            }
+
+
+            currentChapter.title =
+                document.querySelector(
+                    "#chapterName"
+                ).value;
+
+
+            currentChapter.content =
+                document.querySelector(
+                    "#content"
+                ).value;
+
+
+            const savedBooks =
+                localStorage.getItem(
+                    "novelBooks"
+                );
+
+
+            let books =
+                JSON.parse(
+                    savedBooks || "[]"
+                );
+
+
+            const index =
+                books.findIndex(
+                    book =>
+                        String(book.id) ===
+                        String(currentBook.id)
+                );
+
+
+            if (index !== -1) {
+
+                books[index] =
+                    currentBook;
+
+                localStorage.setItem(
+                    "novelBooks",
+                    JSON.stringify(
+                        books
+                    )
+                );
+            }
+
+
+            document.querySelector(
+                "#saveStatus"
+            ).textContent =
+                "已保存";
+        }
+
+
+        // ==============================
+        // 自动保存
+        // ==============================
+
+        let saveTimer = null;
+
+
+        function scheduleSave() {
+
+            document.querySelector(
+                "#saveStatus"
+            ).textContent =
+                "正在保存…";
+
+
+            clearTimeout(
+                saveTimer
+            );
+
+
+            saveTimer =
+                setTimeout(
+                    saveChapter,
+                    500
+                );
+        }
+
+
+        document
+            .querySelector("#chapterName")
+            .addEventListener(
+                "input",
+                scheduleSave
+            );
+
+
+        document
+            .querySelector("#content")
+            .addEventListener(
+                "input",
+                scheduleSave
+            );
+
+
+        // ==============================
+        // 返回全书
+        // ==============================
+
+        document
+            .querySelector("#backButton")
+            .addEventListener(
+                "click",
+                function() {
+
+                    saveChapter();
+
+                    window.location.href =
+                        "book.html";
+                }
+            );
+
+
+        init();
+
+    </script>
+
+</body>
+
+</html>
