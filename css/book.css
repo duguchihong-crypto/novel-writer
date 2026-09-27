@@ -1,4 +1,9 @@
 /* ==================================================
+   全书页面 CSS
+================================================== */
+
+
+/* ==================================================
    基础
 ================================================== */
 
@@ -14,6 +19,10 @@ body {
     height: 100%;
 }
 
+html {
+    overflow: hidden;
+}
+
 body {
 
     font-family:
@@ -24,14 +33,16 @@ body {
         "Microsoft YaHei",
         sans-serif;
 
-    background: #ffffff;
+    background: #fafafa;
 
-    color: #222;
+    color: #333;
 
     overflow: hidden;
 
     -webkit-user-select: none;
     user-select: none;
+
+    -webkit-touch-callout: none;
 }
 
 
@@ -49,9 +60,9 @@ body {
 
     height: 56px;
 
-    background: rgba(255,255,255,0.98);
+    background: rgba(255, 255, 255, 0.98);
 
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid #e8e8e8;
 
     display: flex;
 
@@ -68,7 +79,7 @@ body {
 
     font-weight: 600;
 
-    color: #222;
+    color: #333;
 }
 
 .back-button {
@@ -76,6 +87,10 @@ body {
     position: absolute;
 
     left: 16px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
 
     border: none;
 
@@ -88,6 +103,8 @@ body {
     padding: 8px 4px;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
 .back-button:active {
@@ -95,33 +112,51 @@ body {
     opacity: 0.5;
 }
 
+.top-placeholder {
 
-/* ==================================================
-   主区域
-================================================== */
+    position: absolute;
 
-.main {
+    right: 16px;
 
-    position: fixed;
+    width: 40px;
 
-    top: 56px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    overflow: auto;
-
-    -webkit-overflow-scrolling: touch;
-
-    background: #ffffff;
+    height: 30px;
 }
 
 
 /* ==================================================
-   画布
+   主画布
 ================================================== */
 
-.structure-area {
+.tree-canvas {
+
+    position: fixed;
+
+    top: 56px;
+
+    left: 0;
+
+    right: 0;
+
+    bottom: 0;
+
+    overflow: auto;
+
+    background: #fafafa;
+
+    -webkit-overflow-scrolling: touch;
+
+    touch-action: pan-x pan-y;
+
+    overscroll-behavior: contain;
+}
+
+
+/* ==================================================
+   实际树区域
+================================================== */
+
+#tree {
 
     position: relative;
 
@@ -129,18 +164,11 @@ body {
 
     min-height: 100%;
 
-    padding: 60px 60px 140px;
+    padding: 0;
 
     overflow: visible;
-}
 
-.tree-canvas {
-
-    position: relative;
-
-    width: 100%;
-
-    min-height: 500px;
+    z-index: 5;
 }
 
 
@@ -148,14 +176,16 @@ body {
    SVG 连线
 ================================================== */
 
-.connection-layer {
+.connections {
 
     position: absolute;
 
     left: 0;
+
     top: 0;
 
     width: 100%;
+
     height: 100%;
 
     overflow: visible;
@@ -165,11 +195,12 @@ body {
     z-index: 1;
 }
 
-.connection-line {
+.connections line,
+.connections path {
 
     fill: none;
 
-    stroke: #d2d2d2;
+    stroke: #cfcfcf;
 
     stroke-width: 1.5;
 
@@ -181,22 +212,19 @@ body {
    书名
 ================================================== */
 
-.book-node {
+.book-title {
 
     position: absolute;
 
-    z-index: 10;
-}
+    z-index: 20;
 
-.book-box {
+    min-width: 180px;
 
-    min-width: 190px;
+    max-width: min(320px, 75vw);
 
-    max-width: min(360px, 75vw);
+    min-height: 58px;
 
-    min-height: 62px;
-
-    padding: 13px 30px;
+    padding: 12px 26px;
 
     display: flex;
 
@@ -206,15 +234,15 @@ body {
 
     text-align: center;
 
-    border-radius: 22px;
+    border-radius: 24px;
 
     background: #fff1f1;
 
-    border: 1.5px solid #e5a0a0;
+    border: 1.5px solid #e3a0a0;
 
-    color: #9b2222;
+    color: #922b2b;
 
-    font-size: 19px;
+    font-size: 18px;
 
     font-weight: 650;
 
@@ -225,51 +253,69 @@ body {
     overflow-wrap: anywhere;
 
     box-shadow:
-        0 2px 7px rgba(0,0,0,0.035);
+        0 2px 8px rgba(0, 0, 0, 0.05);
 
-    cursor: pointer;
+    cursor: grab;
 
     user-select: none;
 
+    -webkit-user-select: none;
+
+    -webkit-touch-callout: none;
+
+    touch-action: none;
+
+    -webkit-tap-highlight-color: transparent;
+
     transition:
-        box-shadow 0.12s,
-        transform 0.12s;
+        box-shadow 0.12s ease,
+        transform 0.12s ease;
 }
 
-.book-box.selected {
+.book-title:active {
+
+    cursor: grabbing;
+}
+
+.book-title.selected {
 
     box-shadow:
-        0 0 0 2px rgba(155,34,34,0.10),
-        0 3px 10px rgba(0,0,0,0.06);
+        0 0 0 2px rgba(146, 43, 43, 0.12),
+        0 3px 12px rgba(0, 0, 0, 0.07);
 }
 
 
 /* ==================================================
-   普通节点
+   节点外层
 ================================================== */
 
-.node {
+.tree-node {
 
     position: absolute;
 
     z-index: 10;
 
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-}
-
-.node-box {
-
-    min-width: 155px;
-
-    max-width: 230px;
+    width: 155px;
 
     min-height: 48px;
 
-    padding: 11px 21px;
+    overflow: visible;
+}
+
+
+/* ==================================================
+   节点框
+================================================== */
+
+.node-box {
+
+    position: relative;
+
+    width: 155px;
+
+    min-height: 48px;
+
+    padding: 10px 16px;
 
     border-radius: 9px;
 
@@ -287,7 +333,7 @@ body {
 
     overflow-wrap: anywhere;
 
-    font-size: 16px;
+    font-size: 15px;
 
     font-weight: 600;
 
@@ -295,19 +341,51 @@ body {
 
     user-select: none;
 
+    -webkit-user-select: none;
+
     box-shadow:
-        0 2px 6px rgba(0,0,0,0.035);
+        0 2px 6px rgba(0, 0, 0, 0.045);
 
     transition:
-        box-shadow 0.12s,
-        transform 0.12s;
+        box-shadow 0.12s ease,
+        transform 0.12s ease;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
-.node.selected .node-box {
+.node-box:active {
+
+    transform: scale(0.98);
+}
+
+
+/* ==================================================
+   节点文字
+================================================== */
+
+.node-title {
+
+    width: 100%;
+
+    text-align: center;
+
+    line-height: 1.4;
+
+    overflow-wrap: anywhere;
+
+    word-break: break-word;
+}
+
+
+/* ==================================================
+   节点选中
+================================================== */
+
+.tree-node.selected .node-box {
 
     box-shadow:
-        0 0 0 2px rgba(0,0,0,0.08),
-        0 3px 10px rgba(0,0,0,0.07);
+        0 0 0 2px rgba(0, 0, 0, 0.08),
+        0 3px 10px rgba(0, 0, 0, 0.07);
 
     transform: translateY(-1px);
 }
@@ -351,7 +429,7 @@ body {
 
     border: 1.5px solid #c9c9c9;
 
-    color: #555555;
+    color: #555;
 }
 
 
@@ -363,14 +441,14 @@ body {
 
     background: #f3f3f3;
 
-    border: 1.5px solid #999999;
+    border: 1.5px solid #999;
 
-    color: #202020;
+    color: #292929;
 }
 
 
 /* ==================================================
-   右侧操作
+   节点操作区域
 ================================================== */
 
 .node-actions {
@@ -387,14 +465,14 @@ body {
 
     align-items: center;
 
-    gap: 6px;
+    gap: 5px;
 
     white-space: nowrap;
 
     z-index: 50;
 }
 
-.node.selected .node-actions {
+.tree-node.selected .node-actions {
 
     display: flex;
 }
@@ -404,17 +482,18 @@ body {
    操作按钮
 ================================================== */
 
-.action-button {
+.node-action-button,
+.node-action-delete {
 
     height: 32px;
 
     padding: 0 9px;
 
-    border: 1px solid #e3e3e3;
+    border: 1px solid #dfdfdf;
 
     border-radius: 7px;
 
-    background: #ffffff;
+    background: #fff;
 
     color: #666;
 
@@ -422,31 +501,30 @@ body {
 
     cursor: pointer;
 
-    box-shadow:
-        0 1px 4px rgba(0,0,0,0.04);
-
     white-space: nowrap;
+
+    box-shadow:
+        0 1px 4px rgba(0, 0, 0, 0.04);
+
+    -webkit-tap-highlight-color: transparent;
 }
 
-.action-button:active {
+.node-action-button:active,
+.node-action-delete:active {
 
-    background: #f5f5f5;
+    background: #f4f4f4;
+
+    transform: scale(0.96);
 }
 
-.delete-button {
-
-    width: 32px;
-
-    padding: 0;
+.node-action-delete {
 
     color: #888;
-
-    font-size: 15px;
 }
 
 
 /* ==================================================
-   连线 + / -
+   连线上的 + / -
 ================================================== */
 
 .line-control {
@@ -457,11 +535,13 @@ body {
 
     height: 24px;
 
+    padding: 0;
+
     border-radius: 50%;
 
-    border: 1px solid #d3d3d3;
+    border: 1px solid #d2d2d2;
 
-    background: #ffffff;
+    background: #fff;
 
     color: #777;
 
@@ -477,12 +557,14 @@ body {
 
     cursor: pointer;
 
-    z-index: 30;
+    z-index: 100;
 
     box-shadow:
-        0 1px 4px rgba(0,0,0,0.06);
+        0 1px 5px rgba(0, 0, 0, 0.06);
 
     pointer-events: auto;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
 .line-control:active {
@@ -497,15 +579,17 @@ body {
    空状态
 ================================================== */
 
-.empty-hint {
+.tree-empty {
 
     position: absolute;
 
     left: 50%;
 
-    top: 190px;
+    top: 150px;
 
     transform: translateX(-50%);
+
+    width: 280px;
 
     color: #aaa;
 
@@ -515,27 +599,31 @@ body {
 
     text-align: center;
 
-    white-space: nowrap;
+    white-space: normal;
+
+    pointer-events: none;
 }
 
 
 /* ==================================================
-   底部
+   书名操作栏
 ================================================== */
 
-.bottom-bar {
+.book-actions {
 
     position: fixed;
 
     left: 0;
+
     right: 0;
+
     bottom: 0;
 
-    height: 88px;
+    min-height: 76px;
 
-    background: rgba(255,255,255,0.98);
+    background: rgba(255, 255, 255, 0.98);
 
-    border-top: 1px solid #eeeeee;
+    border-top: 1px solid #e8e8e8;
 
     display: none;
 
@@ -543,57 +631,53 @@ body {
 
     justify-content: center;
 
-    gap: 9px;
+    gap: 8px;
 
     padding:
-        12px 16px
-        calc(12px + env(safe-area-inset-bottom));
+        10px 12px
+        calc(10px + env(safe-area-inset-bottom));
 
     z-index: 1000;
-}
 
-.bottom-bar.visible {
-
-    display: flex;
+    box-shadow:
+        0 -2px 8px rgba(0, 0, 0, 0.03);
 }
 
 
 /* ==================================================
-   底部按钮
+   书名操作按钮
 ================================================== */
 
-.add-button {
+.book-actions button {
 
-    height: 44px;
+    height: 42px;
 
-    min-width: 72px;
+    min-width: 66px;
 
-    padding: 0 14px;
+    padding: 0 13px;
 
     border-radius: 9px;
 
-    font-size: 15px;
+    font-size: 14px;
 
     font-weight: 600;
 
     cursor: pointer;
 
-    transition:
-        transform 0.1s,
-        opacity 0.1s;
+    background: #fff;
+
+    -webkit-tap-highlight-color: transparent;
 }
 
-.add-button:active {
+.book-actions button:active {
 
     transform: scale(0.96);
 }
 
 
-/* ==================================================
-   ＋序
-================================================== */
+/* ＋序 */
 
-.add-preface {
+#addPreface {
 
     background: #eef9f8;
 
@@ -603,39 +687,33 @@ body {
 }
 
 
-/* ==================================================
-   ＋章
-================================================== */
+/* ＋章 */
 
-.add-chapter {
+#addChapter {
 
     background: #f3f3f3;
 
-    border: 1.5px solid #999999;
+    border: 1.5px solid #999;
 
-    color: #202020;
+    color: #292929;
 }
 
 
-/* ==================================================
-   ＋篇
-================================================== */
+/* ＋篇 */
 
-.add-part {
+#addPart {
 
     background: #fafafa;
 
     border: 1.5px solid #c9c9c9;
 
-    color: #555555;
+    color: #555;
 }
 
 
-/* ==================================================
-   ＋卷
-================================================== */
+/* ＋卷 */
 
-.add-volume {
+#addVolume {
 
     background: #fffbea;
 
@@ -646,30 +724,20 @@ body {
 
 
 /* ==================================================
-   序已存在
-================================================== */
-
-.add-button.disabled {
-
-    opacity: 0.38;
-
-    cursor: not-allowed;
-}
-
-
-/* ==================================================
    手机
 ================================================== */
 
 @media (max-width: 600px) {
 
-    .structure-area {
+    .tree-canvas {
 
-        padding:
-            50px 30px 140px;
+        top: 56px;
+
+        bottom: 0;
     }
 
-    .book-box {
+
+    .book-title {
 
         min-width: 155px;
 
@@ -677,25 +745,31 @@ body {
 
         min-height: 56px;
 
-        font-size: 17px;
-
         padding:
-            12px 22px;
+            11px 20px;
+
+        font-size: 17px;
     }
+
+
+    .tree-node {
+
+        width: 135px;
+    }
+
 
     .node-box {
 
-        min-width: 125px;
-
-        max-width: 185px;
+        width: 135px;
 
         min-height: 46px;
 
         padding:
-            10px 14px;
+            9px 12px;
 
         font-size: 14px;
     }
+
 
     .node-actions {
 
@@ -704,34 +778,41 @@ body {
         gap: 4px;
     }
 
-    .action-button {
 
-        height: 29px;
+    .node-action-button,
+    .node-action-delete {
 
-        padding: 0 6px;
+        height: 30px;
+
+        padding: 0 7px;
 
         font-size: 11px;
     }
 
-    .delete-button {
 
-        width: 29px;
+    .node-action-delete {
+
+        width: 30px;
+
+        padding: 0;
     }
 
-    .bottom-bar {
 
-        gap: 6px;
+    .book-actions {
 
-        padding-left: 8px;
+        gap: 5px;
 
-        padding-right: 8px;
+        padding-left: 7px;
+
+        padding-right: 7px;
     }
 
-    .add-button {
 
-        min-width: 0;
+    .book-actions button {
 
         flex: 1;
+
+        min-width: 0;
 
         padding:
             0 5px;
@@ -739,15 +820,13 @@ body {
         font-size: 14px;
     }
 
-    .empty-hint {
+
+    .tree-empty {
+
+        top: 130px;
+
+        width: 250px;
 
         font-size: 13px;
-
-        white-space: normal;
-
-        width: 260px;
-
-        top: 170px;
     }
-
 }
