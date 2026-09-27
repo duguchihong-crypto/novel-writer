@@ -4,370 +4,575 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的书架</title>
+
     <style>
         * {
             box-sizing: border-box;
         }
+
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
                          "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #f5f6f8;
             color: #222;
+
             /* 给顶部和底部固定栏留空间 */
             padding-top: 72px;
             padding-bottom: 70px;
         }
+
         /* =========================
            顶部固定栏
         ========================= */
+
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
+
             height: 72px;
+
             background: #ffffff;
             border-bottom: 1px solid #e4e6eb;
+
             display: flex;
             align-items: center;
             justify-content: space-between;
+
             padding: 0 24px;
+
             z-index: 1000;
         }
+
         .logo {
             font-size: 21px;
             font-weight: 700;
             white-space: nowrap;
         }
+
         /* =========================
            顶部按钮
         ========================= */
+
         .header-buttons {
             display: flex;
             align-items: center;
             gap: 10px;
         }
+
         .header-button {
             border: none;
+
             height: 40px;
+
             padding: 0 16px;
+
             border-radius: 8px;
+
             font-size: 15px;
             font-weight: 500;
+
             cursor: pointer;
+
             display: flex;
             align-items: center;
+
             gap: 5px;
+
             transition: 0.2s;
         }
+
         /* 新建 */
+
         .create-button {
             background: #4f7cff;
             color: white;
         }
+
         .create-button:hover {
             background: #3d68e6;
         }
+
         /* 设置 */
+
         .settings-button {
             background: #eef0f4;
             color: #333;
         }
+
         .settings-button:hover {
             background: #e1e4e9;
         }
+
         /* =========================
            下拉菜单
         ========================= */
+
         .menu {
             position: fixed;
+
             top: 62px;
+
             background: white;
+
             width: 170px;
+
             border: 1px solid #e1e3e7;
+
             border-radius: 10px;
+
             box-shadow:
                 0 8px 25px rgba(0, 0, 0, 0.12);
+
             overflow: hidden;
+
             display: none;
+
             z-index: 2000;
         }
+
         .menu.show {
             display: block;
         }
+
         .create-menu {
             right: 100px;
         }
+
         .settings-menu {
             right: 24px;
         }
+
         .menu-item {
             padding: 14px 17px;
+
             font-size: 15px;
+
             cursor: pointer;
+
             transition: 0.15s;
         }
+
         .menu-item:hover {
             background: #f5f6f8;
         }
+
         /* =========================
            页面内容
         ========================= */
+
         .container {
             max-width: 1000px;
+
             margin: 40px auto;
+
             padding: 0 20px;
         }
+
         .empty {
             text-align: center;
+
             padding: 100px 20px;
+
             color: #999;
         }
+
         .empty-title {
             font-size: 18px;
+
             margin-bottom: 8px;
         }
+
         .empty-text {
             font-size: 14px;
         }
+
         /* =========================
            底部固定导航栏
         ========================= */
+
         .bottom-nav {
             position: fixed;
+
             left: 0;
             right: 0;
             bottom: 0;
+
             height: 68px;
+
             background: #ffffff;
+
             border-top: 1px solid #e4e6eb;
+
             display: flex;
+
             align-items: center;
+
             justify-content: space-around;
+
             z-index: 1000;
         }
+
         .nav-item {
             height: 100%;
+
             flex: 1;
+
             max-width: 180px;
+
             border: none;
+
             background: transparent;
+
             cursor: pointer;
+
             color: #777;
+
             font-size: 13px;
+
             display: flex;
+
             flex-direction: column;
+
             align-items: center;
+
             justify-content: center;
+
             gap: 3px;
+
             transition: 0.2s;
         }
+
         .nav-icon {
             font-size: 21px;
         }
+
         .nav-item:hover {
             color: #4f7cff;
         }
+
         /* 当前页面 */
+
         .nav-item.active {
             color: #4f7cff;
+
             font-weight: 600;
         }
+
         /* =========================
            手机适配
         ========================= */
+
         @media (max-width: 600px) {
+
             header {
                 padding: 0 14px;
             }
+
             .logo {
                 font-size: 18px;
             }
+
             .header-button {
                 height: 38px;
+
                 padding: 0 11px;
+
                 font-size: 14px;
             }
+
             .header-buttons {
                 gap: 6px;
             }
+
             .create-menu {
                 right: 82px;
             }
+
             .settings-menu {
                 right: 14px;
             }
+
             .container {
                 margin-top: 25px;
+
                 padding: 0 15px;
             }
+
             .bottom-nav {
                 height: 64px;
             }
+
             .nav-icon {
                 font-size: 20px;
             }
         }
     </style>
 </head>
+
 <body>
+
 <!-- =========================
      顶部固定栏
 ========================= -->
+
 <header>
+
     <div class="logo">
         我的书架
     </div>
+
     <div class="header-buttons">
+
         <!-- 新建 -->
+
         <button
             class="header-button create-button"
             onclick="toggleCreateMenu()">
+
             ＋ 新建
+
         </button>
+
         <!-- 设置 -->
+
         <button
             class="header-button settings-button"
             onclick="toggleSettingsMenu()">
+
             ⚙ 设置
+
         </button>
+
     </div>
+
 </header>
+
+
 <!-- =========================
      新建菜单
 ========================= -->
+
 <div
     id="createMenu"
     class="menu create-menu">
+
     <div
         class="menu-item"
         onclick="createBook()">
+
         📖 新建书籍
+
     </div>
+
     <div
         class="menu-item"
         onclick="createCollection()">
+
         📚 新建组合
+
     </div>
+
 </div>
+
+
 <!-- =========================
      设置菜单
 ========================= -->
+
 <div
     id="settingsMenu"
     class="menu settings-menu">
+
     <div
         class="menu-item"
         onclick="sortBooks()">
+
         ↕ 排序
+
     </div>
+
     <div
         class="menu-item"
         onclick="setGrid()">
+
         ▦ 网格
+
     </div>
+
     <div
         class="menu-item"
         onclick="setList()">
+
         ☰ 列表
+
     </div>
+
 </div>
+
+
 <!-- =========================
      页面内容
 ========================= -->
+
 <div class="container">
+
     <div id="books">
+
         <div class="empty">
+
             <div class="empty-title">
                 书架还是空的
             </div>
+
             <div class="empty-text">
                 点击「＋ 新建」开始创作
             </div>
+
         </div>
+
     </div>
+
 </div>
+
+
 <!-- =========================
      底部固定导航
 ========================= -->
+
 <nav class="bottom-nav">
+
     <!-- 书架 -->
+
     <button
         class="nav-item active"
         onclick="goShelf()">
+
         <span class="nav-icon">
             📚
         </span>
+
         <span>
             书架
         </span>
+
     </button>
+
+
     <!-- 工具 -->
+
     <button
         class="nav-item"
         onclick="goTools()">
+
         <span class="nav-icon">
             🧰
         </span>
+
         <span>
             工具
         </span>
+
     </button>
+
+
     <!-- 我的 -->
+
     <button
         class="nav-item"
         onclick="goMe()">
+
         <span class="nav-icon">
             👤
         </span>
+
         <span>
             我的
         </span>
+
     </button>
+
 </nav>
+
+
 <script>
+
 /* =========================
    新建菜单
 ========================= */
+
 function toggleCreateMenu() {
+
     const createMenu =
         document.getElementById("createMenu");
+
     const settingsMenu =
         document.getElementById("settingsMenu");
+
     settingsMenu.classList.remove("show");
+
     createMenu.classList.toggle("show");
+
 }
+
+
 /* =========================
    设置菜单
 ========================= */
+
 function toggleSettingsMenu() {
+
     const createMenu =
         document.getElementById("createMenu");
+
     const settingsMenu =
         document.getElementById("settingsMenu");
+
     createMenu.classList.remove("show");
+
     settingsMenu.classList.toggle("show");
+
 }
+
+
 /* =========================
    新建书籍
 ========================= */
+
 function createBook() {
+
     closeMenus();
-    alert("下一步将在这里进入「新建书籍」页面。");
+
+    /* 进入独立的新建书籍页面 */
+
+    window.location.href = "create-book.html";
+
 }
+
+
 /* =========================
    新建组合
 ========================= */
+
 function createCollection() {
+
     closeMenus();
+
     alert("下一步将在这里进入「新建组合」页面。");
+
 }
+
+
 /* =========================
    排序
 ========================= */
+
 function sortBooks() {
+
     closeMenus();
+
     alert(
         "排序方式\n\n" +
         "• 最近编辑\n" +
@@ -375,59 +580,102 @@ function sortBooks() {
         "• 名称\n" +
         "• 字数"
     );
+
 }
+
+
 /* =========================
    网格
 ========================= */
+
 function setGrid() {
+
     closeMenus();
+
     alert("书架显示方式：网格");
+
 }
+
+
 /* =========================
    列表
 ========================= */
+
 function setList() {
+
     closeMenus();
+
     alert("书架显示方式：列表");
+
 }
+
+
 /* =========================
    底部导航
 ========================= */
+
 function goShelf() {
+
     alert("书架");
+
 }
+
+
 function goTools() {
+
     alert("工具");
+
 }
+
+
 function goMe() {
+
     alert("我的");
+
 }
+
+
 /* =========================
    关闭菜单
 ========================= */
+
 function closeMenus() {
+
     document
         .getElementById("createMenu")
         .classList.remove("show");
+
     document
         .getElementById("settingsMenu")
         .classList.remove("show");
+
 }
+
+
 /* =========================
    点击其他位置关闭菜单
 ========================= */
+
 document.addEventListener(
     "click",
     function(event) {
+
         const clickedButton =
             event.target.closest(".header-button");
+
         const clickedMenu =
             event.target.closest(".menu");
+
         if (!clickedButton && !clickedMenu) {
+
             closeMenus();
+
         }
+
     }
 );
+
 </script>
+
 </body>
 </html>
