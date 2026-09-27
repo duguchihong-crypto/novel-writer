@@ -1,1165 +1,808 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>全书</title>
 
-
 <style>
-
-/* ==================================================
-   基础
-================================================== */
-
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 html,
 body {
+    margin: 0;
+    padding: 0;
     width: 100%;
     height: 100%;
-}
-
-body {
-
-    font-family:
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        "PingFang SC",
-        "Microsoft YaHei",
-        sans-serif;
-
-    background: #ffffff;
-
-    color: #222;
-
     overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei",
+                 sans-serif;
+    background: #fafafa;
+    color: #222;
 }
 
+button,
+input,
+textarea {
+    font: inherit;
+}
 
-/* ==================================================
+/* =========================
    顶部
-================================================== */
+========================= */
 
 .top-bar {
-
     position: fixed;
-
+    z-index: 1000;
     top: 0;
     left: 0;
-    right: 0;
-
+    width: 100%;
     height: 56px;
-
-    background: rgba(255,255,255,0.98);
-
-    border-bottom: 1px solid #eeeeee;
-
+    background: rgba(255,255,255,0.96);
+    border-bottom: 1px solid #e8e8e8;
     display: flex;
-
     align-items: center;
-
     justify-content: center;
-
-    z-index: 1000;
-}
-
-.page-title {
-
-    font-size: 18px;
-
-    font-weight: 600;
-
-    color: #222;
 }
 
 .back-button {
-
     position: absolute;
-
-    left: 16px;
-
-    border: none;
-
+    left: 14px;
+    border: 0;
     background: transparent;
-
-    color: #555;
-
+    color: #333;
     font-size: 16px;
-
     padding: 8px 4px;
-
-    cursor: pointer;
 }
 
-.back-button:active {
-
-    opacity: 0.5;
+.top-title {
+    font-size: 18px;
+    font-weight: 600;
 }
 
+/* =========================
+   画布
+========================= */
 
-/* ==================================================
-   主区域
-================================================== */
-
-.main {
-
-    position: fixed;
-
-    top: 56px;
+.canvas {
+    position: absolute;
     left: 0;
     right: 0;
-    bottom: 88px;
-
-    overflow-y: auto;
-
-    padding:
-        36px 20px 80px;
-
-    -webkit-overflow-scrolling: touch;
+    top: 56px;
+    bottom: 0;
+    overflow: auto;
+    background:
+        radial-gradient(circle at 1px 1px, #eeeeee 1px, transparent 1px);
+    background-size: 24px 24px;
+    touch-action: pan-x pan-y;
 }
-
-
-/* ==================================================
-   整体结构
-================================================== */
-
-.structure-area {
-
-    width: 100%;
-
-    max-width: 820px;
-
-    margin: 0 auto;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-}
-
-
-/* ==================================================
-   书名
-================================================== */
-
-.book-node {
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-
-    width: 100%;
-}
-
-.book-box {
-
-    min-width: 190px;
-
-    max-width: 90vw;
-
-    min-height: 56px;
-
-    padding: 13px 30px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    border-radius: 10px;
-
-    /*
-       赤
-       浅赤底 + 深赤字
-    */
-
-    background: #fff1f1;
-
-    border: 1.5px solid #e5a0a0;
-
-    color: #9b2222;
-
-    font-size: 19px;
-
-    font-weight: 650;
-
-    box-shadow:
-        0 2px 7px rgba(0,0,0,0.035);
-
-    user-select: none;
-}
-
-
-/* 书名下面的线 */
-
-.book-down-line {
-
-    width: 1.5px;
-
-    height: 34px;
-
-    background: #d7d7d7;
-}
-
-
-/* ==================================================
-   结构树
-================================================== */
 
 .tree {
-
-    width: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-}
-
-
-/* ==================================================
-   根节点
-================================================== */
-
-.root-node {
-
     position: relative;
-
-    width: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
+    min-width: 1000px;
+    min-height: 1000px;
+    padding-top: 100px;
+    padding-bottom: 180px;
 }
 
-
-/* ==================================================
-   每一行
-================================================== */
-
-.node-row {
-
-    position: relative;
-
-    width: 100%;
-
-    min-height: 58px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-}
-
-
-/* ==================================================
-   节点框
-================================================== */
-
-.node-box {
-
-    min-width: 155px;
-
-    max-width: calc(100vw - 150px);
-
-    min-height: 48px;
-
-    padding: 11px 21px;
-
-    border-radius: 9px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    font-size: 16px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    user-select: none;
-
-    box-shadow:
-        0 2px 6px rgba(0,0,0,0.035);
-}
-
-
-/* ==================================================
-   赤
+/* =========================
    书名
-================================================== */
+========================= */
+
+.book-root {
+    position: relative;
+    width: max-content;
+    max-width: 280px;
+    min-width: 150px;
+    margin: 0 auto;
+    z-index: 20;
+}
 
 .book-box {
+    position: relative;
+    min-width: 150px;
+    max-width: 280px;
+    min-height: 70px;
+    padding: 14px 26px;
 
-    background: #fff1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    border-color: #e5a0a0;
+    text-align: center;
+    line-height: 1.45;
+    word-break: break-all;
 
-    color: #9b2222;
+    background: #fde8e8;
+    color: #a52828;
+
+    border: 2px solid #d96b6b;
+    border-radius: 38px;
+
+    box-shadow: 0 4px 14px rgba(160, 50, 50, 0.10);
+
+    cursor: pointer;
+    user-select: none;
 }
 
+.book-box.selected {
+    box-shadow:
+        0 0 0 3px rgba(217,107,107,0.18),
+        0 5px 18px rgba(160,50,50,0.16);
+}
 
-/* ==================================================
-   青
-   序
-================================================== */
+/* 书名自由移动状态 */
+.book-root.free-move {
+    position: absolute;
+    left: 50%;
+    top: 100px;
+    transform: translateX(-50%);
+    margin: 0;
+    cursor: grab;
+}
 
+.book-root.free-move.dragging {
+    cursor: grabbing;
+}
+
+/* =========================
+   结构区域
+========================= */
+
+.structure-area {
+    position: relative;
+    width: 100%;
+    margin-top: 55px;
+}
+
+/*
+  每一个层级都采用 flex 自动排列。
+  这样卷、篇、章可以自然向左右展开。
+*/
+
+.node-level {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 46px;
+    width: max-content;
+    margin: 0 auto;
+    position: relative;
+}
+
+.node-column {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* =========================
+   节点
+========================= */
+
+.node-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 150px;
+}
+
+.node-box {
+    position: relative;
+    z-index: 10;
+
+    min-width: 130px;
+    max-width: 220px;
+    min-height: 50px;
+
+    padding: 12px 22px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+    line-height: 1.4;
+    word-break: break-all;
+
+    border-radius: 10px;
+    border: 1px solid;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition:
+        box-shadow 0.15s,
+        transform 0.15s;
+}
+
+.node-box.selected {
+    transform: translateY(-1px);
+}
+
+/* 序：青 */
 .node-preface {
-
-    background: #eef9f8;
-
-    border: 1.5px solid #8fc9c5;
-
-    color: #176d68;
+    background: #e3f6f5;
+    color: #08706c;
+    border-color: #72c9c3;
 }
 
-
-/* ==================================================
-   黄
-   卷
-================================================== */
-
+/* 卷：黄 */
 .node-volume {
-
-    background: #fffbea;
-
-    border: 1.5px solid #dfca70;
-
-    color: #806900;
+    background: #fff6d9;
+    color: #8a6710;
+    border-color: #e3c65c;
 }
 
-
-/* ==================================================
-   白
-   篇
-
-   不能直接使用纯白，
-   所以使用非常浅的灰白色。
-================================================== */
-
+/* 篇：白 */
 .node-part {
-
-    background: #fafafa;
-
-    border: 1.5px solid #c9c9c9;
-
-    color: #555555;
+    background: #f7f7f5;
+    color: #555;
+    border-color: #cfcfca;
 }
 
-
-/* ==================================================
-   黑
-   章
-
-   不是纯黑底，而是浅灰黑。
-================================================== */
-
+/* 章：黑 */
 .node-chapter {
-
-    background: #f3f3f3;
-
-    border: 1.5px solid #999999;
-
-    color: #202020;
+    background: #ededed;
+    color: #222;
+    border-color: #777;
 }
 
-
-/* ==================================================
-   右侧操作区域
-================================================== */
+/* =========================
+   节点操作
+========================= */
 
 .node-actions {
-
     position: absolute;
-
-    left: calc(50% + 100px);
-
+    left: calc(100% + 12px);
     top: 50%;
-
     transform: translateY(-50%);
 
     display: flex;
-
     align-items: center;
-
-    gap: 6px;
+    gap: 5px;
 
     white-space: nowrap;
+    z-index: 50;
 }
 
-
-/* ==================================================
-   操作按钮
-================================================== */
-
 .action-button {
-
-    height: 32px;
-
+    height: 30px;
     padding: 0 9px;
 
-    border: 1px solid #e3e3e3;
-
+    border: 1px solid #ddd;
     border-radius: 7px;
 
-    background: #ffffff;
-
-    color: #666;
+    background: #fff;
+    color: #555;
 
     font-size: 13px;
-
-    cursor: pointer;
-
-    box-shadow:
-        0 1px 4px rgba(0,0,0,0.04);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
 .action-button:active {
-
-    background: #f5f5f5;
-}
-
-
-/* ==================================================
-   垃圾桶
-================================================== */
-
-.delete-button {
-
-    width: 32px;
-
-    padding: 0;
-
-    color: #888;
-
-    font-size: 15px;
-}
-
-
-/* ==================================================
-   垂直连接线
-================================================== */
-
-.vertical-line {
-
-    width: 1.5px;
-
-    height: 28px;
-
-    background: #d5d5d5;
-}
-
-
-/* ==================================================
-   子节点
-================================================== */
-
-.children {
-
-    position: relative;
-
-    width: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-}
-
-
-/* ==================================================
-   多个同级节点的横线
-================================================== */
-
-.children.has-multiple::before {
-
-    content: "";
-
-    position: absolute;
-
-    top: 0;
-
-    left: 50%;
-
-    width: calc(100% - 70px);
-
-    height: 1.5px;
-
-    background: #d5d5d5;
-
-    transform: translateX(-50%);
-}
-
-
-/* ==================================================
-   子节点
-================================================== */
-
-.child-node {
-
-    position: relative;
-
-    width: 100%;
-
-    display: flex;
-
-    flex-direction: column;
-
-    align-items: center;
-}
-
-
-/* 子节点顶部连接线 */
-
-.child-node::before {
-
-    content: "";
-
-    width: 1.5px;
-
-    height: 20px;
-
-    background: #d5d5d5;
-}
-
-
-/* ==================================================
-   空状态
-================================================== */
-
-.empty-hint {
-
-    margin-top: 36px;
-
-    color: #aaa;
-
-    font-size: 14px;
-
-    line-height: 1.9;
-
-    text-align: center;
-}
-
-
-/* ==================================================
-   底部固定区域
-================================================== */
-
-.bottom-bar {
-
-    position: fixed;
-
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    height: 88px;
-
-    background: rgba(255,255,255,0.98);
-
-    border-top: 1px solid #eeeeee;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    gap: 9px;
-
-    padding:
-        12px 16px
-        calc(12px + env(safe-area-inset-bottom));
-
-    z-index: 1000;
-}
-
-
-/* ==================================================
-   底部添加按钮
-================================================== */
-
-.add-button {
-
-    height: 44px;
-
-    min-width: 72px;
-
-    padding: 0 14px;
-
-    border-radius: 9px;
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition:
-        transform 0.1s,
-        opacity 0.1s;
-}
-
-.add-button:active {
-
     transform: scale(0.96);
 }
 
+.delete-button {
+    color: #b73535;
+    border-color: #e2bcbc;
+    background: #fff5f5;
+}
 
-/* ==================================================
-   ＋序
-   青
-================================================== */
+/* =========================
+   连线
+========================= */
+
+.connector {
+    position: relative;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* 竖线 */
+.vertical-line {
+    width: 1px;
+    height: 34px;
+    background: #bdbdbd;
+}
+
+/* 横线 */
+.horizontal-line {
+    height: 1px;
+    background: #bdbdbd;
+}
+
+/* 连线上的 +/- */
+
+.line-toggle {
+    position: absolute;
+    z-index: 30;
+    width: 22px;
+    height: 22px;
+
+    margin-left: -11px;
+    margin-top: -11px;
+
+    border: 1px solid #cfcfcf;
+    border-radius: 50%;
+
+    background: #fff;
+    color: #777;
+
+    font-size: 14px;
+    line-height: 20px;
+    text-align: center;
+
+    pointer-events: auto;
+    cursor: pointer;
+
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+}
+
+.line-toggle:active {
+    transform: scale(0.92);
+}
+
+/* =========================
+   子节点区域
+========================= */
+
+.children-area {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.children-area.collapsed {
+    display: none;
+}
+
+/*
+  父节点 -> 子节点
+*/
+.parent-child-line {
+    width: 1px;
+    height: 38px;
+    background: #bdbdbd;
+    position: relative;
+}
+
+/*
+  子节点横向连接线
+*/
+.children-row {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 46px;
+}
+
+.children-row::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #bdbdbd;
+}
+
+/* 子节点上方的竖线 */
+.child-column {
+    position: relative;
+    padding-top: 28px;
+}
+
+.child-column::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 1px;
+    height: 28px;
+    background: #bdbdbd;
+}
+
+/* =========================
+   空状态
+========================= */
+
+.empty-structure {
+    display: none;
+}
+
+/* =========================
+   底部固定操作栏
+========================= */
+
+.bottom-bar {
+    position: fixed;
+    z-index: 1000;
+
+    left: 50%;
+    bottom: 18px;
+    transform: translateX(-50%);
+
+    min-height: 52px;
+    padding: 7px;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+
+    background: rgba(255,255,255,0.96);
+    border: 1px solid #e4e4e4;
+    border-radius: 15px;
+
+    box-shadow: 0 5px 22px rgba(0,0,0,0.12);
+}
+
+.bottom-bar.show {
+    display: flex;
+}
+
+.add-button {
+    height: 38px;
+    padding: 0 14px;
+
+    border: 1px solid #ddd;
+    border-radius: 9px;
+
+    background: #fff;
+    font-size: 14px;
+}
+
+.add-button:active {
+    transform: scale(0.96);
+}
 
 .add-preface {
-
-    background: #eef9f8;
-
-    border: 1.5px solid #8fc9c5;
-
-    color: #176d68;
+    color: #08706c;
+    background: #e3f6f5;
+    border-color: #72c9c3;
 }
-
-
-/* ==================================================
-   ＋章
-   黑
-================================================== */
-
-.add-chapter {
-
-    background: #f3f3f3;
-
-    border: 1.5px solid #999999;
-
-    color: #202020;
-}
-
-
-/* ==================================================
-   ＋篇
-   白
-================================================== */
-
-.add-part {
-
-    background: #fafafa;
-
-    border: 1.5px solid #c9c9c9;
-
-    color: #555555;
-}
-
-
-/* ==================================================
-   ＋卷
-   黄
-================================================== */
 
 .add-volume {
-
-    background: #fffbea;
-
-    border: 1.5px solid #dfca70;
-
-    color: #806900;
+    color: #8a6710;
+    background: #fff6d9;
+    border-color: #e3c65c;
 }
 
-
-/* ==================================================
-   序已经存在
-================================================== */
-
-.add-button.disabled {
-
-    opacity: 0.38;
-
-    cursor: not-allowed;
+.add-part {
+    color: #555;
+    background: #f7f7f5;
 }
 
+.add-chapter {
+    color: #222;
+    background: #ededed;
+}
 
-/* ==================================================
-   手机
-================================================== */
+/* =========================
+   手机屏幕
+========================= */
 
 @media (max-width: 600px) {
 
-    .main {
-
-        padding-left: 8px;
-
-        padding-right: 8px;
+    .tree {
+        min-width: 850px;
     }
 
-
-    .book-box {
-
-        min-width: 155px;
-
-        min-height: 52px;
-
-        font-size: 17px;
-
-        padding:
-            12px 22px;
+    .node-level,
+    .children-row {
+        gap: 34px;
     }
-
 
     .node-box {
-
-        min-width: 125px;
-
-        max-width: calc(100vw - 125px);
-
-        min-height: 46px;
-
-        padding:
-            10px 14px;
-
+        min-width: 120px;
+        max-width: 190px;
+        padding: 10px 17px;
         font-size: 14px;
     }
 
+    .book-box {
+        max-width: 240px;
+        min-width: 140px;
+        font-size: 16px;
+    }
 
     .node-actions {
-
-        left: calc(50% + 72px);
-
-        gap: 4px;
+        left: calc(100% + 8px);
     }
-
-
-    .action-button {
-
-        height: 29px;
-
-        padding: 0 6px;
-
-        font-size: 11px;
-    }
-
-
-    .delete-button {
-
-        width: 29px;
-    }
-
-
-    .bottom-bar {
-
-        gap: 6px;
-
-        padding-left: 8px;
-
-        padding-right: 8px;
-    }
-
-
-    .add-button {
-
-        min-width: 0;
-
-        flex: 1;
-
-        padding:
-            0 5px;
-
-        font-size: 14px;
-    }
-
 }
-
 </style>
-
 </head>
-
 
 <body>
 
+<!-- 顶部 -->
+<div class="top-bar">
+    <button class="back-button" onclick="goBack()">← 返回</button>
+    <div class="top-title">全书</div>
+</div>
 
-<!-- ==================================================
-     顶部
-================================================== -->
+<!-- 画布 -->
+<div class="canvas" id="canvas">
 
-<header class="top-bar">
-
-    <button
-        class="back-button"
-        onclick="goBack()">
-
-        ← 返回
-
-    </button>
-
-
-    <div class="page-title">
-
-        全书
-
-    </div>
-
-</header>
-
-
-
-<!-- ==================================================
-     主区域
-================================================== -->
-
-<main class="main">
-
-    <div class="structure-area">
-
+    <div class="tree" id="tree">
 
         <!-- 书名 -->
-
-        <div class="book-node">
-
-            <div
-                id="bookTitle"
-                class="book-box">
-
-                我的小说
-
+        <div class="book-root free-move" id="bookRoot">
+            <div class="book-box" id="bookBox" onclick="selectBook(event)">
+                书名
             </div>
-
-
-            <div
-                class="book-down-line">
-            </div>
-
         </div>
 
-
-        <!-- 目录树 -->
-
-        <div
-            id="tree"
-            class="tree">
-        </div>
-
+        <!-- 结构 -->
+        <div class="structure-area" id="structureArea"></div>
 
     </div>
-
-</main>
-
-
-
-<!-- ==================================================
-     底部固定添加
-================================================== -->
-
-<div class="bottom-bar">
-
-
-    <button
-        id="addPrefaceButton"
-        class="add-button add-preface"
-        onclick="addRootPreface()">
-
-        ＋序
-
-    </button>
-
-
-    <button
-        class="add-button add-chapter"
-        onclick="addRootChapter()">
-
-        ＋章
-
-    </button>
-
-
-    <button
-        class="add-button add-part"
-        onclick="addRootPart()">
-
-        ＋篇
-
-    </button>
-
-
-    <button
-        class="add-button add-volume"
-        onclick="addRootVolume()">
-
-        ＋卷
-
-    </button>
-
 
 </div>
 
+<!-- 书名被点击后出现 -->
+<div class="bottom-bar" id="bottomBar">
 
+    <button
+        class="add-button add-preface"
+        id="addPrefaceButton"
+        onclick="addRootPreface(event)">
+        ＋序
+    </button>
+
+    <button
+        class="add-button add-chapter"
+        onclick="addRootChapter(event)">
+        ＋章
+    </button>
+
+    <button
+        class="add-button add-part"
+        onclick="addRootPart(event)">
+        ＋篇
+    </button>
+
+    <button
+        class="add-button add-volume"
+        onclick="addRootVolume(event)">
+        ＋卷
+    </button>
+
+</div>
 
 <script>
 
-/* ==================================================
-   当前书籍
-================================================== */
+/* =========================================================
+   全局数据
+========================================================= */
 
 let currentBook = null;
 
+let selectedNodeId = null;
+let selectedIsBook = false;
 
-/* ==================================================
+let draggedBook = false;
+let dragOffsetX = 0;
+let dragOffsetY = 0;
+
+const canvas = document.getElementById("canvas");
+const tree = document.getElementById("tree");
+const structureArea = document.getElementById("structureArea");
+const bookRoot = document.getElementById("bookRoot");
+const bookBox = document.getElementById("bookBox");
+const bottomBar = document.getElementById("bottomBar");
+
+
+/* =========================================================
    初始化
-================================================== */
+========================================================= */
 
 function init() {
 
     const currentBookId =
-        localStorage.getItem(
-            "currentBookId"
-        );
-
+        localStorage.getItem("currentBookId");
 
     const savedBooks =
-        localStorage.getItem(
-            "novelBooks"
-        );
+        localStorage.getItem("novelBooks");
 
+    if (!currentBookId || !savedBooks) {
+        return;
+    }
 
-    const books =
-        savedBooks
-        ? JSON.parse(savedBooks)
-        : [];
-
+    const books = JSON.parse(savedBooks);
 
     currentBook =
         books.find(
-            function(book) {
-
-                return String(book.id) ===
-                    String(currentBookId);
-
-            }
+            book => String(book.id) === String(currentBookId)
         );
 
-
     if (!currentBook) {
-
-        alert("没有找到这本书。");
-
-        window.location.href =
-            "index.html";
-
         return;
     }
 
-
-    /*
-       如果是以前创建的书，
-       没有 structure 就自动建立。
-    */
-
-    if (
-        !Array.isArray(
-            currentBook.structure
-        )
-    ) {
-
+    if (!currentBook.structure) {
         currentBook.structure = [];
-
     }
 
+    document.title =
+        currentBook.title || "全书";
 
-    document.getElementById(
-        "bookTitle"
-    ).textContent =
-        currentBook.title ||
-        "未命名小说";
-
+    bookBox.textContent =
+        currentBook.title || "未命名书籍";
 
     renderTree();
 
-    updatePrefaceButton();
+    clearSelection();
 }
 
 
-/* ==================================================
+/* =========================================================
    返回
-================================================== */
+========================================================= */
 
 function goBack() {
-
-    window.location.href =
-        "index.html";
+    window.location.href = "index.html";
 }
 
 
-/* ==================================================
-   创建 ID
-================================================== */
+/* =========================================================
+   ID
+========================================================= */
 
 function createId() {
 
-    return Date.now() +
-        Math.floor(
-            Math.random() * 100000
-        );
+    return Date.now().toString(36)
+        + Math.random().toString(36).slice(2);
 }
 
 
-/* ==================================================
+/* =========================================================
    创建节点
-================================================== */
+========================================================= */
 
-function createNode(
-    type,
-    name
-) {
+function createNode(type, name) {
 
     return {
-
         id: createId(),
-
         type: type,
-
         name: name,
-
-        children: []
-
+        children: [],
+        collapsed: false
     };
-
 }
 
 
-/* ==================================================
-   根目录：序
-================================================== */
+/* =========================================================
+   书名选择
+========================================================= */
 
-function addRootPreface() {
+function selectBook(event) {
 
-    if (!currentBook) return;
+    event.stopPropagation();
+
+    selectedNodeId = null;
+    selectedIsBook = true;
+
+    renderTree();
+
+    bottomBar.classList.add("show");
+}
 
 
-    const exists =
+/* =========================================================
+   选择结构
+========================================================= */
+
+function selectNode(nodeId, event) {
+
+    if (event) {
+        event.stopPropagation();
+    }
+
+    selectedNodeId = nodeId;
+    selectedIsBook = false;
+
+    renderTree();
+
+    bottomBar.classList.remove("show");
+}
+
+
+/* =========================================================
+   清除选择
+========================================================= */
+
+function clearSelection() {
+
+    selectedNodeId = null;
+    selectedIsBook = false;
+
+    bottomBar.classList.remove("show");
+
+    renderTree();
+}
+
+
+/* =========================================================
+   空白区域点击
+========================================================= */
+
+document.addEventListener("click", function(event) {
+
+    if (
+        event.target.closest(".node-box") ||
+        event.target.closest(".book-box") ||
+        event.target.closest(".node-actions") ||
+        event.target.closest(".bottom-bar") ||
+        event.target.closest(".line-toggle")
+    ) {
+        return;
+    }
+
+    clearSelection();
+});
+
+
+/* =========================================================
+   序
+========================================================= */
+
+function addRootPreface(event) {
+
+    event.stopPropagation();
+
+    if (
         currentBook.structure.some(
-            function(item) {
+            node => node.type === "preface"
+        )
+    ) {
+        alert("序只能添加一次");
+        return;
+    }
 
-                return item.type === "序";
+    currentBook.structure.push(
+        createNode("preface", "序")
+    );
 
-            }
+    saveBook();
+
+    selectedNodeId = null;
+    selectedIsBook = true;
+
+    renderTree();
+}
+
+
+/* =========================================================
+   根章
+========================================================= */
+
+function addRootChapter(event) {
+
+    event.stopPropagation();
+
+    const number =
+        getNextNumberFromArray(
+            currentBook.structure,
+            "chapter"
         );
 
-
-    if (exists) return;
-
-
     currentBook.structure.push(
-
         createNode(
-            "序",
-            "序章："
+            "chapter",
+            "第" + number + "章："
         )
-
     );
-
-
-    saveBook();
-
-    renderTree();
-
-    updatePrefaceButton();
-}
-
-
-/* ==================================================
-   根目录：章
-================================================== */
-
-function addRootChapter() {
-
-    addRootNode(
-
-        "章",
-
-        getNextRootNumber("章")
-        + "章："
-
-    );
-
-}
-
-
-/* ==================================================
-   根目录：篇
-================================================== */
-
-function addRootPart() {
-
-    addRootNode(
-
-        "篇",
-
-        getNextRootNumber("篇")
-        + "篇："
-
-    );
-
-}
-
-
-/* ==================================================
-   根目录：卷
-================================================== */
-
-function addRootVolume() {
-
-    addRootNode(
-
-        "卷",
-
-        getNextRootNumber("卷")
-        + "卷："
-
-    );
-
-}
-
-
-/* ==================================================
-   添加根节点
-================================================== */
-
-function addRootNode(
-    type,
-    name
-) {
-
-    currentBook.structure.push(
-
-        createNode(
-            type,
-            name
-        )
-
-    );
-
 
     saveBook();
 
@@ -1167,543 +810,504 @@ function addRootNode(
 }
 
 
-/* ==================================================
-   根节点编号
-================================================== */
+/* =========================================================
+   根篇
+========================================================= */
 
-function getNextRootNumber(type) {
+function addRootPart(event) {
 
-    let count = 0;
+    event.stopPropagation();
 
+    const number =
+        getNextNumberFromArray(
+            currentBook.structure,
+            "part"
+        );
 
-    currentBook.structure.forEach(
-        function(item) {
-
-            if (
-                item.type === type
-            ) {
-
-                count++;
-
-            }
-
-        }
+    currentBook.structure.push(
+        createNode(
+            "part",
+            "第" + number + "篇："
+        )
     );
 
+    saveBook();
 
-    return "第" +
-        (count + 1);
-
+    renderTree();
 }
 
 
-/* ==================================================
-   子节点编号
-================================================== */
+/* =========================================================
+   根卷
+========================================================= */
 
-function getNextNumberFromArray(
-    array,
-    type
-) {
+function addRootVolume(event) {
 
-    let count = 0;
+    event.stopPropagation();
 
+    const number =
+        getNextNumberFromArray(
+            currentBook.structure,
+            "volume"
+        );
 
-    array.forEach(
-        function(item) {
-
-            if (
-                item.type === type
-            ) {
-
-                count++;
-
-            }
-
-        }
+    currentBook.structure.push(
+        createNode(
+            "volume",
+            "第" + number + "卷："
+        )
     );
 
+    saveBook();
 
-    return "第" +
-        (count + 1);
-
+    renderTree();
 }
 
 
-/* ==================================================
+/* =========================================================
+   数字
+========================================================= */
+
+function getNextNumberFromArray(array, type) {
+
+    let count = 0;
+
+    array.forEach(node => {
+
+        if (node.type === type) {
+            count++;
+        }
+
+    });
+
+    return chineseNumber(count + 1);
+}
+
+
+/* =========================================================
+   中文数字
+========================================================= */
+
+function chineseNumber(number) {
+
+    const nums = [
+        "零",
+        "一",
+        "二",
+        "三",
+        "四",
+        "五",
+        "六",
+        "七",
+        "八",
+        "九",
+        "十"
+    ];
+
+    if (number <= 10) {
+        return nums[number];
+    }
+
+    if (number < 20) {
+        return "十" + nums[number - 10];
+    }
+
+    if (number < 100) {
+
+        const tens =
+            Math.floor(number / 10);
+
+        const ones =
+            number % 10;
+
+        return nums[tens] +
+            "十" +
+            (ones ? nums[ones] : "");
+    }
+
+    return String(number);
+}
+
+
+/* =========================================================
    渲染整个树
-================================================== */
+========================================================= */
 
 function renderTree() {
 
-    const tree =
-        document.getElementById(
-            "tree"
-        );
+    if (!currentBook) {
+        return;
+    }
 
+    structureArea.innerHTML = "";
 
-    tree.innerHTML = "";
+    const structures =
+        currentBook.structure || [];
 
+    if (structures.length === 0) {
 
-    if (
-        !currentBook.structure ||
-        currentBook.structure.length === 0
-    ) {
-
-        const hint =
-            document.createElement(
-                "div"
-            );
-
-
-        hint.className =
-            "empty-hint";
-
-
-        hint.innerHTML =
-            "从下面选择一种结构开始建立全书目录";
-
-
-        tree.appendChild(
-            hint
-        );
-
+        bookRoot.classList.add("free-move");
 
         return;
     }
 
+    bookRoot.classList.remove("free-move");
 
-    currentBook.structure.forEach(
-        function(node) {
+    const rootLine =
+        document.createElement("div");
 
-            tree.appendChild(
-                renderNode(
-                    node,
-                    true
-                )
-            );
+    rootLine.className =
+        "parent-child-line";
 
-        }
+    structureArea.appendChild(rootLine);
+
+    renderChildren(
+        structures,
+        structureArea
     );
-
 }
 
 
-/* ==================================================
-   渲染节点
-================================================== */
+/* =========================================================
+   渲染子节点
+========================================================= */
 
-function renderNode(
-    node,
-    isRoot
-) {
+function renderChildren(nodes, parentElement) {
 
-    const wrapper =
-        document.createElement(
-            "div"
-        );
-
-
-    wrapper.className =
-        isRoot
-        ? "root-node"
-        : "child-node";
-
-
-    /*
-       非根节点顶部连接线
-    */
-
-    if (!isRoot) {
-
-        const line =
-            document.createElement(
-                "div"
-            );
-
-
-        line.className =
-            "vertical-line";
-
-
-        wrapper.appendChild(
-            line
-        );
-
+    if (!nodes || nodes.length === 0) {
+        return;
     }
 
-
-    /*
-       行
-    */
-
     const row =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     row.className =
-        "node-row";
+        "children-row";
+
+    parentElement.appendChild(row);
+
+    nodes.forEach(node => {
+
+        const column =
+            document.createElement("div");
+
+        column.className =
+            "child-column";
+
+        row.appendChild(column);
+
+        renderNode(node, column);
+    });
+}
 
 
-    /*
-       节点框
-    */
+/* =========================================================
+   渲染节点
+========================================================= */
+
+function renderNode(node, parentElement) {
+
+    const wrap =
+        document.createElement("div");
+
+    wrap.className =
+        "node-wrap";
+
+    parentElement.appendChild(wrap);
+
+
+    /* 节点 */
 
     const box =
-        document.createElement(
-            "div"
-        );
-
+        document.createElement("div");
 
     box.className =
         "node-box " +
-        getNodeClass(
-            node.type
-        );
-
+        getNodeClass(node.type);
 
     box.textContent =
         node.name;
 
+    if (selectedNodeId === node.id) {
 
-    box.onclick =
-        function() {
+        box.classList.add("selected");
+    }
 
-            openNode(node);
+    box.addEventListener("click", function(event) {
 
-        };
+        selectNode(node.id, event);
 
+    });
 
-    row.appendChild(
-        box
-    );
-
-
-    /*
-       右侧操作
-    */
-
-    const actions =
-        document.createElement(
-            "div"
-        );
+    wrap.appendChild(box);
 
 
-    actions.className =
-        "node-actions";
+    /* 操作 */
 
+    if (selectedNodeId === node.id) {
 
-    /*
-       垃圾桶
-    */
+        const actions =
+            createNodeActions(node);
 
-    const deleteButton =
-        document.createElement(
-            "button"
-        );
-
-
-    deleteButton.className =
-        "action-button delete-button";
-
-
-    deleteButton.textContent =
-        "🗑";
-
-
-    deleteButton.onclick =
-        function(event) {
-
-            event.stopPropagation();
-
-            deleteNode(
-                node.id
-            );
-
-        };
-
-
-    actions.appendChild(
-        deleteButton
-    );
-
-
-    /*
-       卷
-       🗑 ＋同级 ＋篇 ＋章
-    */
-
-    if (
-        node.type === "卷"
-    ) {
-
-        actions.appendChild(
-
-            createActionButton(
-                "＋同级",
-
-                function(event) {
-
-                    event.stopPropagation();
-
-                    addSameLevel(
-                        node,
-                        "卷"
-                    );
-
-                }
-            )
-
-        );
-
-
-        actions.appendChild(
-
-            createActionButton(
-                "＋篇",
-
-                function(event) {
-
-                    event.stopPropagation();
-
-                    addChild(
-                        node,
-                        "篇"
-                    );
-
-                }
-            )
-
-        );
-
-
-        actions.appendChild(
-
-            createActionButton(
-                "＋章",
-
-                function(event) {
-
-                    event.stopPropagation();
-
-                    addChild(
-                        node,
-                        "章"
-                    );
-
-                }
-            )
-
-        );
-
+        wrap.appendChild(actions);
     }
 
 
-    /*
-       篇
-       🗑 ＋同级 ＋章
-    */
-
-    if (
-        node.type === "篇"
-    ) {
-
-        actions.appendChild(
-
-            createActionButton(
-                "＋同级",
-
-                function(event) {
-
-                    event.stopPropagation();
-
-                    addSameLevel(
-                        node,
-                        "篇"
-                    );
-
-                }
-            )
-
-        );
-
-
-        actions.appendChild(
-
-            createActionButton(
-                "＋章",
-
-                function(event) {
-
-                    event.stopPropagation();
-
-                    addChild(
-                        node,
-                        "章"
-                    );
-
-                }
-            )
-
-        );
-
-    }
-
-
-    /*
-       序：
-       只有垃圾桶
-
-       章：
-       只有垃圾桶
-    */
-
-
-    row.appendChild(
-        actions
-    );
-
-
-    wrapper.appendChild(
-        row
-    );
-
-
-    /*
-       子节点
-    */
+    /* 子节点 */
 
     if (
         node.children &&
         node.children.length > 0
     ) {
 
-        const children =
-            document.createElement(
-                "div"
-            );
+        const toggleLine =
+            document.createElement("div");
+
+        toggleLine.className =
+            "parent-child-line";
+
+        wrap.appendChild(toggleLine);
 
 
-        children.className =
-            "children";
+        /* +/- */
 
+        const toggle =
+            document.createElement("button");
 
-        if (
-            node.children.length > 1
-        ) {
+        toggle.className =
+            "line-toggle";
 
-            children.classList.add(
-                "has-multiple"
-            );
+        toggle.textContent =
+            node.collapsed ? "＋" : "−";
 
-        }
+        toggle.style.top =
+            "100%";
 
+        toggle.style.left =
+            "50%";
 
-        node.children.forEach(
-            function(child) {
+        toggle.addEventListener(
+            "click",
+            function(event) {
 
-                children.appendChild(
+                event.stopPropagation();
 
-                    renderNode(
-                        child,
-                        false
-                    )
+                node.collapsed =
+                    !node.collapsed;
 
-                );
+                saveBook();
 
+                renderTree();
             }
         );
 
+        wrap.appendChild(toggle);
 
-        wrapper.appendChild(
-            children
-        );
 
+        if (!node.collapsed) {
+
+            const childArea =
+                document.createElement("div");
+
+            childArea.className =
+                "children-area";
+
+            wrap.appendChild(childArea);
+
+            renderChildren(
+                node.children,
+                childArea
+            );
+        }
     }
-
-
-    return wrapper;
 }
 
 
-/* ==================================================
-   获取节点颜色
-================================================== */
+/* =========================================================
+   节点颜色
+========================================================= */
 
 function getNodeClass(type) {
 
-    switch (type) {
-
-        case "序":
-
-            return "node-preface";
-
-
-        case "卷":
-
-            return "node-volume";
-
-
-        case "篇":
-
-            return "node-part";
-
-
-        case "章":
-
-            return "node-chapter";
-
-
-        default:
-
-            return "node-chapter";
-
+    if (type === "preface") {
+        return "node-preface";
     }
 
+    if (type === "volume") {
+        return "node-volume";
+    }
+
+    if (type === "part") {
+        return "node-part";
+    }
+
+    return "node-chapter";
 }
 
 
-/* ==================================================
-   创建操作按钮
-================================================== */
+/* =========================================================
+   节点操作栏
+========================================================= */
 
-function createActionButton(
-    text,
-    callback
-) {
+function createNodeActions(node) {
 
-    const button =
-        document.createElement(
-            "button"
+    const actions =
+        document.createElement("div");
+
+    actions.className =
+        "node-actions";
+
+
+    /* 删除 */
+
+    const deleteButton =
+        createActionButton(
+            "🗑",
+            function(event) {
+
+                event.stopPropagation();
+
+                deleteNode(node.id);
+            }
         );
 
+    deleteButton.classList.add(
+        "delete-button"
+    );
+
+    actions.appendChild(deleteButton);
+
+
+    /* 序和章没有其他操作 */
+
+    if (
+        node.type === "preface" ||
+        node.type === "chapter"
+    ) {
+        return actions;
+    }
+
+
+    /* 卷：同级、篇、章 */
+
+    if (node.type === "volume") {
+
+        actions.appendChild(
+            createActionButton(
+                "＋同级",
+                function(event) {
+
+                    event.stopPropagation();
+
+                    addSameLevel(
+                        node,
+                        "volume"
+                    );
+                }
+            )
+        );
+
+        actions.appendChild(
+            createActionButton(
+                "＋篇",
+                function(event) {
+
+                    event.stopPropagation();
+
+                    addChild(
+                        node,
+                        "part"
+                    );
+                }
+            )
+        );
+
+        actions.appendChild(
+            createActionButton(
+                "＋章",
+                function(event) {
+
+                    event.stopPropagation();
+
+                    addChild(
+                        node,
+                        "chapter"
+                    );
+                }
+            )
+        );
+    }
+
+
+    /* 篇：同级、章 */
+
+    if (node.type === "part") {
+
+        actions.appendChild(
+            createActionButton(
+                "＋同级",
+                function(event) {
+
+                    event.stopPropagation();
+
+                    addSameLevel(
+                        node,
+                        "part"
+                    );
+                }
+            )
+        );
+
+        actions.appendChild(
+            createActionButton(
+                "＋章",
+                function(event) {
+
+                    event.stopPropagation();
+
+                    addChild(
+                        node,
+                        "chapter"
+                    );
+                }
+            )
+        );
+    }
+
+
+    return actions;
+}
+
+
+/* =========================================================
+   创建按钮
+========================================================= */
+
+function createActionButton(text, callback) {
+
+    const button =
+        document.createElement("button");
 
     button.className =
         "action-button";
 
-
     button.textContent =
         text;
 
-
-    button.onclick =
-        callback;
-
+    button.addEventListener(
+        "click",
+        callback
+    );
 
     return button;
 }
 
 
-/* ==================================================
+/* =========================================================
    添加同级
-================================================== */
+========================================================= */
 
-function addSameLevel(
-    node,
-    type
-) {
+function addSameLevel(node, type) {
 
     const result =
         findParentArray(
@@ -1711,46 +1315,46 @@ function addSameLevel(
             node.id
         );
 
+    if (!result) {
+        return;
+    }
 
-    if (!result) return;
-
-
-    const newNode =
-        createNode(
-
-            type,
-
-            getNextNumberFromArray(
-                result.array,
-                type
-            )
-            + type
-            + "："
-
-        );
-
+    const array =
+        result.array;
 
     const index =
-        result.array.findIndex(
-            function(item) {
-
-                return item.id ===
-                    node.id;
-
-            }
+        array.findIndex(
+            item => item.id === node.id
         );
 
+    const number =
+        getNextNumberFromArray(
+            array,
+            type
+        );
 
-    result.array.splice(
+    let name = "";
 
+    if (type === "volume") {
+        name = "第" + number + "卷：";
+    }
+
+    if (type === "part") {
+        name = "第" + number + "篇：";
+    }
+
+    if (type === "chapter") {
+        name = "第" + number + "章：";
+    }
+
+    const newNode =
+        createNode(type, name);
+
+    array.splice(
         index + 1,
-
         0,
-
         newNode
-
     );
-
 
     saveBook();
 
@@ -1758,25 +1362,15 @@ function addSameLevel(
 }
 
 
-/* ==================================================
-   添加下级
-================================================== */
+/* =========================================================
+   添加子节点
+========================================================= */
 
-function addChild(
-    parent,
-    type
-) {
+function addChild(parent, type) {
 
-    if (
-        !Array.isArray(
-            parent.children
-        )
-    ) {
-
+    if (!parent.children) {
         parent.children = [];
-
     }
-
 
     const number =
         getNextNumberFromArray(
@@ -1784,21 +1378,28 @@ function addChild(
             type
         );
 
+    let name = "";
+
+    if (type === "part") {
+        name = "第" + number + "篇：";
+    }
+
+    if (type === "chapter") {
+        name = "第" + number + "章：";
+    }
+
+    if (type === "volume") {
+        name = "第" + number + "卷：";
+    }
+
+    const newNode =
+        createNode(type, name);
 
     parent.children.push(
-
-        createNode(
-
-            type,
-
-            number +
-            type +
-            "："
-
-        )
-
+        newNode
     );
 
+    parent.collapsed = false;
 
     saveBook();
 
@@ -1806,288 +1407,241 @@ function addChild(
 }
 
 
-/* ==================================================
-   查找节点所在数组
-================================================== */
+/* =========================================================
+   查找父级数组
+========================================================= */
 
-function findParentArray(
-    array,
-    id
-) {
+function findParentArray(array, id) {
 
-    for (
-        let i = 0;
-        i < array.length;
-        i++
-    ) {
+    for (let node of array) {
 
-        if (
-            array[i].id === id
-        ) {
+        if (node.id === id) {
 
             return {
-
                 array: array,
-
-                node: array[i]
-
+                node: node
             };
-
         }
 
-
         if (
-            array[i].children &&
-            array[i].children.length
+            node.children &&
+            node.children.length
         ) {
 
             const result =
                 findParentArray(
-
-                    array[i].children,
-
+                    node.children,
                     id
-
                 );
 
-
             if (result) {
-
                 return result;
-
             }
-
         }
-
     }
-
 
     return null;
 }
 
 
-/* ==================================================
+/* =========================================================
    删除
-================================================== */
+========================================================= */
 
 function deleteNode(id) {
 
     const result =
         findParentArray(
-
             currentBook.structure,
-
             id
-
         );
 
-
-    if (!result) return;
-
-
-    const node =
-        result.node;
-
-
-    let message =
-        "确定删除「" +
-        node.name +
-        "」吗？";
-
-
-    if (
-        node.children &&
-        node.children.length > 0
-    ) {
-
-        message +=
-            "\n\n此结构下面还有 " +
-            node.children.length +
-            " 个直接下级结构，它们也会一起删除。";
-
-    }
-
-
-    if (
-        !confirm(message)
-    ) {
-
+    if (!result) {
         return;
-
     }
 
+    const array =
+        result.array;
 
     const index =
-        result.array.findIndex(
-            function(item) {
-
-                return item.id === id;
-
-            }
+        array.findIndex(
+            node => node.id === id
         );
 
-
-    if (
-        index !== -1
-    ) {
-
-        result.array.splice(
-            index,
-            1
-        );
-
+    if (index === -1) {
+        return;
     }
 
+    array.splice(index, 1);
+
+    selectedNodeId = null;
+    selectedIsBook = false;
 
     saveBook();
 
     renderTree();
 
-    updatePrefaceButton();
+    bottomBar.classList.remove("show");
 }
 
 
-/* ==================================================
-   点击节点
-================================================== */
-
-function openNode(node) {
-
-    localStorage.setItem(
-        "currentNodeId",
-        node.id
-    );
-
-
-    /*
-       以后这里连接正文编辑器：
-
-       editor.html
-    */
-
-}
-
-
-/* ==================================================
-   序按钮状态
-================================================== */
-
-function updatePrefaceButton() {
-
-    const button =
-        document.getElementById(
-            "addPrefaceButton"
-        );
-
-
-    if (!currentBook) return;
-
-
-    const exists =
-        currentBook.structure.some(
-            function(item) {
-
-                return item.type ===
-                    "序";
-
-            }
-        );
-
-
-    if (exists) {
-
-        button.classList.add(
-            "disabled"
-        );
-
-
-        button.textContent =
-            "序 ✓";
-
-
-        button.onclick =
-            function() {};
-
-
-    } else {
-
-        button.classList.remove(
-            "disabled"
-        );
-
-
-        button.textContent =
-            "＋序";
-
-
-        button.onclick =
-            addRootPreface;
-
-    }
-
-}
-
-
-/* ==================================================
+/* =========================================================
    保存
-================================================== */
+========================================================= */
 
 function saveBook() {
 
     const savedBooks =
-        localStorage.getItem(
-            "novelBooks"
-        );
+        localStorage.getItem("novelBooks");
 
+    if (!savedBooks) {
+        return;
+    }
 
     const books =
-        savedBooks
-        ? JSON.parse(savedBooks)
-        : [];
-
+        JSON.parse(savedBooks);
 
     const index =
         books.findIndex(
-            function(book) {
-
-                return String(book.id) ===
-                    String(currentBook.id);
-
-            }
+            book =>
+                String(book.id) ===
+                String(currentBook.id)
         );
 
-
-    if (
-        index !== -1
-    ) {
-
-        books[index] =
-            currentBook;
-
-
-        localStorage.setItem(
-
-            "novelBooks",
-
-            JSON.stringify(
-                books
-            )
-
-        );
-
+    if (index === -1) {
+        return;
     }
 
+    books[index] =
+        currentBook;
+
+    localStorage.setItem(
+        "novelBooks",
+        JSON.stringify(books)
+    );
 }
 
 
-/* ==================================================
+/* =========================================================
+   书名自由拖动
+========================================================= */
+
+bookBox.addEventListener(
+    "pointerdown",
+    function(event) {
+
+        if (
+            currentBook &&
+            currentBook.structure &&
+            currentBook.structure.length > 0
+        ) {
+            return;
+        }
+
+        draggedBook = true;
+
+        bookRoot.classList.add(
+            "dragging"
+        );
+
+        const rect =
+            bookRoot.getBoundingClientRect();
+
+        dragOffsetX =
+            event.clientX - rect.left;
+
+        dragOffsetY =
+            event.clientY - rect.top;
+
+        bookBox.setPointerCapture(
+            event.pointerId
+        );
+    }
+);
+
+
+bookBox.addEventListener(
+    "pointermove",
+    function(event) {
+
+        if (!draggedBook) {
+            return;
+        }
+
+        const canvasRect =
+            canvas.getBoundingClientRect();
+
+        const treeRect =
+            tree.getBoundingClientRect();
+
+        let left =
+            event.clientX -
+            canvasRect.left +
+            canvas.scrollLeft -
+            dragOffsetX;
+
+        let top =
+            event.clientY -
+            canvasRect.top +
+            canvas.scrollTop -
+            dragOffsetY;
+
+        left -=
+            treeRect.left -
+            canvasRect.left +
+            canvas.scrollLeft;
+
+        top -=
+            treeRect.top -
+            canvasRect.top +
+            canvas.scrollTop;
+
+        bookRoot.style.left =
+            left + "px";
+
+        bookRoot.style.top =
+            top + "px";
+
+        bookRoot.style.transform =
+            "none";
+
+    }
+);
+
+
+bookBox.addEventListener(
+    "pointerup",
+    function() {
+
+        draggedBook = false;
+
+        bookRoot.classList.remove(
+            "dragging"
+        );
+    }
+);
+
+
+bookBox.addEventListener(
+    "pointercancel",
+    function() {
+
+        draggedBook = false;
+
+        bookRoot.classList.remove(
+            "dragging"
+        );
+    }
+);
+
+
+/* =========================================================
    启动
-================================================== */
+========================================================= */
 
 init();
 
 </script>
 
 </body>
-
 </html>
