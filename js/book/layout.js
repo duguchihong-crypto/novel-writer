@@ -36,14 +36,11 @@ function calculateLayout() {
     // ==================================================
 
     const sampleNode =
-        document.querySelector(
-            ".node-box"
-        );
+        document.querySelector(".node-box");
 
 
     let NODE_W =
         NODE_WIDTH;
-
 
     let NODE_H =
         NODE_HEIGHT;
@@ -61,7 +58,6 @@ function calculateLayout() {
 
     } else {
 
-        // 手机 CSS 下的实际尺寸
         if (window.innerWidth <= 600) {
 
             NODE_W = 135;
@@ -76,18 +72,15 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 基础参数
+    // 参数
     // ==================================================
 
     const PADDING = 60;
 
-    // 书名底部 → 第一层节点顶部
     const ROOT_GAP = 70;
 
-    // 父节点 → 子节点之间的垂直距离
     const LEVEL_GAP = 80;
 
-    // 同级节点之间的距离
     const SIBLING = 35;
 
 
@@ -96,9 +89,7 @@ function calculateLayout() {
     // ==================================================
 
     const bookTitle =
-        document.querySelector(
-            "#bookTitle"
-        );
+        document.querySelector("#bookTitle");
 
 
     const bookWidth =
@@ -181,7 +172,7 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 第一层总宽度
+    // 计算所有根节点总宽度
     // ==================================================
 
     let totalRootWidth = 0;
@@ -202,15 +193,16 @@ function calculateLayout() {
                 totalRootWidth +=
                     SIBLING;
             }
+
         }
     );
 
 
     // ==================================================
-    // 整棵树宽度
+    // 树的最小宽度
     // ==================================================
 
-    const treeWidth =
+    const requiredWidth =
         Math.max(
             totalRootWidth,
             bookWidth
@@ -219,38 +211,143 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 书名中央
+    // 读取“书名当前中心”
+    //
+    // 这是整个系统最重要的地方
+    //
+    // layout 不再自己决定书名中心
+    // 而是读取书名真正的位置
     // ==================================================
 
-    const bookCenterX =
-        treeWidth / 2;
+    let treeCenterX;
+
+
+    if (bookTitle) {
+
+        const bookLeft =
+            parseFloat(
+                bookTitle.style.left
+            );
+
+
+        const bookActualWidth =
+            bookTitle.offsetWidth ||
+            bookWidth;
+
+
+        if (
+            Number.isFinite(
+                bookLeft
+            )
+        ) {
+
+            treeCenterX =
+                bookLeft +
+                bookActualWidth / 2;
+
+        } else {
+
+            treeCenterX =
+                requiredWidth / 2;
+
+        }
+
+    } else {
+
+        treeCenterX =
+            requiredWidth / 2;
+    }
 
 
     // ==================================================
-    // 第一层节点起点
+    // 防止树宽度不够
     // ==================================================
 
-    const rootStartX =
-        bookCenterX -
-        totalRootWidth / 2;
+    const minimumLeft =
+        totalRootWidth / 2 +
+        PADDING;
+
+
+    const minimumRight =
+        totalRootWidth / 2 +
+        PADDING;
+
+
+    let treeWidth =
+        Math.max(
+            requiredWidth,
+            treeCenterX +
+            minimumRight,
+            treeCenterX -
+            minimumLeft
+        );
 
 
     // ==================================================
-    // 书名位置
+    // 如果树中心不在合理范围
+    // 则扩大画布
+    // ==================================================
+
+    if (
+        treeCenterX <
+        minimumLeft
+    ) {
+
+        treeWidth +=
+            minimumLeft -
+            treeCenterX;
+
+        treeCenterX =
+            minimumLeft;
+
+    }
+
+
+    if (
+        treeCenterX >
+        treeWidth -
+        minimumRight
+    ) {
+
+        treeWidth =
+            treeCenterX +
+            minimumRight;
+    }
+
+
+    // ==================================================
+    // 书名顶部
     // ==================================================
 
     const bookTop =
-        25;
+        Number.isFinite(
+            parseFloat(
+                bookTitle?.style.top
+            )
+        )
+            ? parseFloat(
+                bookTitle.style.top
+            )
+            : 25;
 
 
     // ==================================================
-    // 第一层节点 Y
+    // 第一层 Y
     // ==================================================
 
     const rootY =
         bookTop +
         bookHeight +
         ROOT_GAP;
+
+
+    // ==================================================
+    // 第一层起点
+    // ==================================================
+
+    const rootStartX =
+        treeCenterX -
+        totalRootWidth / 2;
 
 
     // ==================================================
@@ -284,7 +381,7 @@ function calculateLayout() {
 
 
                 // ------------------------------------------
-                // 当前子树中央
+                // 当前子树中心
                 // ------------------------------------------
 
                 const centerX =
@@ -293,7 +390,7 @@ function calculateLayout() {
 
 
                 // ------------------------------------------
-                // 当前节点左上角
+                // 节点左上角
                 // ------------------------------------------
 
                 const x =
@@ -302,7 +399,7 @@ function calculateLayout() {
 
 
                 // ------------------------------------------
-                // 当前节点 Y
+                // 节点 Y
                 // ------------------------------------------
 
                 const y =
@@ -315,7 +412,7 @@ function calculateLayout() {
 
 
                 // ------------------------------------------
-                // 保存布局
+                // 保存
                 // ------------------------------------------
 
                 layout.nodes.push({
@@ -347,6 +444,7 @@ function calculateLayout() {
                     centerY:
                         y +
                         NODE_H / 2
+
                 });
 
 
@@ -367,7 +465,9 @@ function calculateLayout() {
                         currentX,
 
                         level + 1
+
                     );
+
                 }
 
 
@@ -396,7 +496,7 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 计算树高度
+    // 计算高度
     // ==================================================
 
     let maxY = 0;
@@ -411,6 +511,7 @@ function calculateLayout() {
                     item.y +
                     item.height
                 );
+
         }
     );
 
@@ -425,14 +526,33 @@ function calculateLayout() {
 
     layout.height =
         Math.max(
+
             maxY +
             PADDING,
+
             bookTop +
             bookHeight +
             ROOT_GAP +
             NODE_H +
             PADDING
+
         );
+
+
+    // ==================================================
+    // 保存这次布局的中心
+    // ==================================================
+
+    layout.centerX =
+        treeCenterX;
+
+
+    layout.nodeWidth =
+        NODE_W;
+
+
+    layout.nodeHeight =
+        NODE_H;
 
 
     return layout;
