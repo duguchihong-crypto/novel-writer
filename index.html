@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>小说作者创作平台</title>
+
+    <title>我的书架</title>
 
     <style>
         * {
@@ -14,19 +15,62 @@
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
                          "PingFang SC", "Microsoft YaHei", sans-serif;
-            background: #f6f7f9;
+
+            background: #f5f6f8;
+            color: #222;
+
+            padding-top: 70px;
+        }
+
+        /* 顶部固定栏 */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 70px;
+
+            background: #ffffff;
+            border-bottom: 1px solid #e5e5e5;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 28px;
+
+            z-index: 1000;
+        }
+
+        /* 平台名称 */
+        .logo {
+            font-size: 21px;
+            font-weight: 700;
             color: #222;
         }
 
-        header {
-            height: 64px;
-            background: white;
-            border-bottom: 1px solid #e5e5e5;
-            display: flex;
-            align-items: center;
-            padding: 0 28px;
-            font-size: 20px;
-            font-weight: 600;
+        /* 新建小说按钮 */
+        .new-book-button {
+            border: none;
+
+            background: #4f7cff;
+            color: white;
+
+            padding: 11px 18px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+            font-weight: 500;
+
+            transition: 0.2s;
+        }
+
+        .new-book-button:hover {
+            background: #3d68e6;
         }
 
         .container {
@@ -35,42 +79,38 @@
             padding: 0 20px;
         }
 
-        .top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* 页面标题 */
+        .page-title {
             margin-bottom: 25px;
         }
 
-        h1 {
+        .page-title h1 {
             margin: 0;
             font-size: 28px;
         }
 
-        button {
-            border: none;
-            background: #222;
-            color: white;
-            padding: 11px 18px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-        }
-
-        button:hover {
-            opacity: 0.85;
-        }
-
+        /* 小说 */
         .book {
             background: white;
+
             border: 1px solid #e5e5e5;
             border-radius: 12px;
+
             padding: 22px;
+
             margin-bottom: 15px;
+
+            transition: 0.2s;
+        }
+
+        .book:hover {
+            border-color: #cfd5df;
+            transform: translateY(-1px);
         }
 
         .book h2 {
             margin: 0 0 8px;
+
             font-size: 19px;
         }
 
@@ -79,40 +119,84 @@
             font-size: 14px;
         }
 
+        /* 没有小说时 */
         .empty {
             text-align: center;
+
             padding: 80px 20px;
+
             background: white;
+
             border-radius: 12px;
+
             color: #888;
+        }
+
+        /* 手机适配 */
+        @media (max-width: 600px) {
+
+            header {
+                padding: 0 15px;
+            }
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .new-book-button {
+                padding: 9px 13px;
+                font-size: 14px;
+            }
+
+            .container {
+                margin-top: 25px;
+            }
+
+            .page-title h1 {
+                font-size: 24px;
+            }
         }
     </style>
 </head>
 
 <body>
 
+<!-- 固定顶部 -->
 <header>
-    ✍️ 小说作者创作平台
+
+    <div class="logo">
+        🌍 我的世界
+    </div>
+
+    <button class="new-book-button" onclick="newBook()">
+        ＋ 新建小说
+    </button>
+
 </header>
 
+
+<!-- 内容 -->
 <div class="container">
 
-    <div class="top">
+    <div class="page-title">
         <h1>我的小说</h1>
-        <button onclick="newBook()">＋ 新建小说</button>
     </div>
+
 
     <div id="books">
 
         <div class="book">
             <h2>我的第一本小说</h2>
+
             <div class="info">
                 12章 · 38,521字 · 最后编辑：今天
             </div>
         </div>
 
+
         <div class="book">
             <h2>第二个故事</h2>
+
             <div class="info">
                 3章 · 8,421字 · 最后编辑：昨天
             </div>
@@ -122,8 +206,11 @@
 
 </div>
 
+
 <script>
+
 function newBook() {
+
     const name = prompt("请输入小说名称：");
 
     if (!name) {
@@ -136,6 +223,7 @@ function newBook() {
 
     book.innerHTML = `
         <h2>${name}</h2>
+
         <div class="info">
             0章 · 0字 · 刚刚创建
         </div>
@@ -143,6 +231,7 @@ function newBook() {
 
     document.getElementById("books").prepend(book);
 }
+
 </script>
 
 </body>
