@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>书籍管理</title>
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "PingFang SC",
+        "Microsoft YaHei",
+        sans-serif;
+
+    background: #f7f8fa;
+    color: #222;
+
+    min-height: 100vh;
+
+    padding-top: 72px;
+    padding-bottom: 40px;
+}
+
+/* =========================
+   顶部
+========================= */
+
+.top-bar {
+    position: fixed;
+
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 72px;
+
+    background: #fff;
+
+    border-bottom: 1px solid #e8e8e8;
+
+    display: flex;
+    align-items: center;
+
+    padding: 0 20px;
+
+    z-index: 100;
+}
+
+.back-button {
+    border: none;
+
+    background: none;
+
+    color: #4f7cff;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    padding: 8px 0;
+}
+
+.page-title {
+    position: absolute;
+
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+    white-space: nowrap;
+}
+
+/* =========================
+   主体
+========================= */
+
+.container {
+    max-width: 800px;
+
+    margin: 0 auto;
+
+    padding: 30px 20px 50px;
+}
+
+/* =========================
+   书籍资料
+========================= */
+
+.book-header {
+    background: #fff;
+
+    border: 1px solid #e8e8e8;
+
+    border-radius: 14px;
+
+    padding: 22px;
+
+    display: flex;
+
+    gap: 22px;
+
+    margin-bottom: 24px;
+}
+
+.book-cover {
+    width: 130px;
+
+    height: 174px;
+
+    flex-shrink: 0;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    background: #eef0f4;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+.book-cover img {
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover;
+}
+
+.default-cover {
+    font-size: 42px;
+
+    color: #aeb4bd;
+}
+
+.book-info {
+    flex: 1;
+
+    min-width: 0;
+
+    padding-top: 4px;
+}
+
+.book-title {
+    font-size: 24px;
+
+    font-weight: 700;
+
+    margin-bottom: 12px;
+
+    word-break: break-word;
+}
+
+.book-description {
+    font-size: 14px;
+
+    color: #777;
+
+    line-height: 1.7;
+
+    margin-bottom: 18px;
+
+    white-space: pre-wrap;
+
+    word-break: break-word;
+}
+
+.edit-button {
+    border: none;
+
+    background: #eef2ff;
+
+    color: #4f7cff;
+
+    padding: 9px 14px;
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+/* =========================
+   统计
+========================= */
+
+.stats {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 12px;
+
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: #fff;
+
+    border: 1px solid #e8e8e8;
+
+    border-radius: 12px;
+
+    padding: 18px;
+
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 22px;
+
+    font-weight: 700;
+
+    margin-bottom: 6px;
+}
+
+.stat-label {
+    font-size: 13px;
+
+    color: #999;
+}
+
+/* =========================
+   章节区域
+========================= */
+
+.section {
+    background: #fff;
+
+    border: 1px solid #e8e8e8;
+
+    border-radius: 14px;
+
+    overflow: hidden;
+}
+
+.section-header {
+    height: 62px;
+
+    padding: 0 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid #eee;
+}
+
+.section-title {
+    font-size: 17px;
+
+    font-weight: 700;
+}
+
+.add-chapter-button {
+    border: none;
+
+    background: #4f7cff;
+
+    color: #fff;
+
+    border-radius: 8px;
+
+    padding: 9px 13px;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+/* =========================
+   空章节
+========================= */
+
+.empty-chapters {
+    text-align: center;
+
+    padding: 60px 20px;
+
+    color: #999;
+}
+
+.empty-chapters-icon {
+    font-size: 36px;
+
+    margin-bottom: 12px;
+}
+
+.empty-chapters-title {
+    color: #555;
+
+    font-size: 16px;
+
+    margin-bottom: 7px;
+}
+
+/* =========================
+   章节列表
+========================= */
+
+.chapter-list {
+    display: none;
+}
+
+.chapter-item {
+    min-height: 66px;
+
+    padding: 13px 18px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid #f0f0f0;
+
+    cursor: pointer;
+}
+
+.chapter-item:last-child {
+    border-bottom: none;
+}
+
+.chapter-item:hover {
+    background: #fafbfc;
+}
+
+.chapter-left {
+    min-width: 0;
+}
+
+.chapter-title {
+    font-size: 15px;
+
+    font-weight: 600;
+
+    margin-bottom: 5px;
+
+    white-space: nowrap;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+}
+
+.chapter-meta {
+    font-size: 12px;
+
+    color: #aaa;
+}
+
+.chapter-arrow {
+    color: #aaa;
+
+    font-size: 20px;
+
+    margin-left: 15px;
+}
+
+/* =========================
+   手机
+========================= */
+
+@media (max-width: 600px) {
+
+    .top-bar {
+        padding: 0 16px;
+    }
+
+    .container {
+        padding: 20px 14px 40px;
+    }
+
+    .book-header {
+        padding: 16px;
+
+        gap: 15px;
+    }
+
+    .book-cover {
+        width: 100px;
+
+        height: 134px;
+    }
+
+    .book-title {
+        font-size: 20px;
+    }
+
+    .book-description {
+        font-size: 13px;
+
+        margin-bottom: 12px;
+    }
+
+    .stats {
+        gap: 8px;
+    }
+
+    .stat-card {
+        padding: 14px 8px;
+    }
+
+    .stat-number {
+        font-size: 19px;
+    }
+
+    .stat-label {
+        font-size: 12px;
+    }
+
+    .section-header {
+        padding: 0 14px;
+    }
+
+    .chapter-item {
+        padding: 13px 14px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     顶部
+========================= -->
+
+<header class="top-bar">
+
+    <button
+        class="back-button"
+        onclick="goBack()">
+        ← 返回
+    </button>
+
+    <div class="page-title">
+        书籍管理
+    </div>
+
+</header>
+
+
+<!-- =========================
+     主体
+========================= -->
+
+<main class="container">
+
+    <!-- 书籍资料 -->
+
+    <section class="book-header">
+
+        <div
+            id="bookCover"
+            class="book-cover">
+        </div>
+
+        <div class="book-info">
+
+            <div
+                id="bookTitle"
+                class="book-title">
+                加载中……
+            </div>
+
+            <div
+                id="bookDescription"
+                class="book-description">
+            </div>
+
+            <button
+                class="edit-button"
+                onclick="editBook()">
+                ✏️ 编辑资料
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         统计
+    ========================= -->
+
+    <section class="stats">
+
+        <div class="stat-card">
+
+            <div
+                id="chapterCount"
+                class="stat-number">
+                0
+            </div>
+
+            <div class="stat-label">
+                章节
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div
+                id="wordCount"
+                class="stat-number">
+                0
+            </div>
+
+            <div class="stat-label">
+                字数
+            </div>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div
+                id="createDate"
+                class="stat-number">
+                -
+            </div>
+
+            <div class="stat-label">
+                创建日期
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         章节
+    ========================= -->
+
+    <section class="section">
+
+        <div class="section-header">
+
+            <div class="section-title">
+                章节
+            </div>
+
+            <button
+                class="add-chapter-button"
+                onclick="createChapter()">
+                ＋ 新建章节
+            </button>
+
+        </div>
+
+
+        <!-- 空章节 -->
+
+        <div
+            id="emptyChapters"
+            class="empty-chapters">
+
+            <div class="empty-chapters-icon">
+                📝
+            </div>
+
+            <div class="empty-chapters-title">
+                还没有章节
+            </div>
+
+            <div>
+                点击「＋ 新建章节」开始写作
+            </div>
+
+        </div>
+
+
+        <!-- 章节列表 -->
+
+        <div
+            id="chapterList"
+            class="chapter-list">
+        </div>
+
+    </section>
+
+</main>
+
+
+<script>
+
+/* =========================
+   获取当前书籍
+========================= */
+
+function getCurrentBook() {
+
+    const id =
+        localStorage.getItem("currentBookId");
+
+    if (!id) {
+        return null;
+    }
+
+    const savedBooks =
+        localStorage.getItem("novelBooks");
+
+    const books =
+        savedBooks
+        ? JSON.parse(savedBooks)
+        : [];
+
+    return books.find(function(book) {
+
+        return String(book.id) === String(id);
+
+    }) || null;
+}
+
+
+/* =========================
+   显示书籍
+========================= */
+
+function loadBook() {
+
+    const book =
+        getCurrentBook();
+
+    if (!book) {
+
+        alert("找不到这本书");
+
+        window.location.href =
+            "index.html";
+
+        return;
+    }
+
+
+    /* 书名 */
+
+    document.getElementById(
+        "bookTitle"
+    ).textContent =
+        book.title || "未命名书籍";
+
+
+    /* 简介 */
+
+    document.getElementById(
+        "bookDescription"
+    ).textContent =
+        book.description || "暂无简介";
+
+
+    /* 封面 */
+
+    const cover =
+        document.getElementById(
+            "bookCover"
+        );
+
+
+    if (book.cover) {
+
+        cover.innerHTML = `
+            <img
+                src="${book.cover}"
+                alt="书籍封面">
+        `;
+
+    } else {
+
+        cover.innerHTML = `
+            <div class="default-cover">
+                📖
+            </div>
+        `;
+
+    }
+
+
+    /* 章节 */
+
+    const chapters =
+        book.chaptersList || [];
+
+
+    document.getElementById(
+        "chapterCount"
+    ).textContent =
+        chapters.length;
+
+
+    /* 字数 */
+
+    let totalWords = 0;
+
+    chapters.forEach(function(chapter) {
+
+        totalWords +=
+            Number(chapter.words || 0);
+
+    });
+
+
+    document.getElementById(
+        "wordCount"
+    ).textContent =
+        totalWords.toLocaleString();
+
+
+    /* 创建日期 */
+
+    document.getElementById(
+        "createDate"
+    ).textContent =
+        book.createdAt || "-";
+
+
+    /* 章节列表 */
+
+    loadChapters(chapters);
+}
+
+
+/* =========================
+   章节列表
+========================= */
+
+function loadChapters(chapters) {
+
+    const empty =
+        document.getElementById(
+            "emptyChapters"
+        );
+
+    const list =
+        document.getElementById(
+            "chapterList"
+        );
+
+
+    if (chapters.length === 0) {
+
+        empty.style.display = "block";
+
+        list.style.display = "none";
+
+        list.innerHTML = "";
+
+        return;
+    }
+
+
+    empty.style.display = "none";
+
+    list.style.display = "block";
+
+    list.innerHTML = "";
+
+
+    chapters.forEach(function(chapter, index) {
+
+        const item =
+            document.createElement("div");
+
+        item.className =
+            "chapter-item";
+
+
+        item.onclick = function() {
+
+            openChapter(chapter.id);
+
+        };
+
+
+        item.innerHTML = `
+
+            <div class="chapter-left">
+
+                <div class="chapter-title">
+                    ${escapeHTML(
+                        chapter.title ||
+                        "第" + (index + 1) + "章"
+                    )}
+                </div>
+
+                <div class="chapter-meta">
+                    ${Number(
+                        chapter.words || 0
+                    ).toLocaleString()} 字
+                </div>
+
+            </div>
+
+            <div class="chapter-arrow">
+                ›
+            </div>
+
+        `;
+
+
+        list.appendChild(item);
+
+    });
+}
+
+
+/* =========================
+   新建章节
+========================= */
+
+function createChapter() {
+
+    alert(
+        "下一步我们会制作小说正文编辑器。\n\n" +
+        "新建章节后就可以直接开始写作。"
+    );
+
+}
+
+
+/* =========================
+   打开章节
+========================= */
+
+function openChapter(id) {
+
+    localStorage.setItem(
+        "currentChapterId",
+        id
+    );
+
+    window.location.href =
+        "editor.html";
+
+}
+
+
+/* =========================
+   编辑资料
+========================= */
+
+function editBook() {
+
+    alert(
+        "书籍资料编辑功能下一步制作。"
+    );
+
+}
+
+
+/* =========================
+   返回
+========================= */
+
+function goBack() {
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+/* =========================
+   安全显示文字
+========================= */
+
+function escapeHTML(text) {
+
+    return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================
+   页面打开
+========================= */
+
+loadBook();
+
+</script>
+
+</body>
+</html>
