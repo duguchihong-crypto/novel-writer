@@ -4,6 +4,33 @@
 
 
 // ==================================================
+// 清除当前选择
+// ==================================================
+
+function clearActionSelection() {
+
+    selectedNodeId = null;
+
+    selectedIsBook = false;
+
+    selectedElement = null;
+
+    actionBarMode = "none";
+
+    actionNodeId = null;
+
+    actionButtonPressed = false;
+
+    if (
+        typeof updateSelectionUI ===
+        "function"
+    ) {
+        updateSelectionUI();
+    }
+}
+
+
+// ==================================================
 // 根节点：序
 // ==================================================
 
@@ -13,7 +40,13 @@ function addRootPreface() {
         return;
     }
 
-    if (!Array.isArray(currentBook.structure)) {
+
+    if (
+        !Array.isArray(
+            currentBook.structure
+        )
+    ) {
+
         currentBook.structure = [];
     }
 
@@ -21,7 +54,8 @@ function addRootPreface() {
     const exists =
         currentBook.structure.some(
             node =>
-                node.type === NODE_TYPES.PREFACE
+                node.type ===
+                NODE_TYPES.PREFACE
         );
 
 
@@ -38,18 +72,20 @@ function addRootPreface() {
         );
 
 
-    currentBook.structure.unshift(node);
+    currentBook.structure.unshift(
+        node
+    );
 
 
     saveBook();
 
 
-    // 自动选中新创建的「序」
-    selectedNodeId =
-        node.id;
+    // ==========================================
+    // 重点：
+    // 不自动选中新节点
+    // ==========================================
 
-    selectedIsBook =
-        false;
+    clearActionSelection();
 
 
     renderTree();
@@ -105,7 +141,12 @@ function addRootNode(type) {
     }
 
 
-    if (!Array.isArray(currentBook.structure)) {
+    if (
+        !Array.isArray(
+            currentBook.structure
+        )
+    ) {
+
         currentBook.structure = [];
     }
 
@@ -166,12 +207,12 @@ function addRootNode(type) {
     saveBook();
 
 
-    // 自动选中新创建的节点
-    selectedNodeId =
-        node.id;
+    // ==========================================
+    // 重点：
+    // 生成以后不自动选中
+    // ==========================================
 
-    selectedIsBook =
-        false;
+    clearActionSelection();
 
 
     renderTree();
@@ -235,18 +276,21 @@ function getNextNumberFromArray(
     let max = 0;
 
 
-    sameType.forEach(node => {
+    sameType.forEach(
+        node => {
 
-        const number =
-            Number(node.number) || 0;
+            const number =
+                Number(node.number) ||
+                0;
 
 
-        max =
-            Math.max(
-                max,
-                number
-            );
-    });
+            max =
+                Math.max(
+                    max,
+                    number
+                );
+        }
+    );
 
 
     return max + 1;
@@ -289,11 +333,14 @@ function findParentArray(
 
             return {
 
-                array: list,
+                array:
+                    list,
 
-                index: i,
+                index:
+                    i,
 
-                node: node
+                node:
+                    node
             };
         }
 
@@ -330,7 +377,9 @@ function findParentArray(
 function addSameLevel(nodeId) {
 
     const result =
-        findParentArray(nodeId);
+        findParentArray(
+            nodeId
+        );
 
 
     if (!result) {
@@ -342,11 +391,13 @@ function addSameLevel(nodeId) {
         result.node;
 
 
-    // 序目前不能添加同级
+    // 序不能添加同级
+
     if (
         node.type ===
         NODE_TYPES.PREFACE
     ) {
+
         return;
     }
 
@@ -412,11 +463,12 @@ function addSameLevel(nodeId) {
     saveBook();
 
 
-    selectedNodeId =
-        newNode.id;
+    // ==========================================
+    // 重点：
+    // 添加同级以后不自动选中
+    // ==========================================
 
-    selectedIsBook =
-        false;
+    clearActionSelection();
 
 
     renderTree();
@@ -435,7 +487,9 @@ function addChild(
 ) {
 
     const result =
-        findParentArray(parentId);
+        findParentArray(
+            parentId
+        );
 
 
     if (!result) {
@@ -448,10 +502,12 @@ function addChild(
 
 
     // 序不能添加子节点
+
     if (
         parent.type ===
         NODE_TYPES.PREFACE
     ) {
+
         return;
     }
 
@@ -468,38 +524,38 @@ function addChild(
 
     // ==========================================
     // 层级限制
+    //
     // 卷 → 篇 / 章
     // 篇 → 章
     // ==========================================
 
     if (
-        parent.type === NODE_TYPES.VOLUME
+        parent.type ===
+        NODE_TYPES.VOLUME
     ) {
 
         if (
             type !== NODE_TYPES.PART &&
             type !== NODE_TYPES.CHAPTER
         ) {
+
             return;
         }
 
-    }
-
-
-    else if (
-        parent.type === NODE_TYPES.PART
+    } else if (
+        parent.type ===
+        NODE_TYPES.PART
     ) {
 
         if (
-            type !== NODE_TYPES.CHAPTER
+            type !==
+            NODE_TYPES.CHAPTER
         ) {
+
             return;
         }
 
-    }
-
-
-    else {
+    } else {
 
         return;
     }
@@ -516,7 +572,8 @@ function addChild(
 
 
     if (
-        type === NODE_TYPES.PART
+        type ===
+        NODE_TYPES.PART
     ) {
 
         title =
@@ -524,10 +581,9 @@ function addChild(
             number +
             "篇：";
 
-    }
-
-    else if (
-        type === NODE_TYPES.CHAPTER
+    } else if (
+        type ===
+        NODE_TYPES.CHAPTER
     ) {
 
         title =
@@ -551,6 +607,7 @@ function addChild(
 
 
     // 添加孩子以后自动展开
+
     parent.collapsed =
         false;
 
@@ -558,11 +615,12 @@ function addChild(
     saveBook();
 
 
-    selectedNodeId =
-        newNode.id;
+    // ==========================================
+    // 重点：
+    // 添加子节点以后不自动选中
+    // ==========================================
 
-    selectedIsBook =
-        false;
+    clearActionSelection();
 
 
     renderTree();
@@ -578,7 +636,9 @@ function addChild(
 function toggleNode(nodeId) {
 
     const result =
-        findParentArray(nodeId);
+        findParentArray(
+            nodeId
+        );
 
 
     if (!result) {
@@ -593,6 +653,8 @@ function toggleNode(nodeId) {
     saveBook();
 
 
+    // 展开/收起不改变选择
+
     renderTree();
 
     updatePrefaceButton();
@@ -606,7 +668,9 @@ function toggleNode(nodeId) {
 function deleteNode(nodeId) {
 
     const result =
-        findParentArray(nodeId);
+        findParentArray(
+            nodeId
+        );
 
 
     if (!result) {
@@ -635,14 +699,12 @@ function deleteNode(nodeId) {
     );
 
 
-    selectedNodeId =
-        null;
-
-    selectedIsBook =
-        false;
-
-
     saveBook();
+
+
+    // 删除以后取消选择
+
+    clearActionSelection();
 
 
     renderTree();
@@ -708,6 +770,7 @@ function setupActionButtons() {
     if (
         window.bookActionButtonsInitialized
     ) {
+
         return;
     }
 
