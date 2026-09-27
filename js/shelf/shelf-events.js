@@ -88,22 +88,22 @@ let longPressTarget = null;
 
 
 /* ==================================================
-   手机排序
+   排序
 ================================================== */
 
-let sortingPressTimer = null;
+let desktopDraggedCard = null;
 
-let sortingDraggedCard = null;
+let touchDraggedCard = null;
 
-let sortingPlaceholder = null;
+let touchSorting = false;
 
-let sortingDragging = false;
+let touchPointerId = null;
 
-let sortingPointerId = null;
+let touchStartX = 0;
 
-let sortingStartX = 0;
+let touchStartY = 0;
 
-let sortingStartY = 0;
+let touchSortTimer = null;
 
 
 /* ==================================================
@@ -116,16 +116,12 @@ function initShelf() {
         loadBooks();
     }
 
-    if (
-        typeof loadShelfViewMode ===
-        "function"
-    ) {
+    if (typeof loadShelfViewMode === "function") {
         loadShelfViewMode();
     }
 
     if (
-        typeof shelfViewMode ===
-        "undefined" ||
+        typeof shelfViewMode === "undefined" ||
         !shelfViewMode
     ) {
         shelfViewMode = "grid";
@@ -227,23 +223,12 @@ function createNewBook() {
 
     closeMenus();
 
-    /*
-       如果项目已经有新建书籍函数，
-       优先调用。
-    */
+    if (typeof createBook === "function") {
 
-    if (
-        typeof createBook ===
-        "function"
-    ) {
         createBook();
+
         return;
     }
-
-    /*
-       如果没有，
-       使用最基础的方式创建一本书。
-    */
 
     const title =
         prompt("请输入小说名称");
@@ -287,11 +272,10 @@ function createNewCollection() {
 
     closeMenus();
 
-    if (
-        typeof createCollection ===
-        "function"
-    ) {
+    if (typeof createCollection === "function") {
+
         createCollection();
+
         return;
     }
 
@@ -338,18 +322,10 @@ function openBook(bookId) {
 
     if (!book) return;
 
-    /*
-       如果项目以后有编辑页面，
-       可以在这里跳转。
+    if (typeof editBook === "function") {
 
-       当前暂时使用已有函数。
-    */
-
-    if (
-        typeof editBook ===
-        "function"
-    ) {
         editBook(bookId);
+
         return;
     }
 
@@ -366,19 +342,21 @@ function openBook(bookId) {
 
 function editCurrentBook() {
 
+    const bookId =
+        currentBookId;
+
     closeContextMenu();
 
-    if (!currentBookId) return;
+    if (!bookId) return;
 
-    if (
-        typeof editBook ===
-        "function"
-    ) {
-        editBook(currentBookId);
+    if (typeof editBook === "function") {
+
+        editBook(bookId);
+
         return;
     }
 
-    openBook(currentBookId);
+    openBook(bookId);
 }
 
 
@@ -503,9 +481,7 @@ function startLongPress(
 
     if (isSorting) return;
 
-    clearTimeout(
-        longPressTimer
-    );
+    clearTimeout(longPressTimer);
 
     longPressTarget =
         card;
@@ -564,7 +540,7 @@ function cancelLongPress() {
 
 
 /* ==================================================
-   排序
+   开始排序
 ================================================== */
 
 function startSorting() {
@@ -576,6 +552,7 @@ function startSorting() {
     isSorting = true;
 
     if (bookGrid) {
+
         bookGrid.classList.add(
             "sorting"
         );
@@ -587,14 +564,10 @@ function startSorting() {
         );
 
     if (sortHint) {
+
         sortHint.style.display =
             "block";
     }
-
-    /*
-       排序开始时，
-       给每本书绑定排序功能。
-    */
 
     prepareSortingCards();
 }
@@ -615,14 +588,6 @@ function prepareSortingCards() {
 
     cards.forEach(
         function(card) {
-
-            card.classList.add(
-                "sorting-card"
-            );
-
-            /*
-               电脑鼠标排序
-            */
 
             card.draggable = true;
 
@@ -646,55 +611,58 @@ function prepareSortingCards() {
                 handleDragEnd
             );
 
-            /*
-               手机触摸排序
-            */
-
             card.addEventListener(
                 "pointerdown",
-                handlePointerDown
+                handleSortPointerDown
             );
 
             card.addEventListener(
                 "pointermove",
-                handlePointerMove
+                handleSortPointerMove
             );
 
             card.addEventListener(
                 "pointerup",
-                handlePointerUp
+                handleSortPointerUp
             );
 
             card.addEventListener(
                 "pointercancel",
-                handlePointerCancel
+                handleSortPointerCancel
             );
-
         }
     );
 }
 
 
 /* ==================================================
-   电脑鼠标排序
+   桌面拖动开始
 ================================================== */
-
-let desktopDraggedCard = null;
-
 
 function handleDragStart(event) {
 
     if (!isSorting) {
+
         event.preventDefault();
+
+        return;
+    }
+
+    /*
+       手机不使用 HTML5 drag。
+    */
+
+    if (
+        event.pointerType &&
+        event.pointerType !== "mouse"
+    ) {
+        event.preventDefault();
+
         return;
     }
 
     desktopDraggedCard =
         event.currentTarget;
-
-    desktopDraggedCard.classList.add(
-        "touch-dragging"
-    );
 
     event.dataTransfer.effectAllowed =
         "move";
@@ -706,18 +674,24 @@ function handleDragStart(event) {
 }
 
 
+/* ==================================================
+   桌面拖动经过
+================================================== */
+
 function handleDragOver(event) {
 
     if (!isSorting) return;
 
     event.preventDefault();
 
+    if (!desktopDraggedCard) return;
+
     const target =
         event.currentTarget;
 
     if (
-        !desktopDraggedCard ||
-        target === desktopDraggedCard
+        target ===
+        desktopDraggedCard
     ) {
         return;
     }
@@ -725,38 +699,20 @@ function handleDragOver(event) {
     const rect =
         target.getBoundingClientRect();
 
-    const x =
-        event.clientX -
-        rect.left;
-
-    const y =
-        event.clientY -
-        rect.top;
-
-    const centerX =
-        rect.width / 2;
-
-    const centerY =
-        rect.height / 2;
-
     /*
-       网格模式：
-       根据鼠标所在位置决定前后。
+       列表模式
     */
 
     if (
         bookGrid.classList.contains(
-            "grid-view"
+            "list-view"
         )
     ) {
 
-        /*
-           如果鼠标在卡片上半区域，
-           插到前面。
-        */
-
         if (
-            y < centerY
+            event.clientY <
+            rect.top +
+            rect.height / 2
         ) {
 
             target.parentNode.insertBefore(
@@ -775,28 +731,80 @@ function handleDragOver(event) {
         return;
     }
 
+
     /*
-       列表模式
+       网格模式
+
+       根据鼠标距离卡片中心的位置
+       判断插入方向。
     */
 
-    if (
-        y < centerY
-    ) {
+    const centerX =
+        rect.left +
+        rect.width / 2;
 
-        target.parentNode.insertBefore(
-            desktopDraggedCard,
-            target
+    const centerY =
+        rect.top +
+        rect.height / 2;
+
+    const distanceX =
+        Math.abs(
+            event.clientX -
+            centerX
         );
+
+    const distanceY =
+        Math.abs(
+            event.clientY -
+            centerY
+        );
+
+    if (distanceX > distanceY) {
+
+        if (
+            event.clientX <
+            centerX
+        ) {
+
+            target.parentNode.insertBefore(
+                desktopDraggedCard,
+                target
+            );
+
+        } else {
+
+            target.parentNode.insertBefore(
+                desktopDraggedCard,
+                target.nextSibling
+            );
+        }
 
     } else {
 
-        target.parentNode.insertBefore(
-            desktopDraggedCard,
-            target.nextSibling
-        );
+        if (
+            event.clientY <
+            centerY
+        ) {
+
+            target.parentNode.insertBefore(
+                desktopDraggedCard,
+                target
+            );
+
+        } else {
+
+            target.parentNode.insertBefore(
+                desktopDraggedCard,
+                target.nextSibling
+            );
+        }
     }
 }
 
+
+/* ==================================================
+   桌面放下
+================================================== */
 
 function handleDrop(event) {
 
@@ -805,6 +813,10 @@ function handleDrop(event) {
     event.preventDefault();
 }
 
+
+/* ==================================================
+   桌面拖动结束
+================================================== */
 
 function handleDragEnd() {
 
@@ -823,10 +835,10 @@ function handleDragEnd() {
 
 
 /* ==================================================
-   手机 / 触摸排序
+   手机排序按下
 ================================================== */
 
-function handlePointerDown(event) {
+function handleSortPointerDown(event) {
 
     if (!isSorting) return;
 
@@ -844,20 +856,23 @@ function handlePointerDown(event) {
     const card =
         event.currentTarget;
 
-    sortingPointerId =
+    touchDraggedCard =
+        card;
+
+    touchPointerId =
         event.pointerId;
 
-    sortingStartX =
+    touchStartX =
         event.clientX;
 
-    sortingStartY =
+    touchStartY =
         event.clientY;
 
-    sortingPressTimer =
+    touchSortTimer =
         setTimeout(
             function() {
 
-                startTouchSorting(
+                beginTouchSorting(
                     event
                 );
 
@@ -867,34 +882,30 @@ function handlePointerDown(event) {
 }
 
 
-function handlePointerMove(event) {
+/* ==================================================
+   手机排序移动
+================================================== */
+
+function handleSortPointerMove(event) {
 
     if (!isSorting) return;
 
     if (
-        sortingPointerId !==
-        event.pointerId
+        event.pointerId !==
+        touchPointerId
     ) {
         return;
     }
 
-    /*
-       长按尚未开始时，
-       如果手指移动太多，
-       取消长按。
-    */
-
-    if (
-        !sortingDragging
-    ) {
+    if (!touchSorting) {
 
         const dx =
             event.clientX -
-            sortingStartX;
+            touchStartX;
 
         const dy =
             event.clientY -
-            sortingStartY;
+            touchStartY;
 
         const distance =
             Math.sqrt(
@@ -905,10 +916,10 @@ function handlePointerMove(event) {
         if (distance > 10) {
 
             clearTimeout(
-                sortingPressTimer
+                touchSortTimer
             );
 
-            sortingPressTimer =
+            touchSortTimer =
                 null;
         }
 
@@ -924,54 +935,68 @@ function handlePointerMove(event) {
 }
 
 
-function handlePointerUp(event) {
+/* ==================================================
+   手机排序抬起
+================================================== */
+
+function handleSortPointerUp(event) {
 
     if (
-        sortingPointerId !==
-        event.pointerId
+        event.pointerId !==
+        touchPointerId
     ) {
         return;
     }
 
     clearTimeout(
-        sortingPressTimer
+        touchSortTimer
     );
 
-    sortingPressTimer =
+    touchSortTimer =
         null;
 
-    if (sortingDragging) {
+    if (touchSorting) {
 
         finishTouchSorting();
     }
 
-    sortingPointerId =
+    touchDraggedCard =
+        null;
+
+    touchPointerId =
         null;
 }
 
 
-function handlePointerCancel(event) {
+/* ==================================================
+   手机排序取消
+================================================== */
+
+function handleSortPointerCancel(event) {
 
     if (
-        sortingPointerId !==
-        event.pointerId
+        event.pointerId !==
+        touchPointerId
     ) {
         return;
     }
 
     clearTimeout(
-        sortingPressTimer
+        touchSortTimer
     );
 
-    sortingPressTimer =
+    touchSortTimer =
         null;
 
-    if (sortingDragging) {
+    if (touchSorting) {
 
         cancelTouchSorting();
     }
 
-    sortingPointerId =
+    touchDraggedCard =
+        null;
+
+    touchPointerId =
         null;
 }
 
@@ -980,99 +1005,50 @@ function handlePointerCancel(event) {
    开始手机拖动
 ================================================== */
 
-function startTouchSorting(event) {
+function beginTouchSorting(event) {
 
     if (!isSorting) return;
 
-    const card =
-        event.currentTarget;
+    if (!touchDraggedCard) return;
 
-    if (!card) return;
-
-    sortingDraggedCard =
-        card;
-
-    sortingDragging =
+    touchSorting =
         true;
 
-    /*
-       记录原尺寸
-    */
-
-    const rect =
-        card.getBoundingClientRect();
-
-    /*
-       创建占位卡片
-    */
-
-    sortingPlaceholder =
-        document.createElement(
-            "div"
-        );
-
-    sortingPlaceholder.className =
-        "book-card sorting-placeholder";
-
-    sortingPlaceholder.style.width =
-        rect.width + "px";
-
-    sortingPlaceholder.style.height =
-        rect.height + "px";
-
-    /*
-       把占位卡片放在原来的位置
-    */
-
-    card.parentNode.insertBefore(
-        sortingPlaceholder,
-        card
-    );
-
-    /*
-       当前卡片进入拖动状态
-    */
-
-    card.classList.add(
+    touchDraggedCard.classList.add(
         "touch-dragging"
     );
 
     /*
-       防止页面滚动
+       不创建 placeholder。
+       不改变书架原来的布局。
     */
+
+    touchDraggedCard.style.opacity =
+        "0.65";
+
+    touchDraggedCard.style.pointerEvents =
+        "none";
 
     document.body.classList.add(
         "touch-sorting"
     );
 
-    /*
-       禁止当前卡片影响目标检测
-    */
-
-    card.style.pointerEvents =
-        "none";
-
-    event.preventDefault();
-
-    /*
-       捕获 pointer
-    */
-
     try {
 
-        card.setPointerCapture(
+        touchDraggedCard.setPointerCapture(
             event.pointerId
         );
 
     } catch (error) {
-
-        // 某些浏览器不支持时忽略
+        // 忽略不支持 Pointer Capture 的浏览器
     }
+
+    event.preventDefault();
 }
 
 
 /* ==================================================
-   移动手机书籍
+   手机移动书籍
 ================================================== */
 
 function moveTouchSorting(
@@ -1081,9 +1057,8 @@ function moveTouchSorting(
 ) {
 
     if (
-        !sortingDragging ||
-        !sortingDraggedCard ||
-        !sortingPlaceholder ||
+        !touchSorting ||
+        !touchDraggedCard ||
         !bookGrid
     ) {
         return;
@@ -1097,12 +1072,8 @@ function moveTouchSorting(
         ).filter(
             function(card) {
 
-                return (
-                    card !==
-                    sortingDraggedCard &&
-                    card !==
-                    sortingPlaceholder
-                );
+                return card !==
+                    touchDraggedCard;
 
             }
         );
@@ -1111,14 +1082,16 @@ function moveTouchSorting(
         return;
     }
 
+
     /*
-       找到手指当前最接近的书。
+       找到手指当前位置
+       最接近的卡片。
     */
 
-    let nearestCard =
+    let targetCard =
         null;
 
-    let nearestDistance =
+    let smallestDistance =
         Infinity;
 
     cards.forEach(
@@ -1151,32 +1124,34 @@ function moveTouchSorting(
 
             if (
                 distance <
-                nearestDistance
+                smallestDistance
             ) {
 
-                nearestDistance =
+                smallestDistance =
                     distance;
 
-                nearestCard =
+                targetCard =
                     card;
             }
-
         }
     );
 
-    if (!nearestCard) {
-        return;
-    }
+    if (!targetCard) return;
 
-    const rect =
-        nearestCard.getBoundingClientRect();
 
     /*
-       判断应该放在目标前面还是后面。
+       判断插入目标的前面还是后面。
     */
 
-    let insertBefore =
-        false;
+    const rect =
+        targetCard.getBoundingClientRect();
+
+    let insertBefore;
+
+
+    /*
+       列表模式
+    */
 
     if (
         bookGrid.classList.contains(
@@ -1194,28 +1169,32 @@ function moveTouchSorting(
         /*
            网格模式。
 
-           同一行优先判断 X。
-           不同行判断 Y。
+           主要根据 X 判断，
+           如果 X 差距很小，
+           再根据 Y 判断。
         */
-
-        const centerY =
-            rect.top +
-            rect.height / 2;
 
         const centerX =
             rect.left +
             rect.width / 2;
 
-        const rowThreshold =
-            rect.height * 0.45;
+        const centerY =
+            rect.top +
+            rect.height / 2;
 
-        if (
+        const dx =
+            Math.abs(
+                clientX -
+                centerX
+            );
+
+        const dy =
             Math.abs(
                 clientY -
                 centerY
-            ) <
-            rowThreshold
-        ) {
+            );
+
+        if (dx >= dy) {
 
             insertBefore =
                 clientX <
@@ -1229,29 +1208,37 @@ function moveTouchSorting(
         }
     }
 
+
+    /*
+       移动真正的卡片。
+
+       不创建占位元素，
+       因此不会改变原来的 CSS 布局。
+    */
+
     if (insertBefore) {
 
         if (
-            sortingPlaceholder !==
-            nearestCard.previousSibling
+            targetCard.previousSibling !==
+            touchDraggedCard
         ) {
 
-            nearestCard.parentNode.insertBefore(
-                sortingPlaceholder,
-                nearestCard
+            targetCard.parentNode.insertBefore(
+                touchDraggedCard,
+                targetCard
             );
         }
 
     } else {
 
         if (
-            nearestCard.nextSibling !==
-            sortingPlaceholder
+            targetCard.nextSibling !==
+            touchDraggedCard
         ) {
 
-            nearestCard.parentNode.insertBefore(
-                sortingPlaceholder,
-                nearestCard.nextSibling
+            targetCard.parentNode.insertBefore(
+                touchDraggedCard,
+                targetCard.nextSibling
             );
         }
     }
@@ -1264,112 +1251,50 @@ function moveTouchSorting(
 
 function finishTouchSorting() {
 
-    if (
-        !sortingDraggedCard ||
-        !sortingPlaceholder
-    ) {
-        cleanupTouchSorting();
-        return;
-    }
+    if (touchDraggedCard) {
 
-    /*
-       把真正的书放回占位位置
-    */
-
-    sortingPlaceholder.parentNode.insertBefore(
-        sortingDraggedCard,
-        sortingPlaceholder
-    );
-
-    /*
-       删除占位
-    */
-
-    sortingPlaceholder.remove();
-
-    sortingPlaceholder =
-        null;
-
-    /*
-       恢复书籍状态
-    */
-
-    sortingDraggedCard.classList.remove(
-        "touch-dragging"
-    );
-
-    sortingDraggedCard.style.pointerEvents =
-        "";
-
-    /*
-       更新 books 数组
-    */
-
-    updateBookOrder();
-
-    cleanupTouchSorting();
-}
-
-
-function cancelTouchSorting() {
-
-    if (
-        sortingDraggedCard &&
-        sortingPlaceholder
-    ) {
-
-        /*
-           取消时，
-           把书放回占位位置。
-        */
-
-        sortingPlaceholder.parentNode.insertBefore(
-            sortingDraggedCard,
-            sortingPlaceholder
+        touchDraggedCard.classList.remove(
+            "touch-dragging"
         );
 
-        sortingPlaceholder.remove();
+        touchDraggedCard.style.opacity =
+            "";
+
+        touchDraggedCard.style.pointerEvents =
+            "";
     }
 
-    cleanupTouchSorting();
+    touchSorting =
+        false;
+
+    document.body.classList.remove(
+        "touch-sorting"
+    );
+
+    updateBookOrder();
 }
 
 
 /* ==================================================
-   清理手机排序状态
+   取消手机拖动
 ================================================== */
 
-function cleanupTouchSorting() {
+function cancelTouchSorting() {
 
-    clearTimeout(
-        sortingPressTimer
-    );
+    if (touchDraggedCard) {
 
-    sortingPressTimer =
-        null;
-
-    if (sortingDraggedCard) {
-
-        sortingDraggedCard.classList.remove(
+        touchDraggedCard.classList.remove(
             "touch-dragging"
         );
 
-        sortingDraggedCard.style.pointerEvents =
+        touchDraggedCard.style.opacity =
+            "";
+
+        touchDraggedCard.style.pointerEvents =
             "";
     }
 
-    if (sortingPlaceholder) {
-
-        sortingPlaceholder.remove();
-    }
-
-    sortingDraggedCard =
-        null;
-
-    sortingPlaceholder =
-        null;
-
-    sortingDragging =
+    touchSorting =
         false;
 
     document.body.classList.remove(
@@ -1409,15 +1334,13 @@ function updateBookOrder() {
                 getBookById(id);
 
             if (book) {
-                newBooks.push(book);
-            }
 
+                newBooks.push(
+                    book
+                );
+            }
         }
     );
-
-    /*
-       只有顺序发生变化时才替换。
-    */
 
     if (
         newBooks.length ===
@@ -1436,39 +1359,25 @@ function updateBookOrder() {
 
 function finishSorting() {
 
-    /*
-       如果此时仍然有手机拖动，
-       先结束拖动。
-    */
+    if (touchSorting) {
 
-    if (sortingDragging) {
         finishTouchSorting();
     }
 
-    /*
-       再次读取 DOM 顺序。
-    */
-
     updateBookOrder();
 
-    /*
-       保存。
-    */
+    if (typeof saveBooks === "function") {
 
-    if (
-        typeof saveBooks ===
-        "function"
-    ) {
         saveBooks();
     }
 
-    /*
-       退出排序状态。
-    */
+    isSorting =
+        false;
 
-    isSorting = false;
+    cancelTouchSorting();
 
-    cleanupTouchSorting();
+    desktopDraggedCard =
+        null;
 
     if (bookGrid) {
 
@@ -1488,15 +1397,7 @@ function finishSorting() {
             "none";
     }
 
-    /*
-       清除排序事件。
-    */
-
     cleanupSortingCards();
-
-    /*
-       重新渲染。
-    */
 
     renderBooks();
 
@@ -1523,10 +1424,6 @@ function cleanupSortingCards() {
             card.draggable =
                 false;
 
-            card.classList.remove(
-                "sorting-card"
-            );
-
             card.removeEventListener(
                 "dragstart",
                 handleDragStart
@@ -1549,24 +1446,23 @@ function cleanupSortingCards() {
 
             card.removeEventListener(
                 "pointerdown",
-                handlePointerDown
+                handleSortPointerDown
             );
 
             card.removeEventListener(
                 "pointermove",
-                handlePointerMove
+                handleSortPointerMove
             );
 
             card.removeEventListener(
                 "pointerup",
-                handlePointerUp
+                handleSortPointerUp
             );
 
             card.removeEventListener(
                 "pointercancel",
-                handlePointerCancel
+                handleSortPointerCancel
             );
-
         }
     );
 }
@@ -1578,10 +1474,6 @@ function cleanupSortingCards() {
 
 function bindShelfEvents() {
 
-    /* ------------------------------
-       新建
-    ------------------------------ */
-
     if (createButton) {
 
         createButton.addEventListener(
@@ -1590,10 +1482,6 @@ function bindShelfEvents() {
         );
     }
 
-
-    /* ------------------------------
-       设置
-    ------------------------------ */
 
     if (settingsButton) {
 
@@ -1604,10 +1492,6 @@ function bindShelfEvents() {
     }
 
 
-    /* ------------------------------
-       新建书籍
-    ------------------------------ */
-
     if (createBookButton) {
 
         createBookButton.addEventListener(
@@ -1616,10 +1500,6 @@ function bindShelfEvents() {
         );
     }
 
-
-    /* ------------------------------
-       新建分组
-    ------------------------------ */
 
     if (createCollectionButton) {
 
@@ -1630,10 +1510,6 @@ function bindShelfEvents() {
     }
 
 
-    /* ------------------------------
-       网格
-    ------------------------------ */
-
     if (gridButton) {
 
         gridButton.addEventListener(
@@ -1642,10 +1518,6 @@ function bindShelfEvents() {
         );
     }
 
-
-    /* ------------------------------
-       列表
-    ------------------------------ */
 
     if (listButton) {
 
@@ -1656,26 +1528,14 @@ function bindShelfEvents() {
     }
 
 
-    /* ------------------------------
-       排序
-    ------------------------------ */
-
     if (sortBooksButton) {
 
         sortBooksButton.addEventListener(
             "click",
-            function() {
-
-                startSorting();
-
-            }
+            startSorting
         );
     }
 
-
-    /* ------------------------------
-       完成排序
-    ------------------------------ */
 
     if (finishSortButton) {
 
@@ -1686,10 +1546,6 @@ function bindShelfEvents() {
     }
 
 
-    /* ------------------------------
-       遮罩
-    ------------------------------ */
-
     if (bookMenuOverlay) {
 
         bookMenuOverlay.addEventListener(
@@ -1698,10 +1554,6 @@ function bindShelfEvents() {
         );
     }
 
-
-    /* ------------------------------
-       编辑
-    ------------------------------ */
 
     if (contextEdit) {
 
@@ -1712,10 +1564,6 @@ function bindShelfEvents() {
     }
 
 
-    /* ------------------------------
-       长按菜单排序
-    ------------------------------ */
-
     if (contextSort) {
 
         contextSort.addEventListener(
@@ -1725,21 +1573,25 @@ function bindShelfEvents() {
                 closeContextMenu();
 
                 startSorting();
-
             }
         );
     }
 
-
-    /* ------------------------------
-       移至分组
-    ------------------------------ */
 
     if (contextGroup) {
 
         contextGroup.addEventListener(
             "click",
             function() {
+
+                /*
+                   先保存 ID。
+                   因为 closeContextMenu()
+                   会把 currentBookId 清空。
+                */
+
+                const id =
+                    currentBookId;
 
                 closeContextMenu();
 
@@ -1748,9 +1600,7 @@ function bindShelfEvents() {
                     "function"
                 ) {
 
-                    moveBookToGroup(
-                        currentBookId
-                    );
+                    moveBookToGroup(id);
 
                 } else {
 
@@ -1758,15 +1608,10 @@ function bindShelfEvents() {
                         "分组功能暂未实现"
                     );
                 }
-
             }
         );
     }
 
-
-    /* ------------------------------
-       删除
-    ------------------------------ */
 
     if (contextDelete) {
 
@@ -1780,26 +1625,17 @@ function bindShelfEvents() {
                 closeContextMenu();
 
                 if (id) {
+
                     deleteBook(id);
                 }
-
             }
         );
     }
 
 
-    /* ------------------------------
-       页面点击
-    ------------------------------ */
-
     document.addEventListener(
         "click",
         function(event) {
-
-            /*
-               如果点击的不是菜单，
-               关闭顶部菜单。
-            */
 
             if (
                 !event.target.closest(
@@ -1815,14 +1651,9 @@ function bindShelfEvents() {
 
                 closeMenus();
             }
-
         }
     );
 
-
-    /* ------------------------------
-       书籍事件
-    ------------------------------ */
 
     if (bookGrid) {
 
@@ -1864,10 +1695,6 @@ function handleBookClick(event) {
         return;
     }
 
-    /*
-       删除按钮
-    */
-
     const deleteButton =
         event.target.closest(
             ".delete-book-button"
@@ -1882,11 +1709,6 @@ function handleBookClick(event) {
 
         return;
     }
-
-
-    /*
-       封面 / 书名 / 卡片
-    */
 
     const card =
         event.target.closest(
@@ -1909,11 +1731,6 @@ function handleBookClick(event) {
 function handleBookPointerDown(event) {
 
     if (isSorting) return;
-
-    /*
-       点击删除按钮时，
-       不启动长按。
-    */
 
     if (
         event.target.closest(
@@ -1974,7 +1791,6 @@ if (shelfNav) {
             console.log(
                 "书架"
             );
-
         }
     );
 }
@@ -1989,7 +1805,6 @@ if (toolsNav) {
             console.log(
                 "工具"
             );
-
         }
     );
 }
@@ -2004,7 +1819,6 @@ if (meNav) {
             console.log(
                 "我的"
             );
-
         }
     );
 }
