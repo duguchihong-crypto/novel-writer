@@ -1,518 +1,1366 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>新建书籍</title>
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>新建小说</title>
+
 
 <style>
+
 * {
+
     box-sizing: border-box;
+
     margin: 0;
+
     padding: 0;
 }
 
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                 "PingFang SC", "Microsoft YaHei", sans-serif;
+
+    font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        "PingFang SC",
+        "Microsoft YaHei",
+        sans-serif;
 
     background: #f7f8fa;
+
     color: #222;
 
     min-height: 100vh;
 }
 
-/* =========================
+
+/* ==================================================
    顶部
-========================= */
+================================================== */
 
 .top-bar {
+
     position: fixed;
 
     top: 0;
     left: 0;
     right: 0;
 
-    height: 72px;
+    height: 64px;
 
     background: #fff;
 
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom:
+        1px solid #e8e8e8;
 
     display: flex;
+
     align-items: center;
 
-    padding: 0 20px;
+    padding:
+        0 20px;
 
     z-index: 100;
 }
 
+
 .back-button {
+
     border: none;
+
     background: none;
 
-    color: #4f7cff;
+    color: #555;
 
     font-size: 15px;
 
     cursor: pointer;
 
-    padding: 8px 0;
+    padding:
+        8px 4px;
 }
 
+
 .page-title {
+
     position: absolute;
 
     left: 50%;
-    transform: translateX(-50%);
 
-    font-size: 20px;
-    font-weight: 700;
+    transform:
+        translateX(-50%);
 
-    white-space: nowrap;
+    font-size: 17px;
+
+    font-weight: 600;
 }
 
-/* =========================
-   主内容
-========================= */
 
-.container {
-    max-width: 600px;
+/* ==================================================
+   页面
+================================================== */
+
+.page {
+
+    min-height: 100vh;
+
+    padding:
+        104px 20px 50px;
+}
+
+
+.create-container {
+
+    width: 100%;
+
+    max-width: 560px;
 
     margin: 0 auto;
-
-    padding: 102px 20px 40px;
 }
 
-/* =========================
-   封面
-========================= */
 
-.cover-section {
-    text-align: center;
+/* ==================================================
+   标题
+================================================== */
+
+.main-title {
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+    margin-bottom: 8px;
+}
+
+
+.sub-title {
+
+    font-size: 14px;
+
+    color: #888;
 
     margin-bottom: 32px;
 }
 
-.form-label {
-    display: block;
 
-    font-size: 15px;
-    font-weight: 600;
+/* ==================================================
+   表单
+================================================== */
 
-    margin-bottom: 14px;
-}
-
-/* 封面上传区域 */
-
-.cover-upload {
-    width: 130px;
-    height: 174px;
-
-    margin: 0 auto;
-
-    border: 1.5px dashed #bfc3ca;
-
-    border-radius: 10px;
+.form-section {
 
     background: #fff;
 
-    display: flex;
+    border:
+        1px solid #e7e8eb;
 
-    align-items: center;
-    justify-content: center;
+    border-radius: 14px;
 
-    cursor: pointer;
+    padding: 22px;
 
-    overflow: hidden;
-
-    position: relative;
-
-    transition: 0.2s;
+    margin-bottom: 18px;
 }
 
-.cover-upload:hover {
-    background: #f5f6f8;
 
-    border-color: #4f7cff;
-}
+.form-label {
 
-/* 添加封面文字 */
-
-.cover-placeholder {
-    color: #888;
+    display: block;
 
     font-size: 14px;
 
-    line-height: 1.6;
+    font-weight: 600;
 
-    text-align: center;
+    margin-bottom: 10px;
 }
 
-.cover-plus {
-    display: block;
 
-    font-size: 30px;
+.required {
 
-    line-height: 1;
+    color: #e5484d;
 
-    margin-bottom: 7px;
-
-    color: #999;
+    margin-left: 3px;
 }
+
+
+/* ==================================================
+   书名
+================================================== */
+
+.title-input {
+
+    width: 100%;
+
+    height: 48px;
+
+    border:
+        1px solid #dfe2e7;
+
+    border-radius: 9px;
+
+    padding:
+        0 14px;
+
+    outline: none;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    color: #222;
+
+    background: #fff;
+
+    transition:
+        border-color 0.15s ease,
+        box-shadow 0.15s ease;
+}
+
+
+.title-input:focus {
+
+    border-color: #4f7cff;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(79,124,255,0.10);
+}
+
+
+.title-input::placeholder {
+
+    color: #aaa;
+}
+
+
+/* ==================================================
+   封面
+================================================== */
+
+.cover-section {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+}
+
 
 /* 封面预览 */
 
 .cover-preview {
+
+    width: 180px;
+
+    height: 240px;
+
+    border-radius: 10px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #eef1f5,
+            #dfe4eb
+        );
+
+    border:
+        1px solid #e0e3e8;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    margin-bottom: 18px;
+
+    position: relative;
+}
+
+
+.cover-preview img {
+
     width: 100%;
+
     height: 100%;
 
     object-fit: cover;
 
-    display: none;
+    display: block;
 }
 
-/* =========================
-   表单
-========================= */
 
-.form-group {
-    margin-bottom: 24px;
+.cover-placeholder {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    color: #a5acb6;
+
+    text-align: center;
+
+    padding: 20px;
 }
 
-.input {
-    width: 100%;
 
-    border: 1px solid #ddd;
+.cover-placeholder-icon {
 
-    border-radius: 10px;
+    font-size: 42px;
 
-    background: #fff;
-
-    padding: 14px;
-
-    font-size: 15px;
-
-    outline: none;
-
-    color: #222;
+    margin-bottom: 10px;
 }
 
-.input:focus {
-    border-color: #4f7cff;
+
+.cover-placeholder-text {
+
+    font-size: 14px;
 }
 
-textarea.input {
-    min-height: 150px;
 
-    resize: vertical;
+/* ==================================================
+   上传按钮
+================================================== */
 
-    line-height: 1.6;
-}
+.cover-upload-button {
 
-/* =========================
-   创建按钮
-========================= */
+    display: inline-flex;
 
-.create-button {
-    width: 100%;
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 150px;
+
+    height: 44px;
+
+    padding:
+        0 18px;
 
     border: none;
 
-    border-radius: 11px;
+    border-radius: 9px;
+
+    background: #eef0f4;
+
+    color: #333;
+
+    font-family: inherit;
+
+    font-size: 14px;
+
+    cursor: pointer;
+}
+
+
+.cover-upload-button:hover {
+
+    background: #e5e8ed;
+}
+
+
+.cover-upload-button:active {
+
+    transform:
+        scale(0.98);
+}
+
+
+#coverInput {
+
+    display: none;
+}
+
+
+/* 删除封面 */
+
+.remove-cover-button {
+
+    margin-top: 10px;
+
+    border: none;
+
+    background: none;
+
+    color: #999;
+
+    font-family: inherit;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    display: none;
+}
+
+
+.remove-cover-button:hover {
+
+    color: #e5484d;
+}
+
+
+/* ==================================================
+   提示
+================================================== */
+
+.cover-hint {
+
+    margin-top: 12px;
+
+    font-size: 12px;
+
+    color: #999;
+
+    text-align: center;
+
+    line-height: 1.5;
+}
+
+
+/* ==================================================
+   创建按钮
+================================================== */
+
+.create-submit {
+
+    width: 100%;
+
+    height: 50px;
+
+    border: none;
+
+    border-radius: 10px;
 
     background: #4f7cff;
 
     color: #fff;
 
+    font-family: inherit;
+
     font-size: 16px;
 
     font-weight: 600;
 
-    padding: 15px;
-
     cursor: pointer;
 
-    margin-top: 5px;
+    transition:
+        background 0.15s ease,
+        transform 0.15s ease;
 }
 
-.create-button:hover {
-    background: #3f6de8;
+
+.create-submit:hover {
+
+    background: #3d68e6;
 }
 
-/* =========================
+
+.create-submit:active {
+
+    transform:
+        scale(0.98);
+}
+
+
+.create-submit:disabled {
+
+    background: #aeb8d2;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+
+/* ==================================================
+   错误
+================================================== */
+
+.error-message {
+
+    min-height: 20px;
+
+    margin-top: 10px;
+
+    color: #e5484d;
+
+    font-size: 13px;
+
+    text-align: center;
+}
+
+
+/* ==================================================
    手机
-========================= */
+================================================== */
 
 @media (max-width: 600px) {
 
     .top-bar {
-        padding: 0 16px;
+
+        padding:
+            0 14px;
     }
 
-    .container {
-        padding-left: 16px;
-        padding-right: 16px;
+
+    .page {
+
+        padding:
+            94px 14px 35px;
+    }
+
+
+    .main-title {
+
+        font-size: 25px;
+    }
+
+
+    .form-section {
+
+        padding: 18px;
+
+        border-radius: 12px;
+    }
+
+
+    .cover-preview {
+
+        width: 160px;
+
+        height: 214px;
     }
 
 }
+
 </style>
+
 </head>
+
 
 <body>
 
-<!-- =========================
+
+<!-- ==================================================
      顶部
-========================= -->
+================================================== -->
 
 <header class="top-bar">
 
     <button
+        id="backButton"
         class="back-button"
-        onclick="goBack()">
+        type="button"
+    >
         ← 返回
     </button>
 
+
     <div class="page-title">
-        新建书籍
+        新建小说
     </div>
 
 </header>
 
 
-<!-- =========================
-     主内容
-========================= -->
+<!-- ==================================================
+     页面
+================================================== -->
 
-<main class="container">
+<main class="page">
 
-    <!-- 封面 -->
+    <div class="create-container">
 
-    <div class="cover-section">
 
-        <label class="form-label">
-            封面
-        </label>
+        <h1 class="main-title">
+            新建小说
+        </h1>
 
-        <label class="cover-upload">
+
+        <p class="sub-title">
+            创建一本新的小说，开始你的创作。
+        </p>
+
+
+        <!-- ==================================================
+             书名
+        ================================================== -->
+
+        <section class="form-section">
+
+            <label
+                class="form-label"
+                for="bookTitle"
+            >
+                小说名称
+                <span class="required">*</span>
+            </label>
+
+
+            <input
+                id="bookTitle"
+                class="title-input"
+                type="text"
+                maxlength="100"
+                placeholder="请输入小说名称"
+                autocomplete="off"
+            >
+
+        </section>
+
+
+        <!-- ==================================================
+             封面
+        ================================================== -->
+
+        <section
+            class="form-section cover-section"
+        >
+
+            <label class="form-label">
+                小说封面
+            </label>
+
 
             <div
-                id="coverPlaceholder"
-                class="cover-placeholder">
+                id="coverPreview"
+                class="cover-preview"
+            >
 
-                <span class="cover-plus">
-                    ＋
-                </span>
+                <div
+                    id="coverPlaceholder"
+                    class="cover-placeholder"
+                >
 
-                添加封面
+                    <div
+                        class="cover-placeholder-icon"
+                    >
+                        🖼️
+                    </div>
+
+
+                    <div
+                        class="cover-placeholder-text"
+                    >
+                        暂无封面
+                    </div>
+
+                </div>
+
+
+                <img
+                    id="coverImage"
+                    src=""
+                    alt="封面预览"
+                    style="display:none;"
+                >
 
             </div>
 
-            <img
-                id="coverPreview"
-                class="cover-preview"
-                alt="封面预览">
+
+            <!-- 隐藏的文件选择器 -->
 
             <input
                 id="coverInput"
                 type="file"
                 accept="image/*"
-                style="display:none"
-                onchange="previewCover(event)">
+            >
 
-        </label>
+
+            <!-- 选择封面 -->
+
+            <label
+                for="coverInput"
+                class="cover-upload-button"
+            >
+                🖼️ 选择封面
+            </label>
+
+
+            <!-- 删除封面 -->
+
+            <button
+                id="removeCoverButton"
+                class="remove-cover-button"
+                type="button"
+            >
+                删除封面
+            </button>
+
+
+            <div class="cover-hint">
+                支持手机中的图片。
+                <br>
+                建议使用竖版封面。
+            </div>
+
+        </section>
+
+
+        <!-- ==================================================
+             错误
+        ================================================== -->
+
+        <div
+            id="errorMessage"
+            class="error-message"
+        ></div>
+
+
+        <!-- ==================================================
+             创建
+        ================================================== -->
+
+        <button
+            id="createButton"
+            class="create-submit"
+            type="button"
+        >
+            创建小说
+        </button>
 
     </div>
-
-
-    <!-- 书名 -->
-
-    <div class="form-group">
-
-        <label
-            class="form-label"
-            for="bookTitle">
-
-            书名
-
-        </label>
-
-        <input
-            id="bookTitle"
-            class="input"
-            type="text"
-            placeholder="请输入书名">
-
-    </div>
-
-
-    <!-- 简介 -->
-
-    <div class="form-group">
-
-        <label
-            class="form-label"
-            for="bookDescription">
-
-            简介
-
-        </label>
-
-        <textarea
-            id="bookDescription"
-            class="input"
-            placeholder="简单介绍一下这部小说……"></textarea>
-
-    </div>
-
-
-    <!-- 创建 -->
-
-    <button
-        class="create-button"
-        onclick="createBook()">
-
-        创建书籍
-
-    </button>
 
 </main>
 
 
 <script>
 
-/* =========================
-   返回首页
-========================= */
 
-function goBack() {
+// ==================================================
+// DOM
+// ==================================================
 
-    window.location.href = "index.html";
-
-}
-
-
-/* =========================
-   封面预览
-========================= */
-
-function previewCover(event) {
-
-    const file = event.target.files[0];
-
-    if (!file) {
-        return;
-    }
-
-    const reader = new FileReader();
-
-    reader.onload = function(e) {
-
-        const preview =
-            document.getElementById("coverPreview");
-
-        const placeholder =
-            document.getElementById("coverPlaceholder");
-
-        preview.src = e.target.result;
-
-        preview.style.display = "block";
-
-        placeholder.style.display = "none";
-
-    };
-
-    reader.readAsDataURL(file);
-
-}
-
-
-/* =========================
-   创建书籍
-========================= */
-
-function createBook() {
-
-    const title =
-        document.getElementById("bookTitle")
-        .value
-        .trim();
-
-    const description =
-        document.getElementById("bookDescription")
-        .value
-        .trim();
-
-    const cover =
-        document.getElementById("coverPreview").src;
-
-
-    /* 没有填写书名 */
-
-    if (!title) {
-
-        alert("请输入书名");
-
-        return;
-    }
-
-
-    /* 创建书籍数据 */
-
-    const book = {
-
-        id: Date.now(),
-
-        title: title,
-
-        description: description,
-
-        cover: cover || "",
-
-        chapters: 0,
-
-        words: 0,
-
-        createdAt:
-            new Date().toLocaleDateString()
-
-    };
-
-
-    /* 获取已有书籍 */
-
-    const books =
-        JSON.parse(
-            localStorage.getItem("novelBooks") || "[]"
-        );
-
-
-    /* 添加新书 */
-
-    books.push(book);
-
-
-    /* 保存 */
-
-    localStorage.setItem(
-        "novelBooks",
-        JSON.stringify(books)
+const bookTitleInput =
+    document.getElementById(
+        "bookTitle"
     );
 
 
-    /* 提示 */
+const coverInput =
+    document.getElementById(
+        "coverInput"
+    );
 
-    alert("书籍创建成功！");
+
+const coverImage =
+    document.getElementById(
+        "coverImage"
+    );
 
 
-    /* 返回首页 */
+const coverPlaceholder =
+    document.getElementById(
+        "coverPlaceholder"
+    );
 
-    window.location.href = "index.html";
 
+const removeCoverButton =
+    document.getElementById(
+        "removeCoverButton"
+    );
+
+
+const createButton =
+    document.getElementById(
+        "createButton"
+    );
+
+
+const errorMessage =
+    document.getElementById(
+        "errorMessage"
+    );
+
+
+let selectedCover =
+    "";
+
+
+// ==================================================
+// 返回
+// ==================================================
+
+document.getElementById(
+    "backButton"
+).addEventListener(
+    "click",
+    function() {
+
+        window.location.href =
+            "index.html";
+
+    }
+);
+
+
+// ==================================================
+// 选择封面
+// ==================================================
+
+coverInput.addEventListener(
+    "change",
+    function(event) {
+
+        const file =
+            event.target.files &&
+            event.target.files[0];
+
+
+        if (!file) {
+
+            return;
+        }
+
+
+        // ------------------------------
+        // 必须是图片
+        // ------------------------------
+
+        if (
+            !file.type ||
+            !file.type.startsWith(
+                "image/"
+            )
+        ) {
+
+            showError(
+                "请选择图片文件。"
+            );
+
+            coverInput.value =
+                "";
+
+            return;
+        }
+
+
+        clearError();
+
+
+        // ------------------------------
+        // 读取图片
+        // ------------------------------
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function() {
+
+                const result =
+                    reader.result;
+
+
+                if (
+                    typeof result !==
+                    "string"
+                ) {
+
+                    showError(
+                        "读取封面失败。"
+                    );
+
+                    return;
+                }
+
+
+                // --------------------------
+                // 压缩封面
+                // --------------------------
+
+                compressImage(
+                    result,
+                    function(compressed) {
+
+                        selectedCover =
+                            compressed;
+
+                        showCover(
+                            compressed
+                        );
+
+                    }
+                );
+
+            };
+
+
+        reader.onerror =
+            function() {
+
+                showError(
+                    "读取封面失败，请重新选择图片。"
+                );
+
+            };
+
+
+        reader.readAsDataURL(file);
+    }
+);
+
+
+// ==================================================
+// 显示封面
+// ==================================================
+
+function showCover(dataURL) {
+
+    coverImage.src =
+        dataURL;
+
+
+    coverImage.style.display =
+        "block";
+
+
+    coverPlaceholder.style.display =
+        "none";
+
+
+    removeCoverButton.style.display =
+        "block";
 }
+
+
+// ==================================================
+// 删除封面
+// ==================================================
+
+removeCoverButton.addEventListener(
+    "click",
+    function() {
+
+        selectedCover =
+            "";
+
+        coverInput.value =
+            "";
+
+        coverImage.src =
+            "";
+
+        coverImage.style.display =
+            "none";
+
+        coverPlaceholder.style.display =
+            "flex";
+
+        removeCoverButton.style.display =
+            "none";
+
+    }
+);
+
+
+// ==================================================
+// 压缩图片
+//
+// 原图可能非常大。
+// 这里统一缩小到最长边 1000px。
+// ==================================================
+
+function compressImage(
+    dataURL,
+    callback
+) {
+
+    const image =
+        new Image();
+
+
+    image.onload =
+        function() {
+
+            const maxSize =
+                1000;
+
+
+            let width =
+                image.width;
+
+
+            let height =
+                image.height;
+
+
+            // --------------------------
+            // 缩放
+            // --------------------------
+
+            if (
+                width > maxSize ||
+                height > maxSize
+            ) {
+
+                if (
+                    width > height
+                ) {
+
+                    height =
+                        Math.round(
+                            height *
+                            maxSize /
+                            width
+                        );
+
+                    width =
+                        maxSize;
+
+                } else {
+
+                    width =
+                        Math.round(
+                            width *
+                            maxSize /
+                            height
+                        );
+
+                    height =
+                        maxSize;
+                }
+            }
+
+
+            // --------------------------
+            // Canvas
+            // --------------------------
+
+            const canvas =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            canvas.width =
+                width;
+
+
+            canvas.height =
+                height;
+
+
+            const context =
+                canvas.getContext(
+                    "2d"
+                );
+
+
+            if (!context) {
+
+                callback(
+                    dataURL
+                );
+
+                return;
+            }
+
+
+            context.drawImage(
+                image,
+                0,
+                0,
+                width,
+                height
+            );
+
+
+            // --------------------------
+            // JPEG
+            // --------------------------
+
+            const compressed =
+                canvas.toDataURL(
+                    "image/jpeg",
+                    0.82
+                );
+
+
+            callback(
+                compressed
+            );
+
+        };
+
+
+    image.onerror =
+        function() {
+
+            callback(
+                dataURL
+            );
+
+        };
+
+
+    image.src =
+        dataURL;
+}
+
+
+// ==================================================
+// 创建小说
+// ==================================================
+
+createButton.addEventListener(
+    "click",
+    function() {
+
+        const title =
+            bookTitleInput.value.trim();
+
+
+        // ------------------------------
+        // 检查书名
+        // ------------------------------
+
+        if (!title) {
+
+            showError(
+                "请输入小说名称。"
+            );
+
+            bookTitleInput.focus();
+
+            return;
+        }
+
+
+        clearError();
+
+
+        createButton.disabled =
+            true;
+
+
+        createButton.textContent =
+            "正在创建…";
+
+
+        // ------------------------------
+        // 读取已有书籍
+        // ------------------------------
+
+        let books = [];
+
+
+        const savedBooks =
+            localStorage.getItem(
+                "novelBooks"
+            );
+
+
+        try {
+
+            books =
+                savedBooks
+                    ? JSON.parse(
+                        savedBooks
+                    )
+                    : [];
+
+        } catch (error) {
+
+            console.error(
+                "读取书籍失败：",
+                error
+            );
+
+            books = [];
+        }
+
+
+        if (!Array.isArray(books)) {
+
+            books = [];
+
+        }
+
+
+        // ------------------------------
+        // ID
+        // ------------------------------
+
+        const bookId =
+            "book_" +
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .substring(2, 9);
+
+
+        // ==================================================
+        // 新书数据
+        // ==================================================
+
+        const newBook = {
+
+            id:
+                bookId,
+
+            title:
+                title,
+
+            cover:
+                selectedCover || "",
+
+            // --------------------------
+            // 全书结构
+            // --------------------------
+
+            structure:
+                [],
+
+            // --------------------------
+            // 默认布局
+            // --------------------------
+
+            layoutDirection:
+                "vertical",
+
+            // --------------------------
+            // 书名位置
+            //
+            // null = 第一次进入全书时自动居中
+            // --------------------------
+
+            bookPosition: {
+
+                x: null,
+
+                y: null
+
+            }
+
+        };
+
+
+        // ------------------------------
+        // 加入书架
+        // ------------------------------
+
+        books.push(
+            newBook
+        );
+
+
+        // ------------------------------
+        // 保存
+        // ------------------------------
+
+        try {
+
+            localStorage.setItem(
+                "novelBooks",
+                JSON.stringify(
+                    books
+                )
+            );
+
+        } catch (error) {
+
+            console.error(
+                "保存小说失败：",
+                error
+            );
+
+
+            showError(
+                "保存失败，可能是浏览器储存空间不足。"
+            );
+
+
+            createButton.disabled =
+                false;
+
+
+            createButton.textContent =
+                "创建小说";
+
+
+            return;
+        }
+
+
+        // ------------------------------
+        // 设置当前小说
+        // ------------------------------
+
+        localStorage.setItem(
+            "currentBookId",
+            String(bookId)
+        );
+
+
+        localStorage.removeItem(
+            "currentChapterId"
+        );
+
+
+        // ------------------------------
+        // 进入全书
+        // ------------------------------
+
+        window.location.href =
+            "book.html";
+
+    }
+);
+
+
+// ==================================================
+// 错误
+// ==================================================
+
+function showError(message) {
+
+    errorMessage.textContent =
+        message;
+}
+
+
+function clearError() {
+
+    errorMessage.textContent =
+        "";
+}
+
+
+// ==================================================
+// 自动清除错误
+// ==================================================
+
+bookTitleInput.addEventListener(
+    "input",
+    function() {
+
+        clearError();
+
+    }
+);
 
 </script>
 
+
 </body>
+
 </html>
