@@ -66,24 +66,37 @@ const meNav =
 
 
 /* ==================================================
+   手机排序状态
+================================================== */
+
+let sortingPressTimer = null;
+
+let sortingDraggedCard = null;
+
+let sortingPlaceholder = null;
+
+let sortingDragging = false;
+
+let sortingPointerId = null;
+
+let sortingStartX = 0;
+
+let sortingStartY = 0;
+
+
+/* ==================================================
    初始化
 ================================================== */
 
 function initShelf() {
 
-    /* 读取书籍 */
-
     if (typeof loadBooks === "function") {
         loadBooks();
     }
 
-    /* 读取书架显示模式 */
-
     if (typeof loadShelfViewMode === "function") {
         loadShelfViewMode();
     }
-
-    /* 没有保存过模式时，默认使用网格 */
 
     if (
         typeof shelfViewMode === "undefined" ||
@@ -93,23 +106,15 @@ function initShelf() {
         shelfViewMode = "grid";
     }
 
-    /* 渲染书籍 */
-
     if (typeof renderBooks === "function") {
         renderBooks();
     }
-
-    /* 应用显示模式 */
 
     if (typeof applyShelfViewMode === "function") {
         applyShelfViewMode();
     }
 
-    /* 强制确保当前模式正确 */
-
     applyViewClass();
-
-    /* 绑定事件 */
 
     bindShelfEvents();
 }
@@ -125,8 +130,6 @@ function applyViewClass() {
         return;
     }
 
-    /* 先清除 */
-
     bookGrid.classList.remove(
         "grid-view"
     );
@@ -134,8 +137,6 @@ function applyViewClass() {
     bookGrid.classList.remove(
         "list-view"
     );
-
-    /* 根据当前模式添加 */
 
     if (shelfViewMode === "list") {
 
@@ -158,8 +159,6 @@ function applyViewClass() {
 
 function bindShelfEvents() {
 
-    /* 新建 */
-
     if (createButton) {
 
         createButton.addEventListener(
@@ -167,8 +166,6 @@ function bindShelfEvents() {
             handleCreateButtonClick
         );
     }
-
-    /* 设置 */
 
     if (settingsButton) {
 
@@ -178,8 +175,6 @@ function bindShelfEvents() {
         );
     }
 
-    /* 新建书籍 */
-
     if (createBookButton) {
 
         createBookButton.addEventListener(
@@ -187,8 +182,6 @@ function bindShelfEvents() {
             handleCreateBookClick
         );
     }
-
-    /* 新建组合 */
 
     if (createCollectionButton) {
 
@@ -198,8 +191,6 @@ function bindShelfEvents() {
         );
     }
 
-    /* 排序 */
-
     if (sortBooksButton) {
 
         sortBooksButton.addEventListener(
@@ -207,8 +198,6 @@ function bindShelfEvents() {
             startSorting
         );
     }
-
-    /* 完成排序 */
 
     if (finishSortButton) {
 
@@ -218,8 +207,6 @@ function bindShelfEvents() {
         );
     }
 
-    /* 网格 */
-
     if (gridButton) {
 
         gridButton.addEventListener(
@@ -227,8 +214,6 @@ function bindShelfEvents() {
             setGridView
         );
     }
-
-    /* 列表 */
 
     if (listButton) {
 
@@ -238,7 +223,10 @@ function bindShelfEvents() {
         );
     }
 
-    /* 书籍区域 */
+
+    /* ==================================================
+       书籍区域
+    ================================================== */
 
     if (bookGrid) {
 
@@ -264,7 +252,7 @@ function bindShelfEvents() {
 
         bookGrid.addEventListener(
             "pointercancel",
-            cancelLongPress
+            handlePointerCancel
         );
 
         bookGrid.addEventListener(
@@ -278,7 +266,10 @@ function bindShelfEvents() {
         );
     }
 
-    /* 长按菜单 */
+
+    /* ==================================================
+       长按菜单
+    ================================================== */
 
     if (contextEdit) {
 
@@ -312,7 +303,6 @@ function bindShelfEvents() {
         );
     }
 
-    /* 长按遮罩 */
 
     if (bookMenuOverlay) {
 
@@ -322,7 +312,10 @@ function bindShelfEvents() {
         );
     }
 
-    /* 底部导航 */
+
+    /* ==================================================
+       底部导航
+    ================================================== */
 
     if (shelfNav) {
 
@@ -348,7 +341,6 @@ function bindShelfEvents() {
         );
     }
 
-    /* 页面点击 */
 
     document.addEventListener(
         "click",
@@ -383,22 +375,9 @@ function handleCreateButtonClick(event) {
         );
     }
 
-    if (
-        createMenu.classList.contains(
-            "show"
-        )
-    ) {
-
-        createMenu.classList.remove(
-            "show"
-        );
-
-    } else {
-
-        createMenu.classList.add(
-            "show"
-        );
-    }
+    createMenu.classList.toggle(
+        "show"
+    );
 }
 
 
@@ -428,22 +407,9 @@ function handleSettingsButtonClick(event) {
         );
     }
 
-    if (
-        settingsMenu.classList.contains(
-            "show"
-        )
-    ) {
-
-        settingsMenu.classList.remove(
-            "show"
-        );
-
-    } else {
-
-        settingsMenu.classList.add(
-            "show"
-        );
-    }
+    settingsMenu.classList.toggle(
+        "show"
+    );
 }
 
 
@@ -454,10 +420,14 @@ function handleSettingsButtonClick(event) {
 function handleDocumentClick(event) {
 
     const createMenu =
-        document.getElementById("createMenu");
+        document.getElementById(
+            "createMenu"
+        );
 
     const settingsMenu =
-        document.getElementById("settingsMenu");
+        document.getElementById(
+            "settingsMenu"
+        );
 
     const clickedCreateButton =
         event.target.closest(
@@ -479,6 +449,7 @@ function handleDocumentClick(event) {
             "#settingsMenu"
         );
 
+
     if (
         createMenu &&
         !clickedCreateButton &&
@@ -489,6 +460,7 @@ function handleDocumentClick(event) {
             "show"
         );
     }
+
 
     if (
         settingsMenu &&
@@ -520,7 +492,7 @@ function handleCreateBookClick(event) {
 
 
 /* ==================================================
-   新建组合
+   新建分组
 ================================================== */
 
 function handleCreateCollectionClick(event) {
@@ -531,7 +503,7 @@ function handleCreateCollectionClick(event) {
     closeAllMenus();
 
     alert(
-        "组合功能正在开发中。"
+        "分组功能正在开发中。"
     );
 }
 
@@ -550,23 +522,23 @@ function setGridView(event) {
 
     closeAllMenus();
 
-    shelfViewMode = "grid";
+    shelfViewMode =
+        "grid";
 
-    /* 立即修改 CSS class */
 
     applyViewClass();
 
-    /* 保存 */
 
     if (
         typeof saveShelfViewMode ===
         "function"
     ) {
 
-        saveShelfViewMode("grid");
+        saveShelfViewMode(
+            "grid"
+        );
     }
 
-    /* 使用原来的显示模式系统 */
 
     if (
         typeof applyShelfViewMode ===
@@ -576,11 +548,9 @@ function setGridView(event) {
         applyShelfViewMode();
     }
 
-    /* 再次确保 class 正确 */
 
     applyViewClass();
 
-    /* 排序模式 */
 
     if (isSorting) {
 
@@ -603,23 +573,23 @@ function setListView(event) {
 
     closeAllMenus();
 
-    shelfViewMode = "list";
+    shelfViewMode =
+        "list";
 
-    /* 立即修改 CSS class */
 
     applyViewClass();
 
-    /* 保存 */
 
     if (
         typeof saveShelfViewMode ===
         "function"
     ) {
 
-        saveShelfViewMode("list");
+        saveShelfViewMode(
+            "list"
+        );
     }
 
-    /* 使用原来的显示模式系统 */
 
     if (
         typeof applyShelfViewMode ===
@@ -629,11 +599,9 @@ function setListView(event) {
         applyShelfViewMode();
     }
 
-    /* 再次确保 class 正确 */
 
     applyViewClass();
 
-    /* 排序模式 */
 
     if (isSorting) {
 
@@ -653,6 +621,7 @@ function handleBookGridClick(event) {
             ".delete-book-button"
         );
 
+
     if (deleteButton) {
 
         event.preventDefault();
@@ -660,14 +629,17 @@ function handleBookGridClick(event) {
 
         cancelLongPress();
 
+
         const card =
             deleteButton.closest(
                 ".book-card"
             );
 
+
         if (!card) {
             return;
         }
+
 
         deleteBook(
             card.dataset.bookId
@@ -676,35 +648,44 @@ function handleBookGridClick(event) {
         return;
     }
 
+
     if (longPressTriggered) {
 
-        longPressTriggered = false;
+        longPressTriggered =
+            false;
 
         return;
     }
+
 
     if (isSorting) {
         return;
     }
+
 
     const card =
         event.target.closest(
             ".book-card"
         );
 
+
     if (!card) {
         return;
     }
 
+
     const bookId =
         card.dataset.bookId;
+
 
     const book =
         getBookById(bookId);
 
+
     if (!book) {
         return;
     }
+
 
     if (
         event.target.closest(
@@ -717,6 +698,7 @@ function handleBookGridClick(event) {
         return;
     }
 
+
     if (
         event.target.closest(
             ".book-title"
@@ -724,8 +706,6 @@ function handleBookGridClick(event) {
     ) {
 
         openBook(bookId);
-
-        return;
     }
 }
 
@@ -743,6 +723,7 @@ function openBook(bookId) {
         return;
     }
 
+
     localStorage.setItem(
         "currentBookId",
         String(bookId)
@@ -751,6 +732,7 @@ function openBook(bookId) {
     localStorage.removeItem(
         "currentChapterId"
     );
+
 
     window.location.href =
         "book.html";
@@ -770,6 +752,7 @@ function openEditBook(bookId) {
         return;
     }
 
+
     localStorage.setItem(
         "currentBookId",
         String(bookId)
@@ -778,6 +761,7 @@ function openEditBook(bookId) {
     localStorage.removeItem(
         "currentChapterId"
     );
+
 
     window.location.href =
         "edit-book.html";
@@ -797,9 +781,11 @@ function deleteBook(bookId) {
         return;
     }
 
+
     const title =
         book.title ||
         "未命名小说";
+
 
     const confirmed =
         window.confirm(
@@ -809,9 +795,11 @@ function deleteBook(bookId) {
             "删除后，这本书及其全书结构将无法恢复。"
         );
 
+
     if (!confirmed) {
         return;
     }
+
 
     books =
         books.filter(
@@ -822,9 +810,11 @@ function deleteBook(bookId) {
             }
         );
 
+
     if (!saveBooks()) {
         return;
     }
+
 
     if (
         typeof renderBooks ===
@@ -834,56 +824,129 @@ function deleteBook(bookId) {
         renderBooks();
     }
 
+
     if (isSorting) {
 
         renderSortingMode();
     }
+
 
     applyViewClass();
 }
 
 
 /* ==================================================
-   长按开始
+   指针按下
 ================================================== */
 
 function handlePointerDown(event) {
-
-    if (isSorting) {
-        return;
-    }
 
     if (event.isPrimary === false) {
         return;
     }
 
-    if (
-        event.pointerType === "mouse" &&
-        event.button !== 0
-    ) {
-        return;
-    }
 
     const card =
         event.target.closest(
             ".book-card"
         );
 
+
     if (!card) {
         return;
     }
+
+
+    /* ==================================================
+       排序模式
+    ================================================== */
+
+    if (isSorting) {
+
+        if (
+            event.target.closest(
+                ".delete-book-button"
+            )
+        ) {
+
+            return;
+        }
+
+
+        event.preventDefault();
+
+
+        sortingPointerId =
+            event.pointerId;
+
+
+        sortingDraggedCard =
+            card;
+
+
+        sortingStartX =
+            event.clientX;
+
+
+        sortingStartY =
+            event.clientY;
+
+
+        sortingDragging =
+            false;
+
+
+        clearTimeout(
+            sortingPressTimer
+        );
+
+
+        sortingPressTimer =
+            setTimeout(
+                function() {
+
+                    startTouchSorting(
+                        event
+                    );
+
+                },
+                350
+            );
+
+
+        return;
+    }
+
+
+    /* ==================================================
+       普通模式
+    ================================================== */
+
+    if (
+        event.pointerType === "mouse" &&
+        event.button !== 0
+    ) {
+
+        return;
+    }
+
 
     if (
         event.target.closest(
             ".delete-book-button"
         )
     ) {
+
         return;
     }
 
+
     cancelLongPress();
 
-    pressedCard = card;
+
+    pressedCard =
+        card;
+
 
     pressStartX =
         event.clientX;
@@ -891,12 +954,15 @@ function handlePointerDown(event) {
     pressStartY =
         event.clientY;
 
+
     longPressTriggered =
         false;
+
 
     card.classList.add(
         "long-pressing"
     );
+
 
     longPressTimer =
         setTimeout(
@@ -906,23 +972,29 @@ function handlePointerDown(event) {
                     return;
                 }
 
+
                 const bookId =
                     pressedCard.dataset.bookId;
+
 
                 longPressBookId =
                     bookId;
 
+
                 longPressTriggered =
                     true;
+
 
                 pressedCard.classList.remove(
                     "long-pressing"
                 );
 
+
                 showBookContextMenu(
                     bookId,
                     pressedCard
                 );
+
 
                 longPressTimer =
                     null;
@@ -934,17 +1006,94 @@ function handlePointerDown(event) {
 
 
 /* ==================================================
-   长按移动
+   指针移动
 ================================================== */
 
 function handlePointerMove(event) {
+
+    /* ==================================================
+       排序模式
+    ================================================== */
+
+    if (
+        isSorting &&
+        sortingDraggedCard &&
+        event.pointerId ===
+            sortingPointerId
+    ) {
+
+        const distanceX =
+            Math.abs(
+                event.clientX -
+                sortingStartX
+            );
+
+
+        const distanceY =
+            Math.abs(
+                event.clientY -
+                sortingStartY
+            );
+
+
+        /*
+         * 长按还没有开始
+         */
+
+        if (
+            !sortingDragging &&
+            (
+                distanceX > 10 ||
+                distanceY > 10
+            )
+        ) {
+
+            clearTimeout(
+                sortingPressTimer
+            );
+
+            sortingPressTimer =
+                null;
+
+            return;
+        }
+
+
+        /*
+         * 正在拖动
+         */
+
+        if (sortingDragging) {
+
+            event.preventDefault();
+
+
+            moveTouchSorting(
+                event.clientX,
+                event.clientY
+            );
+
+
+            return;
+        }
+
+
+        return;
+    }
+
+
+    /* ==================================================
+       普通长按
+    ================================================== */
 
     if (
         !longPressTimer ||
         !pressedCard
     ) {
+
         return;
     }
+
 
     const distanceX =
         Math.abs(
@@ -952,11 +1101,13 @@ function handlePointerMove(event) {
             pressStartX
         );
 
+
     const distanceY =
         Math.abs(
             event.clientY -
             pressStartY
         );
+
 
     if (
         distanceX >
@@ -971,10 +1122,46 @@ function handlePointerMove(event) {
 
 
 /* ==================================================
-   长按结束
+   指针抬起
 ================================================== */
 
-function handlePointerUp() {
+function handlePointerUp(event) {
+
+    /* ==================================================
+       手机排序
+    ================================================== */
+
+    if (
+        isSorting &&
+        event.pointerId ===
+            sortingPointerId
+    ) {
+
+        clearTimeout(
+            sortingPressTimer
+        );
+
+        sortingPressTimer =
+            null;
+
+
+        if (sortingDragging) {
+
+            finishTouchSorting();
+
+        } else {
+
+            cancelTouchSorting();
+        }
+
+
+        return;
+    }
+
+
+    /* ==================================================
+       普通模式
+    ================================================== */
 
     if (longPressTimer) {
 
@@ -982,8 +1169,10 @@ function handlePointerUp() {
             longPressTimer
         );
 
-        longPressTimer = null;
+        longPressTimer =
+            null;
     }
+
 
     if (!longPressTriggered) {
 
@@ -994,19 +1183,43 @@ function handlePointerUp() {
             );
         }
 
-        pressedCard = null;
+        pressedCard =
+            null;
     }
 }
 
 
 /* ==================================================
-   长按离开
+   指针取消
+================================================== */
+
+function handlePointerCancel(event) {
+
+    if (
+        isSorting &&
+        event.pointerId ===
+            sortingPointerId
+    ) {
+
+        cancelTouchSorting();
+
+        return;
+    }
+
+
+    cancelLongPress();
+}
+
+
+/* ==================================================
+   指针离开
 ================================================== */
 
 function handlePointerLeave(event) {
 
     if (
-        event.pointerType === "mouse"
+        event.pointerType ===
+        "mouse"
     ) {
 
         cancelLongPress();
@@ -1015,7 +1228,7 @@ function handlePointerLeave(event) {
 
 
 /* ==================================================
-   取消长按
+   取消普通长按
 ================================================== */
 
 function cancelLongPress() {
@@ -1026,8 +1239,10 @@ function cancelLongPress() {
             longPressTimer
         );
 
-        longPressTimer = null;
+        longPressTimer =
+            null;
     }
+
 
     if (pressedCard) {
 
@@ -1036,7 +1251,9 @@ function cancelLongPress() {
         );
     }
 
-    pressedCard = null;
+
+    pressedCard =
+        null;
 }
 
 
@@ -1062,12 +1279,15 @@ function showBookContextMenu(
     const book =
         getBookById(bookId);
 
+
     if (!book) {
         return;
     }
 
+
     longPressBookId =
         bookId;
+
 
     if (contextMenuTitle) {
 
@@ -1076,12 +1296,14 @@ function showBookContextMenu(
             "未命名小说";
     }
 
+
     if (bookMenuOverlay) {
 
         bookMenuOverlay.classList.add(
             "show"
         );
     }
+
 
     if (bookContextMenu) {
 
@@ -1090,8 +1312,10 @@ function showBookContextMenu(
         );
     }
 
+
     document.body.style.overflow =
         "hidden";
+
 
     if (card) {
 
@@ -1115,6 +1339,7 @@ function closeBookContextMenu() {
         );
     }
 
+
     if (bookContextMenu) {
 
         bookContextMenu.classList.remove(
@@ -1122,8 +1347,10 @@ function closeBookContextMenu() {
         );
     }
 
+
     document.body.style.overflow =
         "";
+
 
     longPressBookId =
         null;
@@ -1139,11 +1366,14 @@ function contextEditBook() {
     const bookId =
         longPressBookId;
 
+
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     openEditBook(bookId);
 }
@@ -1170,11 +1400,14 @@ function contextMoveBook() {
     const bookId =
         longPressBookId;
 
+
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     moveBookToGroup(bookId);
 }
@@ -1189,11 +1422,14 @@ function contextDeleteBook() {
     const bookId =
         longPressBookId;
 
+
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     deleteBook(bookId);
 }
@@ -1210,10 +1446,12 @@ function closeAllMenus() {
             "createMenu"
         );
 
+
     const settingsMenu =
         document.getElementById(
             "settingsMenu"
         );
+
 
     if (createMenu) {
 
@@ -1221,6 +1459,7 @@ function closeAllMenus() {
             "show"
         );
     }
+
 
     if (settingsMenu) {
 
@@ -1241,15 +1480,20 @@ function startSorting() {
 
     closeBookContextMenu();
 
+
     if (isSorting) {
         return;
     }
 
-    isSorting = true;
+
+    isSorting =
+        true;
+
 
     document.body.classList.add(
         "sorting"
     );
+
 
     if (
         typeof renderSortingMode ===
@@ -1259,37 +1503,18 @@ function startSorting() {
         renderSortingMode();
     }
 
+
     const cards =
         document.querySelectorAll(
             ".book-card"
         );
 
+
     cards.forEach(
         function(card) {
 
-            card.setAttribute(
-                "draggable",
-                "true"
-            );
-
-            card.addEventListener(
-                "dragstart",
-                handleDragStart
-            );
-
-            card.addEventListener(
-                "dragover",
-                handleDragOver
-            );
-
-            card.addEventListener(
-                "drop",
-                handleDrop
-            );
-
-            card.addEventListener(
-                "dragend",
-                handleDragEnd
+            card.classList.add(
+                "sorting-card"
             );
         }
     );
@@ -1297,147 +1522,407 @@ function startSorting() {
 
 
 /* ==================================================
-   拖动开始
+   开始手机拖动
 ================================================== */
 
-function handleDragStart(event) {
-
-    if (!isSorting) {
-        return;
-    }
-
-    draggingCard =
-        event.currentTarget;
-
-    isDraggingBook =
-        true;
-
-    draggingCard.classList.add(
-        "dragging"
-    );
-
-    if (event.dataTransfer) {
-
-        event.dataTransfer.effectAllowed =
-            "move";
-
-        event.dataTransfer.setData(
-            "text/plain",
-            draggingCard.dataset.bookId
-        );
-    }
-}
-
-
-/* ==================================================
-   拖动经过
-================================================== */
-
-function handleDragOver(event) {
+function startTouchSorting(event) {
 
     if (
         !isSorting ||
-        !draggingCard
+        !sortingDraggedCard
     ) {
+
         return;
     }
 
-    event.preventDefault();
 
-    const target =
-        event.currentTarget;
+    sortingDragging =
+        true;
 
-    if (target === draggingCard) {
-        return;
-    }
+
+    document.body.classList.add(
+        "touch-sorting"
+    );
+
+
+    sortingDraggedCard.classList.add(
+        "touch-dragging"
+    );
+
+
+    /*
+     * 创建占位卡片
+     */
+
+    sortingPlaceholder =
+        document.createElement(
+            "div"
+        );
+
+
+    sortingPlaceholder.className =
+        "book-card sorting-placeholder";
+
 
     const rect =
-        target.getBoundingClientRect();
+        sortingDraggedCard.getBoundingClientRect();
 
-    const middle =
+
+    sortingPlaceholder.style.width =
+        rect.width + "px";
+
+
+    sortingPlaceholder.style.height =
+        rect.height + "px";
+
+
+    sortingDraggedCard.parentNode.insertBefore(
+        sortingPlaceholder,
+        sortingDraggedCard
+    );
+
+
+    /*
+     * 让原卡片浮在上面
+     */
+
+    sortingDraggedCard.style.width =
+        rect.width + "px";
+
+
+    sortingDraggedCard.style.height =
+        rect.height + "px";
+
+
+    sortingDraggedCard.style.zIndex =
+        "999";
+
+
+    sortingDraggedCard.style.position =
+        "relative";
+
+
+    sortingDraggedCard.style.touchAction =
+        "none";
+
+
+    /*
+     * 防止浏览器滚动
+     */
+
+    document.body.style.overflow =
+        "hidden";
+}
+
+
+/* ==================================================
+   移动手机排序
+================================================== */
+
+function moveTouchSorting(
+    clientX,
+    clientY
+) {
+
+    if (
+        !sortingDraggedCard ||
+        !sortingPlaceholder ||
+        !bookGrid
+    ) {
+
+        return;
+    }
+
+
+    const cards =
+        Array.from(
+            bookGrid.querySelectorAll(
+                ".book-card"
+            )
+        ).filter(
+            function(card) {
+
+                return (
+                    card !==
+                    sortingDraggedCard
+                );
+            }
+        );
+
+
+    let targetCard =
+        null;
+
+
+    /*
+     * 找到手指下面的卡片
+     */
+
+    for (
+        let i = 0;
+        i < cards.length;
+        i++
+    ) {
+
+        const card =
+            cards[i];
+
+
+        const rect =
+            card.getBoundingClientRect();
+
+
+        if (
+            clientX >= rect.left &&
+            clientX <= rect.right &&
+            clientY >= rect.top &&
+            clientY <= rect.bottom
+        ) {
+
+            targetCard =
+                card;
+
+            break;
+        }
+    }
+
+
+    if (!targetCard) {
+        return;
+    }
+
+
+    const rect =
+        targetCard.getBoundingClientRect();
+
+
+    const centerX =
+        rect.left +
+        rect.width / 2;
+
+
+    const centerY =
         rect.top +
         rect.height / 2;
 
+
+    /*
+     * 判断插入位置
+     */
+
     if (
-        event.clientY <
-        middle
+        clientY < centerY ||
+        (
+            Math.abs(
+                clientY -
+                centerY
+            ) <
+            rect.height * 0.25 &&
+            clientX < centerX
+        )
     ) {
 
-        bookGrid.insertBefore(
-            draggingCard,
-            target
-        );
+        if (
+            sortingPlaceholder !==
+            targetCard.previousSibling
+        ) {
+
+            bookGrid.insertBefore(
+                sortingPlaceholder,
+                targetCard
+            );
+        }
 
     } else {
 
-        bookGrid.insertBefore(
-            draggingCard,
-            target.nextSibling
-        );
+        if (
+            sortingPlaceholder !==
+            targetCard.nextSibling
+        ) {
+
+            bookGrid.insertBefore(
+                sortingPlaceholder,
+                targetCard.nextSibling
+            );
+        }
     }
+}
 
-    document
-        .querySelectorAll(
-            ".book-card.drag-over"
-        )
-        .forEach(
-            function(card) {
 
-                card.classList.remove(
-                    "drag-over"
-                );
-            }
-        );
+/* ==================================================
+   完成手机拖动
+================================================== */
 
-    target.classList.add(
-        "drag-over"
+function finishTouchSorting() {
+
+    clearTimeout(
+        sortingPressTimer
     );
-}
 
 
-/* ==================================================
-   放置
-================================================== */
-
-function handleDrop(event) {
-
-    event.preventDefault();
-
-    updateBookOrder();
-}
+    sortingPressTimer =
+        null;
 
 
-/* ==================================================
-   拖动结束
-================================================== */
+    if (!sortingDraggedCard) {
 
-function handleDragEnd() {
+        cancelTouchSorting();
 
-    if (draggingCard) {
-
-        draggingCard.classList.remove(
-            "dragging"
-        );
+        return;
     }
 
-    document
-        .querySelectorAll(
-            ".book-card.drag-over"
-        )
-        .forEach(
-            function(card) {
 
-                card.classList.remove(
-                    "drag-over"
-                );
-            }
+    /*
+     * 把书籍放到占位位置
+     */
+
+    if (sortingPlaceholder) {
+
+        sortingPlaceholder.parentNode.insertBefore(
+            sortingDraggedCard,
+            sortingPlaceholder
         );
+
+
+        sortingPlaceholder.remove();
+
+
+        sortingPlaceholder =
+            null;
+    }
+
+
+    /*
+     * 清除拖动状态
+     */
+
+    sortingDraggedCard.classList.remove(
+        "touch-dragging"
+    );
+
+
+    sortingDraggedCard.classList.remove(
+        "sorting-card"
+    );
+
+
+    sortingDraggedCard.style.width =
+        "";
+
+    sortingDraggedCard.style.height =
+        "";
+
+    sortingDraggedCard.style.zIndex =
+        "";
+
+    sortingDraggedCard.style.position =
+        "";
+
+    sortingDraggedCard.style.touchAction =
+        "";
+
+
+    /*
+     * 根据 DOM 顺序
+     * 更新 books
+     */
 
     updateBookOrder();
 
-    draggingCard = null;
 
-    isDraggingBook = false;
+    sortingDraggedCard =
+        null;
+
+
+    sortingDragging =
+        false;
+
+
+    sortingPointerId =
+        null;
+
+
+    document.body.classList.remove(
+        "touch-sorting"
+    );
+
+
+    document.body.style.overflow =
+        "";
+}
+
+
+/* ==================================================
+   取消手机拖动
+================================================== */
+
+function cancelTouchSorting() {
+
+    clearTimeout(
+        sortingPressTimer
+    );
+
+
+    sortingPressTimer =
+        null;
+
+
+    if (sortingPlaceholder) {
+
+        sortingPlaceholder.remove();
+
+        sortingPlaceholder =
+            null;
+    }
+
+
+    if (sortingDraggedCard) {
+
+        sortingDraggedCard.classList.remove(
+            "touch-dragging"
+        );
+
+        sortingDraggedCard.classList.remove(
+            "sorting-card"
+        );
+
+
+        sortingDraggedCard.style.width =
+            "";
+
+        sortingDraggedCard.style.height =
+            "";
+
+        sortingDraggedCard.style.zIndex =
+            "";
+
+        sortingDraggedCard.style.position =
+            "";
+
+        sortingDraggedCard.style.touchAction =
+            "";
+    }
+
+
+    sortingDraggedCard =
+        null;
+
+
+    sortingDragging =
+        false;
+
+
+    sortingPointerId =
+        null;
+
+
+    document.body.classList.remove(
+        "touch-sorting"
+    );
+
+
+    document.body.style.overflow =
+        "";
 }
 
 
@@ -1451,6 +1936,7 @@ function updateBookOrder() {
         return;
     }
 
+
     const cards =
         Array.from(
             bookGrid.querySelectorAll(
@@ -1458,7 +1944,9 @@ function updateBookOrder() {
             )
         );
 
+
     const newBooks = [];
+
 
     cards.forEach(
         function(card) {
@@ -1466,15 +1954,20 @@ function updateBookOrder() {
             const bookId =
                 card.dataset.bookId;
 
+
             const book =
                 getBookById(bookId);
 
+
             if (book) {
 
-                newBooks.push(book);
+                newBooks.push(
+                    book
+                );
             }
         }
     );
+
 
     if (
         newBooks.length ===
@@ -1497,21 +1990,71 @@ function finishSorting() {
         return;
     }
 
+
+    /*
+     * 如果正在手机拖动，
+     * 先完成当前拖动
+     */
+
+    if (sortingDragging) {
+
+        finishTouchSorting();
+
+    } else {
+
+        cancelTouchSorting();
+    }
+
+
+    /*
+     * 更新最终顺序
+     */
+
     updateBookOrder();
+
+
+    /*
+     * 保存
+     */
 
     if (!saveBooks()) {
         return;
     }
 
-    isSorting = false;
 
-    draggingCard = null;
+    /*
+     * 退出排序
+     */
 
-    isDraggingBook = false;
+    isSorting =
+        false;
+
+
+    draggingCard =
+        null;
+
+
+    isDraggingBook =
+        false;
+
 
     document.body.classList.remove(
         "sorting"
     );
+
+
+    document.body.classList.remove(
+        "touch-sorting"
+    );
+
+
+    document.body.style.overflow =
+        "";
+
+
+    /*
+     * 清理排序样式
+     */
 
     document
         .querySelectorAll(
@@ -1520,8 +2063,8 @@ function finishSorting() {
         .forEach(
             function(card) {
 
-                card.removeAttribute(
-                    "draggable"
+                card.classList.remove(
+                    "sorting-card"
                 );
 
                 card.classList.remove(
@@ -1531,8 +2074,22 @@ function finishSorting() {
                 card.classList.remove(
                     "drag-over"
                 );
+
+                card.classList.remove(
+                    "touch-dragging"
+                );
+
+
+                card.removeAttribute(
+                    "draggable"
+                );
             }
         );
+
+
+    /*
+     * 重新渲染
+     */
 
     if (
         typeof renderBooks ===
@@ -1542,6 +2099,7 @@ function finishSorting() {
         renderBooks();
     }
 
+
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -1550,7 +2108,17 @@ function finishSorting() {
         applyShelfViewMode();
     }
 
+
     applyViewClass();
+
+
+    if (
+        typeof renderSortingMode ===
+        "function"
+    ) {
+
+        renderSortingMode();
+    }
 }
 
 
@@ -1563,9 +2131,11 @@ function moveBookToGroup(bookId) {
     const book =
         getBookById(bookId);
 
+
     if (!book) {
         return;
     }
+
 
     alert(
         "准备将《" +
@@ -1589,12 +2159,14 @@ function goShelf() {
         "index.html";
 }
 
+
 function goTools() {
 
     alert(
         "工具功能正在开发中。"
     );
 }
+
 
 function goMe() {
 
