@@ -209,6 +209,8 @@ body {
 }
 
 .book-card {
+    position: relative;
+
     background: #fff;
 
     border-radius: 12px;
@@ -230,6 +232,63 @@ body {
     box-shadow:
         0 8px 22px rgba(0,0,0,0.08);
 }
+
+/* =========================
+   删除按钮
+========================= */
+
+.delete-book-button {
+    position: absolute;
+
+    top: 9px;
+    right: 9px;
+
+    width: 34px;
+    height: 34px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: rgba(255,255,255,0.94);
+
+    color: #777;
+
+    font-size: 17px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    box-shadow:
+        0 2px 8px rgba(0,0,0,0.12);
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease,
+        transform 0.15s ease;
+}
+
+.delete-book-button:hover {
+    background: #fff0f0;
+
+    color: #e5484d;
+
+    transform: scale(1.05);
+}
+
+.delete-book-button:active {
+    transform: scale(0.95);
+}
+
+/* =========================
+   封面
+========================= */
 
 .book-cover {
     width: 100%;
@@ -404,6 +463,14 @@ body {
     .bottom-nav button {
         padding: 8px 12px;
     }
+
+    .delete-book-button {
+        width: 32px;
+        height: 32px;
+
+        top: 7px;
+        right: 7px;
+    }
 }
 </style>
 </head>
@@ -439,7 +506,9 @@ body {
 </header>
 
 
-<!-- 新建菜单 -->
+<!-- =========================
+     新建菜单
+========================= -->
 
 <div
     id="createMenu"
@@ -456,7 +525,9 @@ body {
 </div>
 
 
-<!-- 设置菜单 -->
+<!-- =========================
+     设置菜单
+========================= -->
 
 <div
     id="settingsMenu"
@@ -552,7 +623,9 @@ function toggleCreateMenu() {
     const settingsMenu =
         document.getElementById("settingsMenu");
 
+
     settingsMenu.style.display = "none";
+
 
     createMenu.style.display =
         createMenu.style.display === "block"
@@ -569,7 +642,9 @@ function toggleSettingsMenu() {
     const settingsMenu =
         document.getElementById("settingsMenu");
 
+
     createMenu.style.display = "none";
+
 
     settingsMenu.style.display =
         settingsMenu.style.display === "block"
@@ -608,58 +683,109 @@ function loadBooks() {
     const savedBooks =
         localStorage.getItem("novelBooks");
 
-    const books =
-        savedBooks
-        ? JSON.parse(savedBooks)
-        : [];
+
+    let books = [];
+
+
+    try {
+
+        books =
+            savedBooks
+            ? JSON.parse(savedBooks)
+            : [];
+
+    } catch (error) {
+
+        console.error(
+            "读取书籍数据失败：",
+            error
+        );
+
+        books = [];
+    }
+
 
     const emptyShelf =
-        document.getElementById("emptyShelf");
+        document.getElementById(
+            "emptyShelf"
+        );
+
 
     const bookGrid =
-        document.getElementById("bookGrid");
+        document.getElementById(
+            "bookGrid"
+        );
 
 
-    /* 没有书 */
+    /* =========================
+       没有书
+    ========================= */
 
     if (books.length === 0) {
 
-        emptyShelf.style.display = "block";
+        emptyShelf.style.display =
+            "block";
 
-        bookGrid.style.display = "none";
+        bookGrid.style.display =
+            "none";
 
-        bookGrid.innerHTML = "";
+        bookGrid.innerHTML =
+            "";
 
         return;
     }
 
 
-    /* 有书 */
+    /* =========================
+       有书
+    ========================= */
 
-    emptyShelf.style.display = "none";
+    emptyShelf.style.display =
+        "none";
 
-    bookGrid.style.display = "grid";
 
-    bookGrid.innerHTML = "";
+    bookGrid.style.display =
+        "grid";
+
+
+    bookGrid.innerHTML =
+        "";
 
 
     books.forEach(function(book) {
 
         const card =
-            document.createElement("div");
-
-        card.className = "book-card";
-
-        card.onclick = function() {
-
-            openBook(book.id);
-
-        };
+            document.createElement(
+                "div"
+            );
 
 
-        /* 封面 */
+        card.className =
+            "book-card";
 
-        let coverHTML = "";
+
+        /*
+         * 点击书籍卡片
+         * 进入全书页面
+         */
+
+        card.onclick =
+            function() {
+
+                openBook(
+                    book.id
+                );
+
+            };
+
+
+        /* =========================
+           封面
+        ========================= */
+
+        let coverHTML =
+            "";
+
 
         if (book.cover) {
 
@@ -680,23 +806,45 @@ function loadBooks() {
         }
 
 
-        /* 书籍卡片 */
+        /* =========================
+           书籍卡片
+        ========================= */
 
         card.innerHTML = `
+
+            <!-- 删除按钮 -->
+
+            <button
+                class="delete-book-button"
+                type="button"
+                title="删除书籍"
+                aria-label="删除书籍"
+                onclick="deleteBook(event, '${book.id}')">
+                🗑
+            </button>
+
+
+            <!-- 封面 -->
 
             <div class="book-cover">
                 ${coverHTML}
             </div>
 
+
+            <!-- 信息 -->
+
             <div class="book-info">
 
                 <div class="book-title">
-                    ${escapeHTML(book.title)}
+                    ${escapeHTML(
+                        book.title
+                    )}
                 </div>
 
                 <div class="book-description">
                     ${escapeHTML(
-                        book.description || "暂无简介"
+                        book.description ||
+                        "暂无简介"
                     )}
                 </div>
 
@@ -711,9 +859,150 @@ function loadBooks() {
         `;
 
 
-        bookGrid.appendChild(card);
+        bookGrid.appendChild(
+            card
+        );
 
     });
+}
+
+
+/* =========================
+   删除书籍
+========================= */
+
+function deleteBook(
+    event,
+    bookId
+) {
+
+    /*
+     * 阻止点击删除按钮
+     * 同时触发书籍卡片的打开事件
+     */
+
+    event.stopPropagation();
+
+
+    const savedBooks =
+        localStorage.getItem(
+            "novelBooks"
+        );
+
+
+    let books = [];
+
+
+    try {
+
+        books =
+            savedBooks
+            ? JSON.parse(savedBooks)
+            : [];
+
+    } catch (error) {
+
+        console.error(
+            "读取书籍失败：",
+            error
+        );
+
+        return;
+    }
+
+
+    /* 找到要删除的书 */
+
+    const book =
+        books.find(
+            function(item) {
+
+                return String(item.id) ===
+                    String(bookId);
+
+            }
+        );
+
+
+    if (!book) {
+
+        return;
+    }
+
+
+    /* =========================
+       二次确认
+    ========================= */
+
+    const confirmed =
+        confirm(
+            "确定要删除《" +
+            book.title +
+            "》吗？\n\n" +
+            "删除后，这本书及其全书结构将无法恢复。"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+    }
+
+
+    /* =========================
+       删除
+    ========================= */
+
+    books =
+        books.filter(
+            function(item) {
+
+                return String(item.id) !==
+                    String(bookId);
+
+            }
+        );
+
+
+    /*
+     * 保存新的书架数据
+     */
+
+    localStorage.setItem(
+        "novelBooks",
+        JSON.stringify(books)
+    );
+
+
+    /*
+     * 如果删除的是当前正在打开的书
+     * 清除 currentBookId
+     */
+
+    const currentBookId =
+        localStorage.getItem(
+            "currentBookId"
+        );
+
+
+    if (
+        currentBookId &&
+        String(currentBookId) ===
+        String(bookId)
+    ) {
+
+        localStorage.removeItem(
+            "currentBookId"
+        );
+
+    }
+
+
+    /*
+     * 重新加载书架
+     */
+
+    loadBooks();
 }
 
 
@@ -724,12 +1013,26 @@ function loadBooks() {
 function escapeHTML(text) {
 
     return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 
@@ -740,8 +1043,8 @@ function escapeHTML(text) {
 function openBook(id) {
 
     /*
-       保存当前打开的书籍
-    */
+     * 保存当前打开的书籍
+     */
 
     localStorage.setItem(
         "currentBookId",
@@ -750,8 +1053,8 @@ function openBook(id) {
 
 
     /*
-       进入书籍管理页面
-    */
+     * 进入全书页面
+     */
 
     window.location.href =
         "book.html";
@@ -779,8 +1082,9 @@ function setGrid() {
 
     closeMenus();
 
-    alert("当前已经是网格视图");
-
+    alert(
+        "当前已经是网格视图"
+    );
 }
 
 
@@ -788,8 +1092,9 @@ function setList() {
 
     closeMenus();
 
-    alert("列表视图功能还在制作中");
-
+    alert(
+        "列表视图功能还在制作中"
+    );
 }
 
 
@@ -801,21 +1106,22 @@ function goShelf() {
 
     window.location.href =
         "index.html";
-
 }
 
 
 function goTools() {
 
-    alert("工具页面还在制作中");
-
+    alert(
+        "工具页面还在制作中"
+    );
 }
 
 
 function goMe() {
 
-    alert("我的页面还在制作中");
-
+    alert(
+        "我的页面还在制作中"
+    );
 }
 
 
@@ -827,13 +1133,14 @@ function closeMenus() {
 
     document.getElementById(
         "createMenu"
-    ).style.display = "none";
+    ).style.display =
+        "none";
 
 
     document.getElementById(
         "settingsMenu"
-    ).style.display = "none";
-
+    ).style.display =
+        "none";
 }
 
 
@@ -846,10 +1153,15 @@ document.addEventListener(
     function(event) {
 
         const createMenu =
-            document.getElementById("createMenu");
+            document.getElementById(
+                "createMenu"
+            );
+
 
         const settingsMenu =
-            document.getElementById("settingsMenu");
+            document.getElementById(
+                "settingsMenu"
+            );
 
 
         if (
@@ -863,7 +1175,6 @@ document.addEventListener(
 
             createMenu.style.display =
                 "none";
-
         }
 
 
@@ -878,7 +1189,6 @@ document.addEventListener(
 
             settingsMenu.style.display =
                 "none";
-
         }
 
     }
