@@ -2,78 +2,87 @@
 // 全书页面：连接线
 // ==============================
 
-
 function drawConnections(layout) {
 
     const svg =
         document.querySelector("#connections");
 
-    if (!svg) {
-        return;
-    }
-
-
-    svg.innerHTML = "";
-
-
     const canvas =
         document.querySelector(".tree-canvas");
 
-    if (!canvas) {
+    if (!svg || !canvas || !layout) {
         return;
     }
 
+    svg.innerHTML = "";
+
+    // 删除旧的 + / -
+    canvas
+        .querySelectorAll(".line-control")
+        .forEach(element => {
+            element.remove();
+        });
+
+
+    // ==============================
+    // SVG 坐标
+    // ==============================
 
     const canvasRect =
         canvas.getBoundingClientRect();
 
 
-    // ==============================
-    // 获取元素相对于画布的位置
-    // ==============================
-
-    function getBoxRect(element) {
+    function getRect(element) {
 
         const rect =
             element.getBoundingClientRect();
-
 
         return {
 
             left:
                 rect.left -
-                canvasRect.left,
+                canvasRect.left +
+                canvas.scrollLeft,
 
             top:
                 rect.top -
-                canvasRect.top,
+                canvasRect.top +
+                canvas.scrollTop,
 
             right:
                 rect.right -
-                canvasRect.left,
+                canvasRect.left +
+                canvas.scrollLeft,
 
             bottom:
                 rect.bottom -
-                canvasRect.top,
+                canvasRect.top +
+                canvas.scrollTop,
 
             centerX:
                 rect.left -
                 canvasRect.left +
+                canvas.scrollLeft +
                 rect.width / 2,
 
             centerY:
                 rect.top -
                 canvasRect.top +
+                canvas.scrollTop +
                 rect.height / 2
         };
     }
 
 
     // ==============================
-    // 绘制折线
+    // 画线
     // ==============================
 
     function drawPath(points) {
+
+        if (!points || points.length < 2) {
+            return;
+        }
 
         const path =
             document.createElementNS(
@@ -119,309 +128,88 @@ function drawConnections(layout) {
     }
 
 
+    // ==============================
+    // 获取书名
+    // ==============================
+
     const bookTitle =
-        document.querySelector(
-            "#bookTitle"
-        );
+        document.querySelector("#bookTitle");
 
 
-    // ==========================================================
-    // 书名 → 第一层
-    // ==========================================================
-
-    if (
-        bookTitle &&
-        layout.nodes.length
-    ) {
-
-        const roots =
-            layout.nodes.filter(
-                item =>
-                    item.level === 0
-            );
-
-
-        const bookRect =
-            getBoxRect(bookTitle);
-
-
-        // ==============================
-        // 一个根节点
-        // ==============================
-
-        if (roots.length === 1) {
-
-            const root =
-                roots[0];
-
-
-            const rootElement =
-                document.querySelector(
-                    `[data-node-id="${root.node.id}"] .node-box`
-                );
-
-
-            if (rootElement) {
-
-                const rootRect =
-                    getBoxRect(rootElement);
-
-
-                const start = {
-
-                    x:
-                        bookRect.centerX,
-
-                    y:
-                        bookRect.bottom
-                };
-
-
-                const end = {
-
-                    x:
-                        rootRect.centerX,
-
-                    y:
-                        rootRect.top
-                };
-
-
-                const middleY =
-                    (start.y + end.y) / 2;
-
-
-                drawPath([
-
-                    start,
-
-                    {
-                        x:
-                            start.x,
-
-                        y:
-                            middleY
-                    },
-
-                    {
-                        x:
-                            end.x,
-
-                        y:
-                            middleY
-                    },
-
-                    end
-                ]);
-            }
-        }
-
-
-        // ==============================
-        // 多个根节点
-        // ==============================
-
-        else {
-
-            const firstRootElement =
-                document.querySelector(
-                    `[data-node-id="${roots[0].node.id}"] .node-box`
-                );
-
-
-            const lastRootElement =
-                document.querySelector(
-                    `[data-node-id="${roots[roots.length - 1].node.id}"] .node-box`
-                );
-
-
-            if (
-                firstRootElement &&
-                lastRootElement
-            ) {
-
-                const firstRect =
-                    getBoxRect(
-                        firstRootElement
-                    );
-
-
-                const branchY =
-                    Math.max(
-                        bookRect.bottom + 35,
-                        firstRect.top - 35
-                    );
-
-
-                // 书名 → 总分支
-                drawPath([
-
-                    {
-                        x:
-                            bookRect.centerX,
-
-                        y:
-                            bookRect.bottom
-                    },
-
-                    {
-                        x:
-                            bookRect.centerX,
-
-                        y:
-                            branchY
-                    },
-
-                    {
-                        x:
-                            firstRect.centerX,
-
-                        y:
-                            branchY
-                    }
-                ]);
-
-
-                // 总分支 → 所有根节点
-                roots.forEach(root => {
-
-                    const element =
-                        document.querySelector(
-                            `[data-node-id="${root.node.id}"] .node-box`
-                        );
-
-
-                    if (!element) {
-                        return;
-                    }
-
-
-                    const rect =
-                        getBoxRect(element);
-
-
-                    drawPath([
-
-                        {
-                            x:
-                                rect.centerX,
-
-                            y:
-                                branchY
-                        },
-
-                        {
-                            x:
-                                rect.centerX,
-
-                            y:
-                                rect.top
-                        }
-                    ]);
-                });
-            }
-        }
+    if (!bookTitle) {
+        return;
     }
 
 
-    // ==========================================================
-    // 父节点 → 子节点
-    // ==========================================================
-
-    layout.nodes.forEach(item => {
-
-        const parent =
-            item.node;
+    const bookRect =
+        getRect(bookTitle);
 
 
-        if (
-            !parent.children ||
-            !parent.children.length ||
-            parent.collapsed
-        ) {
-            return;
-        }
+    // ==============================
+    // 根节点
+    // ==============================
+
+    const roots =
+        layout.nodes.filter(
+            item =>
+                item.level === 0
+        );
 
 
-        const parentElement =
+    if (!roots.length) {
+        return;
+    }
+
+
+    // ==============================
+    // 书名 → 根节点
+    // ==============================
+
+    if (roots.length === 1) {
+
+        const root =
+            roots[0];
+
+
+        const rootElement =
             document.querySelector(
-                `[data-node-id="${parent.id}"] .node-box`
+                `[data-node-id="${root.node.id}"] .node-box`
             );
 
 
-        if (!parentElement) {
-            return;
-        }
+        if (rootElement) {
 
-
-        const parentRect =
-            getBoxRect(parentElement);
-
-
-        // 当前父节点的实际子节点
-        const childItems =
-            layout.nodes.filter(
-                child =>
-                    parent.children.some(
-                        childNode =>
-                            childNode.id ===
-                            child.node.id
-                    )
-            );
-
-
-        if (!childItems.length) {
-            return;
-        }
-
-
-        // ======================================================
-        // 一个孩子
-        // ======================================================
-
-        if (childItems.length === 1) {
-
-            const child =
-                childItems[0];
-
-
-            const childElement =
-                document.querySelector(
-                    `[data-node-id="${child.node.id}"] .node-box`
-                );
-
-
-            if (!childElement) {
-                return;
-            }
-
-
-            const childRect =
-                getBoxRect(childElement);
+            const rootRect =
+                getRect(rootElement);
 
 
             const start = {
 
                 x:
-                    parentRect.centerX,
+                    bookRect.centerX,
 
                 y:
-                    parentRect.bottom
+                    bookRect.bottom
+
             };
 
 
             const end = {
 
                 x:
-                    childRect.centerX,
+                    rootRect.centerX,
 
                 y:
-                    childRect.top
+                    rootRect.top
+
             };
 
 
             const middleY =
-                (start.y + end.y) / 2;
+                (
+                    start.y +
+                    end.y
+                ) / 2;
 
 
             drawPath([
@@ -445,45 +233,293 @@ function drawConnections(layout) {
                 },
 
                 end
+
+            ]);
+        }
+
+    } else {
+
+        /*
+         * 多个根节点：
+         *
+         *                  书名
+         *                   │
+         *          ─────────┼─────────
+         *          │        │        │
+         *         序       第一卷    第二卷
+         */
+
+        const firstRoot =
+            document.querySelector(
+                `[data-node-id="${roots[0].node.id}"] .node-box`
+            );
+
+
+        const lastRoot =
+            document.querySelector(
+                `[data-node-id="${roots[roots.length - 1].node.id}"] .node-box`
+            );
+
+
+        if (
+            firstRoot &&
+            lastRoot
+        ) {
+
+            const firstRect =
+                getRect(firstRoot);
+
+            const lastRect =
+                getRect(lastRoot);
+
+
+            const branchY =
+                bookRect.bottom +
+                35;
+
+
+            // 书名 → 横向主干
+
+            drawPath([
+
+                {
+                    x:
+                        bookRect.centerX,
+
+                    y:
+                        bookRect.bottom
+
+                },
+
+                {
+                    x:
+                        bookRect.centerX,
+
+                    y:
+                        branchY
+
+                },
+
+                {
+                    x:
+                        lastRect.centerX,
+
+                    y:
+                        branchY
+
+                }
+
             ]);
 
 
-            // 直接把父节点传进去
-            addLineControl(
-                parent,
-                middleY,
-                (start.x + end.x) / 2
+            // 每个根节点 ↓
+
+            roots.forEach(
+                root => {
+
+                    const element =
+                        document.querySelector(
+                            `[data-node-id="${root.node.id}"] .node-box`
+                        );
+
+
+                    if (!element) {
+                        return;
+                    }
+
+
+                    const rect =
+                        getRect(element);
+
+
+                    drawPath([
+
+                        {
+                            x:
+                                rect.centerX,
+
+                            y:
+                                branchY
+
+                        },
+
+                        {
+                            x:
+                                rect.centerX,
+
+                            y:
+                                rect.top
+
+                        }
+
+                    ]);
+
+                }
             );
         }
+    }
 
 
-        // ======================================================
-        // 多个孩子
-        // ======================================================
+    // ==============================
+    // 父节点 → 子节点
+    // ==============================
 
-        else {
+    layout.nodes.forEach(
+        item => {
 
-            const firstElement =
-                document.querySelector(
-                    `[data-node-id="${childItems[0].node.id}"] .node-box`
-                );
+            const parent =
+                item.node;
 
 
-            if (!firstElement) {
+            if (
+                !Array.isArray(
+                    parent.children
+                ) ||
+                parent.children.length === 0 ||
+                parent.collapsed === true
+            ) {
+
                 return;
             }
 
 
-            const firstRect =
-                getBoxRect(firstElement);
+            const parentElement =
+                document.querySelector(
+                    `[data-node-id="${parent.id}"] .node-box`
+                );
 
+
+            if (!parentElement) {
+                return;
+            }
+
+
+            const parentRect =
+                getRect(parentElement);
+
+
+            const childItems =
+                layout.nodes.filter(
+                    child =>
+                        parent.children.some(
+                            childNode =>
+                                childNode.id ===
+                                child.node.id
+                        )
+                );
+
+
+            if (!childItems.length) {
+                return;
+            }
+
+
+            // ==============================
+            // 一个子节点
+            // ==============================
+
+            if (childItems.length === 1) {
+
+                const child =
+                    childItems[0];
+
+
+                const childElement =
+                    document.querySelector(
+                        `[data-node-id="${child.node.id}"] .node-box`
+                    );
+
+
+                if (!childElement) {
+                    return;
+                }
+
+
+                const childRect =
+                    getRect(childElement);
+
+
+                const start = {
+
+                    x:
+                        parentRect.centerX,
+
+                    y:
+                        parentRect.bottom
+
+                };
+
+
+                const end = {
+
+                    x:
+                        childRect.centerX,
+
+                    y:
+                        childRect.top
+
+                };
+
+
+                const middleY =
+                    (
+                        start.y +
+                        end.y
+                    ) / 2;
+
+
+                drawPath([
+
+                    start,
+
+                    {
+                        x:
+                            start.x,
+
+                        y:
+                            middleY
+                    },
+
+                    {
+                        x:
+                            end.x,
+
+                        y:
+                            middleY
+                    },
+
+                    end
+
+                ]);
+
+
+                addLineControl(
+
+                    parent,
+
+                    middleY,
+
+                    (
+                        start.x +
+                        end.x
+                    ) / 2
+
+                );
+
+
+                return;
+            }
+
+
+            // ==============================
+            // 多个子节点
+            // ==============================
 
             const branchY =
                 parentRect.bottom +
                 LEVEL_GAP / 2;
 
 
-            // 父节点 → 横向分支
             drawPath([
 
                 {
@@ -492,6 +528,7 @@ function drawConnections(layout) {
 
                     y:
                         parentRect.bottom
+
                 },
 
                 {
@@ -500,71 +537,74 @@ function drawConnections(layout) {
 
                     y:
                         branchY
-                },
 
-                {
-                    x:
-                        firstRect.centerX,
-
-                    y:
-                        branchY
                 }
+
             ]);
 
 
-            // 横向分支 → 每一个孩子
-            childItems.forEach(child => {
+            childItems.forEach(
+                child => {
 
-                const element =
-                    document.querySelector(
-                        `[data-node-id="${child.node.id}"] .node-box`
-                    );
-
-
-                if (!element) {
-                    return;
-                }
+                    const element =
+                        document.querySelector(
+                            `[data-node-id="${child.node.id}"] .node-box`
+                        );
 
 
-                const rect =
-                    getBoxRect(element);
-
-
-                drawPath([
-
-                    {
-                        x:
-                            rect.centerX,
-
-                        y:
-                            branchY
-                    },
-
-                    {
-                        x:
-                            rect.centerX,
-
-                        y:
-                            rect.top
+                    if (!element) {
+                        return;
                     }
-                ]);
-            });
 
 
-            // 直接把父节点传进去
-            addLineControl(
-                parent,
-                branchY,
-                parentRect.centerX
+                    const rect =
+                        getRect(element);
+
+
+                    drawPath([
+
+                        {
+                            x:
+                                rect.centerX,
+
+                            y:
+                                branchY
+
+                        },
+
+                        {
+                            x:
+                                rect.centerX,
+
+                            y:
+                                rect.top
+
+                        }
+
+                    ]);
+
+                }
             );
+
+
+            addLineControl(
+
+                parent,
+
+                branchY,
+
+                parentRect.centerX
+
+            );
+
         }
-    });
+    );
 }
 
 
-// ==========================================================
-// 在线中间添加 + / −
-// ==========================================================
+// ==============================
+// 创建 + / −
+ // ==============================
 
 function addLineControl(
     parentNode,
@@ -600,7 +640,6 @@ function addLineControl(
         top + "px";
 
 
-    // 点击 + / −
     control.addEventListener(
         "click",
         function(event) {
@@ -613,6 +652,7 @@ function addLineControl(
             toggleNode(
                 parentNode.id
             );
+
         }
     );
 
@@ -628,5 +668,6 @@ function addLineControl(
         canvas.appendChild(
             control
         );
+
     }
 }
