@@ -14,9 +14,13 @@
                          "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #f5f6f8;
             color: #222;
+            /* 给顶部和底部固定栏留空间 */
             padding-top: 72px;
+            padding-bottom: 70px;
         }
-        /* 顶部固定栏 */
+        /* =========================
+           顶部固定栏
+        ========================= */
         header {
             position: fixed;
             top: 0;
@@ -31,13 +35,14 @@
             padding: 0 24px;
             z-index: 1000;
         }
-        /* 顶部固定的「我的书架」 */
         .logo {
             font-size: 21px;
             font-weight: 700;
             white-space: nowrap;
         }
-        /* 右侧按钮 */
+        /* =========================
+           顶部按钮
+        ========================= */
         .header-buttons {
             display: flex;
             align-items: center;
@@ -72,7 +77,9 @@
         .settings-button:hover {
             background: #e1e4e9;
         }
-        /* 下拉菜单 */
+        /* =========================
+           下拉菜单
+        ========================= */
         .menu {
             position: fixed;
             top: 62px;
@@ -80,7 +87,8 @@
             width: 170px;
             border: 1px solid #e1e3e7;
             border-radius: 10px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.12);
             overflow: hidden;
             display: none;
             z-index: 2000;
@@ -103,13 +111,14 @@
         .menu-item:hover {
             background: #f5f6f8;
         }
-        /* 书架内容区域 */
+        /* =========================
+           页面内容
+        ========================= */
         .container {
             max-width: 1000px;
             margin: 40px auto;
             padding: 0 20px;
         }
-        /* 空书架 */
         .empty {
             text-align: center;
             padding: 100px 20px;
@@ -122,7 +131,52 @@
         .empty-text {
             font-size: 14px;
         }
-        /* 手机适配 */
+        /* =========================
+           底部固定导航栏
+        ========================= */
+        .bottom-nav {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 68px;
+            background: #ffffff;
+            border-top: 1px solid #e4e6eb;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            z-index: 1000;
+        }
+        .nav-item {
+            height: 100%;
+            flex: 1;
+            max-width: 180px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            color: #777;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            transition: 0.2s;
+        }
+        .nav-icon {
+            font-size: 21px;
+        }
+        .nav-item:hover {
+            color: #4f7cff;
+        }
+        /* 当前页面 */
+        .nav-item.active {
+            color: #4f7cff;
+            font-weight: 600;
+        }
+        /* =========================
+           手机适配
+        ========================= */
         @media (max-width: 600px) {
             header {
                 padding: 0 14px;
@@ -148,13 +202,20 @@
                 margin-top: 25px;
                 padding: 0 15px;
             }
+            .bottom-nav {
+                height: 64px;
+            }
+            .nav-icon {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
 <body>
-<!-- 顶部固定栏 -->
+<!-- =========================
+     顶部固定栏
+========================= -->
 <header>
-    <!-- 保留 -->
     <div class="logo">
         我的书架
     </div>
@@ -173,7 +234,9 @@
         </button>
     </div>
 </header>
-<!-- 新建菜单 -->
+<!-- =========================
+     新建菜单
+========================= -->
 <div
     id="createMenu"
     class="menu create-menu">
@@ -188,7 +251,9 @@
         📚 新建组合
     </div>
 </div>
-<!-- 设置菜单 -->
+<!-- =========================
+     设置菜单
+========================= -->
 <div
     id="settingsMenu"
     class="menu settings-menu">
@@ -208,7 +273,9 @@
         ☰ 列表
     </div>
 </div>
-<!-- 书架内容 -->
+<!-- =========================
+     页面内容
+========================= -->
 <div class="container">
     <div id="books">
         <div class="empty">
@@ -221,8 +288,48 @@
         </div>
     </div>
 </div>
+<!-- =========================
+     底部固定导航
+========================= -->
+<nav class="bottom-nav">
+    <!-- 书架 -->
+    <button
+        class="nav-item active"
+        onclick="goShelf()">
+        <span class="nav-icon">
+            📚
+        </span>
+        <span>
+            书架
+        </span>
+    </button>
+    <!-- 工具 -->
+    <button
+        class="nav-item"
+        onclick="goTools()">
+        <span class="nav-icon">
+            🧰
+        </span>
+        <span>
+            工具
+        </span>
+    </button>
+    <!-- 我的 -->
+    <button
+        class="nav-item"
+        onclick="goMe()">
+        <span class="nav-icon">
+            👤
+        </span>
+        <span>
+            我的
+        </span>
+    </button>
+</nav>
 <script>
-/* 新建菜单 */
+/* =========================
+   新建菜单
+========================= */
 function toggleCreateMenu() {
     const createMenu =
         document.getElementById("createMenu");
@@ -231,7 +338,9 @@ function toggleCreateMenu() {
     settingsMenu.classList.remove("show");
     createMenu.classList.toggle("show");
 }
-/* 设置菜单 */
+/* =========================
+   设置菜单
+========================= */
 function toggleSettingsMenu() {
     const createMenu =
         document.getElementById("createMenu");
@@ -240,17 +349,23 @@ function toggleSettingsMenu() {
     createMenu.classList.remove("show");
     settingsMenu.classList.toggle("show");
 }
-/* 新建书籍 */
+/* =========================
+   新建书籍
+========================= */
 function createBook() {
     closeMenus();
     alert("下一步将在这里进入「新建书籍」页面。");
 }
-/* 新建组合 */
+/* =========================
+   新建组合
+========================= */
 function createCollection() {
     closeMenus();
     alert("下一步将在这里进入「新建组合」页面。");
 }
-/* 排序 */
+/* =========================
+   排序
+========================= */
 function sortBooks() {
     closeMenus();
     alert(
@@ -261,17 +376,35 @@ function sortBooks() {
         "• 字数"
     );
 }
-/* 网格 */
+/* =========================
+   网格
+========================= */
 function setGrid() {
     closeMenus();
     alert("书架显示方式：网格");
 }
-/* 列表 */
+/* =========================
+   列表
+========================= */
 function setList() {
     closeMenus();
     alert("书架显示方式：列表");
 }
-/* 关闭菜单 */
+/* =========================
+   底部导航
+========================= */
+function goShelf() {
+    alert("书架");
+}
+function goTools() {
+    alert("工具");
+}
+function goMe() {
+    alert("我的");
+}
+/* =========================
+   关闭菜单
+========================= */
 function closeMenus() {
     document
         .getElementById("createMenu")
@@ -280,7 +413,9 @@ function closeMenus() {
         .getElementById("settingsMenu")
         .classList.remove("show");
 }
-/* 点击其他位置关闭菜单 */
+/* =========================
+   点击其他位置关闭菜单
+========================= */
 document.addEventListener(
     "click",
     function(event) {
