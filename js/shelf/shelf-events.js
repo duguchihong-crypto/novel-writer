@@ -71,13 +71,34 @@ const meNav =
 
 function initShelf() {
 
+    /* ==================================================
+       先绑定事件
+    ================================================== */
+
+    bindShelfEvents();
+
+
+    /* ==================================================
+       加载书籍
+    ================================================== */
+
     if (typeof loadBooks === "function") {
         loadBooks();
     }
 
+
+    /* ==================================================
+       加载书架视图模式
+    ================================================== */
+
     if (typeof loadShelfViewMode === "function") {
         loadShelfViewMode();
     }
+
+
+    /* ==================================================
+       默认网格
+    ================================================== */
 
     if (
         typeof shelfViewMode === "undefined" ||
@@ -86,17 +107,25 @@ function initShelf() {
         shelfViewMode = "grid";
     }
 
+
+    /* ==================================================
+       渲染书籍
+    ================================================== */
+
     if (typeof renderBooks === "function") {
         renderBooks();
     }
+
+
+    /* ==================================================
+       应用视图
+    ================================================== */
 
     if (typeof applyShelfViewMode === "function") {
         applyShelfViewMode();
     }
 
     applyViewClass();
-
-    bindShelfEvents();
 }
 
 
@@ -135,6 +164,10 @@ function applyViewClass() {
 ================================================== */
 
 function bindShelfEvents() {
+
+    /* ==================================================
+       顶部按钮
+    ================================================== */
 
     if (createButton) {
 
@@ -520,7 +553,7 @@ function handleCreateCollectionClick(event) {
     closeAllMenus();
 
     alert(
-        "组合功能正在开发中。"
+        "分组功能正在开发中。"
     );
 }
 
@@ -541,8 +574,6 @@ function setGridView(event) {
 
     shelfViewMode =
         "grid";
-
-    applyViewClass();
 
     if (
         typeof saveShelfViewMode ===
@@ -587,8 +618,6 @@ function setListView(event) {
 
     shelfViewMode =
         "list";
-
-    applyViewClass();
 
     if (
         typeof saveShelfViewMode ===
@@ -1047,23 +1076,15 @@ function handlePointerUp() {
             null;
     }
 
-    if (!longPressTriggered) {
+    if (pressedCard) {
 
-        if (pressedCard) {
-
-            pressedCard.classList.remove(
-                "long-pressing"
-            );
-        }
-
-        pressedCard =
-            null;
-
-    } else {
-
-        pressedCard =
-            null;
+        pressedCard.classList.remove(
+            "long-pressing"
+        );
     }
+
+    pressedCard =
+        null;
 }
 
 
@@ -1783,14 +1804,12 @@ function goShelf() {
         "index.html";
 }
 
-
 function goTools() {
 
     alert(
         "工具功能正在开发中。"
     );
 }
-
 
 function goMe() {
 
