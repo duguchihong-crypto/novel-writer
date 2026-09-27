@@ -16,16 +16,13 @@
 <style>
 
 * {
-
     box-sizing: border-box;
-
-    margin: 0;
-
-    padding: 0;
 }
 
 
 body {
+
+    margin: 0;
 
     font-family:
         -apple-system,
@@ -35,15 +32,11 @@ body {
         "Microsoft YaHei",
         sans-serif;
 
-    background: #f7f8fa;
+    background: #f5f6f8;
 
     color: #222;
 
-    min-height: 100vh;
-
-    padding-top: 72px;
-
-    padding-bottom: 70px;
+    padding-top: 70px;
 }
 
 
@@ -51,7 +44,7 @@ body {
    顶部
 ================================================== */
 
-.top-bar {
+header {
 
     position: fixed;
 
@@ -59,34 +52,37 @@ body {
     left: 0;
     right: 0;
 
-    height: 72px;
+    height: 70px;
 
     background: #fff;
 
     border-bottom:
-        1px solid #e8e8e8;
+        1px solid #e5e5e5;
 
     display: flex;
 
     align-items: center;
 
-    padding: 0 20px;
+    justify-content: space-between;
 
-    z-index: 100;
+    padding:
+        0 28px;
+
+    z-index: 1000;
 }
 
 
 .logo {
 
-    font-size: 20px;
+    font-size: 21px;
 
     font-weight: 700;
+
+    color: #222;
 }
 
 
-.top-actions {
-
-    margin-left: auto;
+.header-right {
 
     display: flex;
 
@@ -96,163 +92,60 @@ body {
 }
 
 
-.create-button,
-.settings-button {
+.new-book-button {
 
     border: none;
-
-    border-radius: 9px;
-
-    padding: 10px 14px;
-
-    font-size: 14px;
-
-    cursor: pointer;
-}
-
-
-.create-button {
 
     background: #4f7cff;
 
     color: #fff;
-}
 
+    padding:
+        11px 18px;
 
-.settings-button {
-
-    background: #eef0f4;
-
-    color: #333;
-}
-
-
-.create-button:active,
-.settings-button:active {
-
-    transform: scale(0.97);
-}
-
-
-/* ==================================================
-   菜单
-================================================== */
-
-.menu {
-
-    display: none;
-
-    position: fixed;
-
-    top: 62px;
-
-    width: 170px;
-
-    background: #fff;
-
-    border:
-        1px solid #e5e5e5;
-
-    border-radius: 10px;
-
-    box-shadow:
-        0 8px 25px rgba(0,0,0,0.08);
-
-    overflow: hidden;
-
-    z-index: 200;
-}
-
-
-.create-menu {
-
-    right: 100px;
-}
-
-
-.settings-menu {
-
-    right: 24px;
-}
-
-
-.menu button {
-
-    width: 100%;
-
-    border: none;
-
-    background: #fff;
-
-    padding: 13px 15px;
-
-    text-align: left;
-
-    font-size: 14px;
+    border-radius: 8px;
 
     cursor: pointer;
+
+    font-size: 15px;
+
+    font-weight: 500;
 }
 
 
-.menu button:hover {
+.new-book-button:hover {
 
-    background: #f5f6f8;
+    background: #3d68e6;
 }
 
 
 /* ==================================================
-   主内容
+   页面
 ================================================== */
 
 .container {
 
     max-width: 1000px;
 
-    margin: 40px auto;
+    margin:
+        40px auto;
 
-    padding: 0 20px;
+    padding:
+        0 20px;
 }
 
 
-/* ==================================================
-   空书架
-================================================== */
+.page-title {
 
-.empty-shelf {
-
-    text-align: center;
-
-    padding-top: 120px;
-
-    color: #888;
+    margin-bottom: 25px;
 }
 
 
-.empty-icon {
+.page-title h1 {
 
-    font-size: 42px;
+    margin: 0;
 
-    margin-bottom: 18px;
-}
-
-
-.empty-title {
-
-    font-size: 18px;
-
-    font-weight: 600;
-
-    color: #444;
-
-    margin-bottom: 8px;
-}
-
-
-.empty-text {
-
-    font-size: 14px;
-
-    color: #999;
+    font-size: 28px;
 }
 
 
@@ -260,108 +153,56 @@ body {
    书架
 ================================================== */
 
-.book-grid {
+#books {
 
     display: grid;
 
     grid-template-columns:
-        repeat(auto-fill, minmax(180px, 1fr));
+        repeat(
+            auto-fill,
+            minmax(170px, 1fr)
+        );
 
     gap: 22px;
 }
 
 
-.book-card {
+/* ==================================================
+   书籍
+================================================== */
+
+.book {
 
     position: relative;
 
     background: #fff;
 
+    border:
+        1px solid #e5e5e5;
+
     border-radius: 12px;
 
-    overflow: hidden;
+    padding: 12px;
 
     cursor: pointer;
 
-    border:
-        1px solid #e8e8e8;
-
     transition:
-        transform 0.15s ease,
-        box-shadow 0.15s ease;
+        0.2s;
+
+    min-width: 0;
 }
 
 
-.book-card:hover {
+.book:hover {
+
+    border-color: #cfd5df;
 
     transform:
         translateY(-2px);
 
     box-shadow:
-        0 8px 22px rgba(0,0,0,0.08);
-}
-
-
-/* ==================================================
-   删除按钮
-================================================== */
-
-.delete-book-button {
-
-    position: absolute;
-
-    top: 9px;
-    right: 9px;
-
-    width: 34px;
-    height: 34px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background:
-        rgba(255,255,255,0.94);
-
-    color: #777;
-
-    font-size: 17px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-
-    cursor: pointer;
-
-    z-index: 10;
-
-    box-shadow:
-        0 2px 8px rgba(0,0,0,0.12);
-
-    transition:
-        background 0.15s ease,
-        color 0.15s ease,
-        transform 0.15s ease;
-}
-
-
-.delete-book-button:hover {
-
-    background: #fff0f0;
-
-    color: #e5484d;
-
-    transform:
-        scale(1.05);
-}
-
-
-.delete-book-button:active {
-
-    transform:
-        scale(0.95);
+        0 5px 15px
+        rgba(0,0,0,0.05);
 }
 
 
@@ -375,7 +216,16 @@ body {
 
     aspect-ratio: 3 / 4;
 
-    background: #eef0f4;
+    border-radius: 8px;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            145deg,
+            #eef1f5,
+            #dfe4eb
+        );
 
     display: flex;
 
@@ -383,7 +233,7 @@ body {
 
     justify-content: center;
 
-    overflow: hidden;
+    margin-bottom: 12px;
 }
 
 
@@ -411,16 +261,14 @@ body {
 
     justify-content: center;
 
+    font-size: 48px;
+
     background:
         linear-gradient(
             145deg,
             #eef1f5,
             #dfe4eb
         );
-
-    color: #aeb4bd;
-
-    font-size: 46px;
 }
 
 
@@ -431,9 +279,7 @@ body {
 .book-info {
 
     padding:
-        13px 14px 15px;
-
-    background: #fff;
+        0 3px 3px;
 }
 
 
@@ -441,69 +287,82 @@ body {
 
     font-size: 16px;
 
-    font-weight: 700;
+    font-weight: 600;
+
+    line-height: 1.4;
 
     white-space: nowrap;
 
     overflow: hidden;
 
     text-overflow: ellipsis;
-
-    line-height: 1.4;
 }
 
 
 /* ==================================================
-   底部导航
+   删除
 ================================================== */
 
-.bottom-nav {
+.delete-book-button {
 
-    position: fixed;
+    position: absolute;
 
-    bottom: 0;
-    left: 0;
-    right: 0;
+    top: 17px;
 
-    height: 68px;
+    right: 17px;
 
-    background: #fff;
+    width: 30px;
 
-    border-top:
-        1px solid #e8e8e8;
+    height: 30px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background:
+        rgba(0,0,0,0.55);
+
+    color: #fff;
+
+    cursor: pointer;
+
+    z-index: 5;
 
     display: flex;
 
     align-items: center;
 
-    justify-content: space-around;
+    justify-content: center;
 
-    z-index: 100;
+    font-size: 14px;
 }
 
 
-.bottom-nav button {
+.delete-book-button:hover {
 
-    border: none;
+    background:
+        rgba(220,50,50,0.85);
+}
 
-    background: none;
 
-    color: #777;
+/* ==================================================
+   空书架
+================================================== */
 
-    font-size: 13px;
+.empty {
 
-    cursor: pointer;
+    grid-column: 1 / -1;
+
+    text-align: center;
 
     padding:
-        8px 20px;
-}
+        80px 20px;
 
+    background: #fff;
 
-.bottom-nav button.active {
+    border-radius: 12px;
 
-    color: #4f7cff;
-
-    font-weight: 600;
+    color: #888;
 }
 
 
@@ -513,51 +372,41 @@ body {
 
 @media (max-width: 600px) {
 
-    .top-bar {
+    header {
 
         padding:
-            0 14px;
+            0 15px;
     }
 
 
     .logo {
 
-        font-size: 19px;
+        font-size: 18px;
     }
 
 
-    .create-button,
-    .settings-button {
+    .new-book-button {
 
         padding:
-            9px 11px;
+            9px 13px;
 
-        font-size: 13px;
-    }
-
-
-    .create-menu {
-
-        right: 82px;
-    }
-
-
-    .settings-menu {
-
-        right: 14px;
+        font-size: 14px;
     }
 
 
     .container {
 
-        padding:
-            0 14px;
-
-        margin-top: 28px;
+        margin-top: 25px;
     }
 
 
-    .book-grid {
+    .page-title h1 {
+
+        font-size: 24px;
+    }
+
+
+    #books {
 
         grid-template-columns:
             repeat(2, minmax(0, 1fr));
@@ -566,48 +415,33 @@ body {
     }
 
 
-    .book-info {
+    .book {
 
-        padding:
-            11px 11px 13px;
-    }
+        padding: 9px;
 
-
-    .book-title {
-
-        font-size: 15px;
-    }
-
-
-    .empty-shelf {
-
-        padding-top: 100px;
-    }
-
-
-    .bottom-nav {
-
-        height: 64px;
-    }
-
-
-    .bottom-nav button {
-
-        padding:
-            8px 12px;
+        border-radius: 10px;
     }
 
 
     .delete-book-button {
 
-        width: 32px;
+        top: 13px;
 
-        height: 32px;
+        right: 13px;
 
-        top: 7px;
+        width: 27px;
 
-        right: 7px;
+        height: 27px;
+
+        font-size: 12px;
     }
+
+
+    .book-title {
+
+        font-size: 14px;
+    }
+
 }
 
 </style>
@@ -622,30 +456,21 @@ body {
      顶部
 ================================================== -->
 
-<header class="top-bar">
+<header>
 
     <div class="logo">
-        我的书架
+        🌍 我的世界
     </div>
 
 
-    <div class="top-actions">
+    <div class="header-right">
 
         <button
-            class="create-button"
+            class="new-book-button"
+            id="newBookButton"
             type="button"
-            onclick="toggleCreateMenu()"
         >
-            ＋ 新建
-        </button>
-
-
-        <button
-            class="settings-button"
-            type="button"
-            onclick="toggleSettingsMenu()"
-        >
-            ⚙ 设置
+            ＋ 新建小说
         </button>
 
     </div>
@@ -654,220 +479,57 @@ body {
 
 
 <!-- ==================================================
-     新建菜单
+     内容
 ================================================== -->
 
-<div
-    id="createMenu"
-    class="menu create-menu"
->
+<div class="container">
 
-    <button
-        type="button"
-        onclick="createBook()"
-    >
-        📖 新建书籍
-    </button>
+    <div class="page-title">
 
-
-    <button
-        type="button"
-        onclick="createCollection()"
-    >
-        📚 新建组合
-    </button>
-
-</div>
-
-
-<!-- ==================================================
-     设置菜单
-================================================== -->
-
-<div
-    id="settingsMenu"
-    class="menu settings-menu"
->
-
-    <button
-        type="button"
-        onclick="sortBooks()"
-    >
-        ↕ 排序
-    </button>
-
-
-    <button
-        type="button"
-        onclick="setGrid()"
-    >
-        ▦ 网格
-    </button>
-
-
-    <button
-        type="button"
-        onclick="setList()"
-    >
-        ☰ 列表
-    </button>
-
-</div>
-
-
-<!-- ==================================================
-     主内容
-================================================== -->
-
-<main class="container">
-
-
-    <!-- 空书架 -->
-
-    <div
-        id="emptyShelf"
-        class="empty-shelf"
-    >
-
-        <div class="empty-icon">
-            📚
-        </div>
-
-
-        <div class="empty-title">
-            书架还是空的
-        </div>
-
-
-        <div class="empty-text">
-            点击「＋ 新建」开始创作
-        </div>
+        <h1>
+            我的小说
+        </h1>
 
     </div>
 
 
-    <!-- 书籍列表 -->
+    <div id="books"></div>
 
-    <div
-        id="bookGrid"
-        class="book-grid"
-        style="display:none;"
-    ></div>
-
-</main>
-
-
-<!-- ==================================================
-     底部导航
-================================================== -->
-
-<nav class="bottom-nav">
-
-    <button
-        class="active"
-        type="button"
-        onclick="goShelf()"
-    >
-        📚 书架
-    </button>
-
-
-    <button
-        type="button"
-        onclick="goTools()"
-    >
-        🧰 工具
-    </button>
-
-
-    <button
-        type="button"
-        onclick="goMe()"
-    >
-        👤 我的
-    </button>
-
-</nav>
+</div>
 
 
 <script>
 
 
 // ==================================================
-// 菜单
+// DOM
 // ==================================================
 
-function toggleCreateMenu() {
-
-    const createMenu =
-        document.getElementById(
-            "createMenu"
-        );
-
-    const settingsMenu =
-        document.getElementById(
-            "settingsMenu"
-        );
-
-
-    settingsMenu.style.display =
-        "none";
-
-
-    createMenu.style.display =
-        createMenu.style.display ===
-        "block"
-            ? "none"
-            : "block";
-}
-
-
-function toggleSettingsMenu() {
-
-    const createMenu =
-        document.getElementById(
-            "createMenu"
-        );
-
-    const settingsMenu =
-        document.getElementById(
-            "settingsMenu"
-        );
-
-
-    createMenu.style.display =
-        "none";
-
-
-    settingsMenu.style.display =
-        settingsMenu.style.display ===
-        "block"
-            ? "none"
-            : "block";
-}
-
-
-// ==================================================
-// 新建
-// ==================================================
-
-function createBook() {
-
-    closeMenus();
-
-    window.location.href =
-        "create-book.html";
-}
-
-
-function createCollection() {
-
-    closeMenus();
-
-    alert(
-        "新建组合功能还在制作中"
+const booksContainer =
+    document.getElementById(
+        "books"
     );
-}
+
+
+const newBookButton =
+    document.getElementById(
+        "newBookButton"
+    );
+
+
+// ==================================================
+// 新建小说
+// ==================================================
+
+newBookButton.addEventListener(
+    "click",
+    function() {
+
+        window.location.href =
+            "create-book.html";
+
+    }
+);
 
 
 // ==================================================
@@ -876,30 +538,37 @@ function createCollection() {
 
 function loadBooks() {
 
+    booksContainer.innerHTML =
+        "";
+
+
+    let books = [];
+
+
     const savedBooks =
         localStorage.getItem(
             "novelBooks"
         );
 
 
-    let books = [];
-
-
     try {
 
         books =
             savedBooks
-                ? JSON.parse(savedBooks)
+                ? JSON.parse(
+                    savedBooks
+                )
                 : [];
 
     } catch (error) {
 
         console.error(
-            "读取书籍数据失败：",
+            "读取书架失败：",
             error
         );
 
         books = [];
+
     }
 
 
@@ -910,56 +579,42 @@ function loadBooks() {
     }
 
 
-    const emptyShelf =
-        document.getElementById(
-            "emptyShelf"
-        );
-
-
-    const bookGrid =
-        document.getElementById(
-            "bookGrid"
-        );
-
-
     // ==================================================
-    // 没有书
+    // 没有小说
     // ==================================================
 
     if (books.length === 0) {
 
-        emptyShelf.style.display =
-            "block";
+        const empty =
+            document.createElement(
+                "div"
+            );
 
-        bookGrid.style.display =
-            "none";
 
-        bookGrid.innerHTML =
-            "";
+        empty.className =
+            "empty";
+
+
+        empty.textContent =
+            "还没有小说，点击右上角「＋ 新建小说」开始创作。";
+
+
+        booksContainer.appendChild(
+            empty
+        );
+
 
         return;
+
     }
 
 
     // ==================================================
-    // 有书
+    // 生成书籍
     // ==================================================
-
-    emptyShelf.style.display =
-        "none";
-
-
-    bookGrid.style.display =
-        "grid";
-
-
-    bookGrid.innerHTML =
-        "";
-
 
     books.forEach(
         function(book) {
-
 
             const card =
                 document.createElement(
@@ -968,16 +623,99 @@ function loadBooks() {
 
 
             card.className =
-                "book-card";
+                "book";
+
+
+            // ------------------------------------------
+            // 封面
+            // ------------------------------------------
+
+            let coverHTML = "";
+
+
+            if (
+                typeof book.cover === "string" &&
+                book.cover.length > 0
+            ) {
+
+                coverHTML = `
+                    <img
+                        src="${escapeHTMLAttribute(book.cover)}"
+                        alt="书籍封面"
+                    >
+                `;
+
+            } else {
+
+                coverHTML = `
+                    <div class="default-cover">
+                        📖
+                    </div>
+                `;
+
+            }
+
+
+            // ------------------------------------------
+            // 内容
+            // ------------------------------------------
+
+            card.innerHTML = `
+
+                <button
+                    class="delete-book-button"
+                    type="button"
+                    title="删除小说"
+                    aria-label="删除小说"
+                >
+                    🗑
+                </button>
+
+
+                <div class="book-cover">
+
+                    ${coverHTML}
+
+                </div>
+
+
+                <div class="book-info">
+
+                    <div class="book-title">
+
+                        ${escapeHTML(
+                            book.title ||
+                            "未命名小说"
+                        )}
+
+                    </div>
+
+                </div>
+
+            `;
 
 
             // ==================================================
             // 点击书籍
+            //
+            // 点击封面 / 书名：
+            // 打开小说
             // ==================================================
 
             card.addEventListener(
                 "click",
-                function() {
+                function(event) {
+
+                    if (
+                        event.target.closest(
+                            ".delete-book-button"
+                        )
+                    ) {
+
+                        return;
+
+                    }
+
 
                     openBook(
                         book.id
@@ -985,87 +723,6 @@ function loadBooks() {
 
                 }
             );
-
-
-            // ==================================================
-            // 封面
-            // ==================================================
-
-            let coverHTML =
-                "";
-
-
-            if (
-                typeof book.cover ===
-                    "string" &&
-                book.cover.length > 0
-            ) {
-
-                coverHTML = `
-
-                    <img
-                        src="${escapeHTMLAttribute(book.cover)}"
-                        alt="书籍封面"
-                    >
-
-                `;
-
-            } else {
-
-                coverHTML = `
-
-                    <div class="default-cover">
-                        📖
-                    </div>
-
-                `;
-
-            }
-
-
-            // ==================================================
-            // 卡片
-            //
-            // 这里只显示：
-            //
-            // 封面
-            // 书名
-            //
-            // 不再显示：
-            // 简介
-            // 章节
-            // 字数
-            // ==================================================
-
-            card.innerHTML = `
-
-                <button
-                    class="delete-book-button"
-                    type="button"
-                    title="删除书籍"
-                    aria-label="删除书籍"
-                >
-                    🗑
-                </button>
-
-
-                <div class="book-cover">
-                    ${coverHTML}
-                </div>
-
-
-                <div class="book-info">
-
-                    <div class="book-title">
-                        ${escapeHTML(
-                            book.title ||
-                            "未命名书籍"
-                        )}
-                    </div>
-
-                </div>
-
-            `;
 
 
             // ==================================================
@@ -1086,6 +743,7 @@ function loadBooks() {
 
                     event.stopPropagation();
 
+
                     deleteBook(
                         book.id
                     );
@@ -1094,25 +752,56 @@ function loadBooks() {
             );
 
 
-            bookGrid.appendChild(
+            booksContainer.appendChild(
                 card
             );
 
         }
     );
+
 }
 
 
 // ==================================================
-// 删除书籍
+// 打开小说
+// ==================================================
+
+function openBook(bookId) {
+
+    localStorage.setItem(
+        "currentBookId",
+        String(bookId)
+    );
+
+
+    localStorage.removeItem(
+        "currentChapterId"
+    );
+
+
+    window.location.href =
+        "book.html";
+
+}
+
+
+// ==================================================
+// 删除小说
 // ==================================================
 
 function deleteBook(bookId) {
 
-    const savedBooks =
-        localStorage.getItem(
-            "novelBooks"
+    const confirmed =
+        window.confirm(
+            "确定要删除这本小说吗？\n\n删除后无法恢复。"
         );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
 
 
     let books = [];
@@ -1120,65 +809,38 @@ function deleteBook(bookId) {
 
     try {
 
+        const savedBooks =
+            localStorage.getItem(
+                "novelBooks"
+            );
+
+
         books =
             savedBooks
-                ? JSON.parse(savedBooks)
+                ? JSON.parse(
+                    savedBooks
+                )
                 : [];
 
     } catch (error) {
 
-        console.error(
-            "读取书籍失败：",
-            error
-        );
+        books = [];
 
-        return;
     }
 
 
     if (!Array.isArray(books)) {
 
-        return;
-    }
+        books = [];
 
-
-    const book =
-        books.find(
-            function(item) {
-
-                return String(item.id) ===
-                    String(bookId);
-
-            }
-        );
-
-
-    if (!book) {
-
-        return;
-    }
-
-
-    const confirmed =
-        confirm(
-            "确定要删除《" +
-            (book.title || "未命名书籍") +
-            "》吗？\n\n" +
-            "删除后，这本书及其全书结构将无法恢复。"
-        );
-
-
-    if (!confirmed) {
-
-        return;
     }
 
 
     books =
         books.filter(
-            function(item) {
+            function(book) {
 
-                return String(item.id) !==
+                return String(book.id) !==
                     String(bookId);
 
             }
@@ -1187,13 +849,10 @@ function deleteBook(bookId) {
 
     localStorage.setItem(
         "novelBooks",
-        JSON.stringify(
-            books
-        )
+        JSON.stringify(books)
     );
 
 
-    // 清除当前书籍
     const currentBookId =
         localStorage.getItem(
             "currentBookId"
@@ -1201,9 +860,8 @@ function deleteBook(bookId) {
 
 
     if (
-        currentBookId &&
         String(currentBookId) ===
-            String(bookId)
+        String(bookId)
     ) {
 
         localStorage.removeItem(
@@ -1213,20 +871,22 @@ function deleteBook(bookId) {
         localStorage.removeItem(
             "currentChapterId"
         );
+
     }
 
 
     loadBooks();
+
 }
 
 
 // ==================================================
-// HTML 安全
+// HTML 转义
 // ==================================================
 
-function escapeHTML(text) {
+function escapeHTML(value) {
 
-    return String(text)
+    return String(value)
         .replace(
             /&/g,
             "&amp;"
@@ -1247,170 +907,21 @@ function escapeHTML(text) {
             /'/g,
             "&#039;"
         );
+
 }
 
 
-function escapeHTMLAttribute(text) {
+function escapeHTMLAttribute(value) {
 
-    return escapeHTML(text);
-}
-
-
-// ==================================================
-// 打开书籍
-// ==================================================
-
-function openBook(id) {
-
-    localStorage.setItem(
-        "currentBookId",
-        String(id)
+    return escapeHTML(
+        value
     );
 
-
-    localStorage.removeItem(
-        "currentChapterId"
-    );
-
-
-    window.location.href =
-        "book.html";
 }
 
 
 // ==================================================
-// 设置
-// ==================================================
-
-function sortBooks() {
-
-    closeMenus();
-
-    alert(
-        "排序功能还在制作中"
-    );
-}
-
-
-function setGrid() {
-
-    closeMenus();
-
-    alert(
-        "当前已经是网格视图"
-    );
-}
-
-
-function setList() {
-
-    closeMenus();
-
-    alert(
-        "列表视图功能还在制作中"
-    );
-}
-
-
-// ==================================================
-// 底部导航
-// ==================================================
-
-function goShelf() {
-
-    window.location.href =
-        "index.html";
-}
-
-
-function goTools() {
-
-    alert(
-        "工具页面还在制作中"
-    );
-}
-
-
-function goMe() {
-
-    alert(
-        "我的页面还在制作中"
-    );
-}
-
-
-// ==================================================
-// 关闭菜单
-// ==================================================
-
-function closeMenus() {
-
-    document.getElementById(
-        "createMenu"
-    ).style.display =
-        "none";
-
-
-    document.getElementById(
-        "settingsMenu"
-    ).style.display =
-        "none";
-}
-
-
-// ==================================================
-// 点击其他地方关闭菜单
-// ==================================================
-
-document.addEventListener(
-    "click",
-    function(event) {
-
-        const createMenu =
-            document.getElementById(
-                "createMenu"
-            );
-
-
-        const settingsMenu =
-            document.getElementById(
-                "settingsMenu"
-            );
-
-
-        if (
-            !event.target.closest(
-                ".create-button"
-            ) &&
-            !event.target.closest(
-                ".create-menu"
-            )
-        ) {
-
-            createMenu.style.display =
-                "none";
-        }
-
-
-        if (
-            !event.target.closest(
-                ".settings-button"
-            ) &&
-            !event.target.closest(
-                ".settings-menu"
-            )
-        ) {
-
-            settingsMenu.style.display =
-                "none";
-        }
-
-    }
-);
-
-
-// ==================================================
-// 页面打开
+// 初始化
 // ==================================================
 
 loadBooks();
