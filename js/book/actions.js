@@ -3,20 +3,25 @@
 // ==============================
 
 
-// ==============================
-// 根节点
-// ==============================
+// ==================================================
+// 根节点：序
+// ==================================================
 
 function addRootPreface() {
 
-    if (!currentBook.structure) {
+    if (!currentBook) {
+        return;
+    }
+
+    if (!Array.isArray(currentBook.structure)) {
         currentBook.structure = [];
     }
 
 
     const exists =
         currentBook.structure.some(
-            node => node.type === "preface"
+            node =>
+                node.type === NODE_TYPES.PREFACE
         );
 
 
@@ -27,7 +32,7 @@ function addRootPreface() {
 
     const node =
         createNode(
-            "preface",
+            NODE_TYPES.PREFACE,
             "序",
             1
         );
@@ -53,27 +58,54 @@ function addRootPreface() {
 }
 
 
+// ==================================================
+// 根节点：章
+// ==================================================
+
 function addRootChapter() {
 
-    addRootNode("chapter");
+    addRootNode(
+        NODE_TYPES.CHAPTER
+    );
 }
 
+
+// ==================================================
+// 根节点：篇
+// ==================================================
 
 function addRootPart() {
 
-    addRootNode("part");
+    addRootNode(
+        NODE_TYPES.PART
+    );
 }
 
+
+// ==================================================
+// 根节点：卷
+// ==================================================
 
 function addRootVolume() {
 
-    addRootNode("volume");
+    addRootNode(
+        NODE_TYPES.VOLUME
+    );
 }
 
 
+// ==================================================
+// 添加根节点
+// ==================================================
+
 function addRootNode(type) {
 
-    if (!currentBook.structure) {
+    if (!currentBook) {
+        return;
+    }
+
+
+    if (!Array.isArray(currentBook.structure)) {
         currentBook.structure = [];
     }
 
@@ -87,7 +119,7 @@ function addRootNode(type) {
 
     switch (type) {
 
-        case "volume":
+        case NODE_TYPES.VOLUME:
 
             title =
                 "第" +
@@ -97,7 +129,7 @@ function addRootNode(type) {
             break;
 
 
-        case "part":
+        case NODE_TYPES.PART:
 
             title =
                 "第" +
@@ -107,7 +139,7 @@ function addRootNode(type) {
             break;
 
 
-        case "chapter":
+        case NODE_TYPES.CHAPTER:
 
             title =
                 "第" +
@@ -126,7 +158,9 @@ function addRootNode(type) {
         );
 
 
-    currentBook.structure.push(node);
+    currentBook.structure.push(
+        node
+    );
 
 
     saveBook();
@@ -142,19 +176,27 @@ function addRootNode(type) {
 
     renderTree();
 
-
     updatePrefaceButton();
 }
 
 
-// ==============================
-// 编号
-// ==============================
+// ==================================================
+// 根节点编号
+// ==================================================
 
 function getNextRootNumber(type) {
 
+    if (!currentBook) {
+        return 1;
+    }
+
+
     const nodes =
-        currentBook.structure || [];
+        Array.isArray(
+            currentBook.structure
+        )
+            ? currentBook.structure
+            : [];
 
 
     return getNextNumberFromArray(
@@ -164,14 +206,24 @@ function getNextRootNumber(type) {
 }
 
 
+// ==================================================
+// 获取数组中某类型的下一个编号
+// ==================================================
+
 function getNextNumberFromArray(
     nodes,
     type
 ) {
 
+    if (!Array.isArray(nodes)) {
+        return 1;
+    }
+
+
     const sameType =
         nodes.filter(
-            node => node.type === type
+            node =>
+                node.type === type
         );
 
 
@@ -201,45 +253,62 @@ function getNextNumberFromArray(
 }
 
 
-// ==============================
-// 查找父节点
-// ==============================
+// ==================================================
+// 查找父节点数组
+// ==================================================
 
 function findParentArray(
     nodeId,
-    nodes = currentBook.structure
+    nodes = null
 ) {
+
+    if (!currentBook) {
+        return null;
+    }
+
+
+    const list =
+        nodes ||
+        currentBook.structure ||
+        [];
+
 
     for (
         let i = 0;
-        i < nodes.length;
+        i < list.length;
         i++
     ) {
 
+        const node =
+            list[i];
+
+
         if (
-            nodes[i].id === nodeId
+            node.id === nodeId
         ) {
 
             return {
 
-                array: nodes,
+                array: list,
 
                 index: i,
 
-                node: nodes[i]
+                node: node
             };
         }
 
 
         if (
-            nodes[i].children &&
-            nodes[i].children.length
+            Array.isArray(
+                node.children
+            ) &&
+            node.children.length > 0
         ) {
 
             const result =
                 findParentArray(
                     nodeId,
-                    nodes[i].children
+                    node.children
                 );
 
 
@@ -254,9 +323,9 @@ function findParentArray(
 }
 
 
-// ==============================
+// ==================================================
 // 添加同级
-// ==============================
+// ==================================================
 
 function addSameLevel(nodeId) {
 
@@ -273,6 +342,15 @@ function addSameLevel(nodeId) {
         result.node;
 
 
+    // 序目前不能添加同级
+    if (
+        node.type ===
+        NODE_TYPES.PREFACE
+    ) {
+        return;
+    }
+
+
     const number =
         getNextNumberFromArray(
             result.array,
@@ -283,30 +361,36 @@ function addSameLevel(nodeId) {
     let title = "";
 
 
-    if (node.type === "volume") {
+    switch (node.type) {
 
-        title =
-            "第" +
-            number +
-            "卷：";
+        case NODE_TYPES.VOLUME:
 
-    }
+            title =
+                "第" +
+                number +
+                "卷：";
 
-    else if (node.type === "part") {
+            break;
 
-        title =
-            "第" +
-            number +
-            "篇：";
 
-    }
+        case NODE_TYPES.PART:
 
-    else if (node.type === "chapter") {
+            title =
+                "第" +
+                number +
+                "篇：";
 
-        title =
-            "第" +
-            number +
-            "章：";
+            break;
+
+
+        case NODE_TYPES.CHAPTER:
+
+            title =
+                "第" +
+                number +
+                "章：";
+
+            break;
     }
 
 
@@ -337,14 +421,13 @@ function addSameLevel(nodeId) {
 
     renderTree();
 
-
     updatePrefaceButton();
 }
 
 
-// ==============================
+// ==================================================
 // 添加子节点
-// ==============================
+// ==================================================
 
 function addChild(
     parentId,
@@ -364,9 +447,61 @@ function addChild(
         result.node;
 
 
-    if (!parent.children) {
+    // 序不能添加子节点
+    if (
+        parent.type ===
+        NODE_TYPES.PREFACE
+    ) {
+        return;
+    }
+
+
+    if (
+        !Array.isArray(
+            parent.children
+        )
+    ) {
 
         parent.children = [];
+    }
+
+
+    // ==========================================
+    // 层级限制
+    // 卷 → 篇 / 章
+    // 篇 → 章
+    // ==========================================
+
+    if (
+        parent.type === NODE_TYPES.VOLUME
+    ) {
+
+        if (
+            type !== NODE_TYPES.PART &&
+            type !== NODE_TYPES.CHAPTER
+        ) {
+            return;
+        }
+
+    }
+
+
+    else if (
+        parent.type === NODE_TYPES.PART
+    ) {
+
+        if (
+            type !== NODE_TYPES.CHAPTER
+        ) {
+            return;
+        }
+
+    }
+
+
+    else {
+
+        return;
     }
 
 
@@ -380,7 +515,9 @@ function addChild(
     let title = "";
 
 
-    if (type === "part") {
+    if (
+        type === NODE_TYPES.PART
+    ) {
 
         title =
             "第" +
@@ -389,7 +526,9 @@ function addChild(
 
     }
 
-    else if (type === "chapter") {
+    else if (
+        type === NODE_TYPES.CHAPTER
+    ) {
 
         title =
             "第" +
@@ -411,8 +550,9 @@ function addChild(
     );
 
 
-    // 添加孩子后自动展开父节点
-    parent.collapsed = false;
+    // 添加孩子以后自动展开
+    parent.collapsed =
+        false;
 
 
     saveBook();
@@ -427,14 +567,13 @@ function addChild(
 
     renderTree();
 
-
     updatePrefaceButton();
 }
 
 
-// ==============================
+// ==================================================
 // 展开 / 收起
-// ==============================
+// ==================================================
 
 function toggleNode(nodeId) {
 
@@ -456,14 +595,13 @@ function toggleNode(nodeId) {
 
     renderTree();
 
-
     updatePrefaceButton();
 }
 
 
-// ==============================
+// ==================================================
 // 删除
-// ==============================
+// ==================================================
 
 function deleteNode(nodeId) {
 
@@ -481,7 +619,7 @@ function deleteNode(nodeId) {
 
 
     const confirmed =
-        confirm(
+        window.confirm(
             `确定要删除「${node.title}」吗？`
         );
 
@@ -509,14 +647,13 @@ function deleteNode(nodeId) {
 
     renderTree();
 
-
     updatePrefaceButton();
 }
 
 
-// ==============================
+// ==================================================
 // 序按钮状态
-// ==============================
+// ==================================================
 
 function updatePrefaceButton() {
 
@@ -533,10 +670,13 @@ function updatePrefaceButton() {
 
     const exists =
         currentBook &&
-        currentBook.structure &&
+        Array.isArray(
+            currentBook.structure
+        ) &&
         currentBook.structure.some(
             node =>
-                node.type === "preface"
+                node.type ===
+                NODE_TYPES.PREFACE
         );
 
 
@@ -550,12 +690,149 @@ function updatePrefaceButton() {
             "disabled"
         );
 
-    }
-
-    else {
+    } else {
 
         button.classList.remove(
             "disabled"
         );
     }
+}
+
+
+// ==================================================
+// 绑定书籍底部操作按钮
+// ==================================================
+
+function setupActionButtons() {
+
+    if (
+        window.bookActionButtonsInitialized
+    ) {
+        return;
+    }
+
+
+    const addPreface =
+        document.querySelector(
+            "#addPreface"
+        );
+
+    const addChapter =
+        document.querySelector(
+            "#addChapter"
+        );
+
+    const addPart =
+        document.querySelector(
+            "#addPart"
+        );
+
+    const addVolume =
+        document.querySelector(
+            "#addVolume"
+        );
+
+
+    // ==========================================
+    // ＋序
+    // ==========================================
+
+    if (addPreface) {
+
+        addPreface.addEventListener(
+            "click",
+            function(event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                addRootPreface();
+            }
+        );
+    }
+
+
+    // ==========================================
+    // ＋章
+    // ==========================================
+
+    if (addChapter) {
+
+        addChapter.addEventListener(
+            "click",
+            function(event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                addRootChapter();
+            }
+        );
+    }
+
+
+    // ==========================================
+    // ＋篇
+    // ==========================================
+
+    if (addPart) {
+
+        addPart.addEventListener(
+            "click",
+            function(event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                addRootPart();
+            }
+        );
+    }
+
+
+    // ==========================================
+    // ＋卷
+    // ==========================================
+
+    if (addVolume) {
+
+        addVolume.addEventListener(
+            "click",
+            function(event) {
+
+                event.preventDefault();
+
+                event.stopPropagation();
+
+                addRootVolume();
+            }
+        );
+    }
+
+
+    window.bookActionButtonsInitialized =
+        true;
+}
+
+
+// ==================================================
+// 页面加载后绑定按钮
+// ==================================================
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        setupActionButtons
+    );
+
+} else {
+
+    setupActionButtons();
 }
