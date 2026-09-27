@@ -3,405 +3,347 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>我的书架</title>
-
     <style>
         * {
             box-sizing: border-box;
         }
-
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
                          "PingFang SC", "Microsoft YaHei", sans-serif;
             background: #f5f6f8;
             color: #222;
-            padding-top: 70px;
+            padding-top: 72px;
         }
-
-        /* 顶部固定栏 */
+        /* =========================
+           顶部固定栏
+        ========================= */
         header {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-
-            height: 70px;
-
+            height: 72px;
             background: #ffffff;
-            border-bottom: 1px solid #e5e5e5;
-
+            border-bottom: 1px solid #e4e6eb;
             display: flex;
             align-items: center;
             justify-content: space-between;
-
             padding: 0 24px;
-
             z-index: 1000;
         }
-
         /* 我的书架 */
         .logo {
             font-size: 21px;
             font-weight: 700;
+            white-space: nowrap;
         }
-
-        /* 右侧按钮 */
+        /* =========================
+           右侧两个按钮
+        ========================= */
         .header-buttons {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
-
         .header-button {
-            width: 42px;
-            height: 42px;
-
             border: none;
+            height: 40px;
+            padding: 0 16px;
             border-radius: 8px;
-
-            background: transparent;
-
-            font-size: 25px;
+            font-size: 15px;
+            font-weight: 500;
             cursor: pointer;
-
+            transition: 0.2s;
             display: flex;
             align-items: center;
-            justify-content: center;
-
-            transition: 0.2s;
+            gap: 5px;
         }
-
-        .header-button:hover {
-            background: #f0f1f3;
+        /* 新建按钮 */
+        .create-button {
+            background: #4f7cff;
+            color: white;
         }
-
-        /* 下拉菜单 */
+        .create-button:hover {
+            background: #3d68e6;
+        }
+        /* 设置按钮 */
+        .settings-button {
+            background: #eef0f4;
+            color: #333;
+        }
+        .settings-button:hover {
+            background: #e1e4e9;
+        }
+        /* =========================
+           下拉菜单
+        ========================= */
         .menu {
             position: fixed;
-
             top: 62px;
-            right: 24px;
-
-            width: 180px;
-
             background: white;
-
-            border: 1px solid #e2e2e2;
+            width: 170px;
+            border: 1px solid #e1e3e7;
             border-radius: 10px;
-
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-
+            box-shadow:
+                0 8px 25px rgba(0, 0, 0, 0.12);
             overflow: hidden;
-
             display: none;
-
             z-index: 2000;
         }
-
         .menu.show {
             display: block;
         }
-
+        .create-menu {
+            right: 100px;
+        }
+        .settings-menu {
+            right: 24px;
+        }
         .menu-item {
             padding: 14px 17px;
-
             font-size: 15px;
-
             cursor: pointer;
-
             transition: 0.15s;
         }
-
         .menu-item:hover {
             background: #f5f6f8;
         }
-
-        /* 内容 */
+        /* =========================
+           页面内容
+        ========================= */
         .container {
             max-width: 1000px;
             margin: 40px auto;
             padding: 0 20px;
         }
-
         .page-title {
             margin-bottom: 25px;
         }
-
         .page-title h1 {
             margin: 0;
             font-size: 28px;
         }
-
-        /* 书籍 */
-        .book {
-            background: white;
-
-            border: 1px solid #e5e5e5;
-            border-radius: 12px;
-
-            padding: 22px;
-
-            margin-bottom: 15px;
-
-            cursor: pointer;
-
-            transition: 0.2s;
+        /* =========================
+           空书架
+        ========================= */
+        .empty {
+            text-align: center;
+            padding: 100px 20px;
+            color: #999;
         }
-
-        .book:hover {
-            border-color: #cfd5df;
-            transform: translateY(-1px);
+        .empty-title {
+            font-size: 18px;
+            margin-bottom: 8px;
         }
-
-        .book h2 {
-            margin: 0 0 8px;
-            font-size: 19px;
-        }
-
-        .info {
-            color: #777;
+        .empty-text {
             font-size: 14px;
         }
-
-        /* 手机 */
+        /* =========================
+           手机适配
+        ========================= */
         @media (max-width: 600px) {
-
             header {
                 padding: 0 14px;
             }
-
             .logo {
-                font-size: 19px;
+                font-size: 18px;
             }
-
             .header-button {
-                width: 40px;
-                height: 40px;
+                height: 38px;
+                padding: 0 11px;
+                font-size: 14px;
             }
-
+            .header-buttons {
+                gap: 6px;
+            }
+            .create-menu {
+                right: 82px;
+            }
+            .settings-menu {
+                right: 14px;
+            }
             .container {
                 margin-top: 25px;
                 padding: 0 15px;
             }
-
             .page-title h1 {
                 font-size: 24px;
-            }
-
-            .menu {
-                right: 14px;
             }
         }
     </style>
 </head>
-
 <body>
-
-<!-- 顶部固定栏 -->
+<!-- =========================
+     顶部固定栏
+========================= -->
 <header>
-
     <div class="logo">
         我的书架
     </div>
-
     <div class="header-buttons">
-
-        <!-- ＋ -->
+        <!-- 新建 -->
         <button
-            class="header-button"
-            onclick="toggleCreateMenu()"
-            aria-label="新建">
-            ＋
+            class="header-button create-button"
+            onclick="toggleCreateMenu()">
+            ＋ 新建
         </button>
-
-        <!-- … -->
+        <!-- 设置 -->
         <button
-            class="header-button"
-            onclick="toggleMoreMenu()"
-            aria-label="更多">
-            ⋯
+            class="header-button settings-button"
+            onclick="toggleSettingsMenu()">
+            ⚙ 设置
         </button>
-
     </div>
-
 </header>
-
-
-<!-- ＋ 新建菜单 -->
-<div id="createMenu" class="menu">
-
+<!-- =========================
+     新建菜单
+========================= -->
+<div
+    id="createMenu"
+    class="menu create-menu">
     <div
         class="menu-item"
         onclick="createBook()">
         📖 新建书籍
     </div>
-
     <div
         class="menu-item"
         onclick="createCollection()">
         📚 新建组合
     </div>
-
 </div>
-
-
-<!-- … 更多菜单 -->
-<div id="moreMenu" class="menu">
-
+<!-- =========================
+     设置菜单
+========================= -->
+<div
+    id="settingsMenu"
+    class="menu settings-menu">
     <div
         class="menu-item"
         onclick="sortBooks()">
-        ↕ 书架排序
+        ↕ 排序
     </div>
-
     <div
         class="menu-item"
-        onclick="bookcaseSettings()">
-        ⚙ 书架设置
+        onclick="setGrid()">
+        ▦ 网格
     </div>
-
+    <div
+        class="menu-item"
+        onclick="setList()">
+        ☰ 列表
+    </div>
 </div>
-
-
-<!-- 书架内容 -->
+<!-- =========================
+     书架
+========================= -->
 <div class="container">
-
     <div class="page-title">
         <h1>我的书架</h1>
     </div>
-
-
-  <div id="books">
+    <div id="books">
+        <div class="empty">
+            <div class="empty-title">
+                书架还是空的
+            </div>
+            <div class="empty-text">
+                点击「＋ 新建」开始创作
+            </div>
+        </div>
+    </div>
 </div>
-
-</div>
-
-
 <script>
-
-/* 点击 ＋ */
+/* =========================
+   新建菜单
+========================= */
 function toggleCreateMenu() {
-
-    const createMenu = document.getElementById("createMenu");
-    const moreMenu = document.getElementById("moreMenu");
-
-    moreMenu.classList.remove("show");
-
+    const createMenu =
+        document.getElementById("createMenu");
+    const settingsMenu =
+        document.getElementById("settingsMenu");
+    settingsMenu.classList.remove("show");
     createMenu.classList.toggle("show");
 }
-
-
-/* 点击 … */
-function toggleMoreMenu() {
-
-    const moreMenu = document.getElementById("moreMenu");
-    const createMenu = document.getElementById("createMenu");
-
+/* =========================
+   设置菜单
+========================= */
+function toggleSettingsMenu() {
+    const createMenu =
+        document.getElementById("createMenu");
+    const settingsMenu =
+        document.getElementById("settingsMenu");
     createMenu.classList.remove("show");
-
-    moreMenu.classList.toggle("show");
+    settingsMenu.classList.toggle("show");
 }
-
-
-/* 新建书籍 */
+/* =========================
+   新建书籍
+========================= */
 function createBook() {
-
     closeMenus();
-
-    const name = prompt("请输入书籍名称：");
-
-    if (!name) {
-        return;
-    }
-
-    const book = document.createElement("div");
-
-    book.className = "book";
-
-    book.innerHTML = `
-        <h2>${escapeHTML(name)}</h2>
-        <div class="info">
-            0章 · 0字 · 刚刚创建
-        </div>
-    `;
-
-    document.getElementById("books").prepend(book);
+    alert("下一步将在这里进入「新建书籍」页面。");
 }
-
-
-/* 新建组合 */
+/* =========================
+   新建组合
+========================= */
 function createCollection() {
-
     closeMenus();
-
-    const name = prompt("请输入组合名称：");
-
-    if (!name) {
-        return;
-    }
-
-    alert("组合「" + name + "」已创建。");
+    alert("下一步将在这里进入「新建组合」页面。");
 }
-
-
-/* 书架排序 */
+/* =========================
+   排序
+========================= */
 function sortBooks() {
-
     closeMenus();
-
-    alert("这里以后可以设置：\n\n• 最近编辑\n• 创建时间\n• 书名字母顺序\n• 字数\n• 自定义排序");
+    alert(
+        "排序方式\n\n" +
+        "• 最近编辑\n" +
+        "• 创建时间\n" +
+        "• 名称\n" +
+        "• 字数"
+    );
 }
-
-
-/* 书架设置 */
-function bookcaseSettings() {
-
+/* =========================
+   网格
+========================= */
+function setGrid() {
     closeMenus();
-
-    alert("这里以后可以设置书架显示方式、书籍排列方式等。");
+    alert("书架显示方式：网格");
 }
-
-
-/* 关闭菜单 */
+/* =========================
+   列表
+========================= */
+function setList() {
+    closeMenus();
+    alert("书架显示方式：列表");
+}
+/* =========================
+   关闭菜单
+========================= */
 function closeMenus() {
-
-    document.getElementById("createMenu").classList.remove("show");
-    document.getElementById("moreMenu").classList.remove("show");
+    document
+        .getElementById("createMenu")
+        .classList.remove("show");
+    document
+        .getElementById("settingsMenu")
+        .classList.remove("show");
 }
-
-
-/* 防止用户输入特殊 HTML */
-function escapeHTML(text) {
-
-    const div = document.createElement("div");
-
-    div.textContent = text;
-
-    return div.innerHTML;
-}
-
-
-/* 点击页面其他位置时关闭菜单 */
-document.addEventListener("click", function(event) {
-
-    const createMenu = document.getElementById("createMenu");
-    const moreMenu = document.getElementById("moreMenu");
-
-    const clickedButton =
-        event.target.closest(".header-button");
-
-    const clickedMenu =
-        event.target.closest(".menu");
-
-    if (!clickedButton && !clickedMenu) {
-        closeMenus();
+/* =========================
+   点击其他位置关闭菜单
+========================= */
+document.addEventListener(
+    "click",
+    function(event) {
+        const clickedButton =
+            event.target.closest(".header-button");
+        const clickedMenu =
+            event.target.closest(".menu");
+        if (!clickedButton && !clickedMenu) {
+            closeMenus();
+        }
     }
-
-});
-
+);
 </script>
-
 </body>
 </html>
