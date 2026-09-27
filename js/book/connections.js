@@ -2,9 +2,11 @@
 // 全书页面：连接线
 // ==============================
 
+
 function drawConnections(layout) {
 
-    const svg = document.querySelector("#connections");
+    const svg =
+        document.querySelector("#connections");
 
     if (!svg) {
         return;
@@ -26,12 +28,18 @@ function drawConnections(layout) {
         canvas.getBoundingClientRect();
 
 
+    // ==============================
+    // 获取元素相对于画布的位置
+    // ==============================
+
     function getBoxRect(element) {
 
         const rect =
             element.getBoundingClientRect();
 
+
         return {
+
             left:
                 rect.left -
                 canvasRect.left,
@@ -61,6 +69,10 @@ function drawConnections(layout) {
     }
 
 
+    // ==============================
+    // 绘制折线
+    // ==============================
+
     function drawPath(points) {
 
         const path =
@@ -77,7 +89,11 @@ function drawConnections(layout) {
             points[0].y;
 
 
-        for (let i = 1; i < points.length; i++) {
+        for (
+            let i = 1;
+            i < points.length;
+            i++
+        ) {
 
             d +=
                 " L " +
@@ -104,24 +120,34 @@ function drawConnections(layout) {
 
 
     const bookTitle =
-        document.querySelector("#bookTitle");
+        document.querySelector(
+            "#bookTitle"
+        );
 
 
-    // ==============================
+    // ==========================================================
     // 书名 → 第一层
-    // ==============================
+    // ==========================================================
 
-    if (bookTitle && layout.nodes.length) {
+    if (
+        bookTitle &&
+        layout.nodes.length
+    ) {
 
         const roots =
             layout.nodes.filter(
-                item => item.level === 0
+                item =>
+                    item.level === 0
             );
 
 
         const bookRect =
             getBoxRect(bookTitle);
 
+
+        // ==============================
+        // 一个根节点
+        // ==============================
 
         if (roots.length === 1) {
 
@@ -142,14 +168,22 @@ function drawConnections(layout) {
 
 
                 const start = {
-                    x: bookRect.centerX,
-                    y: bookRect.bottom
+
+                    x:
+                        bookRect.centerX,
+
+                    y:
+                        bookRect.bottom
                 };
 
 
                 const end = {
-                    x: rootRect.centerX,
-                    y: rootRect.top
+
+                    x:
+                        rootRect.centerX,
+
+                    y:
+                        rootRect.top
                 };
 
 
@@ -158,23 +192,36 @@ function drawConnections(layout) {
 
 
                 drawPath([
+
                     start,
 
                     {
-                        x: start.x,
-                        y: middleY
+                        x:
+                            start.x,
+
+                        y:
+                            middleY
                     },
 
                     {
-                        x: end.x,
-                        y: middleY
+                        x:
+                            end.x,
+
+                        y:
+                            middleY
                     },
 
                     end
                 ]);
             }
+        }
 
-        } else {
+
+        // ==============================
+        // 多个根节点
+        // ==============================
+
+        else {
 
             const firstRootElement =
                 document.querySelector(
@@ -194,10 +241,9 @@ function drawConnections(layout) {
             ) {
 
                 const firstRect =
-                    getBoxRect(firstRootElement);
-
-                const lastRect =
-                    getBoxRect(lastRootElement);
+                    getBoxRect(
+                        firstRootElement
+                    );
 
 
                 const branchY =
@@ -207,24 +253,36 @@ function drawConnections(layout) {
                     );
 
 
+                // 书名 → 总分支
                 drawPath([
+
                     {
-                        x: bookRect.centerX,
-                        y: bookRect.bottom
+                        x:
+                            bookRect.centerX,
+
+                        y:
+                            bookRect.bottom
                     },
 
                     {
-                        x: bookRect.centerX,
-                        y: branchY
+                        x:
+                            bookRect.centerX,
+
+                        y:
+                            branchY
                     },
 
                     {
-                        x: firstRect.centerX,
-                        y: branchY
+                        x:
+                            firstRect.centerX,
+
+                        y:
+                            branchY
                     }
                 ]);
 
 
+                // 总分支 → 所有根节点
                 roots.forEach(root => {
 
                     const element =
@@ -243,14 +301,21 @@ function drawConnections(layout) {
 
 
                     drawPath([
+
                         {
-                            x: rect.centerX,
-                            y: branchY
+                            x:
+                                rect.centerX,
+
+                            y:
+                                branchY
                         },
 
                         {
-                            x: rect.centerX,
-                            y: rect.top
+                            x:
+                                rect.centerX,
+
+                            y:
+                                rect.top
                         }
                     ]);
                 });
@@ -259,9 +324,9 @@ function drawConnections(layout) {
     }
 
 
-    // ==============================
+    // ==========================================================
     // 父节点 → 子节点
-    // ==============================
+    // ==========================================================
 
     layout.nodes.forEach(item => {
 
@@ -293,12 +358,14 @@ function drawConnections(layout) {
             getBoxRect(parentElement);
 
 
+        // 当前父节点的实际子节点
         const childItems =
             layout.nodes.filter(
                 child =>
                     parent.children.some(
                         childNode =>
-                            childNode.id === child.node.id
+                            childNode.id ===
+                            child.node.id
                     )
             );
 
@@ -308,7 +375,10 @@ function drawConnections(layout) {
         }
 
 
+        // ======================================================
         // 一个孩子
+        // ======================================================
+
         if (childItems.length === 1) {
 
             const child =
@@ -331,14 +401,22 @@ function drawConnections(layout) {
 
 
             const start = {
-                x: parentRect.centerX,
-                y: parentRect.bottom
+
+                x:
+                    parentRect.centerX,
+
+                y:
+                    parentRect.bottom
             };
 
 
             const end = {
-                x: childRect.centerX,
-                y: childRect.top
+
+                x:
+                    childRect.centerX,
+
+                y:
+                    childRect.top
             };
 
 
@@ -347,31 +425,42 @@ function drawConnections(layout) {
 
 
             drawPath([
+
                 start,
 
                 {
-                    x: start.x,
-                    y: middleY
+                    x:
+                        start.x,
+
+                    y:
+                        middleY
                 },
 
                 {
-                    x: end.x,
-                    y: middleY
+                    x:
+                        end.x,
+
+                    y:
+                        middleY
                 },
 
                 end
             ]);
 
 
+            // 直接把父节点传进去
             addLineControl(
+                parent,
                 middleY,
-                (start.x + end.x) / 2,
-                parent.collapsed
+                (start.x + end.x) / 2
             );
-
         }
 
+
+        // ======================================================
         // 多个孩子
+        // ======================================================
+
         else {
 
             const firstElement =
@@ -380,16 +469,7 @@ function drawConnections(layout) {
                 );
 
 
-            const lastElement =
-                document.querySelector(
-                    `[data-node-id="${childItems[childItems.length - 1].node.id}"] .node-box`
-                );
-
-
-            if (
-                !firstElement ||
-                !lastElement
-            ) {
+            if (!firstElement) {
                 return;
             }
 
@@ -397,33 +477,42 @@ function drawConnections(layout) {
             const firstRect =
                 getBoxRect(firstElement);
 
-            const lastRect =
-                getBoxRect(lastElement);
-
 
             const branchY =
                 parentRect.bottom +
                 LEVEL_GAP / 2;
 
 
+            // 父节点 → 横向分支
             drawPath([
+
                 {
-                    x: parentRect.centerX,
-                    y: parentRect.bottom
+                    x:
+                        parentRect.centerX,
+
+                    y:
+                        parentRect.bottom
                 },
 
                 {
-                    x: parentRect.centerX,
-                    y: branchY
+                    x:
+                        parentRect.centerX,
+
+                    y:
+                        branchY
                 },
 
                 {
-                    x: firstRect.centerX,
-                    y: branchY
+                    x:
+                        firstRect.centerX,
+
+                    y:
+                        branchY
                 }
             ]);
 
 
+            // 横向分支 → 每一个孩子
             childItems.forEach(child => {
 
                 const element =
@@ -442,47 +531,65 @@ function drawConnections(layout) {
 
 
                 drawPath([
+
                     {
-                        x: rect.centerX,
-                        y: branchY
+                        x:
+                            rect.centerX,
+
+                        y:
+                            branchY
                     },
 
                     {
-                        x: rect.centerX,
-                        y: rect.top
+                        x:
+                            rect.centerX,
+
+                        y:
+                            rect.top
                     }
                 ]);
             });
 
 
+            // 直接把父节点传进去
             addLineControl(
+                parent,
                 branchY,
-                parentRect.centerX,
-                parent.collapsed
+                parentRect.centerX
             );
         }
     });
 }
 
 
-// 在线中间添加 + / -
+// ==========================================================
+// 在线中间添加 + / −
+// ==========================================================
+
 function addLineControl(
+    parentNode,
     top,
-    left,
-    collapsed
+    left
 ) {
 
     const control =
-        document.createElement("button");
+        document.createElement(
+            "button"
+        );
 
-    control.type = "button";
+
+    control.type =
+        "button";
+
 
     control.className =
         "line-control";
 
 
     control.textContent =
-        collapsed ? "+" : "−";
+        parentNode.collapsed
+            ? "+"
+            : "−";
 
 
     control.style.left =
@@ -493,123 +600,33 @@ function addLineControl(
         top + "px";
 
 
-    const parentNode =
-        findNodeByConnectionPosition(
-            left,
-            top
-        );
+    // 点击 + / −
+    control.addEventListener(
+        "click",
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
 
 
-    if (parentNode) {
-
-        control.addEventListener(
-            "click",
-            function(event) {
-
-                event.stopPropagation();
-
-                toggleNode(
-                    parentNode.id
-                );
-            }
-        );
-    }
+            toggleNode(
+                parentNode.id
+            );
+        }
+    );
 
 
     const canvas =
-        document.querySelector(".tree-canvas");
+        document.querySelector(
+            ".tree-canvas"
+        );
+
 
     if (canvas) {
-        canvas.appendChild(control);
+
+        canvas.appendChild(
+            control
+        );
     }
-}
-
-
-// 根据连接位置寻找对应父节点
-function findNodeByConnectionPosition(
-    left,
-    top
-) {
-
-    if (!currentBook) {
-        return null;
-    }
-
-
-    let result = null;
-
-
-    function search(nodes) {
-
-        if (!nodes || result) {
-            return;
-        }
-
-
-        nodes.forEach(node => {
-
-            if (result) {
-                return;
-            }
-
-
-            const element =
-                document.querySelector(
-                    `[data-node-id="${node.id}"] .node-box`
-                );
-
-
-            if (element) {
-
-                const rect =
-                    element.getBoundingClientRect();
-
-                const canvas =
-                    document.querySelector(
-                        ".tree-canvas"
-                    );
-
-
-                if (canvas) {
-
-                    const canvasRect =
-                        canvas.getBoundingClientRect();
-
-
-                    const centerX =
-                        rect.left -
-                        canvasRect.left +
-                        rect.width / 2;
-
-
-                    const bottomY =
-                        rect.bottom -
-                        canvasRect.top;
-
-
-                    if (
-                        Math.abs(centerX - left) < 2 &&
-                        Math.abs(
-                            bottomY +
-                            LEVEL_GAP / 2 -
-                            top
-                        ) < 10
-                    ) {
-
-                        result = node;
-
-                        return;
-                    }
-                }
-            }
-
-
-            search(node.children);
-        });
-    }
-
-
-    search(currentBook.structure);
-
-    return result;
 }
