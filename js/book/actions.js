@@ -31,6 +31,148 @@ function clearActionSelection() {
 
 
 // ==================================================
+// 底部操作按钮颜色
+//
+// ＋序 → 浅青
+// ＋章 → 浅黑
+// ＋篇 → 浅白
+// ＋卷 → 浅黄
+// ==================================================
+
+function applyActionButtonColors() {
+
+    const buttonStyles = {
+
+        addPreface: {
+            background: "#f3fbfa",
+            border: "#b7dfdc",
+            color: "#5fa9a3"
+        },
+
+        addChapter: {
+            background: "#f7f7f7",
+            border: "#c8c8c8",
+            color: "#777777"
+        },
+
+        addPart: {
+            background: "#ffffff",
+            border: "#dedede",
+            color: "#b0b0b0"
+        },
+
+        addVolume: {
+            background: "#fffdf3",
+            border: "#eadf9e",
+            color: "#c8ae55"
+        }
+    };
+
+
+    Object.keys(buttonStyles).forEach(
+        function(id) {
+
+            const button =
+                document.getElementById(id);
+
+
+            if (!button) {
+                return;
+            }
+
+
+            const style =
+                buttonStyles[id];
+
+
+            /*
+             * 直接设置按钮自身样式。
+             *
+             * 使用 !important，
+             * 确保不会被其他普通 CSS 覆盖。
+             */
+
+            button.style.setProperty(
+                "background-color",
+                style.background,
+                "important"
+            );
+
+
+            button.style.setProperty(
+                "border-color",
+                style.border,
+                "important"
+            );
+
+
+            button.style.setProperty(
+                "color",
+                style.color,
+                "important"
+            );
+        }
+    );
+}
+
+
+// ==================================================
+// 监控底部操作栏
+//
+// bookActions 中的按钮可能由其他 JS 动态生成。
+// 一旦生成：
+//
+// ＋序
+// ＋章
+// ＋篇
+// ＋卷
+//
+// 自动重新套用颜色。
+// ==================================================
+
+function startActionButtonColorObserver() {
+
+    if (
+        window.bookActionButtonColorObserver
+    ) {
+        return;
+    }
+
+
+    if (!document.body) {
+        return;
+    }
+
+
+    const observer =
+        new MutationObserver(
+            function() {
+
+                applyActionButtonColors();
+            }
+        );
+
+
+    observer.observe(
+        document.body,
+        {
+            childList: true,
+            subtree: true
+        }
+    );
+
+
+    window.bookActionButtonColorObserver =
+        observer;
+
+
+    // 立即执行一次
+
+    applyActionButtonColors();
+}
+
+
+// ==================================================
 // 根节点：序
 // ==================================================
 
@@ -81,7 +223,6 @@ function addRootPreface() {
 
 
     // ==========================================
-    // 重点：
     // 不自动选中新节点
     // ==========================================
 
@@ -208,7 +349,6 @@ function addRootNode(type) {
 
 
     // ==========================================
-    // 重点：
     // 生成以后不自动选中
     // ==========================================
 
@@ -464,7 +604,6 @@ function addSameLevel(nodeId) {
 
 
     // ==========================================
-    // 重点：
     // 添加同级以后不自动选中
     // ==========================================
 
@@ -616,7 +755,6 @@ function addChild(
 
 
     // ==========================================
-    // 重点：
     // 添加子节点以后不自动选中
     // ==========================================
 
@@ -726,6 +864,9 @@ function updatePrefaceButton() {
 
 
     if (!button) {
+
+        applyActionButtonColors();
+
         return;
     }
 
@@ -758,6 +899,11 @@ function updatePrefaceButton() {
             "disabled"
         );
     }
+
+
+    // 状态变化后重新套用颜色
+
+    applyActionButtonColors();
 }
 
 
@@ -767,38 +913,23 @@ function updatePrefaceButton() {
 
 function setupActionButtons() {
 
-    if (
-        window.bookActionButtonsInitialized
-    ) {
+    /*
+     * 即使其他文件已经初始化过，
+     * 这里仍然重新检查颜色。
+     */
 
-        return;
-    }
+    applyActionButtonColors();
 
+
+    // ==========================================
+    // ＋序
+    // ==========================================
 
     const addPreface =
         document.querySelector(
             "#addPreface"
         );
 
-    const addChapter =
-        document.querySelector(
-            "#addChapter"
-        );
-
-    const addPart =
-        document.querySelector(
-            "#addPart"
-        );
-
-    const addVolume =
-        document.querySelector(
-            "#addVolume"
-        );
-
-
-    // ==========================================
-    // ＋序
-    // ==========================================
 
     if (addPreface) {
 
@@ -820,6 +951,12 @@ function setupActionButtons() {
     // ＋章
     // ==========================================
 
+    const addChapter =
+        document.querySelector(
+            "#addChapter"
+        );
+
+
     if (addChapter) {
 
         addChapter.addEventListener(
@@ -839,6 +976,12 @@ function setupActionButtons() {
     // ==========================================
     // ＋篇
     // ==========================================
+
+    const addPart =
+        document.querySelector(
+            "#addPart"
+        );
+
 
     if (addPart) {
 
@@ -860,6 +1003,12 @@ function setupActionButtons() {
     // ＋卷
     // ==========================================
 
+    const addVolume =
+        document.querySelector(
+            "#addVolume"
+        );
+
+
     if (addVolume) {
 
         addVolume.addEventListener(
@@ -878,6 +1027,20 @@ function setupActionButtons() {
 
     window.bookActionButtonsInitialized =
         true;
+
+
+    // ==========================================
+    // 开始监听动态按钮
+    // ==========================================
+
+    startActionButtonColorObserver();
+
+
+    // ==========================================
+    // 最后再执行一次
+    // ==========================================
+
+    applyActionButtonColors();
 }
 
 
