@@ -3,76 +3,84 @@
 // ==============================
 
 
-// ==============================
+// ==================================================
 // 初始化
-// ==============================
+// ==================================================
 
 function init() {
 
-    currentBook = loadCurrentBook();
+    currentBook =
+        loadCurrentBook();
+
 
     if (!currentBook) {
 
-        console.warn("没有找到当前书籍");
+        console.warn(
+            "没有找到当前书籍"
+        );
 
         return;
     }
 
 
-    // ==============================
+    // ==================================================
     // 确保书籍结构存在
-    // ==============================
+    // ==================================================
 
     if (
-        !Array.isArray(currentBook.structure)
+        !Array.isArray(
+            currentBook.structure
+        )
     ) {
 
         currentBook.structure = [];
     }
 
 
-    // ==============================
+    // ==================================================
     // 初始化状态
-    // ==============================
+    // ==================================================
 
     resetBookPageState();
 
     updateBookStructureState();
 
 
-    // ==============================
+    // ==================================================
     // 渲染书名
-    // ==============================
+    // ==================================================
 
     renderBookTitle();
 
 
-    // ==============================
+    // ==================================================
     // 初始化事件
-    // ==============================
+    // ==================================================
 
     setupEvents();
 
 
-    // ==============================
-    // 更新序按钮状态
-    // ==============================
+    // ==================================================
+    // 更新序按钮
+    // ==================================================
 
     updatePrefaceButton();
 
 
-    // ==============================
+    // ==================================================
     // 第一次渲染
-    // ==============================
+    // ==================================================
 
     renderTree();
 
 
-    // ==============================
+    // ==================================================
     // 窗口大小变化
-    // ==============================
+    // ==================================================
 
-    if (!bookResizeInitialized) {
+    if (
+        !bookResizeInitialized
+    ) {
 
         window.addEventListener(
             "resize",
@@ -83,34 +91,42 @@ function init() {
             }
         );
 
-        bookResizeInitialized = true;
+        bookResizeInitialized =
+            true;
     }
 }
 
 
-// ==============================
+// ==================================================
 // 返回书架
-// ==============================
+// ==================================================
 
 function goBack() {
 
     saveBook();
 
-    window.location.href = "index.html";
+    window.location.href =
+        "index.html";
 }
 
 
-// ==============================
+// ==================================================
 // 渲染书名
-// ==============================
+// ==================================================
 
 function renderBookTitle() {
 
     const titleElement =
-        document.querySelector("#bookTitle");
+        document.querySelector(
+            "#bookTitle"
+        );
 
 
-    if (!titleElement || !currentBook) {
+    if (
+        !titleElement ||
+        !currentBook
+    ) {
+
         return;
     }
 
@@ -120,19 +136,23 @@ function renderBookTitle() {
         "未命名书籍";
 
 
-    // 必须保证书名可以自由定位
-    titleElement.style.position = "absolute";
+    titleElement.style.position =
+        "absolute";
 
 
     // 防止文字选择影响拖动
-    titleElement.style.userSelect = "none";
-    titleElement.style.webkitUserSelect = "none";
+
+    titleElement.style.userSelect =
+        "none";
+
+    titleElement.style.webkitUserSelect =
+        "none";
 }
 
 
-// ==============================
+// ==================================================
 // 渲染整棵树
-// ==============================
+// ==================================================
 
 function renderTree() {
 
@@ -142,16 +162,27 @@ function renderTree() {
 
 
     const canvas =
-        document.querySelector(".tree-canvas");
+        document.querySelector(
+            ".tree-canvas"
+        );
+
 
     const tree =
-        document.querySelector("#tree");
+        document.querySelector(
+            "#tree"
+        );
+
 
     const svg =
-        document.querySelector("#connections");
+        document.querySelector(
+            "#connections"
+        );
 
 
-    if (!canvas || !tree) {
+    if (
+        !canvas ||
+        !tree
+    ) {
 
         console.warn(
             "找不到 tree-canvas 或 #tree"
@@ -161,16 +192,16 @@ function renderTree() {
     }
 
 
-    // ==============================
+    // ==================================================
     // 更新结构状态
-    // ==============================
+    // ==================================================
 
     updateBookStructureState();
 
 
-    // ==============================
+    // ==================================================
     // 清空旧结构
-    // ==============================
+    // ==================================================
 
     tree.innerHTML = "";
 
@@ -178,28 +209,34 @@ function renderTree() {
     if (svg) {
 
         svg.innerHTML = "";
-
     }
 
 
     // 删除旧的 + / − 控制点
+
     document
-        .querySelectorAll(".line-control")
-        .forEach(element => {
+        .querySelectorAll(
+            ".line-control"
+        )
+        .forEach(
+            element => {
 
-            element.remove();
+                element.remove();
 
-        });
+            }
+        );
 
 
-    // ==============================
+    // ==================================================
     // 没有结构
-    // ==============================
+    // ==================================================
 
     if (!hasStructure) {
 
         const hint =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
 
         hint.className =
@@ -210,49 +247,63 @@ function renderTree() {
             "点击书名开始添加序、章、篇或卷";
 
 
-        tree.appendChild(hint);
+        tree.appendChild(
+            hint
+        );
 
 
-        // 书名保持自由移动
-        restoreBookPosition();
+        // ==================================================
+        // 书名位于画布正中央
+        // ==================================================
+
+        centerBookTitle();
 
 
         // 没有结构时不需要连线
-        connectionsVisible = false;
+
+        connectionsVisible =
+            false;
 
 
         return;
     }
 
 
-    // ==============================
+    // ==================================================
     // 有结构
-    // ==============================
+    // ==================================================
 
-    autoLayoutEnabled = true;
-    connectionsVisible = true;
+    autoLayoutEnabled =
+        true;
+
+    connectionsVisible =
+        true;
 
 
-    // ==============================
+    // ==================================================
     // 计算自动布局
-    // ==============================
+    // ==================================================
 
     const layout =
         calculateLayout();
 
 
-    currentLayout = layout;
+    currentLayout =
+        layout;
 
 
-    // ==============================
+    // ==================================================
     // 计算画布尺寸
-    // ==============================
+    // ==================================================
 
     const canvasWidth =
-        canvas.clientWidth || window.innerWidth;
+        canvas.clientWidth ||
+        window.innerWidth;
+
 
     const canvasHeight =
-        canvas.clientHeight || window.innerHeight;
+        canvas.clientHeight ||
+        window.innerHeight;
 
 
     treeWidth =
@@ -279,13 +330,14 @@ function renderTree() {
     tree.style.width =
         treeWidth + "px";
 
+
     tree.style.height =
         treeHeight + "px";
 
 
-    // ==============================
+    // ==================================================
     // SVG 尺寸
-    // ==============================
+    // ==================================================
 
     if (svg) {
 
@@ -303,64 +355,68 @@ function renderTree() {
             "viewBox",
             `0 0 ${treeWidth} ${treeHeight}`
         );
-
     }
 
 
-    // ==============================
-    // 书名位置
-    // ==============================
+    // ==================================================
+    // 自动放置书名
+    // ==================================================
 
-    positionBookAutomatically(layout);
+    positionBookAutomatically(
+        layout
+    );
 
 
-    // ==============================
+    // ==================================================
     // 创建所有结构框
-    // ==============================
+    // ==================================================
 
-    layout.nodes.forEach(item => {
+    layout.nodes.forEach(
+        item => {
 
-        const element =
-            createNodeElement(item.node);
+            const element =
+                createNodeElement(
+                    item.node
+                );
 
 
-        if (!element) {
+            if (!element) {
 
-            console.warn(
-                "创建节点失败：",
-                item.node
+                console.warn(
+                    "创建节点失败：",
+                    item.node
+                );
+
+                return;
+            }
+
+
+            element.style.position =
+                "absolute";
+
+
+            element.style.left =
+                item.x + "px";
+
+
+            element.style.top =
+                item.y + "px";
+
+
+            element.dataset.nodeId =
+                item.node.id;
+
+
+            tree.appendChild(
+                element
             );
-
-            return;
         }
+    );
 
 
-        // 确保绝对定位
-        element.style.position =
-            "absolute";
-
-
-        element.style.left =
-            item.x + "px";
-
-
-        element.style.top =
-            item.y + "px";
-
-
-        // 保存布局坐标
-        element.dataset.nodeId =
-            item.node.id;
-
-
-        tree.appendChild(element);
-
-    });
-
-
-    // ==============================
+    // ==================================================
     // 下一帧画连线
-    // ==============================
+    // ==================================================
 
     requestAnimationFrame(
         function() {
@@ -373,7 +429,6 @@ function renderTree() {
                 drawConnections(
                     currentLayout
                 );
-
             }
 
 
@@ -384,14 +439,120 @@ function renderTree() {
 }
 
 
-// ==============================
-// 自动放置书名
-// ==============================
+// ==================================================
+// 没有结构时：书名真正居中
+// ==================================================
 
-function positionBookAutomatically(layout) {
+function centerBookTitle() {
 
     const bookTitle =
-        document.querySelector("#bookTitle");
+        document.querySelector(
+            "#bookTitle"
+        );
+
+
+    const canvas =
+        document.querySelector(
+            ".tree-canvas"
+        );
+
+
+    if (
+        !bookTitle ||
+        !canvas
+    ) {
+
+        return;
+    }
+
+
+    bookTitle.style.position =
+        "absolute";
+
+
+    // ==================================================
+    // 取得实际尺寸
+    // ==================================================
+
+    const bookWidth =
+        bookTitle.offsetWidth ||
+        BOOK_MIN_WIDTH;
+
+
+    const bookHeight =
+        bookTitle.offsetHeight ||
+        BOOK_MIN_HEIGHT;
+
+
+    const canvasWidth =
+        canvas.clientWidth ||
+        window.innerWidth;
+
+
+    const canvasHeight =
+        canvas.clientHeight ||
+        (
+            window.innerHeight -
+            56
+        );
+
+
+    // ==================================================
+    // 画布正中央
+    // ==================================================
+
+    const x =
+        Math.max(
+            10,
+            (
+                canvasWidth -
+                bookWidth
+            ) / 2
+        );
+
+
+    const y =
+        Math.max(
+            10,
+            (
+                canvasHeight -
+                bookHeight
+            ) / 2
+        );
+
+
+    bookTitle.style.left =
+        x + "px";
+
+
+    bookTitle.style.top =
+        y + "px";
+
+
+    // ==================================================
+    // 保存当前位置
+    // ==================================================
+
+    bookPosition.x =
+        x;
+
+    bookPosition.y =
+        y;
+}
+
+
+// ==================================================
+// 有结构时：自动放置书名
+// ==================================================
+
+function positionBookAutomatically(
+    layout
+) {
+
+    const bookTitle =
+        document.querySelector(
+            "#bookTitle"
+        );
 
 
     if (!bookTitle) {
@@ -399,28 +560,9 @@ function positionBookAutomatically(layout) {
     }
 
 
-    // ==============================
-    // 如果用户已经手动移动
-    // ==============================
+    bookTitle.style.position =
+        "absolute";
 
-    if (hasSavedBookPosition()) {
-
-        bookTitle.style.position =
-            "absolute";
-
-        bookTitle.style.left =
-            bookPosition.x + "px";
-
-        bookTitle.style.top =
-            bookPosition.y + "px";
-
-        return;
-    }
-
-
-    // ==============================
-    // 自动计算书名位置
-    // ==============================
 
     const bookWidth =
         bookTitle.offsetWidth ||
@@ -436,117 +578,94 @@ function positionBookAutomatically(layout) {
     let y;
 
 
+    // ==================================================
+    // 有结构以后
+    // 书名作为整棵树的根
+    // ==================================================
+
     if (
         layout &&
         layout.width > 0
     ) {
 
         x =
-            layout.width / 2 -
-            bookWidth / 2;
+            (
+                layout.width -
+                bookWidth
+            ) / 2;
 
     } else {
 
         x =
-            window.innerWidth / 2 -
-            bookWidth / 2;
-
+            (
+                treeWidth -
+                bookWidth
+            ) / 2;
     }
 
 
-    y = 25;
+    // ==================================================
+    // 书名放在顶部
+    // 节点从下面开始排列
+    // ==================================================
+
+    y =
+        25;
 
 
-    // 防止跑到左边界之外
-    x = Math.max(
-        20,
-        x
-    );
-
-
-    bookTitle.style.position =
-        "absolute";
-
-
-    bookTitle.style.left =
-        x + "px";
-
-
-    bookTitle.style.top =
-        y + "px";
-
-
-    // 记录当前位置
-    bookPosition.x = x;
-    bookPosition.y = y;
-}
-
-
-// ==============================
-// 恢复书名位置
-// ==============================
-
-function restoreBookPosition() {
-
-    const bookTitle =
-        document.querySelector("#bookTitle");
-
-
-    if (!bookTitle) {
-        return;
-    }
-
-
-    bookTitle.style.position =
-        "absolute";
-
-
-    if (hasSavedBookPosition()) {
-
-        bookTitle.style.left =
-            bookPosition.x + "px";
-
-        bookTitle.style.top =
-            bookPosition.y + "px";
-
-        return;
-    }
-
-
-    // 第一次打开时
-    // 没有结构也要让书名出现在屏幕中央附近
-
-    const width =
-        bookTitle.offsetWidth ||
-        BOOK_MIN_WIDTH;
-
-
-    const x =
+    x =
         Math.max(
             20,
-            window.innerWidth / 2 -
-            width / 2
+            x
         );
 
 
-    const y = 25;
+    y =
+        Math.max(
+            20,
+            y
+        );
 
 
     bookTitle.style.left =
         x + "px";
 
+
     bookTitle.style.top =
         y + "px";
 
 
-    bookPosition.x = x;
-    bookPosition.y = y;
+    // 保存自动布局位置
+
+    bookPosition.x =
+        x;
+
+    bookPosition.y =
+        y;
 }
 
 
-// ==============================
+// ==================================================
+// 恢复书名位置
+// ==================================================
+
+function restoreBookPosition() {
+
+    // 现在没有结构时，
+    // 统一使用真正的画布中央。
+    //
+    // 不再恢复之前的旧位置。
+    //
+    // 这样第一次打开书籍时，
+    // 书名一定位于中央。
+
+    centerBookTitle();
+}
+
+
+// ==================================================
 // 恢复选择
-// ==============================
+// ==================================================
 
 function restoreSelection() {
 
@@ -581,12 +700,13 @@ function restoreSelection() {
 }
 
 
-// ==============================
+// ==================================================
 // 启动
-// ==============================
+// ==================================================
 
 if (
-    document.readyState === "loading"
+    document.readyState ===
+    "loading"
 ) {
 
     document.addEventListener(
@@ -597,5 +717,4 @@ if (
 } else {
 
     init();
-
 }
