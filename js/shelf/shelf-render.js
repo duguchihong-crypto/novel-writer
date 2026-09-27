@@ -2,7 +2,6 @@
    书架页面渲染
 ================================================== */
 
-
 /* ==================================================
    获取页面元素
 ================================================== */
@@ -14,14 +13,12 @@ function getBookGrid() {
     );
 }
 
-
 function getEmptyShelf() {
 
     return document.getElementById(
         "emptyShelf"
     );
 }
-
 
 /* ==================================================
    渲染书架
@@ -35,16 +32,13 @@ function renderBooks() {
     const emptyShelf =
         getEmptyShelf();
 
-
     if (!bookGrid) {
         return;
     }
 
-
     /* 清空旧内容 */
 
     bookGrid.innerHTML = "";
-
 
     /* 没有书 */
 
@@ -62,7 +56,6 @@ function renderBooks() {
         return;
     }
 
-
     /* 有书 */
 
     if (emptyShelf) {
@@ -70,7 +63,6 @@ function renderBooks() {
         emptyShelf.style.display =
             "none";
     }
-
 
     /* 创建所有书籍 */
 
@@ -83,10 +75,8 @@ function renderBooks() {
 
     });
 
-
     applyShelfViewMode();
 }
-
 
 /* ==================================================
    创建书籍卡片
@@ -103,7 +93,6 @@ function createBookCard(book) {
     card.dataset.bookId =
         book.id;
 
-
     /* ==================================================
        封面
     ================================================== */
@@ -113,7 +102,6 @@ function createBookCard(book) {
 
     cover.className =
         "book-cover";
-
 
     if (book.cover) {
 
@@ -138,7 +126,6 @@ function createBookCard(book) {
             "📖";
     }
 
-
     /* ==================================================
        书名
     ================================================== */
@@ -149,7 +136,6 @@ function createBookCard(book) {
     info.className =
         "book-info";
 
-
     const title =
         document.createElement("div");
 
@@ -159,7 +145,6 @@ function createBookCard(book) {
     title.textContent =
         book.title ||
         "未命名小说";
-
 
     /*
        这里只添加书名。
@@ -172,7 +157,6 @@ function createBookCard(book) {
     */
 
     info.appendChild(title);
-
 
     /* ==================================================
        删除按钮
@@ -193,7 +177,6 @@ function createBookCard(book) {
     deleteButton.dataset.bookId =
         book.id;
 
-
     deleteButton.setAttribute(
         "aria-label",
         "删除《" +
@@ -203,7 +186,6 @@ function createBookCard(book) {
         ) +
         "》"
     );
-
 
     /* ==================================================
        组合卡片
@@ -221,10 +203,8 @@ function createBookCard(book) {
         deleteButton
     );
 
-
     return card;
 }
-
 
 /* ==================================================
    应用网格 / 列表模式
@@ -235,17 +215,14 @@ function applyShelfViewMode() {
     const bookGrid =
         getBookGrid();
 
-
     if (!bookGrid) {
         return;
     }
-
 
     bookGrid.classList.remove(
         "grid-view",
         "list-view"
     );
-
 
     if (
         shelfViewMode === "list"
@@ -263,7 +240,6 @@ function applyShelfViewMode() {
     }
 }
 
-
 /* ==================================================
    网格模式
 ================================================== */
@@ -273,9 +249,7 @@ function renderGridView() {
     shelfViewMode =
         "grid";
 
-
     applyShelfViewMode();
-
 
     if (
         typeof saveShelfViewMode ===
@@ -288,7 +262,6 @@ function renderGridView() {
     }
 }
 
-
 /* ==================================================
    列表模式
 ================================================== */
@@ -298,9 +271,7 @@ function renderListView() {
     shelfViewMode =
         "list";
 
-
     applyShelfViewMode();
-
 
     if (
         typeof saveShelfViewMode ===
@@ -313,7 +284,6 @@ function renderListView() {
     }
 }
 
-
 /* ==================================================
    排序模式
 ================================================== */
@@ -323,11 +293,9 @@ function renderSortingMode() {
     const bookGrid =
         getBookGrid();
 
-
     if (!bookGrid) {
         return;
     }
-
 
     if (isSorting) {
 
@@ -342,7 +310,6 @@ function renderSortingMode() {
         );
     }
 }
-
 
 /* ==================================================
    刷新书架
