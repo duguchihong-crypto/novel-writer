@@ -21,154 +21,14 @@ function clearActionSelection() {
 
     actionButtonPressed = false;
 
+
     if (
         typeof updateSelectionUI ===
         "function"
     ) {
+
         updateSelectionUI();
     }
-}
-
-
-// ==================================================
-// 底部操作按钮颜色
-//
-// ＋序 → 浅青
-// ＋章 → 浅黑
-// ＋篇 → 浅白
-// ＋卷 → 浅黄
-// ==================================================
-
-function applyActionButtonColors() {
-
-    const buttonStyles = {
-
-        addPreface: {
-            background: "#f3fbfa",
-            border: "#b7dfdc",
-            color: "#5fa9a3"
-        },
-
-        addChapter: {
-            background: "#f7f7f7",
-            border: "#c8c8c8",
-            color: "#777777"
-        },
-
-        addPart: {
-            background: "#ffffff",
-            border: "#dedede",
-            color: "#b0b0b0"
-        },
-
-        addVolume: {
-            background: "#fffdf3",
-            border: "#eadf9e",
-            color: "#c8ae55"
-        }
-    };
-
-
-    Object.keys(buttonStyles).forEach(
-        function(id) {
-
-            const button =
-                document.getElementById(id);
-
-
-            if (!button) {
-                return;
-            }
-
-
-            const style =
-                buttonStyles[id];
-
-
-            /*
-             * 直接设置按钮自身样式。
-             *
-             * 使用 !important，
-             * 确保不会被其他普通 CSS 覆盖。
-             */
-
-            button.style.setProperty(
-                "background-color",
-                style.background,
-                "important"
-            );
-
-
-            button.style.setProperty(
-                "border-color",
-                style.border,
-                "important"
-            );
-
-
-            button.style.setProperty(
-                "color",
-                style.color,
-                "important"
-            );
-        }
-    );
-}
-
-
-// ==================================================
-// 监控底部操作栏
-//
-// bookActions 中的按钮可能由其他 JS 动态生成。
-// 一旦生成：
-//
-// ＋序
-// ＋章
-// ＋篇
-// ＋卷
-//
-// 自动重新套用颜色。
-// ==================================================
-
-function startActionButtonColorObserver() {
-
-    if (
-        window.bookActionButtonColorObserver
-    ) {
-        return;
-    }
-
-
-    if (!document.body) {
-        return;
-    }
-
-
-    const observer =
-        new MutationObserver(
-            function() {
-
-                applyActionButtonColors();
-            }
-        );
-
-
-    observer.observe(
-        document.body,
-        {
-            childList: true,
-            subtree: true
-        }
-    );
-
-
-    window.bookActionButtonColorObserver =
-        observer;
-
-
-    // 立即执行一次
-
-    applyActionButtonColors();
 }
 
 
@@ -222,9 +82,7 @@ function addRootPreface() {
     saveBook();
 
 
-    // ==========================================
-    // 不自动选中新节点
-    // ==========================================
+    // 添加以后不自动选中新节点
 
     clearActionSelection();
 
@@ -348,9 +206,7 @@ function addRootNode(type) {
     saveBook();
 
 
-    // ==========================================
-    // 生成以后不自动选中
-    // ==========================================
+    // 添加以后不自动选中
 
     clearActionSelection();
 
@@ -603,9 +459,7 @@ function addSameLevel(nodeId) {
     saveBook();
 
 
-    // ==========================================
-    // 添加同级以后不自动选中
-    // ==========================================
+    // 添加以后不自动选中
 
     clearActionSelection();
 
@@ -687,8 +541,7 @@ function addChild(
     ) {
 
         if (
-            type !==
-            NODE_TYPES.CHAPTER
+            type !== NODE_TYPES.CHAPTER
         ) {
 
             return;
@@ -754,9 +607,7 @@ function addChild(
     saveBook();
 
 
-    // ==========================================
-    // 添加子节点以后不自动选中
-    // ==========================================
+    // 添加以后不自动选中
 
     clearActionSelection();
 
@@ -853,20 +704,21 @@ function deleteNode(nodeId) {
 
 // ==================================================
 // 序按钮状态
+//
+// ★ 注意：
+// 现在按钮没有 #addPreface ID
+// 而是 .preface class
 // ==================================================
 
 function updatePrefaceButton() {
 
     const button =
         document.querySelector(
-            "#addPreface"
+            "#bookActions .preface"
         );
 
 
     if (!button) {
-
-        applyActionButtonColors();
-
         return;
     }
 
@@ -899,153 +751,27 @@ function updatePrefaceButton() {
             "disabled"
         );
     }
-
-
-    // 状态变化后重新套用颜色
-
-    applyActionButtonColors();
 }
 
 
 // ==================================================
-// 绑定书籍底部操作按钮
+// 兼容旧代码
+//
+// 如果其他文件调用 setupActionButtons()
+// 不会报错。
+//
+// 但是现在不再重复绑定按钮。
+// 因为按钮已经由 events.js 动态创建。
 // ==================================================
 
 function setupActionButtons() {
 
-    /*
-     * 即使其他文件已经初始化过，
-     * 这里仍然重新检查颜色。
-     */
-
-    applyActionButtonColors();
-
-
-    // ==========================================
-    // ＋序
-    // ==========================================
-
-    const addPreface =
-        document.querySelector(
-            "#addPreface"
-        );
-
-
-    if (addPreface) {
-
-        addPreface.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                addRootPreface();
-            }
-        );
-    }
-
-
-    // ==========================================
-    // ＋章
-    // ==========================================
-
-    const addChapter =
-        document.querySelector(
-            "#addChapter"
-        );
-
-
-    if (addChapter) {
-
-        addChapter.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                addRootChapter();
-            }
-        );
-    }
-
-
-    // ==========================================
-    // ＋篇
-    // ==========================================
-
-    const addPart =
-        document.querySelector(
-            "#addPart"
-        );
-
-
-    if (addPart) {
-
-        addPart.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                addRootPart();
-            }
-        );
-    }
-
-
-    // ==========================================
-    // ＋卷
-    // ==========================================
-
-    const addVolume =
-        document.querySelector(
-            "#addVolume"
-        );
-
-
-    if (addVolume) {
-
-        addVolume.addEventListener(
-            "click",
-            function(event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-                addRootVolume();
-            }
-        );
-    }
-
-
-    window.bookActionButtonsInitialized =
-        true;
-
-
-    // ==========================================
-    // 开始监听动态按钮
-    // ==========================================
-
-    startActionButtonColorObserver();
-
-
-    // ==========================================
-    // 最后再执行一次
-    // ==========================================
-
-    applyActionButtonColors();
+    updatePrefaceButton();
 }
 
 
 // ==================================================
-// 页面加载后绑定按钮
+// 页面加载后
 // ==================================================
 
 if (
