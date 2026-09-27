@@ -2,13 +2,23 @@
 // 全书页面：连接线
 // ==============================
 
+
+// ==================================================
+// 绘制所有连接线
+// ==================================================
+
 function drawConnections(layout) {
 
     const svg =
         document.querySelector("#connections");
 
-    if (!svg) return;
 
+    if (!svg) {
+        return;
+    }
+
+
+    // 清空旧线
 
     svg.innerHTML = "";
 
@@ -61,7 +71,6 @@ function drawConnections(layout) {
                 points[i].x +
                 " " +
                 points[i].y;
-
         }
 
 
@@ -84,7 +93,7 @@ function drawConnections(layout) {
 
 
     // ==================================================
-    // 节点 Map
+    // 建立节点 Map
     // ==================================================
 
     const nodeMap =
@@ -104,11 +113,7 @@ function drawConnections(layout) {
 
 
     // ==================================================
-    // 书名
-    //
-    // 不再使用 bookTitle.style.left
-    //
-    // 直接使用 layout.centerX
+    // 获取小说名字真实位置
     // ==================================================
 
     const bookTitle =
@@ -122,14 +127,26 @@ function drawConnections(layout) {
     }
 
 
-    const bookCenterX =
-        layout.centerX;
+    // 直接使用书名真实的 left
+    //
+    // 这是画布坐标
+    // 与节点 layout.x 使用同一个坐标系
+
+    const bookLeft =
+        parseFloat(
+            bookTitle.style.left
+        ) || 0;
 
 
-    const bookY =
+    const bookTop =
         parseFloat(
             bookTitle.style.top
-        ) || 25;
+        ) || 0;
+
+
+    const bookWidth =
+        bookTitle.offsetWidth ||
+        BOOK_MIN_WIDTH;
 
 
     const bookHeight =
@@ -137,8 +154,17 @@ function drawConnections(layout) {
         BOOK_MIN_HEIGHT;
 
 
+    // ==================================================
+    // 书名真正中心
+    // ==================================================
+
+    const bookCenterX =
+        bookLeft +
+        bookWidth / 2;
+
+
     const bookBottomY =
-        bookY +
+        bookTop +
         bookHeight;
 
 
@@ -153,7 +179,9 @@ function drawConnections(layout) {
         );
 
 
-    if (roots.length === 0) {
+    if (
+        roots.length === 0
+    ) {
         return;
     }
 
@@ -178,6 +206,8 @@ function drawConnections(layout) {
             root.y;
 
 
+        // 两个节点之间的中央位置
+
         const middleY =
             (
                 bookBottomY +
@@ -185,9 +215,14 @@ function drawConnections(layout) {
             ) / 2;
 
 
+        // ------------------------------
         // 书名中央
-        // ↓
-        // 根节点中央
+        //       │
+        //       │
+        //       └────
+        //            │
+        //          根节点中央
+        // ------------------------------
 
         drawPath([
             {
@@ -239,6 +274,8 @@ function drawConnections(layout) {
             ];
 
 
+        // 主干高度
+
         const branchY =
             Math.max(
                 bookBottomY + 35,
@@ -246,9 +283,16 @@ function drawConnections(layout) {
             );
 
 
-        // 书名中心
-        // ↓
-        // 主干
+        // ------------------------------
+        // 书名
+        //   │
+        //   │
+        //   ├──────────────┐
+        //   │              │
+        // 第一卷          第二卷
+        // ------------------------------
+
+        // 书名向下
 
         drawPath([
             {
@@ -290,7 +334,7 @@ function drawConnections(layout) {
         ]);
 
 
-        // 每一个根节点
+        // 每个根节点向下
 
         roots.forEach(
             root => {
@@ -329,6 +373,9 @@ function drawConnections(layout) {
                 parentItem.node;
 
 
+            // 已折叠
+            // 不画子节点连接
+
             if (
                 parent.collapsed === true
             ) {
@@ -345,6 +392,8 @@ function drawConnections(layout) {
                 return;
             }
 
+
+            // 找到当前父节点的实际子节点
 
             const children =
                 parent.children
@@ -364,6 +413,10 @@ function drawConnections(layout) {
             }
 
 
+            // ==================================================
+            // 父节点位置
+            // ==================================================
+
             const parentCenterX =
                 parentItem.centerX;
 
@@ -374,7 +427,7 @@ function drawConnections(layout) {
 
 
             // ==================================================
-            // 一个子节点
+            // 只有一个孩子
             // ==================================================
 
             if (
@@ -435,6 +488,8 @@ function drawConnections(layout) {
                 ]);
 
 
+                // + / − 放在线中央
+
                 addLineControl(
                     parent,
                     (
@@ -450,7 +505,7 @@ function drawConnections(layout) {
 
 
             // ==================================================
-            // 多个子节点
+            // 多个孩子
             // ==================================================
 
             const branchY =
@@ -510,7 +565,7 @@ function drawConnections(layout) {
             ]);
 
 
-            // 各子节点向上连接
+            // 每一个孩子向上
 
             children.forEach(
                 child => {
@@ -537,9 +592,7 @@ function drawConnections(layout) {
             );
 
 
-            // ==================================================
             // + / −
-            // ==================================================
 
             addLineControl(
                 parent,
@@ -556,13 +609,13 @@ function drawConnections(layout) {
 
 
 // ==================================================
-// + / − 控制按钮
+// 创建 + / − 控制按钮
 // ==================================================
 
 function addLineControl(
     parentNode,
-    left,
-    top
+    centerX,
+    centerY
 ) {
 
     const control =
@@ -586,7 +639,7 @@ function addLineControl(
 
 
     // ==================================================
-    // 控制按钮中心对准连线
+    // 控制按钮中心
     // ==================================================
 
     const size = 24;
@@ -594,17 +647,21 @@ function addLineControl(
 
     control.style.left =
         (
-            left -
+            centerX -
             size / 2
         ) + "px";
 
 
     control.style.top =
         (
-            top -
+            centerY -
             size / 2
         ) + "px";
 
+
+    // ==================================================
+    // 点击
+    // ==================================================
 
     control.addEventListener(
         "click",
@@ -622,6 +679,10 @@ function addLineControl(
         }
     );
 
+
+    // ==================================================
+    // 放进画布
+    // ==================================================
 
     const canvas =
         document.querySelector(
