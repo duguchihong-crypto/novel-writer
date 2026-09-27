@@ -15,10 +15,8 @@ function getBookLayoutDirection() {
 
     if (
         currentBook &&
-        (
-            currentBook.layoutDirection ===
+        currentBook.layoutDirection ===
             "horizontal"
-        )
     ) {
 
         return "horizontal";
@@ -60,6 +58,15 @@ function setBookLayoutDirection(
 
 
     renderTree();
+
+
+    if (
+        typeof updateLayoutToggle ===
+        "function"
+    ) {
+
+        updateLayoutToggle();
+    }
 }
 
 
@@ -105,7 +112,10 @@ function calculateLayout() {
 
             width: 0,
 
-            height: 0
+            height: 0,
+
+            direction:
+                "vertical"
         };
     }
 
@@ -140,7 +150,7 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 实际节点尺寸
+    // 获取实际节点尺寸
     // ==================================================
 
     const sampleNode =
@@ -191,7 +201,7 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 参数
+    // 布局参数
     // ==================================================
 
     const PADDING =
@@ -246,6 +256,11 @@ function calculateLayout() {
 
     // ==================================================
     // 获取书名当前位置
+    //
+    // 这里非常重要：
+    //
+    // layout.js 只读取书名位置，
+    // 不负责改变书名位置。
     // ==================================================
 
     let bookLeft =
@@ -259,6 +274,47 @@ function calculateLayout() {
             bookTitle?.style.top
         );
 
+
+    // ==================================================
+    // 如果没有位置，使用 state 中的位置
+    // ==================================================
+
+    if (
+        !Number.isFinite(
+            bookLeft
+        ) &&
+        Number.isFinite(
+            Number(bookPosition.x)
+        )
+    ) {
+
+        bookLeft =
+            Number(
+                bookPosition.x
+            );
+    }
+
+
+    if (
+        !Number.isFinite(
+            bookTop
+        ) &&
+        Number.isFinite(
+            Number(bookPosition.y)
+        )
+    ) {
+
+        bookTop =
+            Number(
+                bookPosition.y
+            );
+    }
+
+
+    // ==================================================
+    // 第一次没有任何位置
+    // 才使用默认位置
+    // ==================================================
 
     if (
         !Number.isFinite(
@@ -288,6 +344,33 @@ function calculateLayout() {
     }
 
 
+    // ==================================================
+    // 同步书名位置
+    //
+    // 只记录，不移动。
+    // ==================================================
+
+    if (bookTitle) {
+
+        bookTitle.style.left =
+            bookLeft + "px";
+
+        bookTitle.style.top =
+            bookTop + "px";
+    }
+
+
+    bookPosition.x =
+        bookLeft;
+
+    bookPosition.y =
+        bookTop;
+
+
+    // ==================================================
+    // 书名几何信息
+    // ==================================================
+
     const bookCenterX =
         bookLeft +
         bookWidth / 2;
@@ -309,53 +392,7 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 计算叶子数量
-    //
-    // 用于让同级节点自动对齐
-    // ==================================================
-
-    function getLeafCount(node) {
-
-        if (!node) {
-            return 1;
-        }
-
-
-        if (
-            node.collapsed === true ||
-            !Array.isArray(
-                node.children
-            ) ||
-            node.children.length === 0
-        ) {
-
-            return 1;
-        }
-
-
-        let count = 0;
-
-
-        node.children.forEach(
-            child => {
-
-                count +=
-                    getLeafCount(
-                        child
-                    );
-            }
-        );
-
-
-        return Math.max(
-            1,
-            count
-        );
-    }
-
-
-    // ==================================================
-    // 纵向布局：
+    // 计算纵向子树宽度
     //
     // 父 → 下
     // 同级 → 左右
@@ -414,7 +451,7 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 横向布局：
+    // 计算横向子树高度
     //
     // 父 → 右
     // 同级 → 上下
@@ -473,9 +510,15 @@ function calculateLayout() {
 
 
     // ==================================================
-    // ==================================================
     // 纵向布局
-    // ==================================================
+    //
+    //        小说名
+    //          │
+    //     ┌────┴────┐
+    //    第一卷   第二卷
+    //       │
+    //   ┌───┴───┐
+    //  第一篇  第一章
     // ==================================================
 
     if (
@@ -483,8 +526,13 @@ function calculateLayout() {
         "vertical"
     ) {
 
-        let totalRootWidth = 0;
+        let totalRootWidth =
+            0;
 
+
+        // ------------------------------------------
+        // 计算所有根节点占用的总宽度
+        // ------------------------------------------
 
         roots.forEach(
             (root, index) => {
@@ -508,7 +556,7 @@ function calculateLayout() {
 
 
         // ------------------------------------------
-        // 树的中心就是书名中心
+        // 树整体以书名中心为中心
         // ------------------------------------------
 
         const treeCenterX =
@@ -521,7 +569,7 @@ function calculateLayout() {
 
 
         // ------------------------------------------
-        // 第一层 Y
+        // 第一层节点 Y
         // ------------------------------------------
 
         const rootY =
@@ -530,7 +578,7 @@ function calculateLayout() {
 
 
         // ------------------------------------------
-        // 递归放置
+        // 递归放置节点
         // ------------------------------------------
 
         function placeVerticalNodes(
@@ -614,7 +662,9 @@ function calculateLayout() {
                     });
 
 
+                    // ----------------------------------
                     // 子节点
+                    // ----------------------------------
 
                     if (
                         node.collapsed !== true &&
@@ -650,52 +700,48 @@ function calculateLayout() {
         );
 
 
-        // ------------------------------------------
-        // 计算画布尺寸
-        // ------------------------------------------
+        // ==================================================
+        // 计算实际范围
+        // ==================================================
 
         let minX =
-            bookLeft;
+            Math.min(
+                bookLeft,
+                ...layout.nodes.map(
+                    item => item.x
+                )
+            );
+
 
         let maxX =
-            bookRight;
-
-        let maxY =
-            bookBottom;
-
-
-        layout.nodes.forEach(
-            item => {
-
-                minX =
-                    Math.min(
-                        minX,
-                        item.x
-                    );
-
-
-                maxX =
-                    Math.max(
-                        maxX,
+            Math.max(
+                bookRight,
+                ...layout.nodes.map(
+                    item =>
                         item.x +
                         item.width
-                    );
+                )
+            );
 
 
-                maxY =
-                    Math.max(
-                        maxY,
+        let maxY =
+            Math.max(
+                bookBottom,
+                ...layout.nodes.map(
+                    item =>
                         item.y +
                         item.height
-                    );
-            }
-        );
+                )
+            );
 
 
-        // ------------------------------------------
+        // ==================================================
         // 如果节点跑到左边
-        // 整体增加左侧空间
-        // ------------------------------------------
+        //
+        // 只移动节点。
+        //
+        // ❌ 不移动书名
+        // ==================================================
 
         const leftShift =
             minX < PADDING
@@ -719,38 +765,44 @@ function calculateLayout() {
             );
 
 
-            // 书名也一起移动
-            // 保证线永远对齐
-
-            if (bookTitle) {
-
-                const newLeft =
-                    bookLeft +
-                    leftShift;
-
-
-                bookTitle.style.left =
-                    newLeft + "px";
-
-
-                bookPosition.x =
-                    newLeft;
-            }
-
-
-            bookLeft +=
-                leftShift;
-
-            bookCenterX +=
-                leftShift;
-
-            bookRight +=
-                leftShift;
+            // 重新计算节点范围
+            // 但不修改书名
 
             maxX +=
                 leftShift;
+
+
+            minX =
+                Math.min(
+                    bookLeft,
+                    PADDING
+                );
         }
 
+
+        // ==================================================
+        // 如果书名本身在左侧
+        //
+        // 不移动书名。
+        //
+        // 允许画布扩大。
+        // ==================================================
+
+        if (
+            bookLeft < 0
+        ) {
+
+            minX =
+                Math.min(
+                    minX,
+                    bookLeft
+                );
+        }
+
+
+        // ==================================================
+        // 画布尺寸
+        // ==================================================
 
         layout.width =
             Math.max(
@@ -780,9 +832,11 @@ function calculateLayout() {
 
 
     // ==================================================
-    // ==================================================
     // 横向布局
-    // ==================================================
+    //
+    // 小说名 ── 第一卷 ── 第一篇 ── 第一章
+    //                         │
+    //                         └── 第二章
     // ==================================================
 
     else {
@@ -790,6 +844,10 @@ function calculateLayout() {
         let totalRootHeight =
             0;
 
+
+        // ------------------------------------------
+        // 计算根节点总高度
+        // ------------------------------------------
 
         roots.forEach(
             (root, index) => {
@@ -822,7 +880,7 @@ function calculateLayout() {
 
 
         // ------------------------------------------
-        // 树中心 Y
+        // 以书名中心为树中心
         // ------------------------------------------
 
         const rootStartY =
@@ -831,7 +889,7 @@ function calculateLayout() {
 
 
         // ------------------------------------------
-        // 递归放置
+        // 递归放置节点
         // ------------------------------------------
 
         function placeHorizontalNodes(
@@ -915,7 +973,9 @@ function calculateLayout() {
                     });
 
 
+                    // ----------------------------------
                     // 子节点
+                    // ----------------------------------
 
                     if (
                         node.collapsed !== true &&
@@ -951,51 +1011,48 @@ function calculateLayout() {
         );
 
 
-        // ------------------------------------------
-        // 计算画布尺寸
-        // ------------------------------------------
+        // ==================================================
+        // 计算实际范围
+        // ==================================================
 
         let minY =
-            bookTop;
+            Math.min(
+                bookTop,
+                ...layout.nodes.map(
+                    item => item.y
+                )
+            );
+
 
         let maxX =
-            bookRight;
-
-        let maxY =
-            bookBottom;
-
-
-        layout.nodes.forEach(
-            item => {
-
-                minY =
-                    Math.min(
-                        minY,
-                        item.y
-                    );
-
-
-                maxX =
-                    Math.max(
-                        maxX,
+            Math.max(
+                bookRight,
+                ...layout.nodes.map(
+                    item =>
                         item.x +
                         item.width
-                    );
+                )
+            );
 
 
-                maxY =
-                    Math.max(
-                        maxY,
+        let maxY =
+            Math.max(
+                bookBottom,
+                ...layout.nodes.map(
+                    item =>
                         item.y +
                         item.height
-                    );
-            }
-        );
+                )
+            );
 
 
-        // ------------------------------------------
-        // 防止节点跑到顶部
-        // ------------------------------------------
+        // ==================================================
+        // 如果节点跑到顶部
+        //
+        // 只移动节点。
+        //
+        // ❌ 不移动书名
+        // ==================================================
 
         const topShift =
             minY < PADDING
@@ -1019,109 +1076,5 @@ function calculateLayout() {
             );
 
 
-            // 书名一起移动
-            // 保证连接线对齐
-
-            if (bookTitle) {
-
-                const newTop =
-                    bookTop +
-                    topShift;
-
-
-                bookTitle.style.top =
-                    newTop + "px";
-
-
-                bookPosition.y =
-                    newTop;
-            }
-
-
-            bookTop +=
-                topShift;
-
-            bookCenterY +=
-                topShift;
-
-            bookBottom +=
-                topShift;
-
-            maxY +=
-                topShift;
-        }
-
-
-        layout.width =
-            Math.max(
-                maxX +
-                PADDING,
-
-                window.innerWidth
-            );
-
-
-        layout.height =
-            Math.max(
-                maxY +
-                PADDING,
-
-                window.innerHeight
-            );
-
-
-        layout.centerX =
-            bookCenterX;
-
-
-        layout.centerY =
-            bookCenterY;
-    }
-
-
-    // ==================================================
-    // 公共尺寸
-    // ==================================================
-
-    layout.nodeWidth =
-        NODE_W;
-
-
-    layout.nodeHeight =
-        NODE_H;
-
-
-    layout.bookLeft =
-        bookLeft;
-
-
-    layout.bookTop =
-        bookTop;
-
-
-    layout.bookWidth =
-        bookWidth;
-
-
-    layout.bookHeight =
-        bookHeight;
-
-
-    layout.bookCenterX =
-        bookCenterX;
-
-
-    layout.bookCenterY =
-        bookCenterY;
-
-
-    layout.bookRight =
-        bookRight;
-
-
-    layout.bookBottom =
-        bookBottom;
-
-
-    return layout;
-}
+            // 重新计算节点范围
+            // 但
