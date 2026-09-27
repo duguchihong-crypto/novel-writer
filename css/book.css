@@ -617,16 +617,6 @@ body {
 
 /* ==================================================
    连线上的 + / −
-   
-   注意：
-   这里不再使用 margin:-13px。
-   
-   connections.js 已经直接计算：
-   
-   left = centerX - size / 2
-   top  = centerY - size / 2
-   
-   所以 CSS 不能再次偏移。
 ================================================== */
 
 .line-control {
@@ -765,7 +755,7 @@ body {
 
 
 /* ==================================================
-   书名操作按钮
+   书名操作按钮基础
 ================================================== */
 
 .book-actions button {
@@ -785,9 +775,13 @@ body {
 
     cursor: pointer;
 
-    background: #fff;
-
     -webkit-tap-highlight-color: transparent;
+
+    transition:
+        background 0.12s ease,
+        border-color 0.12s ease,
+        color 0.12s ease,
+        transform 0.12s ease;
 }
 
 .book-actions button:active {
@@ -799,65 +793,95 @@ body {
 
 /* ==================================================
    ＋序
-   深青 → 浅青
+   浅青
 ================================================== */
 
-#addPreface {
+.book-actions button.preface {
 
-    background: #f3fbfa;
+    background: #f3fbfa !important;
 
     border:
-        1.5px solid #b7dfdc;
+        1.5px solid #b7dfdc !important;
 
-    color: #5fa9a3;
+    color: #5fa9a3 !important;
 }
 
 
 /* ==================================================
    ＋章
-   深黑 → 浅黑
+   浅黑
 ================================================== */
 
-#addChapter {
+.book-actions button.chapter {
 
-    background: #f7f7f7;
+    background: #f7f7f7 !important;
 
     border:
-        1.5px solid #c8c8c8;
+        1.5px solid #c8c8c8 !important;
 
-    color: #777;
+    color: #777777 !important;
 }
 
 
 /* ==================================================
    ＋篇
-   深白 → 浅白
+   浅白
 ================================================== */
 
-#addPart {
+.book-actions button.part {
 
-    background: #ffffff;
+    background: #ffffff !important;
 
     border:
-        1.5px solid #dedede;
+        1.5px solid #dedede !important;
 
-    color: #b0b0b0;
+    color: #999999 !important;
 }
 
 
 /* ==================================================
    ＋卷
-   深黄 → 浅黄
+   浅黄
 ================================================== */
 
-#addVolume {
+.book-actions button.volume {
 
-    background: #fffdf3;
+    background: #fffdf3 !important;
 
     border:
-        1.5px solid #eadf9e;
+        1.5px solid #eadf9e !important;
 
-    color: #c8ae55;
+    color: #c8ae55 !important;
+}
+
+
+/* ==================================================
+   普通节点操作按钮
+================================================== */
+
+.book-actions button.default {
+
+    background: #ffffff !important;
+
+    border:
+        1px solid #dddddd !important;
+
+    color: #666666 !important;
+}
+
+
+/* ==================================================
+   删除按钮
+================================================== */
+
+.book-actions button.danger {
+
+    background: #fff5f5 !important;
+
+    border:
+        1px solid #efcccc !important;
+
+    color: #d66a6a !important;
 }
 
 
@@ -865,7 +889,7 @@ body {
    禁用的序按钮
 ================================================== */
 
-#addPreface:disabled {
+.book-actions button.preface:disabled {
 
     opacity: 0.45;
 
@@ -1065,31 +1089,4 @@ body {
 
         font-size: 13px;
     }
-}
-/* ==================================================
-   ★ 强制覆盖：底部四个新增按钮颜色
-================================================== */
-
-.book-actions #addPreface {
-    background-color: #f3fbfa !important;
-    border-color: #b7dfdc !important;
-    color: #5fa9a3 !important;
-}
-
-.book-actions #addChapter {
-    background-color: #f7f7f7 !important;
-    border-color: #c8c8c8 !important;
-    color: #777777 !important;
-}
-
-.book-actions #addPart {
-    background-color: #ffffff !important;
-    border-color: #dedede !important;
-    color: #b0b0b0 !important;
-}
-
-.book-actions #addVolume {
-    background-color: #fffdf3 !important;
-    border-color: #eadf9e !important;
-    color: #c8ae55 !important;
 }
