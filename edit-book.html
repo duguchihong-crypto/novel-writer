@@ -16,11 +16,8 @@
 <style>
 
 * {
-
     box-sizing: border-box;
-
     margin: 0;
-
     padding: 0;
 }
 
@@ -81,12 +78,20 @@ body {
 
     color: #555;
 
+    font-family: inherit;
+
     font-size: 15px;
 
     cursor: pointer;
 
     padding:
         8px 4px;
+}
+
+
+.back-button:active {
+
+    opacity: 0.6;
 }
 
 
@@ -102,6 +107,8 @@ body {
     font-size: 17px;
 
     font-weight: 600;
+
+    white-space: nowrap;
 }
 
 
@@ -145,11 +152,13 @@ body {
     color: #888;
 
     margin-bottom: 32px;
+
+    line-height: 1.6;
 }
 
 
 /* ==================================================
-   表单
+   表单区域
 ================================================== */
 
 .form-section {
@@ -206,6 +215,10 @@ body {
     color: #222;
 
     background: #fff;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
 
@@ -250,6 +263,10 @@ body {
     color: #222;
 
     background: #fff;
+
+    transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
 }
 
 
@@ -383,12 +400,21 @@ body {
     font-size: 14px;
 
     cursor: pointer;
+
+    transition:
+        background 0.2s;
 }
 
 
 .cover-upload-button:hover {
 
     background: #e5e8ed;
+}
+
+
+.cover-upload-button:active {
+
+    transform: scale(0.98);
 }
 
 
@@ -407,6 +433,8 @@ body {
     font-size: 13px;
 
     cursor: pointer;
+
+    padding: 5px 8px;
 }
 
 
@@ -423,6 +451,27 @@ body {
     font-size: 12px;
 
     color: #999;
+
+    text-align: center;
+
+    line-height: 1.6;
+}
+
+
+/* ==================================================
+   错误 / 提示
+================================================== */
+
+.error-message {
+
+    min-height: 20px;
+
+    margin:
+        8px 0;
+
+    color: #e5484d;
+
+    font-size: 13px;
 
     text-align: center;
 
@@ -455,6 +504,10 @@ body {
     font-weight: 600;
 
     cursor: pointer;
+
+    transition:
+        background 0.2s,
+        transform 0.1s;
 }
 
 
@@ -464,32 +517,19 @@ body {
 }
 
 
+.save-button:active {
+
+    transform: scale(0.99);
+}
+
+
 .save-button:disabled {
 
     background: #aeb8d2;
 
     cursor: not-allowed;
-}
 
-
-/* ==================================================
-   错误
-================================================== */
-
-.error-message {
-
-    min-height: 20px;
-
-    margin:
-        8px 0;
-
-    color: #e5484d;
-
-    font-size: 13px;
-
-    text-align: center;
-
-    line-height: 1.5;
+    transform: none;
 }
 
 
@@ -516,6 +556,12 @@ body {
     .main-title {
 
         font-size: 25px;
+    }
+
+
+    .sub-title {
+
+        margin-bottom: 25px;
     }
 
 
@@ -586,7 +632,7 @@ body {
 
 
         <!-- ==================================================
-             书名
+             小说名称
         ================================================== -->
 
         <section class="form-section">
@@ -612,7 +658,7 @@ body {
 
 
         <!-- ==================================================
-             简介
+             小说简介
         ================================================== -->
 
         <section class="form-section">
@@ -636,7 +682,7 @@ body {
 
 
         <!-- ==================================================
-             封面
+             小说封面
         ================================================== -->
 
         <section class="form-section cover-section">
@@ -705,6 +751,11 @@ body {
             <div class="cover-hint">
 
                 支持手机中的图片。
+
+                <br>
+
+                图片会自动压缩。
+
                 <br>
 
                 更换后点击「保存修改」。
@@ -800,9 +851,54 @@ let currentBook = null;
 
 let selectedCover = "";
 
+let isProcessingCover = false;
+
+let isSaving = false;
+
 
 // ==================================================
-// 获取当前书籍
+// 显示错误
+// ==================================================
+
+function showError(message) {
+
+    errorMessage.textContent =
+        message;
+
+}
+
+
+// ==================================================
+// 清除错误
+// ==================================================
+
+function clearError() {
+
+    errorMessage.textContent =
+        "";
+
+}
+
+
+// ==================================================
+// 恢复保存按钮
+// ==================================================
+
+function resetSaveButton() {
+
+    isSaving = false;
+
+    saveButton.disabled =
+        false;
+
+    saveButton.textContent =
+        "保存修改";
+
+}
+
+
+// ==================================================
+// 获取当前小说
 // ==================================================
 
 function loadCurrentBook() {
@@ -847,7 +943,7 @@ function loadCurrentBook() {
     }
 
 
-    let books = [];
+    let books;
 
 
     try {
@@ -921,7 +1017,7 @@ function loadCurrentBook() {
 
 
 // ==================================================
-// 显示当前书籍
+// 显示小说资料
 // ==================================================
 
 function renderBook() {
@@ -949,9 +1045,8 @@ function renderBook() {
         selectedCover =
             currentBook.cover;
 
-
         showCover(
-            currentBook.cover
+            selectedCover
         );
 
     } else {
@@ -985,7 +1080,7 @@ function showCover(dataURL) {
 
 
 // ==================================================
-// 显示无封面
+// 显示默认封面
 // ==================================================
 
 function showEmptyCover() {
@@ -1003,7 +1098,7 @@ function showEmptyCover() {
 
 
 // ==================================================
-// 选择新封面
+// 图片读取
 // ==================================================
 
 coverInput.addEventListener(
@@ -1022,11 +1117,12 @@ coverInput.addEventListener(
         }
 
 
+        clearError();
+
+
         if (
             !file.type ||
-            !file.type.startsWith(
-                "image/"
-            )
+            !file.type.startsWith("image/")
         ) {
 
             showError(
@@ -1041,12 +1137,19 @@ coverInput.addEventListener(
         }
 
 
-        clearError();
+        if (isProcessingCover) {
+
+            return;
+
+        }
+
+
+        isProcessingCover =
+            true;
 
 
         saveButton.disabled =
             true;
-
 
         saveButton.textContent =
             "正在处理封面…";
@@ -1059,20 +1162,19 @@ coverInput.addEventListener(
         reader.onload =
             function() {
 
-                const result =
+                const dataURL =
                     reader.result;
 
 
                 if (
-                    typeof result !==
+                    typeof dataURL !==
                     "string"
                 ) {
 
-                    showError(
-                        "读取封面失败。"
+                    finishCoverProcessing(
+                        "",
+                        "读取封面失败，请重新选择图片。"
                     );
-
-                    resetSaveButton();
 
                     return;
 
@@ -1080,16 +1182,15 @@ coverInput.addEventListener(
 
 
                 compressImage(
-                    result,
+                    dataURL,
                     function(compressed) {
 
                         if (!compressed) {
 
-                            showError(
+                            finishCoverProcessing(
+                                "",
                                 "封面处理失败，请换一张图片。"
                             );
-
-                            resetSaveButton();
 
                             return;
 
@@ -1105,9 +1206,10 @@ coverInput.addEventListener(
                         );
 
 
-                        clearError();
-
-                        resetSaveButton();
+                        finishCoverProcessing(
+                            compressed,
+                            ""
+                        );
 
                     }
                 );
@@ -1118,11 +1220,10 @@ coverInput.addEventListener(
         reader.onerror =
             function() {
 
-                showError(
+                finishCoverProcessing(
+                    "",
                     "读取封面失败，请重新选择图片。"
                 );
-
-                resetSaveButton();
 
             };
 
@@ -1134,12 +1235,48 @@ coverInput.addEventListener(
 
 
 // ==================================================
+// 完成封面处理
+// ==================================================
+
+function finishCoverProcessing(
+    result,
+    error
+) {
+
+    isProcessingCover =
+        false;
+
+
+    coverInput.value =
+        "";
+
+
+    if (error) {
+
+        showError(error);
+
+    }
+
+
+    resetSaveButton();
+
+}
+
+
+// ==================================================
 // 删除封面
 // ==================================================
 
 removeCoverButton.addEventListener(
     "click",
     function() {
+
+        if (isProcessingCover) {
+
+            return;
+
+        }
+
 
         selectedCover =
             "";
@@ -1156,7 +1293,7 @@ removeCoverButton.addEventListener(
 
 
 // ==================================================
-// 压缩封面
+// 压缩图片
 // ==================================================
 
 function compressImage(
@@ -1193,8 +1330,14 @@ function compressImage(
             }
 
 
+            /*
+             * 小说封面没有必要保存原始大尺寸。
+             *
+             * 最大边限制为 900px。
+             */
+
             const maxSize =
-                700;
+                900;
 
 
             if (
@@ -1267,6 +1410,10 @@ function compressImage(
             }
 
 
+            /*
+             * JPEG 背景使用白色。
+             */
+
             context.fillStyle =
                 "#ffffff";
 
@@ -1288,47 +1435,27 @@ function compressImage(
             );
 
 
-            let compressed =
-                canvas.toDataURL(
-                    "image/jpeg",
-                    0.65
-                );
+            /*
+             * 按质量逐步压缩。
+             *
+             * 目标：
+             * 尽量控制在约 450KB Data URL 内。
+             */
+
+            const qualities = [
+                0.72,
+                0.60,
+                0.50,
+                0.42,
+                0.35
+            ];
 
 
-            const maxCharacters =
-                500000;
-
-
-            if (
-                compressed.length >
-                maxCharacters
-            ) {
-
-                compressed =
-                    canvas.toDataURL(
-                        "image/jpeg",
-                        0.5
-                    );
-
-            }
-
-
-            if (
-                compressed.length >
-                maxCharacters
-            ) {
-
-                compressed =
-                    canvas.toDataURL(
-                        "image/jpeg",
-                        0.35
-                    );
-
-            }
-
-
-            callback(
-                compressed
+            compressCanvasQuality(
+                canvas,
+                qualities,
+                0,
+                callback
             );
 
         };
@@ -1349,12 +1476,318 @@ function compressImage(
 
 
 // ==================================================
+// 逐级压缩
+// ==================================================
+
+function compressCanvasQuality(
+    canvas,
+    qualities,
+    index,
+    callback
+) {
+
+    if (
+        index >= qualities.length
+    ) {
+
+        /*
+         * 如果已经达到最低质量，
+         * 再缩小尺寸一次。
+         */
+
+        resizeCanvasAndCompress(
+            canvas,
+            callback
+        );
+
+        return;
+
+    }
+
+
+    const quality =
+        qualities[index];
+
+
+    canvas.toBlob(
+        function(blob) {
+
+            if (!blob) {
+
+                callback("");
+
+                return;
+
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function() {
+
+                    const result =
+                        reader.result;
+
+
+                    if (
+                        typeof result !==
+                        "string"
+                    ) {
+
+                        callback("");
+
+                        return;
+
+                    }
+
+
+                    /*
+                     * Data URL 字符串控制在
+                     * 大约 450000 字符以内。
+                     */
+
+                    if (
+                        result.length <=
+                        450000
+                    ) {
+
+                        callback(
+                            result
+                        );
+
+                        return;
+
+                    }
+
+
+                    compressCanvasQuality(
+                        canvas,
+                        qualities,
+                        index + 1,
+                        callback
+                    );
+
+                };
+
+
+            reader.onerror =
+                function() {
+
+                    callback("");
+
+                };
+
+
+            reader.readAsDataURL(blob);
+
+        },
+        "image/jpeg",
+        quality
+    );
+
+}
+
+
+// ==================================================
+// 最后一级：进一步缩小尺寸
+// ==================================================
+
+function resizeCanvasAndCompress(
+    canvas,
+    callback
+) {
+
+    const oldWidth =
+        canvas.width;
+
+
+    const oldHeight =
+        canvas.height;
+
+
+    const scale =
+        0.75;
+
+
+    const newWidth =
+        Math.max(
+            1,
+            Math.round(
+                oldWidth * scale
+            )
+        );
+
+
+    const newHeight =
+        Math.max(
+            1,
+            Math.round(
+                oldHeight * scale
+            )
+        );
+
+
+    const newCanvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    newCanvas.width =
+        newWidth;
+
+    newCanvas.height =
+        newHeight;
+
+
+    const context =
+        newCanvas.getContext(
+            "2d"
+        );
+
+
+    if (!context) {
+
+        callback("");
+
+        return;
+
+    }
+
+
+    context.fillStyle =
+        "#ffffff";
+
+
+    context.fillRect(
+        0,
+        0,
+        newWidth,
+        newHeight
+    );
+
+
+    context.drawImage(
+        canvas,
+        0,
+        0,
+        newWidth,
+        newHeight
+    );
+
+
+    newCanvas.toBlob(
+        function(blob) {
+
+            if (!blob) {
+
+                callback("");
+
+                return;
+
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function() {
+
+                    if (
+                        typeof reader.result !==
+                        "string"
+                    ) {
+
+                        callback("");
+
+                        return;
+
+                    }
+
+
+                    callback(
+                        reader.result
+                    );
+
+                };
+
+
+            reader.onerror =
+                function() {
+
+                    callback("");
+
+                };
+
+
+            reader.readAsDataURL(blob);
+
+        },
+        "image/jpeg",
+        0.38
+    );
+
+}
+
+
+// ==================================================
+// 判断是否为储存空间不足
+// ==================================================
+
+function isQuotaError(error) {
+
+    if (!error) {
+
+        return false;
+
+    }
+
+
+    return (
+        error.name ===
+            "QuotaExceededError" ||
+
+        error.code === 22 ||
+
+        error.code === 1014 ||
+
+        error.name ===
+            "NS_ERROR_DOM_QUOTA_REACHED"
+    );
+
+}
+
+
+// ==================================================
 // 保存修改
 // ==================================================
 
 saveButton.addEventListener(
     "click",
     function() {
+
+        if (isSaving) {
+
+            return;
+
+        }
+
+
+        if (isProcessingCover) {
+
+            showError(
+                "封面还在处理中，请稍等。"
+            );
+
+            return;
+
+        }
+
 
         if (!currentBook) {
 
@@ -1384,35 +1817,47 @@ saveButton.addEventListener(
         }
 
 
-        saveButton.disabled =
+        clearError();
+
+
+        isSaving =
             true;
 
+
+        saveButton.disabled =
+            true;
 
         saveButton.textContent =
             "正在保存…";
 
 
-        // ------------------------------------------
-        // 修改书籍资料
-        // ------------------------------------------
+        /*
+         * 不直接修改 currentBook。
+         *
+         * 先复制一份，
+         * 保存成功后再完成替换。
+         *
+         * 这样即使 localStorage 保存失败，
+         * 原来的小说数据也不会被当前页面
+         * 的修改污染。
+         */
 
-        currentBook.title =
-            title;
+        const updatedBook =
+            {
+                ...currentBook,
+
+                title:
+                    title,
+
+                description:
+                    descriptionInput.value.trim(),
+
+                cover:
+                    selectedCover || ""
+            };
 
 
-        currentBook.description =
-            descriptionInput.value.trim();
-
-
-        currentBook.cover =
-            selectedCover || "";
-
-
-        // ------------------------------------------
-        // 读取所有书籍
-        // ------------------------------------------
-
-        let books = [];
+        let books;
 
 
         try {
@@ -1433,12 +1878,12 @@ saveButton.addEventListener(
         } catch (error) {
 
             console.error(
-                "读取书籍失败：",
+                "读取书籍数据失败：",
                 error
             );
 
             showError(
-                "读取书籍数据失败。"
+                "读取书籍数据失败，请重新打开页面。"
             );
 
             resetSaveButton();
@@ -1450,14 +1895,16 @@ saveButton.addEventListener(
 
         if (!Array.isArray(books)) {
 
-            books = [];
+            showError(
+                "小说数据格式错误。"
+            );
+
+            resetSaveButton();
+
+            return;
 
         }
 
-
-        // ------------------------------------------
-        // 找到当前书籍
-        // ------------------------------------------
 
         const index =
             books.findIndex(
@@ -1483,27 +1930,33 @@ saveButton.addEventListener(
         }
 
 
-        // ------------------------------------------
-        // 替换
-        // ------------------------------------------
+        /*
+         * 保留原小说的所有其他数据。
+         *
+         * 例如：
+         *
+         * structure
+         * layoutDirection
+         * bookPosition
+         * id
+         */
 
         books[index] =
-            currentBook;
+            updatedBook;
 
 
-        // ------------------------------------------
-        // 保存
-        // ------------------------------------------
+        const newStorageData =
+            JSON.stringify(
+                books
+            );
+
 
         try {
 
             localStorage.setItem(
                 "novelBooks",
-                JSON.stringify(
-                    books
-                )
+                newStorageData
             );
-
 
         } catch (error) {
 
@@ -1514,21 +1967,11 @@ saveButton.addEventListener(
 
 
             if (
-                error &&
-                (
-                    error.name ===
-                    "QuotaExceededError" ||
-
-                    error.code ===
-                    22 ||
-
-                    error.code ===
-                    1014
-                )
+                isQuotaError(error)
             ) {
 
                 showError(
-                    "保存失败：储存空间不足，请换一张较小的封面。"
+                    "保存失败：浏览器储存空间不足。请删除旧小说的封面，或换一张更小的图片。"
                 );
 
             } else {
@@ -1547,50 +1990,19 @@ saveButton.addEventListener(
         }
 
 
-        // ------------------------------------------
-        // 保存成功
-        // ------------------------------------------
+        /*
+         * 保存成功。
+         */
+
+        currentBook =
+            updatedBook;
+
 
         window.location.href =
             "index.html";
 
     }
 );
-
-
-// ==================================================
-// 恢复保存按钮
-// ==================================================
-
-function resetSaveButton() {
-
-    saveButton.disabled =
-        false;
-
-    saveButton.textContent =
-        "保存修改";
-
-}
-
-
-// ==================================================
-// 错误
-// ==================================================
-
-function showError(message) {
-
-    errorMessage.textContent =
-        message;
-
-}
-
-
-function clearError() {
-
-    errorMessage.textContent =
-        "";
-
-}
 
 
 // ==================================================
@@ -1602,6 +2014,17 @@ document.getElementById(
 ).addEventListener(
     "click",
     function() {
+
+        if (isProcessingCover) {
+
+            showError(
+                "封面正在处理，请稍等。"
+            );
+
+            return;
+
+        }
+
 
         window.location.href =
             "index.html";
