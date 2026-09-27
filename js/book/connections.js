@@ -1,7 +1,18 @@
 // ==============================
 // 全书页面：连接线
 // 支持：纵向 / 横向
+//
+// ★ 最终版
+//
+// 特点：
+// 1. 所有连接点使用节点真实几何中心
+// 2. 父节点连接线从正中心出来
+// 3. + / − 永远放在父节点主干上
+// 4. 多子节点先走主干，再进行分叉
+// 5. SVG 与 + / − 使用同一坐标系
+// 6. 支持纵向 / 横向
 // ==============================
+
 
 
 // ==================================================
@@ -21,22 +32,31 @@ function drawConnections(layout) {
     }
 
 
+    // ==================================================
     // 清空旧线
+    // ==================================================
 
     svg.innerHTML = "";
 
 
+    // ==================================================
     // 删除旧的 + / −
+    // ==================================================
 
     document
         .querySelectorAll(
             ".line-control"
         )
         .forEach(
-            element =>
-                element.remove()
+            element => {
+                element.remove();
+            }
         );
 
+
+    // ==================================================
+    // 没有布局
+    // ==================================================
 
     if (
         !layout ||
@@ -115,6 +135,7 @@ function drawConnections(layout) {
     }
 
 
+
     // ==================================================
     // 节点 Map
     // ==================================================
@@ -126,17 +147,24 @@ function drawConnections(layout) {
     layout.nodes.forEach(
         item => {
 
-            nodeMap.set(
-                item.node.id,
-                item
-            );
+            if (
+                item &&
+                item.node &&
+                item.node.id != null
+            ) {
 
+                nodeMap.set(
+                    item.node.id,
+                    item
+                );
+            }
         }
     );
 
 
+
     // ==================================================
-    // 书名位置
+    // 书名
     // ==================================================
 
     const bookTitle =
@@ -150,41 +178,72 @@ function drawConnections(layout) {
     }
 
 
+
+    // ==================================================
+    // 书名位置
+    // ==================================================
+
+    const styleLeft =
+        parseFloat(
+            bookTitle.style.left
+        );
+
+
+    const styleTop =
+        parseFloat(
+            bookTitle.style.top
+        );
+
+
     const bookLeft =
         Number.isFinite(
-            parseFloat(
-                bookTitle.style.left
-            )
+            styleLeft
         )
-            ? parseFloat(
-                bookTitle.style.left
-            )
-            : layout.bookLeft || 0;
+            ? styleLeft
+            : (
+                Number(
+                    layout.bookLeft
+                ) || 0
+            );
 
 
     const bookTop =
         Number.isFinite(
-            parseFloat(
-                bookTitle.style.top
-            )
+            styleTop
         )
-            ? parseFloat(
-                bookTitle.style.top
-            )
-            : layout.bookTop || 0;
+            ? styleTop
+            : (
+                Number(
+                    layout.bookTop
+                ) || 0
+            );
 
+
+
+    // ==================================================
+    // 书名尺寸
+    // ==================================================
 
     const bookWidth =
         bookTitle.offsetWidth ||
-        layout.bookWidth ||
+        Number(
+            layout.bookWidth
+        ) ||
         BOOK_MIN_WIDTH;
 
 
     const bookHeight =
         bookTitle.offsetHeight ||
-        layout.bookHeight ||
+        Number(
+            layout.bookHeight
+        ) ||
         BOOK_MIN_HEIGHT;
 
+
+
+    // ==================================================
+    // 书名几何中心
+    // ==================================================
 
     const bookCenterX =
         bookLeft +
@@ -206,6 +265,7 @@ function drawConnections(layout) {
         bookHeight;
 
 
+
     // ==================================================
     // 根节点
     // ==================================================
@@ -225,8 +285,9 @@ function drawConnections(layout) {
     }
 
 
+
     // ==================================================
-    // 根据布局方向绘制
+    // 根据方向绘制
     // ==================================================
 
     if (
@@ -255,21 +316,112 @@ function drawConnections(layout) {
 }
 
 
+
+// ==================================================
+// 获取节点中心 X
+// ==================================================
+
+function getNodeCenterX(
+    item
+) {
+
+    return (
+        Number(item.x) +
+        Number(item.width) / 2
+    );
+}
+
+
+
+// ==================================================
+// 获取节点中心 Y
+// ==================================================
+
+function getNodeCenterY(
+    item
+) {
+
+    return (
+        Number(item.y) +
+        Number(item.height) / 2
+    );
+}
+
+
+
+// ==================================================
+// 获取节点顶部
+// ==================================================
+
+function getNodeTop(
+    item
+) {
+
+    return Number(
+        item.y
+    );
+}
+
+
+
+// ==================================================
+// 获取节点底部
+// ==================================================
+
+function getNodeBottom(
+    item
+) {
+
+    return (
+        Number(item.y) +
+        Number(item.height)
+    );
+}
+
+
+
+// ==================================================
+// 获取节点左侧
+// ==================================================
+
+function getNodeLeft(
+    item
+) {
+
+    return Number(
+        item.x
+    );
+}
+
+
+
+// ==================================================
+// 获取节点右侧
+// ==================================================
+
+function getNodeRight(
+    item
+) {
+
+    return (
+        Number(item.x) +
+        Number(item.width)
+    );
+}
+
+
+
 // ==================================================
 // 纵向连接
 //
-// 书名
-//   │
-//   │
-//  卷
-//   │
-//   │
-//  篇
-//   │
-//   │
-//  章
-//
-// 所有连接点均为节点正中央
+//          父
+//          │
+//         [−]
+//          │
+//          │
+//      ────┼────
+//       │       │
+//      子1     子2
 // ==================================================
 
 function drawVerticalConnections(
@@ -280,8 +432,109 @@ function drawVerticalConnections(
     drawPath
 ) {
 
+
     // ==================================================
     // 书名 → 根节点
+    // ==================================================
+
+    drawVerticalBookConnections(
+        roots,
+        bookBottom,
+        bookCenterX,
+        drawPath
+    );
+
+
+
+    // ==================================================
+    // 父节点 → 子节点
+    // ==================================================
+
+    nodeMap.forEach(
+        parentItem => {
+
+            const parent =
+                parentItem.node;
+
+
+            if (!parent) {
+                return;
+            }
+
+
+            // 收起状态不画子节点连接
+
+            if (
+                parent.collapsed === true
+            ) {
+
+                return;
+            }
+
+
+            if (
+                !Array.isArray(
+                    parent.children
+                )
+            ) {
+
+                return;
+            }
+
+
+            if (
+                parent.children.length === 0
+            ) {
+
+                return;
+            }
+
+
+            const children =
+                parent.children
+                    .map(
+                        child =>
+                            nodeMap.get(
+                                child.id
+                            )
+                    )
+                    .filter(
+                        Boolean
+                    );
+
+
+            if (
+                children.length === 0
+            ) {
+
+                return;
+            }
+
+
+            drawVerticalParentConnections(
+                parentItem,
+                children,
+                drawPath
+            );
+        }
+    );
+}
+
+
+
+// ==================================================
+// 纵向：书名 → 根节点
+// ==================================================
+
+function drawVerticalBookConnections(
+    roots,
+    bookBottom,
+    bookCenterX,
+    drawPath
+) {
+
+    // ==================================================
+    // 单个根节点
     // ==================================================
 
     if (
@@ -292,18 +545,16 @@ function drawVerticalConnections(
             roots[0];
 
 
-        // 节点顶部
+        const rootCenterX =
+            getNodeCenterX(
+                root
+            );
+
 
         const rootTop =
-            root.y;
-
-
-        // 节点真正的水平中心
-        // 不再依赖预先保存的 centerX
-
-        const rootCenterX =
-            root.x +
-            root.width / 2;
+            getNodeTop(
+                root
+            );
 
 
         const middleY =
@@ -312,6 +563,10 @@ function drawVerticalConnections(
                 rootTop
             ) / 2;
 
+
+        // ==================================================
+        // 一条连续连接线
+        // ==================================================
 
         drawPath([
             {
@@ -347,124 +602,477 @@ function drawVerticalConnections(
             }
         ]);
 
-    } else {
 
-        // ==================================================
-        // 多个根节点
-        // ==================================================
-
-        const firstRoot =
-            roots[0];
-
-
-        const lastRoot =
-            roots[
-                roots.length - 1
-            ];
-
-
-        const firstCenterX =
-            firstRoot.x +
-            firstRoot.width / 2;
-
-
-        const lastCenterX =
-            lastRoot.x +
-            lastRoot.width / 2;
-
-
-        const branchY =
-            Math.min(
-                ...roots.map(
-                    root =>
-                        root.y
-                )
-            ) -
-            35;
-
-
-        // ==================================================
-        // 书名 → 主干
-        // ==================================================
-
-        drawPath([
-            {
-                x:
-                    bookCenterX,
-
-                y:
-                    bookBottom
-            },
-
-            {
-                x:
-                    bookCenterX,
-
-                y:
-                    branchY
-            }
-        ]);
-
-
-        // ==================================================
-        // 横向主干
-        // ==================================================
-
-        drawPath([
-            {
-                x:
-                    firstCenterX,
-
-                y:
-                    branchY
-            },
-
-            {
-                x:
-                    lastCenterX,
-
-                y:
-                    branchY
-            }
-        ]);
-
-
-        // ==================================================
-        // 主干 → 每个根节点
-        // ==================================================
-
-        roots.forEach(
-            root => {
-
-                const rootCenterX =
-                    root.x +
-                    root.width / 2;
-
-
-                drawPath([
-                    {
-                        x:
-                            rootCenterX,
-
-                        y:
-                            branchY
-                    },
-
-                    {
-                        x:
-                            rootCenterX,
-
-                        y:
-                            root.y
-                    }
-                ]);
-            }
-        );
+        return;
     }
 
 
+
     // ==================================================
-    // 父节点 → 子节点
+    // 多个根节点
+    // ==================================================
+
+    const firstCenterX =
+        getNodeCenterX(
+            roots[0]
+        );
+
+
+    const lastCenterX =
+        getNodeCenterX(
+            roots[
+                roots.length - 1
+            ]
+        );
+
+
+    const rootTop =
+        Math.min(
+            ...roots.map(
+                root =>
+                    getNodeTop(
+                        root
+                    )
+            )
+        );
+
+
+    // ==================================================
+    // 分叉高度
+    //
+    // 不能跑到节点里面
+    // ==================================================
+
+    const branchY =
+        (
+            bookBottom +
+            rootTop
+        ) / 2;
+
+
+
+    // ==================================================
+    // 书名 → 主干
+    // ==================================================
+
+    drawPath([
+        {
+            x:
+                bookCenterX,
+
+            y:
+                bookBottom
+        },
+
+        {
+            x:
+                bookCenterX,
+
+            y:
+                branchY
+        }
+    ]);
+
+
+
+    // ==================================================
+    // 横向主干
+    // ==================================================
+
+    drawPath([
+        {
+            x:
+                firstCenterX,
+
+            y:
+                branchY
+        },
+
+        {
+            x:
+                lastCenterX,
+
+            y:
+                branchY
+        }
+    ]);
+
+
+
+    // ==================================================
+    // 主干 → 根节点
+    // ==================================================
+
+    roots.forEach(
+        root => {
+
+            const centerX =
+                getNodeCenterX(
+                    root
+                );
+
+
+            const top =
+                getNodeTop(
+                    root
+                );
+
+
+            drawPath([
+                {
+                    x:
+                        centerX,
+
+                    y:
+                        branchY
+                },
+
+                {
+                    x:
+                        centerX,
+
+                    y:
+                        top
+                }
+            ]);
+        }
+    );
+}
+
+
+
+// ==================================================
+// 纵向：父节点 → 子节点
+// ==================================================
+
+function drawVerticalParentConnections(
+    parent,
+    children,
+    drawPath
+) {
+
+    // ==================================================
+    // 父节点中心
+    // ==================================================
+
+    const parentCenterX =
+        getNodeCenterX(
+            parent
+        );
+
+
+    const parentBottom =
+        getNodeBottom(
+            parent
+        );
+
+
+
+    // ==================================================
+    // 一个孩子
+    // ==================================================
+
+    if (
+        children.length === 1
+    ) {
+
+        const child =
+            children[0];
+
+
+        const childCenterX =
+            getNodeCenterX(
+                child
+            );
+
+
+        const childTop =
+            getNodeTop(
+                child
+            );
+
+
+        const middleY =
+            (
+                parentBottom +
+                childTop
+            ) / 2;
+
+
+
+        // ==================================================
+        // 一条完整连续的连接线
+        //
+        //       父
+        //       │
+        //       │
+        //       └─────────┐
+        //                 │
+        //                 子
+        // ==================================================
+
+        drawPath([
+            {
+                x:
+                    parentCenterX,
+
+                y:
+                    parentBottom
+            },
+
+            {
+                x:
+                    parentCenterX,
+
+                y:
+                    middleY
+            },
+
+            {
+                x:
+                    childCenterX,
+
+                y:
+                    middleY
+            },
+
+            {
+                x:
+                    childCenterX,
+
+                y:
+                    childTop
+            }
+        ]);
+
+
+
+        // ==================================================
+        // ★ + / −
+        //
+        // 放在父节点中心向下的主干上
+        // ==================================================
+
+        const controlY =
+            (
+                parentBottom +
+                middleY
+            ) / 2;
+
+
+        addLineControl(
+            parent,
+            parentCenterX,
+            controlY
+        );
+
+
+        return;
+    }
+
+
+
+    // ==================================================
+    // 多个孩子
+    // ==================================================
+
+    const childCenters =
+        children.map(
+            child =>
+                getNodeCenterX(
+                    child
+                )
+        );
+
+
+    const firstCenterX =
+        Math.min(
+            ...childCenters
+        );
+
+
+    const lastCenterX =
+        Math.max(
+            ...childCenters
+        );
+
+
+    const childTop =
+        Math.min(
+            ...children.map(
+                child =>
+                    getNodeTop(
+                        child
+                    )
+            )
+        );
+
+
+
+    // ==================================================
+    // 分叉高度
+    // ==================================================
+
+    const branchY =
+        (
+            parentBottom +
+            childTop
+        ) / 2;
+
+
+
+    // ==================================================
+    // 父节点 → 主干
+    //
+    //       父
+    //       │
+    //      [−]
+    //       │
+    //       │
+    // ──────┼──────
+    // ==================================================
+
+    drawPath([
+        {
+            x:
+                parentCenterX,
+
+            y:
+                parentBottom
+        },
+
+        {
+            x:
+                parentCenterX,
+
+            y:
+                branchY
+        }
+    ]);
+
+
+
+    // ==================================================
+    // 横向主干
+    // ==================================================
+
+    drawPath([
+        {
+            x:
+                firstCenterX,
+
+            y:
+                branchY
+        },
+
+        {
+            x:
+                lastCenterX,
+
+            y:
+                branchY
+        }
+    ]);
+
+
+
+    // ==================================================
+    // 主干 → 每一个孩子
+    // ==================================================
+
+    children.forEach(
+        child => {
+
+            const childCenterX =
+                getNodeCenterX(
+                    child
+                );
+
+
+            const childTop =
+                getNodeTop(
+                    child
+                );
+
+
+            drawPath([
+                {
+                    x:
+                        childCenterX,
+
+                    y:
+                        branchY
+                },
+
+                {
+                    x:
+                        childCenterX,
+
+                    y:
+                        childTop
+                }
+            ]);
+        }
+    );
+
+
+
+    // ==================================================
+    // ★ + / −
+    //
+    // 放在父节点向下的主干
+    //
+    // 而不是横向分叉线上
+    // ==================================================
+
+    const controlY =
+        (
+            parentBottom +
+            branchY
+        ) / 2;
+
+
+    addLineControl(
+        parent,
+        parentCenterX,
+        controlY
+    );
+}
+
+
+
+// ==================================================
+// 横向连接
+//
+//       父 ──[−]──┬── 子
+//                 │
+//                 └── 子
+// ==================================================
+
+function drawHorizontalConnections(
+    roots,
+    nodeMap,
+    bookRight,
+    bookCenterY,
+    drawPath
+) {
+
+
+    // ==================================================
+    // 书名 → 根节点
+    // ==================================================
+
+    drawHorizontalBookConnections(
+        roots,
+        bookRight,
+        bookCenterY,
+        drawPath
+    );
+
+
+
+    // ==================================================
+    // 父 → 子
     // ==================================================
 
     nodeMap.forEach(
@@ -472,6 +1080,11 @@ function drawVerticalConnections(
 
             const parent =
                 parentItem.node;
+
+
+            if (!parent) {
+                return;
+            }
 
 
             if (
@@ -501,7 +1114,9 @@ function drawVerticalConnections(
                                 child.id
                             )
                     )
-                    .filter(Boolean);
+                    .filter(
+                        Boolean
+                    );
 
 
             if (
@@ -512,265 +1127,30 @@ function drawVerticalConnections(
             }
 
 
-            // ==================================================
-            // 父节点真正的水平中心
-            // ==================================================
-
-            const parentCenterX =
-                parentItem.x +
-                parentItem.width / 2;
-
-
-            const parentBottom =
-                parentItem.y +
-                parentItem.height;
-
-
-            // ==================================================
-            // 一个孩子
-            // ==================================================
-
-            if (
-                children.length === 1
-            ) {
-
-                const child =
-                    children[0];
-
-
-                // 孩子真正的水平中心
-
-                const childCenterX =
-                    child.x +
-                    child.width / 2;
-
-
-                const childTop =
-                    child.y;
-
-
-                const middleY =
-                    (
-                        parentBottom +
-                        childTop
-                    ) / 2;
-
-
-                // ==================================================
-                // 父节点底部中心
-                // →
-                // 中间点
-                // →
-                // 孩子顶部中心
-                // ==================================================
-
-                drawPath([
-                    {
-                        x:
-                            parentCenterX,
-
-                        y:
-                            parentBottom
-                    },
-
-                    {
-                        x:
-                            parentCenterX,
-
-                        y:
-                            middleY
-                    },
-
-                    {
-                        x:
-                            childCenterX,
-
-                        y:
-                            middleY
-                    },
-
-                    {
-                        x:
-                            childCenterX,
-
-                        y:
-                            childTop
-                    }
-                ]);
-
-
-                // ==================================================
-                // + / −
-                //
-                // 放在横向连接段的正中央
-                // ==================================================
-
-                addLineControl(
-                    parent,
-                    (
-                        parentCenterX +
-                        childCenterX
-                    ) / 2,
-                    middleY
-                );
-
-
-                return;
-            }
-
-
-            // ==================================================
-            // 多个孩子
-            // ==================================================
-
-            const firstChild =
-                children[0];
-
-
-            const lastChild =
-                children[
-                    children.length - 1
-                ];
-
-
-            const firstCenterX =
-                firstChild.x +
-                firstChild.width / 2;
-
-
-            const lastCenterX =
-                lastChild.x +
-                lastChild.width / 2;
-
-
-            const branchY =
-                parentBottom +
-                (
-                    LEVEL_GAP /
-                    2
-                );
-
-
-            // ==================================================
-            // 父节点 → 分叉主干
-            // ==================================================
-
-            drawPath([
-                {
-                    x:
-                        parentCenterX,
-
-                    y:
-                        parentBottom
-                },
-
-                {
-                    x:
-                        parentCenterX,
-
-                    y:
-                        branchY
-                }
-            ]);
-
-
-            // ==================================================
-            // 子节点横向主干
-            // ==================================================
-
-            drawPath([
-                {
-                    x:
-                        firstCenterX,
-
-                    y:
-                        branchY
-                },
-
-                {
-                    x:
-                        lastCenterX,
-
-                    y:
-                        branchY
-                }
-            ]);
-
-
-            // ==================================================
-            // 横向主干 → 每个孩子
-            // ==================================================
-
-            children.forEach(
-                child => {
-
-                    const childCenterX =
-                        child.x +
-                        child.width / 2;
-
-
-                    drawPath([
-                        {
-                            x:
-                                childCenterX,
-
-                            y:
-                                branchY
-                        },
-
-                        {
-                            x:
-                                childCenterX,
-
-                            y:
-                                child.y
-                        }
-                    ]);
-                }
-            );
-
-
-            // ==================================================
-            // + / −
-            //
-            // 放在整个分叉主干的正中央
-            // ==================================================
-
-            addLineControl(
-                parent,
-                (
-                    firstCenterX +
-                    lastCenterX
-                ) / 2,
-                branchY
+            drawHorizontalParentConnections(
+                parentItem,
+                children,
+                drawPath
             );
         }
     );
 }
 
 
+
 // ==================================================
-// 横向连接
-//
-// 书名 ── 卷 ── 篇 ── 章
-//             │
-//             ├── 章
-//             │
-//             └── 篇
-//
-// 所有连接点均为节点正中央
+// 横向：书名 → 根节点
 // ==================================================
 
-function drawHorizontalConnections(
+function drawHorizontalBookConnections(
     roots,
-    nodeMap,
     bookRight,
     bookCenterY,
     drawPath
 ) {
 
     // ==================================================
-    // 书名 → 根节点
+    // 单根
     // ==================================================
 
     if (
@@ -782,14 +1162,15 @@ function drawHorizontalConnections(
 
 
         const rootLeft =
-            root.x;
+            getNodeLeft(
+                root
+            );
 
-
-        // 节点真正的垂直中心
 
         const rootCenterY =
-            root.y +
-            root.height / 2;
+            getNodeCenterY(
+                root
+            );
 
 
         const middleX =
@@ -797,6 +1178,7 @@ function drawHorizontalConnections(
                 bookRight +
                 rootLeft
             ) / 2;
+
 
 
         drawPath([
@@ -833,402 +1215,409 @@ function drawHorizontalConnections(
             }
         ]);
 
-    } else {
 
-        // ==================================================
-        // 多个根节点
-        // ==================================================
-
-        const firstRoot =
-            roots[0];
-
-
-        const lastRoot =
-            roots[
-                roots.length - 1
-            ];
-
-
-        const firstCenterY =
-            firstRoot.y +
-            firstRoot.height / 2;
-
-
-        const lastCenterY =
-            lastRoot.y +
-            lastRoot.height / 2;
-
-
-        const branchX =
-            Math.min(
-                ...roots.map(
-                    root =>
-                        root.x
-                )
-            ) -
-            35;
-
-
-        // ==================================================
-        // 书名 → 主干
-        // ==================================================
-
-        drawPath([
-            {
-                x:
-                    bookRight,
-
-                y:
-                    bookCenterY
-            },
-
-            {
-                x:
-                    branchX,
-
-                y:
-                    bookCenterY
-            }
-        ]);
-
-
-        // ==================================================
-        // 纵向主干
-        // ==================================================
-
-        drawPath([
-            {
-                x:
-                    branchX,
-
-                y:
-                    firstCenterY
-            },
-
-            {
-                x:
-                    branchX,
-
-                y:
-                    lastCenterY
-            }
-        ]);
-
-
-        // ==================================================
-        // 主干 → 每个根节点
-        // ==================================================
-
-        roots.forEach(
-            root => {
-
-                const rootCenterY =
-                    root.y +
-                    root.height / 2;
-
-
-                drawPath([
-                    {
-                        x:
-                            branchX,
-
-                        y:
-                            rootCenterY
-                    },
-
-                    {
-                        x:
-                            root.x,
-
-                        y:
-                            rootCenterY
-                    }
-                ]);
-            }
-        );
+        return;
     }
 
 
+
     // ==================================================
-    // 父节点 → 子节点
+    // 多根
     // ==================================================
 
-    nodeMap.forEach(
-        parentItem => {
-
-            const parent =
-                parentItem.node;
-
-
-            if (
-                parent.collapsed === true
-            ) {
-
-                return;
-            }
+    const firstCenterY =
+        getNodeCenterY(
+            roots[0]
+        );
 
 
-            if (
-                !Array.isArray(
-                    parent.children
-                ) ||
-                parent.children.length === 0
-            ) {
-
-                return;
-            }
+    const lastCenterY =
+        getNodeCenterY(
+            roots[
+                roots.length - 1
+            ]
+        );
 
 
-            const children =
-                parent.children
-                    .map(
-                        child =>
-                            nodeMap.get(
-                                child.id
-                            )
+    const rootLeft =
+        Math.min(
+            ...roots.map(
+                root =>
+                    getNodeLeft(
+                        root
                     )
-                    .filter(Boolean);
+            )
+        );
 
 
-            if (
-                children.length === 0
-            ) {
+    const branchX =
+        (
+            bookRight +
+            rootLeft
+        ) / 2;
 
-                return;
-            }
 
 
-            // ==================================================
-            // 父节点真正的垂直中心
-            // ==================================================
+    // ==================================================
+    // 书名 → 主干
+    // ==================================================
 
-            const parentCenterY =
-                parentItem.y +
-                parentItem.height / 2;
+    drawPath([
+        {
+            x:
+                bookRight,
 
+            y:
+                bookCenterY
+        },
 
-            const parentRight =
-                parentItem.x +
-                parentItem.width;
-
-
-            // ==================================================
-            // 一个孩子
-            // ==================================================
-
-            if (
-                children.length === 1
-            ) {
-
-                const child =
-                    children[0];
-
-
-                const childLeft =
-                    child.x;
-
-
-                // 孩子真正的垂直中心
-
-                const childCenterY =
-                    child.y +
-                    child.height / 2;
-
-
-                const middleX =
-                    (
-                        parentRight +
-                        childLeft
-                    ) / 2;
-
-
-                // ==================================================
-                // 父节点右侧中心
-                // →
-                // 中间点
-                // →
-                // 孩子左侧中心
-                // ==================================================
-
-                drawPath([
-                    {
-                        x:
-                            parentRight,
-
-                        y:
-                            parentCenterY
-                    },
-
-                    {
-                        x:
-                            middleX,
-
-                        y:
-                            parentCenterY
-                    },
-
-                    {
-                        x:
-                            middleX,
-
-                        y:
-                            childCenterY
-                    },
-
-                    {
-                        x:
-                            childLeft,
-
-                        y:
-                            childCenterY
-                    }
-                ]);
-
-
-                // + / −
-
-                addLineControl(
-                    parent,
-                    middleX,
-                    (
-                        parentCenterY +
-                        childCenterY
-                    ) / 2
-                );
-
-
-                return;
-            }
-
-
-            // ==================================================
-            // 多个孩子
-            // ==================================================
-
-            const firstChild =
-                children[0];
-
-
-            const lastChild =
-                children[
-                    children.length - 1
-                ];
-
-
-            const firstCenterY =
-                firstChild.y +
-                firstChild.height / 2;
-
-
-            const lastCenterY =
-                lastChild.y +
-                lastChild.height / 2;
-
-
-            const branchX =
-                parentRight +
-                (
-                    LEVEL_GAP /
-                    2
-                );
-
-
-            // ==================================================
-            // 父节点 → 分叉主干
-            // ==================================================
-
-            drawPath([
-                {
-                    x:
-                        parentRight,
-
-                    y:
-                        parentCenterY
-                },
-
-                {
-                    x:
-                        branchX,
-
-                    y:
-                        parentCenterY
-                }
-            ]);
-
-
-            // ==================================================
-            // 子节点纵向主干
-            // ==================================================
-
-            drawPath([
-                {
-                    x:
-                        branchX,
-
-                    y:
-                        firstCenterY
-                },
-
-                {
-                    x:
-                        branchX,
-
-                    y:
-                        lastCenterY
-                }
-            ]);
-
-
-            // ==================================================
-            // 纵向主干 → 每个孩子
-            // ==================================================
-
-            children.forEach(
-                child => {
-
-                    const childCenterY =
-                        child.y +
-                        child.height / 2;
-
-
-                    drawPath([
-                        {
-                            x:
-                                branchX,
-
-                            y:
-                                childCenterY
-                        },
-
-                        {
-                            x:
-                                child.x,
-
-                            y:
-                                childCenterY
-                        }
-                    ]);
-                }
-            );
-
-
-            // ==================================================
-            // + / −
-            //
-            // 放在分叉主干中央
-            // ==================================================
-
-            addLineControl(
-                parent,
+        {
+            x:
                 branchX,
-                (
-                    firstCenterY +
-                    lastCenterY
-                ) / 2
-            );
+
+            y:
+                bookCenterY
+        }
+    ]);
+
+
+
+    // ==================================================
+    // 纵向主干
+    // ==================================================
+
+    drawPath([
+        {
+            x:
+                branchX,
+
+            y:
+                firstCenterY
+        },
+
+        {
+            x:
+                branchX,
+
+            y:
+                lastCenterY
+        }
+    ]);
+
+
+
+    // ==================================================
+    // 主干 → 根节点
+    // ==================================================
+
+    roots.forEach(
+        root => {
+
+            const centerY =
+                getNodeCenterY(
+                    root
+                );
+
+
+            const left =
+                getNodeLeft(
+                    root
+                );
+
+
+            drawPath([
+                {
+                    x:
+                        branchX,
+
+                    y:
+                        centerY
+                },
+
+                {
+                    x:
+                        left,
+
+                    y:
+                        centerY
+                }
+            ]);
         }
     );
 }
+
+
+
+// ==================================================
+// 横向：父 → 子
+// ==================================================
+
+function drawHorizontalParentConnections(
+    parent,
+    children,
+    drawPath
+) {
+
+    const parentRight =
+        getNodeRight(
+            parent
+        );
+
+
+    const parentCenterY =
+        getNodeCenterY(
+            parent
+        );
+
+
+
+    // ==================================================
+    // 一个孩子
+    // ==================================================
+
+    if (
+        children.length === 1
+    ) {
+
+        const child =
+            children[0];
+
+
+        const childLeft =
+            getNodeLeft(
+                child
+            );
+
+
+        const childCenterY =
+            getNodeCenterY(
+                child
+            );
+
+
+        const middleX =
+            (
+                parentRight +
+                childLeft
+            ) / 2;
+
+
+
+        drawPath([
+            {
+                x:
+                    parentRight,
+
+                y:
+                    parentCenterY
+            },
+
+            {
+                x:
+                    middleX,
+
+                y:
+                    parentCenterY
+            },
+
+            {
+                x:
+                    middleX,
+
+                y:
+                    childCenterY
+            },
+
+            {
+                x:
+                    childLeft,
+
+                y:
+                    childCenterY
+            }
+        ]);
+
+
+
+        // ==================================================
+        // + / −
+        //
+        // 放在父节点向右的主干
+        // ==================================================
+
+        const controlX =
+            (
+                parentRight +
+                middleX
+            ) / 2;
+
+
+        addLineControl(
+            parent,
+            controlX,
+            parentCenterY
+        );
+
+
+        return;
+    }
+
+
+
+    // ==================================================
+    // 多个孩子
+    // ==================================================
+
+    const childCenters =
+        children.map(
+            child =>
+                getNodeCenterY(
+                    child
+                )
+        );
+
+
+    const firstCenterY =
+        Math.min(
+            ...childCenters
+        );
+
+
+    const lastCenterY =
+        Math.max(
+            ...childCenters
+        );
+
+
+    const childLeft =
+        Math.min(
+            ...children.map(
+                child =>
+                    getNodeLeft(
+                        child
+                    )
+            )
+        );
+
+
+    const branchX =
+        (
+            parentRight +
+            childLeft
+        ) / 2;
+
+
+
+    // ==================================================
+    // 父节点 → 主干
+    // ==================================================
+
+    drawPath([
+        {
+            x:
+                parentRight,
+
+            y:
+                parentCenterY
+        },
+
+        {
+            x:
+                branchX,
+
+            y:
+                parentCenterY
+        }
+    ]);
+
+
+
+    // ==================================================
+    // 纵向主干
+    // ==================================================
+
+    drawPath([
+        {
+            x:
+                branchX,
+
+            y:
+                firstCenterY
+        },
+
+        {
+            x:
+                branchX,
+
+            y:
+                lastCenterY
+        }
+    ]);
+
+
+
+    // ==================================================
+    // 主干 → 子节点
+    // ==================================================
+
+    children.forEach(
+        child => {
+
+            const centerY =
+                getNodeCenterY(
+                    child
+                );
+
+
+            const left =
+                getNodeLeft(
+                    child
+                );
+
+
+            drawPath([
+                {
+                    x:
+                        branchX,
+
+                    y:
+                        centerY
+                },
+
+                {
+                    x:
+                        left,
+
+                    y:
+                        centerY
+                }
+            ]);
+        }
+    );
+
+
+
+    // ==================================================
+    // ★ + / −
+    //
+    // 放在父节点 → 主干
+    // 而不是纵向分叉线上
+    // ==================================================
+
+    const controlX =
+        (
+            parentRight +
+            branchX
+        ) / 2;
+
+
+    addLineControl(
+        parent,
+        controlX,
+        parentCenterY
+    );
+}
+
 
 
 // ==================================================
@@ -1240,6 +1629,28 @@ function addLineControl(
     centerX,
     centerY
 ) {
+
+    // ==================================================
+    // #tree
+    //
+    // ★ SVG 和按钮使用同一个坐标系
+    // ==================================================
+
+    const tree =
+        document.querySelector(
+            "#tree"
+        );
+
+
+    if (!tree) {
+        return;
+    }
+
+
+
+    // ==================================================
+    // 创建按钮
+    // ==================================================
 
     const control =
         document.createElement(
@@ -1255,43 +1666,46 @@ function addLineControl(
         "line-control";
 
 
+
+    // ==================================================
+    // + / −
+    // ==================================================
+
     control.textContent =
-        parentNode.collapsed
+        parentNode.collapsed === true
             ? "+"
             : "−";
 
 
+
     // ==================================================
-    // 尺寸
+    // ★ 统一尺寸
+    //
+    // CSS 也是 26px
     // ==================================================
 
     const size =
-        window.innerWidth <= 600
-            ? 26
-            : 24;
+        26;
+
 
 
     // ==================================================
-    // 精确定位
-    //
-    // centerX / centerY
-    // 是连接线真正的中心坐标
-    //
-    // CSS 中 margin 必须保持 0
+    // ★ 以真正中心定位
     // ==================================================
 
     control.style.left =
         (
-            centerX -
+            Number(centerX) -
             size / 2
         ) + "px";
 
 
     control.style.top =
         (
-            centerY -
+            Number(centerY) -
             size / 2
         ) + "px";
+
 
 
     // ==================================================
@@ -1307,15 +1721,30 @@ function addLineControl(
             event.stopPropagation();
 
 
-            toggleNode(
-                parentNode.id
-            );
+            if (
+                !parentNode
+            ) {
+
+                return;
+            }
+
+
+            if (
+                typeof toggleNode ===
+                "function"
+            ) {
+
+                toggleNode(
+                    parentNode.id
+                );
+            }
         }
     );
 
 
+
     // ==================================================
-    // 防止点击按钮触发画布取消选择
+    // 防止拖动画布
     // ==================================================
 
     control.addEventListener(
@@ -1329,20 +1758,14 @@ function addLineControl(
     );
 
 
+
     // ==================================================
-    // 放入画布
+    // ★ 加入 #tree
+    //
+    // 不再加入 .tree-canvas
     // ==================================================
 
-    const canvas =
-        document.querySelector(
-            ".tree-canvas"
-        );
-
-
-    if (canvas) {
-
-        canvas.appendChild(
-            control
-        );
-    }
+    tree.appendChild(
+        control
+    );
 }
