@@ -76,7 +76,6 @@ body {
 
 /* ==================================================
    页面标题
-   始终位于整个屏幕的水平正中央
 ================================================== */
 
 .page-title {
@@ -134,7 +133,6 @@ body {
 }
 
 .back-button:active {
-
     opacity: 0.5;
 }
 
@@ -233,9 +231,13 @@ body {
 
     fill: none;
 
-    stroke: #cfcfcf;
+    stroke: #999;
 
-    stroke-width: 1.5;
+    stroke-width: 2;
+
+    stroke-linecap: round;
+
+    stroke-linejoin: round;
 
     vector-effect: non-scaling-stroke;
 }
@@ -306,7 +308,6 @@ body {
 }
 
 .book-title:active {
-
     cursor: grabbing;
 }
 
@@ -505,8 +506,15 @@ body {
 
     white-space: nowrap;
 
-    z-index: 50;
+    z-index: 100;
 }
+
+
+/*
+ * 注意：
+ * nodes.js 不再使用行内 display:none
+ * 所以这里可以正常控制显示。
+ */
 
 .tree-node.selected .node-actions {
 
@@ -555,7 +563,6 @@ body {
 }
 
 .node-action-delete {
-
     color: #888;
 }
 
@@ -568,11 +575,13 @@ body {
 
     position: absolute;
 
-    width: 24px;
+    width: 26px;
 
-    height: 24px;
+    height: 26px;
 
     padding: 0;
+
+    margin: -13px 0 0 -13px;
 
     border-radius: 50%;
 
@@ -866,6 +875,8 @@ body {
         width: 26px;
 
         height: 26px;
+
+        margin: -13px 0 0 -13px;
 
         font-size: 16px;
     }
