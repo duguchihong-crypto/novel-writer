@@ -105,16 +105,9 @@ function createActionButton(
     button.type = "button";
 
 
-    if (className) {
-
-        button.className =
-            className;
-
-    } else {
-
-        button.className =
-            "node-action-button";
-    }
+    button.className =
+        className ||
+        "node-action-button";
 
 
     button.textContent =
@@ -128,6 +121,7 @@ function createActionButton(
             event.preventDefault();
 
             event.stopPropagation();
+
 
             if (
                 typeof callback ===
@@ -253,6 +247,7 @@ function createNodeElement(node) {
 
             event.stopPropagation();
 
+
             selectNode(
                 node.id
             );
@@ -278,8 +273,18 @@ function createNodeElement(node) {
         "node-actions";
 
 
-    actions.style.display =
-        "none";
+    /*
+     * 注意：
+     *
+     * 这里故意不写：
+     *
+     * actions.style.display = "none";
+     *
+     * 显示/隐藏交给 CSS：
+     *
+     * .tree-node.selected .node-actions
+     *
+     */
 
 
     actions.dataset.nodeId =
@@ -366,13 +371,16 @@ function createNodeElement(node) {
             sameButton
         );
 
+
         actions.appendChild(
             partButton
         );
 
+
         actions.appendChild(
             chapterButton
         );
+
     }
 
 
@@ -418,9 +426,11 @@ function createNodeElement(node) {
             sameButton
         );
 
+
         actions.appendChild(
             chapterButton
         );
+
     }
 
 
@@ -433,7 +443,12 @@ function createNodeElement(node) {
         NODE_TYPES.CHAPTER
     ) {
 
-        // 目前只有删除
+        /*
+         * 章目前只有：
+         *
+         * 删除
+         */
+
     }
 
 
@@ -446,9 +461,18 @@ function createNodeElement(node) {
         NODE_TYPES.PREFACE
     ) {
 
-        // 目前只有删除
+        /*
+         * 序目前只有：
+         *
+         * 删除
+         */
+
     }
 
+
+    // ==============================
+    // 加入操作区域
+    // ==============================
 
     wrapper.appendChild(
         actions
