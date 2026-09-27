@@ -7,39 +7,80 @@
    页面元素
 ================================================== */
 
-const createButton = document.getElementById("createButton");
-const settingsButton = document.getElementById("settingsButton");
-const finishSortButton = document.getElementById("finishSortButton");
+const createButton =
+    document.getElementById("createButton");
 
-const createBookButton = document.getElementById("createBookButton");
-const createCollectionButton = document.getElementById("createCollectionButton");
+const settingsButton =
+    document.getElementById("settingsButton");
 
-const sortBooksButton = document.getElementById("sortBooksButton");
-const gridButton = document.getElementById("gridButton");
-const listButton = document.getElementById("listButton");
-
-const bookGrid = document.getElementById("bookGrid");
-
-const bookMenuOverlay = document.getElementById("bookMenuOverlay");
-const bookContextMenu = document.getElementById("bookContextMenu");
-const contextMenuTitle = document.getElementById("contextMenuTitle");
-
-const contextEdit = document.getElementById("contextEdit");
-const contextSort = document.getElementById("contextSort");
-const contextGroup = document.getElementById("contextGroup");
-const contextDelete = document.getElementById("contextDelete");
-
-const shelfNav = document.getElementById("shelfNav");
-const toolsNav = document.getElementById("toolsNav");
-const meNav = document.getElementById("meNav");
+const finishSortButton =
+    document.getElementById("finishSortButton");
 
 
-/* ==================================================
-   拖拽状态
-================================================== */
+const createBookButton =
+    document.getElementById("createBookButton");
 
-let draggingCard = null;
-let isDraggingBook = false;
+const createCollectionButton =
+    document.getElementById("createCollectionButton");
+
+
+const sortBooksButton =
+    document.getElementById("sortBooksButton");
+
+const gridButton =
+    document.getElementById("gridButton");
+
+const listButton =
+    document.getElementById("listButton");
+
+
+const bookGrid =
+    document.getElementById("bookGrid");
+
+
+const bookMenuOverlay =
+    document.getElementById("bookMenuOverlay");
+
+const bookContextMenu =
+    document.getElementById("bookContextMenu");
+
+const contextMenuTitle =
+    document.getElementById("contextMenuTitle");
+
+
+const contextEdit =
+    document.getElementById("contextEdit");
+
+const contextSort =
+    document.getElementById("contextSort");
+
+const contextGroup =
+    document.getElementById("contextGroup");
+
+const contextDelete =
+    document.getElementById("contextDelete");
+
+
+const shelfNav =
+    document.getElementById("shelfNav");
+
+const toolsNav =
+    document.getElementById("toolsNav");
+
+const meNav =
+    document.getElementById("meNav");
+
+
+/*
+ * 注意：
+ *
+ * draggingCard
+ * isDraggingBook
+ *
+ * 已经在 shelf-state.js 中声明。
+ *
+ * 这里绝对不要再次 let。
+ */
 
 
 /* ==================================================
@@ -48,43 +89,32 @@ let isDraggingBook = false;
 
 function initShelf() {
 
-    /*
-     * 第一优先级：
-     * 先绑定按钮事件。
-     *
-     * 即使书架渲染出现问题，
-     * 「＋ 新建」也应该能够工作。
-     */
     bindShelfEvents();
 
 
-    /*
-     * 读取数据
-     */
+    /* 读取书籍 */
+
     if (typeof loadBooks === "function") {
         loadBooks();
     }
 
 
-    /*
-     * 读取显示模式
-     */
+    /* 读取显示模式 */
+
     if (typeof loadShelfViewMode === "function") {
         loadShelfViewMode();
     }
 
 
-    /*
-     * 渲染书架
-     */
+    /* 渲染 */
+
     if (typeof renderBooks === "function") {
         renderBooks();
     }
 
 
-    /*
-     * 应用显示模式
-     */
+    /* 应用显示模式 */
+
     if (typeof applyShelfViewMode === "function") {
         applyShelfViewMode();
     }
@@ -329,7 +359,7 @@ function bindShelfEvents() {
 
 
     /* ------------------------------------------
-       点击页面其他位置
+       页面其他位置
     ------------------------------------------ */
 
     document.addEventListener(
@@ -346,6 +376,7 @@ function bindShelfEvents() {
 function toggleCreateMenu(event) {
 
     event.stopPropagation();
+
 
     const createMenu =
         document.getElementById("createMenu");
@@ -376,6 +407,7 @@ function toggleCreateMenu(event) {
 function toggleSettingsMenu(event) {
 
     event.stopPropagation();
+
 
     const settingsMenu =
         document.getElementById("settingsMenu");
@@ -441,7 +473,8 @@ function createNewBook() {
 
     closeAllMenus();
 
-    window.location.href = "create-book.html";
+    window.location.href =
+        "create-book.html";
 }
 
 
@@ -453,7 +486,9 @@ function createCollection() {
 
     closeAllMenus();
 
-    alert("组合功能正在开发中。");
+    alert(
+        "组合功能正在开发中。"
+    );
 }
 
 
@@ -465,17 +500,30 @@ function setGridView() {
 
     closeAllMenus();
 
+
     shelfViewMode = "grid";
 
-    if (typeof saveShelfViewMode === "function") {
+
+    if (
+        typeof saveShelfViewMode ===
+        "function"
+    ) {
+
         saveShelfViewMode("grid");
     }
 
-    if (typeof applyShelfViewMode === "function") {
+
+    if (
+        typeof applyShelfViewMode ===
+        "function"
+    ) {
+
         applyShelfViewMode();
     }
 
+
     if (isSorting) {
+
         renderSortingMode();
     }
 }
@@ -489,17 +537,30 @@ function setListView() {
 
     closeAllMenus();
 
+
     shelfViewMode = "list";
 
-    if (typeof saveShelfViewMode === "function") {
+
+    if (
+        typeof saveShelfViewMode ===
+        "function"
+    ) {
+
         saveShelfViewMode("list");
     }
 
-    if (typeof applyShelfViewMode === "function") {
+
+    if (
+        typeof applyShelfViewMode ===
+        "function"
+    ) {
+
         applyShelfViewMode();
     }
 
+
     if (isSorting) {
+
         renderSortingMode();
     }
 }
@@ -511,21 +572,29 @@ function setListView() {
 
 function handleBookGridClick(event) {
 
-    /* 删除 */
+    /* ------------------------------------------
+       删除
+    ------------------------------------------ */
 
     const deleteButton =
-        event.target.closest(".delete-book-button");
+        event.target.closest(
+            ".delete-book-button"
+        );
 
 
     if (deleteButton) {
 
         event.preventDefault();
+
         event.stopPropagation();
 
         cancelLongPress();
 
+
         const card =
-            deleteButton.closest(".book-card");
+            deleteButton.closest(
+                ".book-card"
+            );
 
 
         if (!card) {
@@ -533,13 +602,17 @@ function handleBookGridClick(event) {
         }
 
 
-        deleteBook(card.dataset.bookId);
+        deleteBook(
+            card.dataset.bookId
+        );
 
         return;
     }
 
 
-    /* 长按后不执行普通点击 */
+    /* ------------------------------------------
+       长按后不执行普通点击
+    ------------------------------------------ */
 
     if (longPressTriggered) {
 
@@ -549,7 +622,9 @@ function handleBookGridClick(event) {
     }
 
 
-    /* 排序模式 */
+    /* ------------------------------------------
+       排序模式
+    ------------------------------------------ */
 
     if (isSorting) {
         return;
@@ -557,7 +632,9 @@ function handleBookGridClick(event) {
 
 
     const card =
-        event.target.closest(".book-card");
+        event.target.closest(
+            ".book-card"
+        );
 
 
     if (!card) {
@@ -578,10 +655,14 @@ function handleBookGridClick(event) {
     }
 
 
-    /* 点击封面 */
+    /* ------------------------------------------
+       点击封面
+    ------------------------------------------ */
 
     if (
-        event.target.closest(".book-cover")
+        event.target.closest(
+            ".book-cover"
+        )
     ) {
 
         openEditBook(bookId);
@@ -590,10 +671,14 @@ function handleBookGridClick(event) {
     }
 
 
-    /* 点击书名 */
+    /* ------------------------------------------
+       点击书名
+    ------------------------------------------ */
 
     if (
-        event.target.closest(".book-title")
+        event.target.closest(
+            ".book-title"
+        )
     ) {
 
         openBook(bookId);
@@ -623,11 +708,14 @@ function openBook(bookId) {
         String(bookId)
     );
 
+
     localStorage.removeItem(
         "currentChapterId"
     );
 
-    window.location.href = "book.html";
+
+    window.location.href =
+        "book.html";
 }
 
 
@@ -651,11 +739,14 @@ function openEditBook(bookId) {
         String(bookId)
     );
 
+
     localStorage.removeItem(
         "currentChapterId"
     );
 
-    window.location.href = "edit-book.html";
+
+    window.location.href =
+        "edit-book.html";
 }
 
 
@@ -675,7 +766,8 @@ function deleteBook(bookId) {
 
 
     const title =
-        book.title || "未命名小说";
+        book.title ||
+        "未命名小说";
 
 
     const confirmed =
@@ -692,13 +784,14 @@ function deleteBook(bookId) {
     }
 
 
-    books = books.filter(
-        function(item) {
+    books =
+        books.filter(
+            function(item) {
 
-            return String(item.id) !==
-                String(bookId);
-        }
-    );
+                return String(item.id) !==
+                    String(bookId);
+            }
+        );
 
 
     if (!saveBooks()) {
@@ -707,7 +800,9 @@ function deleteBook(bookId) {
 
 
     const currentBookId =
-        localStorage.getItem("currentBookId");
+        localStorage.getItem(
+            "currentBookId"
+        );
 
 
     if (
@@ -726,12 +821,17 @@ function deleteBook(bookId) {
     }
 
 
-    if (typeof renderBooks === "function") {
+    if (
+        typeof renderBooks ===
+        "function"
+    ) {
+
         renderBooks();
     }
 
 
     if (isSorting) {
+
         renderSortingMode();
     }
 }
@@ -757,12 +857,15 @@ function handlePointerDown(event) {
         event.pointerType === "mouse" &&
         event.button !== 0
     ) {
+
         return;
     }
 
 
     const card =
-        event.target.closest(".book-card");
+        event.target.closest(
+            ".book-card"
+        );
 
 
     if (!card) {
@@ -771,8 +874,11 @@ function handlePointerDown(event) {
 
 
     if (
-        event.target.closest(".delete-book-button")
+        event.target.closest(
+            ".delete-book-button"
+        )
     ) {
+
         return;
     }
 
@@ -782,13 +888,21 @@ function handlePointerDown(event) {
 
     pressedCard = card;
 
-    pressStartX = event.clientX;
-    pressStartY = event.clientY;
 
-    longPressTriggered = false;
+    pressStartX =
+        event.clientX;
+
+    pressStartY =
+        event.clientY;
 
 
-    card.classList.add("long-pressing");
+    longPressTriggered =
+        false;
+
+
+    card.classList.add(
+        "long-pressing"
+    );
 
 
     longPressTimer =
@@ -807,6 +921,7 @@ function handlePointerDown(event) {
                 longPressBookId =
                     bookId;
 
+
                 longPressTriggered =
                     true;
 
@@ -822,7 +937,8 @@ function handlePointerDown(event) {
                 );
 
 
-                longPressTimer = null;
+                longPressTimer =
+                    null;
 
             },
             LONG_PRESS_TIME
@@ -836,7 +952,11 @@ function handlePointerDown(event) {
 
 function handlePointerMove(event) {
 
-    if (!longPressTimer || !pressedCard) {
+    if (
+        !longPressTimer ||
+        !pressedCard
+    ) {
+
         return;
     }
 
@@ -856,8 +976,10 @@ function handlePointerMove(event) {
 
 
     if (
-        distanceX > MOVE_CANCEL_DISTANCE ||
-        distanceY > MOVE_CANCEL_DISTANCE
+        distanceX >
+            MOVE_CANCEL_DISTANCE ||
+        distanceY >
+            MOVE_CANCEL_DISTANCE
     ) {
 
         cancelLongPress();
@@ -873,7 +995,9 @@ function handlePointerUp() {
 
     if (longPressTimer) {
 
-        clearTimeout(longPressTimer);
+        clearTimeout(
+            longPressTimer
+        );
 
         longPressTimer = null;
     }
@@ -888,6 +1012,7 @@ function handlePointerUp() {
             );
         }
 
+
         pressedCard = null;
     }
 }
@@ -899,7 +1024,10 @@ function handlePointerUp() {
 
 function handlePointerLeave(event) {
 
-    if (event.pointerType === "mouse") {
+    if (
+        event.pointerType ===
+        "mouse"
+    ) {
 
         cancelLongPress();
     }
@@ -914,7 +1042,9 @@ function cancelLongPress() {
 
     if (longPressTimer) {
 
-        clearTimeout(longPressTimer);
+        clearTimeout(
+            longPressTimer
+        );
 
         longPressTimer = null;
     }
@@ -946,7 +1076,10 @@ function handleContextMenu(event) {
    显示长按菜单
 ================================================== */
 
-function showBookContextMenu(bookId, card) {
+function showBookContextMenu(
+    bookId,
+    card
+) {
 
     const book =
         getBookById(bookId);
@@ -957,34 +1090,43 @@ function showBookContextMenu(bookId, card) {
     }
 
 
-    longPressBookId = bookId;
+    longPressBookId =
+        bookId;
 
 
     if (contextMenuTitle) {
 
         contextMenuTitle.textContent =
-            book.title || "未命名小说";
+            book.title ||
+            "未命名小说";
     }
 
 
     if (bookMenuOverlay) {
 
-        bookMenuOverlay.classList.add("show");
+        bookMenuOverlay.classList.add(
+            "show"
+        );
     }
 
 
     if (bookContextMenu) {
 
-        bookContextMenu.classList.add("show");
+        bookContextMenu.classList.add(
+            "show"
+        );
     }
 
 
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow =
+        "hidden";
 
 
     if (card) {
 
-        card.classList.add("long-pressed");
+        card.classList.add(
+            "long-pressed"
+        );
     }
 }
 
@@ -997,19 +1139,26 @@ function closeBookContextMenu() {
 
     if (bookMenuOverlay) {
 
-        bookMenuOverlay.classList.remove("show");
+        bookMenuOverlay.classList.remove(
+            "show"
+        );
     }
 
 
     if (bookContextMenu) {
 
-        bookContextMenu.classList.remove("show");
+        bookContextMenu.classList.remove(
+            "show"
+        );
     }
 
 
-    document.body.style.overflow = "";
+    document.body.style.overflow =
+        "";
 
-    longPressBookId = null;
+
+    longPressBookId =
+        null;
 }
 
 
@@ -1019,13 +1168,17 @@ function closeBookContextMenu() {
 
 function contextEditBook() {
 
-    const bookId = longPressBookId;
+    const bookId =
+        longPressBookId;
+
 
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     openEditBook(bookId);
 }
@@ -1037,13 +1190,17 @@ function contextEditBook() {
 
 function contextSortBook() {
 
-    const bookId = longPressBookId;
+    const bookId =
+        longPressBookId;
+
 
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     startSorting();
 }
@@ -1055,13 +1212,17 @@ function contextSortBook() {
 
 function contextMoveBook() {
 
-    const bookId = longPressBookId;
+    const bookId =
+        longPressBookId;
+
 
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     moveBookToGroup(bookId);
 }
@@ -1073,13 +1234,17 @@ function contextMoveBook() {
 
 function contextDeleteBook() {
 
-    const bookId = longPressBookId;
+    const bookId =
+        longPressBookId;
+
 
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     deleteBook(bookId);
 }
@@ -1092,21 +1257,29 @@ function contextDeleteBook() {
 function closeAllMenus() {
 
     const createMenu =
-        document.getElementById("createMenu");
+        document.getElementById(
+            "createMenu"
+        );
 
     const settingsMenu =
-        document.getElementById("settingsMenu");
+        document.getElementById(
+            "settingsMenu"
+        );
 
 
     if (createMenu) {
 
-        createMenu.classList.remove("show");
+        createMenu.classList.remove(
+            "show"
+        );
     }
 
 
     if (settingsMenu) {
 
-        settingsMenu.classList.remove("show");
+        settingsMenu.classList.remove(
+            "show"
+        );
     }
 }
 
@@ -1118,6 +1291,7 @@ function closeAllMenus() {
 function startSorting() {
 
     closeAllMenus();
+
     closeBookContextMenu();
 
 
@@ -1128,16 +1302,25 @@ function startSorting() {
 
     isSorting = true;
 
-    document.body.classList.add("sorting");
+
+    document.body.classList.add(
+        "sorting"
+    );
 
 
-    if (typeof renderSortingMode === "function") {
+    if (
+        typeof renderSortingMode ===
+        "function"
+    ) {
+
         renderSortingMode();
     }
 
 
     const cards =
-        document.querySelectorAll(".book-card");
+        document.querySelectorAll(
+            ".book-card"
+        );
 
 
     cards.forEach(
@@ -1195,13 +1378,16 @@ function handleDragStart(event) {
         true;
 
 
-    draggingCard.classList.add("dragging");
+    draggingCard.classList.add(
+        "dragging"
+    );
 
 
     if (event.dataTransfer) {
 
         event.dataTransfer.effectAllowed =
             "move";
+
 
         event.dataTransfer.setData(
             "text/plain",
@@ -1221,6 +1407,7 @@ function handleDragOver(event) {
         !isSorting ||
         !draggingCard
     ) {
+
         return;
     }
 
@@ -1246,7 +1433,10 @@ function handleDragOver(event) {
         rect.height / 2;
 
 
-    if (event.clientY < middle) {
+    if (
+        event.clientY <
+        middle
+    ) {
 
         bookGrid.insertBefore(
             draggingCard,
@@ -1276,7 +1466,9 @@ function handleDragOver(event) {
         );
 
 
-    target.classList.add("drag-over");
+    target.classList.add(
+        "drag-over"
+    );
 }
 
 
@@ -1371,10 +1563,12 @@ function updateBookOrder() {
 
 
     if (
-        newBooks.length === books.length
+        newBooks.length ===
+        books.length
     ) {
 
-        books = newBooks;
+        books =
+            newBooks;
     }
 }
 
@@ -1400,6 +1594,7 @@ function finishSorting() {
 
     isSorting = false;
 
+
     draggingCard = null;
 
     isDraggingBook = false;
@@ -1411,7 +1606,9 @@ function finishSorting() {
 
 
     document
-        .querySelectorAll(".book-card")
+        .querySelectorAll(
+            ".book-card"
+        )
         .forEach(
             function(card) {
 
@@ -1419,9 +1616,11 @@ function finishSorting() {
                     "draggable"
                 );
 
+
                 card.classList.remove(
                     "dragging"
                 );
+
 
                 card.classList.remove(
                     "drag-over"
@@ -1430,12 +1629,20 @@ function finishSorting() {
         );
 
 
-    if (typeof renderBooks === "function") {
+    if (
+        typeof renderBooks ===
+        "function"
+    ) {
+
         renderBooks();
     }
 
 
-    if (typeof applyShelfViewMode === "function") {
+    if (
+        typeof applyShelfViewMode ===
+        "function"
+    ) {
+
         applyShelfViewMode();
     }
 }
@@ -1458,7 +1665,10 @@ function moveBookToGroup(bookId) {
 
     alert(
         "准备将《" +
-        (book.title || "未命名书籍") +
+        (
+            book.title ||
+            "未命名书籍"
+        ) +
         "》移动到分组。\n\n" +
         "分组系统下一步加入。"
     );
@@ -1471,19 +1681,24 @@ function moveBookToGroup(bookId) {
 
 function goShelf() {
 
-    window.location.href = "index.html";
+    window.location.href =
+        "index.html";
 }
 
 
 function goTools() {
 
-    alert("工具功能正在开发中。");
+    alert(
+        "工具功能正在开发中。"
+    );
 }
 
 
 function goMe() {
 
-    alert("我的功能正在开发中。");
+    alert(
+        "我的功能正在开发中。"
+    );
 }
 
 
