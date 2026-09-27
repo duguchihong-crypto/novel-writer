@@ -238,12 +238,96 @@ function renderTree() {
 
     if (!hasStructure) {
 
+        // ==========================================
+        // 关闭自动布局
+        // ==========================================
+
         autoLayoutEnabled =
             false;
 
         connectionsVisible =
             false;
 
+        currentLayout =
+            null;
+
+
+        // ==========================================
+        // 恢复画布尺寸
+        // 防止之前添加卷/篇/章后留下大画布
+        // ==========================================
+
+        const canvasWidth =
+            canvas.clientWidth ||
+            window.innerWidth;
+
+
+        const canvasHeight =
+            canvas.clientHeight ||
+            (
+                window.innerHeight -
+                56
+            );
+
+
+        treeWidth =
+            canvasWidth;
+
+        treeHeight =
+            canvasHeight;
+
+
+        treeCanvasWidth =
+            canvasWidth;
+
+        treeCanvasHeight =
+            canvasHeight;
+
+
+        tree.style.width =
+            "100%";
+
+        tree.style.height =
+            "100%";
+
+
+        // ==========================================
+        // 清除之前树结构产生的滚动位置
+        // ==========================================
+
+        canvas.scrollLeft =
+            0;
+
+        canvas.scrollTop =
+            0;
+
+
+        // ==========================================
+        // 清除 SVG 尺寸
+        // ==========================================
+
+        if (svg) {
+
+            svg.setAttribute(
+                "width",
+                canvasWidth
+            );
+
+            svg.setAttribute(
+                "height",
+                canvasHeight
+            );
+
+            svg.setAttribute(
+                "viewBox",
+                `0 0 ${canvasWidth} ${canvasHeight}`
+            );
+        }
+
+
+        // ==========================================
+        // 空状态提示
+        // ==========================================
 
         const hint =
             document.createElement(
@@ -264,10 +348,9 @@ function renderTree() {
         );
 
 
-        // ==================================================
-        // 关键：
-        // 等浏览器完成本次布局后再居中
-        // ==================================================
+        // ==========================================
+        // 等浏览器完成布局后居中
+        // ==========================================
 
         requestAnimationFrame(
             function() {
@@ -581,7 +664,7 @@ function centerBookTitle() {
 
 
     // ==================================================
-    // 保存位置
+    // 保存当前位置
     // ==================================================
 
     bookPosition.x =
