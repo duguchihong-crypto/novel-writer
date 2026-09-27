@@ -141,11 +141,19 @@ function init() {
     }
 
 
-    document.getElementById(
-        "bookTitle"
-    ).textContent =
-        currentBook.title ||
-        "未命名小说";
+    const bookTitle =
+        document.getElementById(
+            "bookTitle"
+        );
+
+
+    if (bookTitle) {
+
+        bookTitle.textContent =
+            currentBook.title ||
+            "未命名小说";
+
+    }
 
 
     setupEvents();
@@ -215,14 +223,20 @@ function createNode(
 
 function setupEvents() {
 
-    document
-        .getElementById(
+    const backButton =
+        document.getElementById(
             "backButton"
-        )
-        .addEventListener(
+        );
+
+
+    if (backButton) {
+
+        backButton.addEventListener(
             "click",
             goBack
         );
+
+    }
 
 
     const bookTitle =
@@ -235,41 +249,51 @@ function setupEvents() {
        点击书名
     */
 
-    bookTitle.addEventListener(
-        "click",
-        function(event) {
+    if (bookTitle) {
 
-            if (draggingBook) {
+        bookTitle.addEventListener(
+            "click",
+            function(event) {
 
-                return;
+                if (draggingBook) {
+
+                    return;
+
+                }
+
+                event.stopPropagation();
+
+                selectBook();
 
             }
-
-            event.stopPropagation();
-
-            selectBook();
-
-        }
-    );
+        );
 
 
-    /*
-       拖动书名
-    */
+        /*
+           拖动书名
+        */
 
-    bookTitle.addEventListener(
-        "pointerdown",
-        startBookDrag
-    );
+        bookTitle.addEventListener(
+            "pointerdown",
+            startBookDrag
+        );
+
+    }
 
 
     /*
        点击空白
     */
 
-    document
-        .getElementById("main")
-        .addEventListener(
+    const main =
+        document.getElementById(
+            "main"
+        );
+
+
+    if (main) {
+
+        main.addEventListener(
             "click",
             function(event) {
 
@@ -278,15 +302,9 @@ function setupEvents() {
 
 
                 if (
-                    target ===
-                        document.getElementById("main") ||
-
-                    target ===
-                        document.getElementById("structureArea") ||
-
-                    target ===
-                        document.getElementById("canvas") ||
-
+                    target === main ||
+                    target.id === "structureArea" ||
+                    target.id === "canvas" ||
                     target.id === "tree"
                 ) {
 
@@ -297,16 +315,22 @@ function setupEvents() {
             }
         );
 
+    }
+
 
     /*
        底部按钮
     */
 
-    document
-        .getElementById(
+    const addPrefaceButton =
+        document.getElementById(
             "addPrefaceButton"
-        )
-        .addEventListener(
+        );
+
+
+    if (addPrefaceButton) {
+
+        addPrefaceButton.addEventListener(
             "click",
             function(event) {
 
@@ -317,12 +341,18 @@ function setupEvents() {
             }
         );
 
+    }
 
-    document
-        .getElementById(
+
+    const addChapterButton =
+        document.getElementById(
             "addChapterButton"
-        )
-        .addEventListener(
+        );
+
+
+    if (addChapterButton) {
+
+        addChapterButton.addEventListener(
             "click",
             function(event) {
 
@@ -333,12 +363,18 @@ function setupEvents() {
             }
         );
 
+    }
 
-    document
-        .getElementById(
+
+    const addPartButton =
+        document.getElementById(
             "addPartButton"
-        )
-        .addEventListener(
+        );
+
+
+    if (addPartButton) {
+
+        addPartButton.addEventListener(
             "click",
             function(event) {
 
@@ -349,12 +385,18 @@ function setupEvents() {
             }
         );
 
+    }
 
-    document
-        .getElementById(
+
+    const addVolumeButton =
+        document.getElementById(
             "addVolumeButton"
-        )
-        .addEventListener(
+        );
+
+
+    if (addVolumeButton) {
+
+        addVolumeButton.addEventListener(
             "click",
             function(event) {
 
@@ -364,6 +406,8 @@ function setupEvents() {
 
             }
         );
+
+    }
 
 }
 
@@ -394,22 +438,34 @@ function selectBook() {
         );
 
 
-    document
-        .getElementById(
+    const bookTitle =
+        document.getElementById(
             "bookTitle"
-        )
-        .classList.add(
+        );
+
+
+    if (bookTitle) {
+
+        bookTitle.classList.add(
             "selected"
         );
 
+    }
 
-    document
-        .getElementById(
+
+    const bottomBar =
+        document.getElementById(
             "bottomBar"
-        )
-        .classList.add(
+        );
+
+
+    if (bottomBar) {
+
+        bottomBar.classList.add(
             "visible"
         );
+
+    }
 
 }
 
@@ -426,22 +482,34 @@ function selectNode(node) {
     selectedIsBook = false;
 
 
-    document
-        .getElementById(
+    const bottomBar =
+        document.getElementById(
             "bottomBar"
-        )
-        .classList.remove(
+        );
+
+
+    if (bottomBar) {
+
+        bottomBar.classList.remove(
             "visible"
         );
 
+    }
 
-    document
-        .getElementById(
+
+    const bookTitle =
+        document.getElementById(
             "bookTitle"
-        )
-        .classList.remove(
+        );
+
+
+    if (bookTitle) {
+
+        bookTitle.classList.remove(
             "selected"
         );
+
+    }
 
 
     document
@@ -489,22 +557,34 @@ function clearSelection() {
     selectedIsBook = false;
 
 
-    document
-        .getElementById(
+    const bottomBar =
+        document.getElementById(
             "bottomBar"
-        )
-        .classList.remove(
+        );
+
+
+    if (bottomBar) {
+
+        bottomBar.classList.remove(
             "visible"
         );
 
+    }
 
-    document
-        .getElementById(
+
+    const bookTitle =
+        document.getElementById(
             "bookTitle"
-        )
-        .classList.remove(
+        );
+
+
+    if (bookTitle) {
+
+        bookTitle.classList.remove(
             "selected"
         );
+
+    }
 
 
     document
@@ -556,14 +636,25 @@ function startBookDrag(event) {
         );
 
 
+    const canvas =
+        document.getElementById(
+            "canvas"
+        );
+
+
+    if (!bookNode || !canvas) {
+
+        return;
+
+    }
+
+
     const rect =
         bookNode.getBoundingClientRect();
 
 
     const canvasRect =
-        document
-            .getElementById("canvas")
-            .getBoundingClientRect();
+        canvas.getBoundingClientRect();
 
 
     dragStartX =
@@ -586,9 +677,13 @@ function startBookDrag(event) {
     draggingBook = false;
 
 
-    bookNode.setPointerCapture(
-        event.pointerId
-    );
+    try {
+
+        bookNode.setPointerCapture(
+            event.pointerId
+        );
+
+    } catch (error) {}
 
 
     function move(pointerEvent) {
@@ -687,6 +782,10 @@ function startBookDrag(event) {
                 50
             );
 
+        } else {
+
+            draggingBook = false;
+
         }
 
     }
@@ -716,6 +815,13 @@ function applyBookPosition() {
         document.getElementById(
             "bookNode"
         );
+
+
+    if (!bookNode) {
+
+        return;
+
+    }
 
 
     if (
@@ -751,8 +857,11 @@ function applyBookPosition() {
 
 
         bookPosition.x =
-            (rect.width -
-                book.width) / 2;
+            Math.max(
+                20,
+                (rect.width -
+                    book.width) / 2
+            );
 
 
         bookPosition.y =
@@ -807,7 +916,7 @@ function addRootPreface() {
 
         createNode(
             "序",
-            "序章："
+            "序"
         )
 
     );
@@ -979,7 +1088,7 @@ function getNextNumberFromArray(
 
 
 /* ==================================================
-   渲染
+   渲染整个树
 ================================================== */
 
 function renderTree() {
@@ -1002,13 +1111,35 @@ function renderTree() {
         );
 
 
+    if (
+        !canvas ||
+        !tree ||
+        !svg ||
+        !currentBook
+    ) {
+
+        return;
+
+    }
+
+
     /*
-       清除旧内容
+       清除旧节点
     */
 
     tree.innerHTML = "";
 
+
+    /*
+       清除旧 SVG
+    */
+
     svg.innerHTML = "";
+
+
+    /*
+       清除旧的 + / -
+    */
 
     document
         .querySelectorAll(
@@ -1089,18 +1220,22 @@ function renderTree() {
         );
 
 
-    bookNode.style.left =
-        layout.book.x +
-        "px";
+    if (bookNode) {
+
+        bookNode.style.left =
+            layout.book.x +
+            "px";
 
 
-    bookNode.style.top =
-        layout.book.y +
-        "px";
+        bookNode.style.top =
+            layout.book.y +
+            "px";
+
+    }
 
 
     /*
-       节点
+       创建所有节点
     */
 
     layout.nodes.forEach(
@@ -1125,10 +1260,21 @@ function renderTree() {
 
 
     /*
-       连线
+       浏览器完成 DOM 布局后
+       再画线
+
+       这样可以获得节点真实尺寸
     */
 
-    drawConnections(layout);
+    requestAnimationFrame(
+        function() {
+
+            drawConnections(
+                layout
+            );
+
+        }
+    );
 
 
     /*
@@ -1173,7 +1319,8 @@ function calculateLayout() {
     const canvasWidth =
         Math.max(
             canvas.clientWidth,
-            window.innerWidth
+            window.innerWidth,
+            600
         );
 
 
@@ -1184,7 +1331,7 @@ function calculateLayout() {
 
 
     /*
-       计算子树宽度
+       计算每棵子树宽度
     */
 
     function calculateWidth(node) {
@@ -1213,7 +1360,9 @@ function calculateLayout() {
             function(child, index) {
 
                 width +=
-                    calculateWidth(child);
+                    calculateWidth(
+                        child
+                    );
 
 
                 if (
@@ -1253,6 +1402,10 @@ function calculateLayout() {
     );
 
 
+    /*
+       总宽度
+    */
+
     let totalWidth = 0;
 
 
@@ -1286,15 +1439,21 @@ function calculateLayout() {
         );
 
 
+    /*
+       给左右留空间
+    */
+
     const contentWidth =
         Math.max(
             canvasWidth,
-            totalWidth + 120
+            totalWidth + 100
         );
 
 
     /*
+       ==================================================
        书名
+       ==================================================
     */
 
     const bookElement =
@@ -1314,11 +1473,14 @@ function calculateLayout() {
 
 
     const bookX =
-        (contentWidth -
-            bookWidth) / 2;
+        (
+            contentWidth -
+            bookWidth
+        ) / 2;
 
 
-    const bookY = 50;
+    const bookY =
+        50;
 
 
     /*
@@ -1326,16 +1488,21 @@ function calculateLayout() {
     */
 
     const rootY =
-        bookY + 115;
+        bookY +
+        115;
 
 
     let currentX =
-        (contentWidth -
-            totalWidth) / 2;
+        (
+            contentWidth -
+            totalWidth
+        ) / 2;
 
 
     /*
+       ==================================================
        放置节点
+       ==================================================
     */
 
     function placeNode(
@@ -1352,8 +1519,10 @@ function calculateLayout() {
 
         const x =
             subtreeX +
-            (subtreeWidth -
-                NODE_WIDTH) / 2;
+            (
+                subtreeWidth -
+                NODE_WIDTH
+            ) / 2;
 
 
         nodes.push({
@@ -1366,6 +1535,10 @@ function calculateLayout() {
 
         });
 
+
+        /*
+           收起或没有孩子
+        */
 
         if (
             node.collapsed ||
@@ -1397,7 +1570,8 @@ function calculateLayout() {
 
                     childX,
 
-                    y + LEVEL_GAP
+                    y +
+                    LEVEL_GAP
 
                 );
 
@@ -1411,6 +1585,10 @@ function calculateLayout() {
 
     }
 
+
+    /*
+       放置所有根节点
+    */
 
     currentBook.structure.forEach(
         function(node) {
@@ -1440,8 +1618,13 @@ function calculateLayout() {
     );
 
 
+    /*
+       计算高度
+    */
+
     let maxY =
-        rootY + NODE_HEIGHT;
+        rootY +
+        NODE_HEIGHT;
 
 
     nodes.forEach(
@@ -1460,19 +1643,24 @@ function calculateLayout() {
 
     return {
 
-        width: contentWidth,
+        width:
+            contentWidth,
 
-        height: maxY,
+        height:
+            maxY,
 
         book: {
 
-            x: bookX,
+            x:
+                bookX,
 
-            y: bookY
+            y:
+                bookY
 
         },
 
-        nodes: nodes
+        nodes:
+            nodes
 
     };
 
@@ -1504,11 +1692,13 @@ function createNodeElement(
 
 
     wrapper.style.left =
-        x + "px";
+        x +
+        "px";
 
 
     wrapper.style.top =
-        y + "px";
+        y +
+        "px";
 
 
     /*
@@ -1538,7 +1728,9 @@ function createNodeElement(
 
             event.stopPropagation();
 
-            selectNode(node);
+            selectNode(
+                node
+            );
 
         }
     );
@@ -1550,7 +1742,9 @@ function createNodeElement(
 
 
     /*
+       ==================================================
        操作区域
+       ==================================================
     */
 
     const actions =
@@ -1601,7 +1795,9 @@ function createNodeElement(
 
 
     /*
+       ==================================================
        卷
+       ==================================================
     */
 
     if (
@@ -1668,7 +1864,9 @@ function createNodeElement(
 
 
     /*
+       ==================================================
        篇
+       ==================================================
     */
 
     if (
@@ -1763,7 +1961,7 @@ function getNodeClass(type) {
 
 
 /* ==================================================
-   创建按钮
+   创建操作按钮
 ================================================== */
 
 function createActionButton(
@@ -1814,15 +2012,32 @@ function drawConnections(layout) {
         );
 
 
+    if (!svg || !canvas) {
+
+        return;
+
+    }
+
+
+    /*
+       ==================================================
+       SVG 尺寸
+       ==================================================
+    */
+
     const canvasWidth =
         Math.max(
             canvas.clientWidth,
-            layout.width
+            layout.width,
+            window.innerWidth
         );
 
 
     const svgHeight =
-        layout.height + 100;
+        Math.max(
+            layout.height + 140,
+            canvas.clientHeight
+        );
 
 
     svg.setAttribute(
@@ -1847,19 +2062,97 @@ function drawConnections(layout) {
 
 
     /*
-       位置表
+       ==================================================
+       获取每一个框的真实位置
+       ==================================================
     */
 
     const positions =
         new Map();
 
 
+    const canvasRect =
+        canvas.getBoundingClientRect();
+
+
     layout.nodes.forEach(
         function(info) {
 
+            const wrapper =
+                document.querySelector(
+                    '[data-node-id="' +
+                    info.node.id +
+                    '"]'
+                );
+
+
+            if (!wrapper) {
+
+                return;
+
+            }
+
+
+            const box =
+                wrapper.querySelector(
+                    ".node-box"
+                );
+
+
+            if (!box) {
+
+                return;
+
+            }
+
+
+            const rect =
+                box.getBoundingClientRect();
+
+
             positions.set(
+
                 info.node.id,
-                info
+
+                {
+
+                    node:
+                        info.node,
+
+                    left:
+                        rect.left -
+                        canvasRect.left,
+
+                    right:
+                        rect.right -
+                        canvasRect.left,
+
+                    top:
+                        rect.top -
+                        canvasRect.top,
+
+                    bottom:
+                        rect.bottom -
+                        canvasRect.top,
+
+                    centerX:
+                        rect.left -
+                        canvasRect.left +
+                        rect.width / 2,
+
+                    centerY:
+                        rect.top -
+                        canvasRect.top +
+                        rect.height / 2,
+
+                    width:
+                        rect.width,
+
+                    height:
+                        rect.height
+
+                }
+
             );
 
         }
@@ -1867,10 +2160,14 @@ function drawConnections(layout) {
 
 
     /*
-       SVG 路径
+       ==================================================
+       创建线
+       ==================================================
     */
 
-    function createPath(d) {
+    function createPath(
+        d
+    ) {
 
         const path =
             document.createElementNS(
@@ -1899,7 +2196,9 @@ function drawConnections(layout) {
 
 
     /*
-       书名尺寸
+       ==================================================
+       书名真实位置
+       ==================================================
     */
 
     const bookElement =
@@ -1908,34 +2207,60 @@ function drawConnections(layout) {
         );
 
 
-    const bookWidth =
-        bookElement.offsetWidth;
+    if (!bookElement) {
+
+        return;
+
+    }
 
 
-    const bookHeight =
-        bookElement.offsetHeight;
+    const bookRect =
+        bookElement.getBoundingClientRect();
+
+
+    const bookLeft =
+        bookRect.left -
+        canvasRect.left;
+
+
+    const bookTop =
+        bookRect.top -
+        canvasRect.top;
+
+
+    const bookBottom =
+        bookRect.bottom -
+        canvasRect.top;
 
 
     const bookCenterX =
-        layout.book.x +
-        bookWidth / 2;
-
-
-    const bookBottomY =
-        layout.book.y +
-        bookHeight;
+        bookLeft +
+        bookRect.width / 2;
 
 
     /*
+       ==================================================
        根节点
+       ==================================================
     */
 
     const roots =
         currentBook.structure;
 
 
+    if (
+        roots.length === 0
+    ) {
+
+        return;
+
+    }
+
+
     /*
-       书名 → 根节点
+       ==================================================
+       书名 → 一个根节点
+       ==================================================
     */
 
     if (
@@ -1950,19 +2275,20 @@ function drawConnections(layout) {
 
         if (child) {
 
-            const childCenterX =
-                child.x +
-                NODE_WIDTH / 2;
+            const childX =
+                child.centerX;
 
 
-            const childTopY =
-                child.y;
+            const childTop =
+                child.top;
 
 
-            const midY =
-                bookBottomY +
-                (childTopY -
-                    bookBottomY) / 2;
+            const branchY =
+                bookBottom +
+                (
+                    childTop -
+                    bookBottom
+                ) / 2;
 
 
             createPath(
@@ -1970,22 +2296,22 @@ function drawConnections(layout) {
                 "M " +
                 bookCenterX +
                 " " +
-                bookBottomY +
+                bookBottom +
 
                 " L " +
                 bookCenterX +
                 " " +
-                midY +
+                branchY +
 
                 " L " +
-                childCenterX +
+                childX +
                 " " +
-                midY +
+                branchY +
 
                 " L " +
-                childCenterX +
+                childX +
                 " " +
-                childTopY
+                childTop
 
             );
 
@@ -1995,54 +2321,75 @@ function drawConnections(layout) {
 
 
     /*
-       多个根节点
+       ==================================================
+       书名 → 多个根节点
+       ==================================================
     */
 
     if (
         roots.length > 1
     ) {
 
-        const first =
-            positions.get(
-                roots[0].id
-            );
+        const visibleRoots =
+            roots
+                .map(
+                    function(root) {
 
+                        return positions.get(
+                            root.id
+                        );
 
-        const last =
-            positions.get(
-                roots[
-                    roots.length - 1
-                ].id
-            );
+                    }
+                )
+                .filter(
+                    function(item) {
+
+                        return !!item;
+
+                    }
+                );
 
 
         if (
-            first &&
-            last
+            visibleRoots.length > 0
         ) {
 
+            const first =
+                visibleRoots[0];
+
+
+            const last =
+                visibleRoots[
+                    visibleRoots.length - 1
+                ];
+
+
             const firstX =
-                first.x +
-                NODE_WIDTH / 2;
+                first.centerX;
 
 
             const lastX =
-                last.x +
-                NODE_WIDTH / 2;
+                last.centerX;
 
 
             const branchY =
-                bookBottomY +
-                (first.y -
-                    bookBottomY) / 2;
+                bookBottom +
+                (
+                    first.top -
+                    bookBottom
+                ) / 2;
 
+
+            /*
+               书名 ↓
+            */
 
             createPath(
 
                 "M " +
                 bookCenterX +
                 " " +
-                bookBottomY +
+                bookBottom +
 
                 " L " +
                 bookCenterX +
@@ -2051,6 +2398,10 @@ function drawConnections(layout) {
 
             );
 
+
+            /*
+               横向总分支
+            */
 
             createPath(
 
@@ -2067,38 +2418,24 @@ function drawConnections(layout) {
             );
 
 
-            roots.forEach(
+            /*
+               分别连接根节点
+            */
+
+            visibleRoots.forEach(
                 function(root) {
-
-                    const info =
-                        positions.get(
-                            root.id
-                        );
-
-
-                    if (!info) {
-
-                        return;
-
-                    }
-
-
-                    const centerX =
-                        info.x +
-                        NODE_WIDTH / 2;
-
 
                     createPath(
 
                         "M " +
-                        centerX +
+                        root.centerX +
                         " " +
                         branchY +
 
                         " L " +
-                        centerX +
+                        root.centerX +
                         " " +
-                        info.y
+                        root.top
 
                     );
 
@@ -2111,7 +2448,9 @@ function drawConnections(layout) {
 
 
     /*
-       节点 → 子节点
+       ==================================================
+       父节点 → 子节点
+       ==================================================
     */
 
     layout.nodes.forEach(
@@ -2121,8 +2460,20 @@ function drawConnections(layout) {
                 info.node;
 
 
+            /*
+               收起的节点不画下级
+            */
+
             if (
-                node.collapsed ||
+                node.collapsed
+            ) {
+
+                return;
+
+            }
+
+
+            if (
                 !node.children ||
                 node.children.length === 0
             ) {
@@ -2132,37 +2483,45 @@ function drawConnections(layout) {
             }
 
 
-            const parentX =
-                info.x +
-                NODE_WIDTH / 2;
+            const parent =
+                positions.get(
+                    node.id
+                );
 
 
-            const parentY =
-                info.y +
-                NODE_HEIGHT;
+            if (!parent) {
 
+                return;
+
+            }
+
+
+            /*
+               获取实际存在的孩子
+            */
 
             const children =
-                node.children;
+                node.children
+                    .map(
+                        function(child) {
 
+                            return positions.get(
+                                child.id
+                            );
 
-            const first =
-                positions.get(
-                    children[0].id
-                );
+                        }
+                    )
+                    .filter(
+                        function(item) {
 
+                            return !!item;
 
-            const last =
-                positions.get(
-                    children[
-                        children.length - 1
-                    ].id
-                );
+                        }
+                    );
 
 
             if (
-                !first ||
-                !last
+                children.length === 0
             ) {
 
                 return;
@@ -2170,37 +2529,57 @@ function drawConnections(layout) {
             }
 
 
-            const firstX =
-                first.x +
-                NODE_WIDTH / 2;
+            /*
+               父节点底部
+            */
+
+            const parentX =
+                parent.centerX;
 
 
-            const lastX =
-                last.x +
-                NODE_WIDTH / 2;
-
-
-            const childY =
-                first.y;
+            const parentY =
+                parent.bottom;
 
 
             /*
-               单个孩子
+               ==================================================
+               一个孩子
+               ==================================================
             */
 
             if (
                 children.length === 1
             ) {
 
+                const child =
+                    children[0];
+
+
                 const childX =
-                    firstX;
+                    child.centerX;
 
 
-                const midY =
+                const childY =
+                    child.top;
+
+
+                const branchY =
                     parentY +
-                    (childY -
-                        parentY) / 2;
+                    (
+                        childY -
+                        parentY
+                    ) / 2;
 
+
+                /*
+                   父框
+                     │
+                     │
+                     ├────────
+                              │
+                              │
+                            子框
+                */
 
                 createPath(
 
@@ -2212,12 +2591,12 @@ function drawConnections(layout) {
                     " L " +
                     parentX +
                     " " +
-                    midY +
+                    branchY +
 
                     " L " +
                     childX +
                     " " +
-                    midY +
+                    branchY +
 
                     " L " +
                     childX +
@@ -2227,9 +2606,13 @@ function drawConnections(layout) {
                 );
 
 
+                /*
+                   ＋ / −
+                */
+
                 addLineControl(
 
-                    midY,
+                    branchY,
 
                     parentX,
 
@@ -2243,16 +2626,58 @@ function drawConnections(layout) {
 
 
             /*
+               ==================================================
                多个孩子
+               ==================================================
             */
 
             else {
 
+                const first =
+                    children[0];
+
+
+                const last =
+                    children[
+                        children.length - 1
+                    ];
+
+
+                const firstX =
+                    first.centerX;
+
+
+                const lastX =
+                    last.centerX;
+
+
+                const childY =
+                    first.top;
+
+
                 const branchY =
                     parentY +
-                    (childY -
-                        parentY) / 2;
+                    (
+                        childY -
+                        parentY
+                    ) / 2;
 
+
+                /*
+                   父框
+                     │
+                     │
+                     │
+                 ────┼────────────
+                 │   │     │     │
+                 ▼   ▼     ▼     ▼
+                 子1 子2   子3   子4
+                */
+
+
+                /*
+                   父框 → 横向分支
+                */
 
                 createPath(
 
@@ -2268,6 +2693,10 @@ function drawConnections(layout) {
 
                 );
 
+
+                /*
+                   横向线
+                */
 
                 createPath(
 
@@ -2284,44 +2713,34 @@ function drawConnections(layout) {
                 );
 
 
+                /*
+                   横向线 → 每个子框
+                */
+
                 children.forEach(
                     function(child) {
-
-                        const childInfo =
-                            positions.get(
-                                child.id
-                            );
-
-
-                        if (!childInfo) {
-
-                            return;
-
-                        }
-
-
-                        const childX =
-                            childInfo.x +
-                            NODE_WIDTH / 2;
-
 
                         createPath(
 
                             "M " +
-                            childX +
+                            child.centerX +
                             " " +
                             branchY +
 
                             " L " +
-                            childX +
+                            child.centerX +
                             " " +
-                            childInfo.y
+                            child.top
 
                         );
 
                     }
                 );
 
+
+                /*
+                   ＋ / −
+                */
 
                 addLineControl(
 
@@ -2381,30 +2800,49 @@ function addLineControl(
         "line-control";
 
 
+    control.type =
+        "button";
+
+
     control.textContent =
         node.collapsed
             ? "+"
             : "−";
 
 
+    /*
+       放在线的中点
+    */
+
     const x =
         x1 +
-        (x2 - x1) / 2;
+        (
+            x2 -
+            x1
+        ) / 2;
 
 
     control.style.left =
-        (x - 12) +
+        (
+            x -
+            12
+        ) +
         "px";
 
 
     control.style.top =
-        (y - 12) +
+        (
+            y -
+            12
+        ) +
         "px";
 
 
     control.addEventListener(
         "click",
         function(event) {
+
+            event.preventDefault();
 
             event.stopPropagation();
 
@@ -2524,7 +2962,9 @@ function addSameLevel(
 
     renderTree();
 
-    selectNode(newNode);
+    selectNode(
+        newNode
+    );
 
 }
 
@@ -2588,7 +3028,9 @@ function addChild(
 
     renderTree();
 
-    selectNode(newNode);
+    selectNode(
+        newNode
+    );
 
 }
 
@@ -2615,9 +3057,11 @@ function findParentArray(
 
             return {
 
-                array: array,
+                array:
+                    array,
 
-                node: array[i]
+                node:
+                    array[i]
 
             };
 
@@ -2759,7 +3203,7 @@ function updatePrefaceButton() {
         );
 
 
-    if (!currentBook) {
+    if (!button || !currentBook) {
 
         return;
 
