@@ -9,13 +9,6 @@
 }
 
 
-html,
-body {
-    width: 100%;
-    min-height: 100%;
-}
-
-
 body {
     font-family:
         -apple-system,
@@ -96,8 +89,6 @@ body {
     font-size: 14px;
 
     cursor: pointer;
-
-    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -173,6 +164,8 @@ body {
 }
 
 
+/* ★ 新增：打开菜单时显示 */
+
 .menu.show {
     display: block;
 }
@@ -204,8 +197,6 @@ body {
     font-size: 14px;
 
     cursor: pointer;
-
-    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -323,8 +314,6 @@ body {
     -webkit-touch-callout: none;
 
     touch-action: manipulation;
-
-    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -391,8 +380,6 @@ body {
         background 0.15s ease,
         color 0.15s ease,
         transform 0.15s ease;
-
-    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -747,8 +734,6 @@ body {
     text-align: left;
 
     cursor: pointer;
-
-    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -798,24 +783,8 @@ body {
 }
 
 
-/* 排序模式开启 */
-
-.sorting .sort-hint {
-    display: block;
-}
-
-
-/* 排序状态下的书 */
-
 .sorting .book-card {
     cursor: grab;
-
-    user-select: none;
-    -webkit-user-select: none;
-
-    -webkit-touch-callout: none;
-
-    touch-action: none;
 
     animation:
         sortShake
@@ -824,132 +793,28 @@ body {
 }
 
 
-/* 正在按住 */
-
 .sorting .book-card:active {
     cursor: grabbing;
 }
 
-
-/* 排序时隐藏删除按钮 */
 
 .sorting .delete-book-button {
     display: none;
 }
 
 
-/* 排序时关闭普通 hover */
-
-.sorting .book-card:hover {
-    transform: none;
-
-    box-shadow: none;
-}
-
-
-/* ==================================================
-   排序动画
-================================================== */
-
 @keyframes sortShake {
 
     from {
         transform:
-            rotate(-0.25deg);
+            rotate(-0.3deg);
     }
 
     to {
         transform:
-            rotate(0.25deg);
+            rotate(0.3deg);
     }
 
-}
-
-
-/* ==================================================
-   触摸排序
-================================================== */
-
-/*
-   真正开始拖动以后才添加这个 class。
-   防止拖动过程中网页上下滚动。
-*/
-
-body.touch-sorting {
-    overflow: hidden;
-
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    touch-action: none;
-}
-
-
-/* ==================================================
-   正在拖动的书
-================================================== */
-
-.book-card.touch-dragging {
-    opacity: 0.88;
-
-    transform:
-        scale(1.04);
-
-    box-shadow:
-        0 14px 32px
-        rgba(0, 0, 0, 0.22);
-
-    z-index: 999;
-
-    pointer-events: none;
-
-    animation: none;
-
-    transition:
-        transform 0.08s ease,
-        opacity 0.08s ease;
-}
-
-
-/* ==================================================
-   拖动占位
-================================================== */
-
-.book-card.sorting-placeholder {
-    box-sizing: border-box;
-
-    border:
-        2px dashed #4f7cff;
-
-    background:
-        rgba(79, 124, 255, 0.08);
-
-    border-radius: 12px;
-
-    opacity: 0.75;
-
-    box-shadow: none;
-
-    animation: none;
-
-    transform: none;
-
-    pointer-events: none;
-}
-
-
-/* ==================================================
-   触摸排序时禁止选择文字
-================================================== */
-
-body.touch-sorting,
-body.touch-sorting * {
-    user-select: none;
-
-    -webkit-user-select: none;
-
-    -webkit-touch-callout: none;
 }
 
 
@@ -996,8 +861,6 @@ body.touch-sorting * {
 
     padding:
         8px 20px;
-
-    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -1135,25 +998,6 @@ body.touch-sorting * {
         font-size: 15px;
     }
 
-
-    /* 手机拖动 */
-
-    .book-card.touch-dragging {
-        transform:
-            scale(1.03);
-
-        box-shadow:
-            0 12px 28px
-            rgba(0, 0, 0, 0.22);
-    }
-
-
-    .book-card.sorting-placeholder {
-        min-height: 80px;
-
-        border-radius: 12px;
-    }
-
 }
 
 
@@ -1169,19 +1013,6 @@ body.touch-sorting * {
                 auto-fill,
                 minmax(190px, 1fr)
             );
-    }
-
-}
-
-
-/* ==================================================
-   触摸设备排序
-================================================== */
-
-@media (hover: none) and (pointer: coarse) {
-
-    .sorting .book-card {
-        touch-action: none;
     }
 
 }
