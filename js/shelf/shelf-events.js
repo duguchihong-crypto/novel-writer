@@ -71,29 +71,84 @@ const meNav =
 
 function initShelf() {
 
-    /* 先读取数据 */
+    /* 读取书籍 */
 
     if (typeof loadBooks === "function") {
         loadBooks();
     }
 
+    /* 读取书架显示模式 */
+
     if (typeof loadShelfViewMode === "function") {
         loadShelfViewMode();
     }
 
-    /* 再渲染 */
+    /* 没有保存过模式时，默认使用网格 */
+
+    if (
+        typeof shelfViewMode === "undefined" ||
+        !shelfViewMode
+    ) {
+
+        shelfViewMode = "grid";
+    }
+
+    /* 渲染书籍 */
 
     if (typeof renderBooks === "function") {
         renderBooks();
     }
 
+    /* 应用显示模式 */
+
     if (typeof applyShelfViewMode === "function") {
         applyShelfViewMode();
     }
 
-    /* 最后绑定事件 */
+    /* 强制确保当前模式正确 */
+
+    applyViewClass();
+
+    /* 绑定事件 */
 
     bindShelfEvents();
+}
+
+
+/* ==================================================
+   应用网格 / 列表 class
+================================================== */
+
+function applyViewClass() {
+
+    if (!bookGrid) {
+        return;
+    }
+
+    /* 先清除 */
+
+    bookGrid.classList.remove(
+        "grid-view"
+    );
+
+    bookGrid.classList.remove(
+        "list-view"
+    );
+
+    /* 根据当前模式添加 */
+
+    if (shelfViewMode === "list") {
+
+        bookGrid.classList.add(
+            "list-view"
+        );
+
+    } else {
+
+        bookGrid.classList.add(
+            "grid-view"
+        );
+    }
 }
 
 
@@ -321,16 +376,12 @@ function handleCreateButtonClick(event) {
         return;
     }
 
-    /* 关闭设置 */
-
     if (settingsMenu) {
 
         settingsMenu.classList.remove(
             "show"
         );
     }
-
-    /* 明确打开 / 关闭 */
 
     if (
         createMenu.classList.contains(
@@ -370,16 +421,12 @@ function handleSettingsButtonClick(event) {
         return;
     }
 
-    /* 关闭新建 */
-
     if (createMenu) {
 
         createMenu.classList.remove(
             "show"
         );
     }
-
-    /* 明确打开 / 关闭 */
 
     if (
         settingsMenu.classList.contains(
@@ -496,6 +543,7 @@ function handleCreateCollectionClick(event) {
 function setGridView(event) {
 
     if (event) {
+
         event.preventDefault();
         event.stopPropagation();
     }
@@ -503,6 +551,12 @@ function setGridView(event) {
     closeAllMenus();
 
     shelfViewMode = "grid";
+
+    /* 立即修改 CSS class */
+
+    applyViewClass();
+
+    /* 保存 */
 
     if (
         typeof saveShelfViewMode ===
@@ -512,6 +566,8 @@ function setGridView(event) {
         saveShelfViewMode("grid");
     }
 
+    /* 使用原来的显示模式系统 */
+
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -519,6 +575,12 @@ function setGridView(event) {
 
         applyShelfViewMode();
     }
+
+    /* 再次确保 class 正确 */
+
+    applyViewClass();
+
+    /* 排序模式 */
 
     if (isSorting) {
 
@@ -534,6 +596,7 @@ function setGridView(event) {
 function setListView(event) {
 
     if (event) {
+
         event.preventDefault();
         event.stopPropagation();
     }
@@ -541,6 +604,12 @@ function setListView(event) {
     closeAllMenus();
 
     shelfViewMode = "list";
+
+    /* 立即修改 CSS class */
+
+    applyViewClass();
+
+    /* 保存 */
 
     if (
         typeof saveShelfViewMode ===
@@ -550,6 +619,8 @@ function setListView(event) {
         saveShelfViewMode("list");
     }
 
+    /* 使用原来的显示模式系统 */
+
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -557,6 +628,12 @@ function setListView(event) {
 
         applyShelfViewMode();
     }
+
+    /* 再次确保 class 正确 */
+
+    applyViewClass();
+
+    /* 排序模式 */
 
     if (isSorting) {
 
@@ -570,8 +647,6 @@ function setListView(event) {
 ================================================== */
 
 function handleBookGridClick(event) {
-
-    /* 删除 */
 
     const deleteButton =
         event.target.closest(
@@ -601,16 +676,12 @@ function handleBookGridClick(event) {
         return;
     }
 
-    /* 长按后不执行普通点击 */
-
     if (longPressTriggered) {
 
         longPressTriggered = false;
 
         return;
     }
-
-    /* 排序状态 */
 
     if (isSorting) {
         return;
@@ -635,8 +706,6 @@ function handleBookGridClick(event) {
         return;
     }
 
-    /* 点击封面 */
-
     if (
         event.target.closest(
             ".book-cover"
@@ -647,8 +716,6 @@ function handleBookGridClick(event) {
 
         return;
     }
-
-    /* 点击书名 */
 
     if (
         event.target.closest(
@@ -771,6 +838,8 @@ function deleteBook(bookId) {
 
         renderSortingMode();
     }
+
+    applyViewClass();
 }
 
 
@@ -1480,6 +1549,8 @@ function finishSorting() {
 
         applyShelfViewMode();
     }
+
+    applyViewClass();
 }
 
 
