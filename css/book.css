@@ -799,61 +799,65 @@ body {
 
 /* ==================================================
    ＋序
+   深青 → 浅青
 ================================================== */
 
 #addPreface {
 
-    background: #eef9f8;
+    background: #f3fbfa;
 
     border:
-        1.5px solid #8fc9c5;
+        1.5px solid #b7dfdc;
 
-    color: #176d68;
+    color: #5fa9a3;
 }
 
 
 /* ==================================================
    ＋章
+   深黑 → 浅黑
 ================================================== */
 
 #addChapter {
 
-    background: #f3f3f3;
+    background: #f7f7f7;
 
     border:
-        1.5px solid #999;
+        1.5px solid #c8c8c8;
 
-    color: #292929;
+    color: #777;
 }
 
 
 /* ==================================================
    ＋篇
+   深白 → 浅白
 ================================================== */
 
 #addPart {
 
-    background: #fafafa;
+    background: #ffffff;
 
     border:
-        1.5px solid #c9c9c9;
+        1.5px solid #dedede;
 
-    color: #555;
+    color: #b0b0b0;
 }
 
 
 /* ==================================================
    ＋卷
+   深黄 → 浅黄
 ================================================== */
 
 #addVolume {
 
-    background: #fffbea;
+    background: #fffdf3;
 
     border:
-        1.5px solid #dfca70;
+        1.5px solid #eadf9e;
 
-    color: #806900;
+    color: #c8ae55;
 }
 
 
