@@ -1,10 +1,10 @@
 // ==============================
-// 全书页面：事件处理
+// 全书页面：事件
 // ==============================
 
 
 // ==================================================
-// 获取手指 / 鼠标在画布中的位置
+// 获取指针在画布中的坐标
 // ==================================================
 
 function getPointerPosition(event) {
@@ -19,8 +19,10 @@ function getPointerPosition(event) {
         };
     }
 
+
     let clientX = 0;
     let clientY = 0;
+
 
     if (
         event.touches &&
@@ -53,10 +55,13 @@ function getPointerPosition(event) {
             event.clientY;
     }
 
+
     const rect =
         canvas.getBoundingClientRect();
 
+
     return {
+
         x:
             clientX -
             rect.left +
@@ -71,17 +76,21 @@ function getPointerPosition(event) {
 
 
 // ==================================================
-// 更新书籍操作栏
+// 书名底部操作栏
 // ==================================================
 
 function updateBookActions() {
 
     const actions =
-        document.querySelector("#bookActions");
+        document.querySelector(
+            "#bookActions"
+        );
+
 
     if (!actions) {
         return;
     }
+
 
     if (selectedIsBook === true) {
 
@@ -97,7 +106,7 @@ function updateBookActions() {
 
 
 // ==================================================
-// 更新节点选择状态
+// 节点选择 UI
 // ==================================================
 
 function updateNodeSelectionUI() {
@@ -109,9 +118,11 @@ function updateNodeSelectionUI() {
             const id =
                 element.dataset.nodeId;
 
+
             if (
                 selectedNodeId &&
-                id === selectedNodeId &&
+                String(id) ===
+                String(selectedNodeId) &&
                 selectedIsBook === false
             ) {
 
@@ -125,22 +136,27 @@ function updateNodeSelectionUI() {
                     "selected"
                 );
             }
+
         });
 }
 
 
 // ==================================================
-// 更新书名选择状态
+// 书名选择 UI
 // ==================================================
 
 function updateBookSelectionUI() {
 
     const bookTitle =
-        document.querySelector("#bookTitle");
+        document.querySelector(
+            "#bookTitle"
+        );
+
 
     if (!bookTitle) {
         return;
     }
+
 
     if (selectedIsBook === true) {
 
@@ -158,7 +174,7 @@ function updateBookSelectionUI() {
 
 
 // ==================================================
-// 更新全部选择 UI
+// 更新全部选择状态
 // ==================================================
 
 function updateSelectionUI() {
@@ -196,8 +212,10 @@ function selectNode(nodeId) {
         return;
     }
 
+
     const node =
         getNodeById(nodeId);
+
 
     if (!node) {
 
@@ -206,14 +224,48 @@ function selectNode(nodeId) {
         return;
     }
 
-    setSelectedNode(nodeId);
+
+    // 保存当前选择
+
+    setSelectedNode(
+        nodeId
+    );
+
+
+    // 找到节点 DOM
 
     selectedElement =
         document.querySelector(
-            `[data-node-id="${nodeId}"]`
+            `.tree-node[data-node-id="${nodeId}"]`
         );
 
+
+    // 更新选择状态
+
     updateSelectionUI();
+
+
+    // 确保操作栏显示
+
+    if (selectedElement) {
+
+        selectedElement.classList.add(
+            "selected"
+        );
+
+
+        const actions =
+            selectedElement.querySelector(
+                ".node-actions"
+            );
+
+
+        if (actions) {
+
+            actions.style.display =
+                "flex";
+        }
+    }
 }
 
 
@@ -236,16 +288,21 @@ function clearSelection() {
 function startBookDrag(event) {
 
     const bookTitle =
-        document.querySelector("#bookTitle");
+        document.querySelector(
+            "#bookTitle"
+        );
+
 
     if (!bookTitle) {
         return;
     }
 
 
-    // 有结构以后进入自动布局
-    // 不允许手动移动书名
-    if (autoLayoutEnabled === true) {
+    // 有结构以后书名不能拖动
+
+    if (
+        autoLayoutEnabled === true
+    ) {
 
         selectBook();
 
@@ -261,6 +318,7 @@ function startBookDrag(event) {
         parseFloat(
             bookTitle.style.left
         ) || 0;
+
 
     const currentY =
         parseFloat(
@@ -303,11 +361,18 @@ function moveBookDrag(event) {
         return;
     }
 
+
     const bookTitle =
-        document.querySelector("#bookTitle");
+        document.querySelector(
+            "#bookTitle"
+        );
+
 
     const canvas =
-        document.querySelector(".tree-canvas");
+        document.querySelector(
+            ".tree-canvas"
+        );
+
 
     if (
         !bookTitle ||
@@ -342,6 +407,7 @@ function moveBookDrag(event) {
         position.x -
         dragStartX;
 
+
     const dy =
         position.y -
         dragStartY;
@@ -351,22 +417,20 @@ function moveBookDrag(event) {
         dragOriginalX +
         dx;
 
+
     let newY =
         dragOriginalY +
         dy;
 
 
-    // ==========================================
-    // 关键修复：
-    // 没有结构时不能使用 treeWidth/treeHeight
-    // 因为它们此时可能还是 0
-    // ==========================================
-
     const bookWidth =
-        bookTitle.offsetWidth || 180;
+        bookTitle.offsetWidth ||
+        BOOK_MIN_WIDTH;
+
 
     const bookHeight =
-        bookTitle.offsetHeight || 58;
+        bookTitle.offsetHeight ||
+        BOOK_MIN_HEIGHT;
 
 
     const availableWidth =
@@ -426,6 +490,7 @@ function moveBookDrag(event) {
     bookTitle.style.left =
         newX + "px";
 
+
     bookTitle.style.top =
         newY + "px";
 
@@ -438,7 +503,7 @@ function moveBookDrag(event) {
 
 
 // ==================================================
-// 结束拖动
+// 结束书名拖动
 // ==================================================
 
 function finishBookDrag(event) {
@@ -462,12 +527,14 @@ function finishBookDrag(event) {
                 "#bookTitle"
             );
 
+
         if (bookTitle) {
 
             const x =
                 parseFloat(
                     bookTitle.style.left
                 ) || 0;
+
 
             const y =
                 parseFloat(
@@ -501,7 +568,7 @@ function finishBookDrag(event) {
 
 
 // ==================================================
-// 鼠标按下
+// 鼠标：书名
 // ==================================================
 
 function handleBookMouseDown(event) {
@@ -513,6 +580,7 @@ function handleBookMouseDown(event) {
         return;
     }
 
+
     event.preventDefault();
 
     selectBook();
@@ -521,23 +589,16 @@ function handleBookMouseDown(event) {
 }
 
 
-// ==================================================
-// 鼠标移动
-// ==================================================
-
 function handleBookMouseMove(event) {
 
     if (!draggingBook) {
         return;
     }
 
+
     moveBookDrag(event);
 }
 
-
-// ==================================================
-// 鼠标松开
-// ==================================================
 
 function handleBookMouseUp(event) {
 
@@ -546,7 +607,7 @@ function handleBookMouseUp(event) {
 
 
 // ==================================================
-// 手机手指按下
+// 手机：书名
 // ==================================================
 
 function handleBookTouchStart(event) {
@@ -568,14 +629,9 @@ function handleBookTouchStart(event) {
 
     selectBook();
 
-
     startBookDrag(event);
 }
 
-
-// ==================================================
-// 手机手指移动
-// ==================================================
 
 function handleBookTouchMove(event) {
 
@@ -596,10 +652,6 @@ function handleBookTouchMove(event) {
 }
 
 
-// ==================================================
-// 手机手指抬起
-// ==================================================
-
 function handleBookTouchEnd(event) {
 
     if (!touchStarted) {
@@ -609,14 +661,13 @@ function handleBookTouchEnd(event) {
 
     finishBookDrag(event);
 
-
     touchStarted =
         false;
 }
 
 
 // ==================================================
-// 点击画布空白
+// 画布点击空白
 // ==================================================
 
 function handleCanvasClick(event) {
@@ -643,7 +694,6 @@ function handleCanvasClick(event) {
         event.target;
 
 
-    // 书名
     if (
         target.closest &&
         target.closest("#bookTitle")
@@ -652,7 +702,6 @@ function handleCanvasClick(event) {
     }
 
 
-    // 节点
     if (
         target.closest &&
         target.closest(".node-box")
@@ -661,7 +710,6 @@ function handleCanvasClick(event) {
     }
 
 
-    // 节点按钮
     if (
         target.closest &&
         target.closest(".node-actions")
@@ -670,7 +718,6 @@ function handleCanvasClick(event) {
     }
 
 
-    // 连线按钮
     if (
         target.closest &&
         target.closest(".line-control")
@@ -679,13 +726,12 @@ function handleCanvasClick(event) {
     }
 
 
-    // 空白
     clearSelection();
 }
 
 
 // ==================================================
-// 操作按钮按下
+// 操作按钮
 // ==================================================
 
 function handleActionButtonPointerDown(event) {
@@ -698,7 +744,7 @@ function handleActionButtonPointerDown(event) {
 
 
 // ==================================================
-// 初始化事件
+// 初始化
 // ==================================================
 
 function setupEvents() {
@@ -713,10 +759,12 @@ function setupEvents() {
             ".tree-canvas"
         );
 
+
     const bookTitle =
         document.querySelector(
             "#bookTitle"
         );
+
 
     const bookActions =
         document.querySelector(
@@ -724,34 +772,23 @@ function setupEvents() {
         );
 
 
-    if (!canvas) {
+    if (!canvas || !bookTitle) {
 
         console.warn(
-            "找不到 .tree-canvas"
+            "全书页面事件初始化失败"
         );
 
         return;
     }
 
 
-    if (!bookTitle) {
-
-        console.warn(
-            "找不到 #bookTitle"
-        );
-
-        return;
-    }
-
-
-    // ==========================================
     // 返回
-    // ==========================================
 
     const backButton =
         document.querySelector(
             "#backButton"
         );
+
 
     if (backButton) {
 
@@ -771,9 +808,7 @@ function setupEvents() {
     }
 
 
-    // ==========================================
-    // 书名
-    // ==========================================
+    // 书名鼠标
 
     bookTitle.addEventListener(
         "mousedown",
@@ -792,6 +827,8 @@ function setupEvents() {
         handleBookMouseUp
     );
 
+
+    // 书名手机
 
     bookTitle.addEventListener(
         "touchstart",
@@ -829,9 +866,7 @@ function setupEvents() {
     );
 
 
-    // ==========================================
-    // 空白点击
-    // ==========================================
+    // 画布空白
 
     canvas.addEventListener(
         "click",
@@ -839,9 +874,7 @@ function setupEvents() {
     );
 
 
-    // ==========================================
-    // 底部操作栏
-    // ==========================================
+    // 书名底部按钮
 
     if (bookActions) {
 
@@ -856,6 +889,7 @@ function setupEvents() {
             function(event) {
 
                 event.stopPropagation();
+
             }
         );
     }
@@ -864,13 +898,14 @@ function setupEvents() {
     bookEventsInitialized =
         true;
 
+
     bookPageInitialized =
         true;
 }
 
 
 // ==================================================
-// 页面加载
+// 启动
 // ==================================================
 
 if (
