@@ -138,20 +138,64 @@ body {
 
 
 /* ==================================================
-   顶部右侧占位
+   布局切换按钮
 ================================================== */
 
-.top-placeholder {
+.layout-toggle {
 
     position: absolute;
 
     right: 16px;
 
-    width: 40px;
+    top: 50%;
 
-    height: 30px;
+    transform:
+        translateY(-50%);
 
-    pointer-events: none;
+    height: 36px;
+
+    padding:
+        0 12px;
+
+    border:
+        1px solid #e1e1e1;
+
+    border-radius: 8px;
+
+    background: #fff;
+
+    color: #444;
+
+    font-size: 14px;
+
+    font-weight: 500;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    white-space: nowrap;
+
+    -webkit-tap-highlight-color: transparent;
+
+    transition:
+        background 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.12s ease;
+}
+
+.layout-toggle:hover {
+
+    background: #f6f6f6;
+
+    border-color: #d7d7d7;
+}
+
+.layout-toggle:active {
+
+    transform:
+        translateY(-50%)
+        scale(0.97);
 }
 
 
@@ -259,7 +303,8 @@ body {
 
     min-height: 58px;
 
-    padding: 12px 26px;
+    padding:
+        12px 26px;
 
     display: flex;
 
@@ -273,7 +318,8 @@ body {
 
     background: #fff1f1;
 
-    border: 1.5px solid #e3a0a0;
+    border:
+        1.5px solid #e3a0a0;
 
     color: #922b2b;
 
@@ -308,6 +354,7 @@ body {
 }
 
 .book-title:active {
+
     cursor: grabbing;
 }
 
@@ -349,7 +396,8 @@ body {
 
     min-height: 48px;
 
-    padding: 10px 16px;
+    padding:
+        10px 16px;
 
     border-radius: 9px;
 
@@ -435,7 +483,8 @@ body {
 
     background: #eef9f8;
 
-    border: 1.5px solid #8fc9c5;
+    border:
+        1.5px solid #8fc9c5;
 
     color: #176d68;
 }
@@ -449,7 +498,8 @@ body {
 
     background: #fffbea;
 
-    border: 1.5px solid #dfca70;
+    border:
+        1.5px solid #dfca70;
 
     color: #806900;
 }
@@ -463,7 +513,8 @@ body {
 
     background: #fafafa;
 
-    border: 1.5px solid #c9c9c9;
+    border:
+        1.5px solid #c9c9c9;
 
     color: #555;
 }
@@ -477,7 +528,8 @@ body {
 
     background: #f3f3f3;
 
-    border: 1.5px solid #999;
+    border:
+        1.5px solid #999;
 
     color: #292929;
 }
@@ -509,13 +561,6 @@ body {
     z-index: 100;
 }
 
-
-/*
- * 注意：
- * nodes.js 不再使用行内 display:none
- * 所以这里可以正常控制显示。
- */
-
 .tree-node.selected .node-actions {
 
     display: flex;
@@ -531,9 +576,11 @@ body {
 
     height: 32px;
 
-    padding: 0 9px;
+    padding:
+        0 9px;
 
-    border: 1px solid #dfdfdf;
+    border:
+        1px solid #dfdfdf;
 
     border-radius: 7px;
 
@@ -563,12 +610,23 @@ body {
 }
 
 .node-action-delete {
+
     color: #888;
 }
 
 
 /* ==================================================
-   连线上的 + / -
+   连线上的 + / −
+   
+   注意：
+   这里不再使用 margin:-13px。
+   
+   connections.js 已经直接计算：
+   
+   left = centerX - size / 2
+   top  = centerY - size / 2
+   
+   所以 CSS 不能再次偏移。
 ================================================== */
 
 .line-control {
@@ -581,11 +639,12 @@ body {
 
     padding: 0;
 
-    margin: -13px 0 0 -13px;
+    margin: 0;
+
+    border:
+        1px solid #d2d2d2;
 
     border-radius: 50%;
-
-    border: 1px solid #d2d2d2;
 
     background: #fff;
 
@@ -599,18 +658,26 @@ body {
 
     font-size: 16px;
 
+    font-weight: 500;
+
     line-height: 1;
+
+    text-align: center;
 
     cursor: pointer;
 
     z-index: 100;
 
+    pointer-events: auto;
+
     box-shadow:
         0 1px 5px rgba(0, 0, 0, 0.06);
 
-    pointer-events: auto;
-
     -webkit-tap-highlight-color: transparent;
+
+    user-select: none;
+
+    -webkit-user-select: none;
 }
 
 .line-control:active {
@@ -669,9 +736,11 @@ body {
 
     min-height: 76px;
 
-    background: rgba(255, 255, 255, 0.98);
+    background:
+        rgba(255, 255, 255, 0.98);
 
-    border-top: 1px solid #e8e8e8;
+    border-top:
+        1px solid #e8e8e8;
 
     display: none;
 
@@ -705,7 +774,8 @@ body {
 
     min-width: 66px;
 
-    padding: 0 13px;
+    padding:
+        0 13px;
 
     border-radius: 9px;
 
@@ -735,7 +805,8 @@ body {
 
     background: #eef9f8;
 
-    border: 1.5px solid #8fc9c5;
+    border:
+        1.5px solid #8fc9c5;
 
     color: #176d68;
 }
@@ -749,7 +820,8 @@ body {
 
     background: #f3f3f3;
 
-    border: 1.5px solid #999;
+    border:
+        1.5px solid #999;
 
     color: #292929;
 }
@@ -763,7 +835,8 @@ body {
 
     background: #fafafa;
 
-    border: 1.5px solid #c9c9c9;
+    border:
+        1.5px solid #c9c9c9;
 
     color: #555;
 }
@@ -777,7 +850,8 @@ body {
 
     background: #fffbea;
 
-    border: 1.5px solid #dfca70;
+    border:
+        1.5px solid #dfca70;
 
     color: #806900;
 }
@@ -806,6 +880,21 @@ body {
         top: 56px;
 
         bottom: 0;
+    }
+
+
+    .layout-toggle {
+
+        right: 12px;
+
+        height: 34px;
+
+        padding:
+            0 9px;
+
+        font-size: 13px;
+
+        border-radius: 7px;
     }
 
 
@@ -856,7 +945,8 @@ body {
 
         height: 30px;
 
-        padding: 0 7px;
+        padding:
+            0 7px;
 
         font-size: 11px;
     }
@@ -876,7 +966,7 @@ body {
 
         height: 26px;
 
-        margin: -13px 0 0 -13px;
+        margin: 0;
 
         font-size: 16px;
     }
@@ -933,6 +1023,17 @@ body {
     .page-title {
 
         font-size: 17px;
+    }
+
+
+    .layout-toggle {
+
+        right: 9px;
+
+        padding:
+            0 7px;
+
+        font-size: 12px;
     }
 
 
