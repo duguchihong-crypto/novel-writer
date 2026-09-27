@@ -2,13 +2,7 @@
 // 全书页面：节点
 // ==============================
 
-
-// ==============================
-// 创建唯一 ID
-// ==============================
-
 function createId() {
-
     return (
         Date.now().toString(36) +
         "_" +
@@ -18,45 +12,22 @@ function createId() {
     );
 }
 
-
-// ==============================
-// 创建结构节点数据
-// ==============================
-
-function createNode(
-    type,
-    title,
-    number
-) {
-
+function createNode(type, title, number) {
     return {
-
         id: createId(),
-
         type: type,
-
         title: title || "",
-
         number:
             Number.isFinite(Number(number))
                 ? Number(number)
                 : 0,
-
         children: [],
-
         collapsed: false
     };
 }
 
-
-// ==============================
-// 获取节点 CSS 类型
-// ==============================
-
 function getNodeClass(type) {
-
     switch (type) {
-
         case NODE_TYPES.PREFACE:
             return NODE_COLOR_TYPES.PREFACE;
 
@@ -74,74 +45,13 @@ function getNodeClass(type) {
     }
 }
 
-
-// ==============================
-// 获取节点类型名称
-// ==============================
-
 function getNodeTypeName(type) {
-
-    return (
-        NODE_TYPE_NAMES[type] ||
-        ""
-    );
+    return NODE_TYPE_NAMES[type] || "";
 }
 
 
 // ==============================
-// 创建操作按钮
-// ==============================
-
-function createActionButton(
-    text,
-    className,
-    callback
-) {
-
-    const button =
-        document.createElement("button");
-
-
-    button.type = "button";
-
-
-    button.className =
-        className ||
-        "node-action-button";
-
-
-    button.textContent =
-        text;
-
-
-    button.addEventListener(
-        "click",
-        function(event) {
-
-            event.preventDefault();
-
-            event.stopPropagation();
-
-
-            if (
-                typeof callback ===
-                "function"
-            ) {
-
-                callback();
-
-            }
-
-        }
-    );
-
-
-    return button;
-}
-
-
-// ==============================
-// 创建节点 DOM
+// 创建节点
 // ==============================
 
 function createNodeElement(node) {
@@ -150,333 +60,99 @@ function createNodeElement(node) {
         return null;
     }
 
-
-    // ==============================
-    // 最外层
-    // ==============================
-
     const wrapper =
         document.createElement("div");
-
 
     wrapper.className =
         "tree-node";
 
-
     wrapper.dataset.nodeId =
         node.id;
-
-
-    // ==============================
-    // 节点框
-    // ==============================
 
     const box =
         document.createElement("div");
 
-
     box.className =
         "node-box";
-
 
     const nodeClass =
         getNodeClass(node.type);
 
-
     if (nodeClass) {
-
-        box.classList.add(
-            nodeClass
-        );
-
+        box.classList.add(nodeClass);
     }
-
 
     box.dataset.nodeId =
         node.id;
-
 
     box.dataset.nodeType =
         node.type;
 
 
-    // ==============================
     // 节点文字
-    // ==============================
 
     const title =
         document.createElement("div");
 
-
     title.className =
         "node-title";
-
 
     title.textContent =
         node.title ||
         getNodeTypeName(node.type);
 
-
-    box.appendChild(
-        title
-    );
+    box.appendChild(title);
 
 
-    // ==============================
     // 折叠状态
-    // ==============================
 
     if (node.collapsed === true) {
 
         box.classList.add(
             "is-collapsed"
         );
-
     }
 
 
-    // ==============================
     // 点击节点
-    // ==============================
 
     box.addEventListener(
         "click",
         function(event) {
 
             event.preventDefault();
-
             event.stopPropagation();
 
-
-            selectNode(
-                node.id
-            );
-
+            selectNode(node.id);
         }
     );
 
 
-    wrapper.appendChild(
-        box
-    );
+    // 手机触摸
 
+    box.addEventListener(
+        "pointerup",
+        function(event) {
 
-    // ==============================
-    // 操作区域
-    // ==============================
+            if (
+                event.pointerType === "touch"
+            ) {
 
-    const actions =
-        document.createElement("div");
+                event.preventDefault();
+                event.stopPropagation();
 
-
-    actions.className =
-        "node-actions";
-
-
-    /*
-     * 注意：
-     *
-     * 这里故意不写：
-     *
-     * actions.style.display = "none";
-     *
-     * 显示/隐藏交给 CSS：
-     *
-     * .tree-node.selected .node-actions
-     *
-     */
-
-
-    actions.dataset.nodeId =
-        node.id;
-
-
-    // ==============================
-    // 删除按钮
-    // ==============================
-
-    const deleteButton =
-        createActionButton(
-            "删除",
-            "node-action-delete",
-            function() {
-
-                deleteNode(
-                    node.id
-                );
-
+                selectNode(node.id);
             }
-        );
-
-
-    actions.appendChild(
-        deleteButton
+        }
     );
 
 
-    // ==============================
-    // 卷
-    // ==============================
-
-    if (
-        node.type ===
-        NODE_TYPES.VOLUME
-    ) {
-
-        const sameButton =
-            createActionButton(
-                "＋同级",
-                "node-action-button",
-                function() {
-
-                    addSameLevel(
-                        node.id
-                    );
-
-                }
-            );
+    wrapper.appendChild(box);
 
 
-        const partButton =
-            createActionButton(
-                "＋篇",
-                "node-action-button",
-                function() {
-
-                    addChild(
-                        node.id,
-                        NODE_TYPES.PART
-                    );
-
-                }
-            );
-
-
-        const chapterButton =
-            createActionButton(
-                "＋章",
-                "node-action-button",
-                function() {
-
-                    addChild(
-                        node.id,
-                        NODE_TYPES.CHAPTER
-                    );
-
-                }
-            );
-
-
-        actions.appendChild(
-            sameButton
-        );
-
-
-        actions.appendChild(
-            partButton
-        );
-
-
-        actions.appendChild(
-            chapterButton
-        );
-
-    }
-
-
-    // ==============================
-    // 篇
-    // ==============================
-
-    if (
-        node.type ===
-        NODE_TYPES.PART
-    ) {
-
-        const sameButton =
-            createActionButton(
-                "＋同级",
-                "node-action-button",
-                function() {
-
-                    addSameLevel(
-                        node.id
-                    );
-
-                }
-            );
-
-
-        const chapterButton =
-            createActionButton(
-                "＋章",
-                "node-action-button",
-                function() {
-
-                    addChild(
-                        node.id,
-                        NODE_TYPES.CHAPTER
-                    );
-
-                }
-            );
-
-
-        actions.appendChild(
-            sameButton
-        );
-
-
-        actions.appendChild(
-            chapterButton
-        );
-
-    }
-
-
-    // ==============================
-    // 章
-    // ==============================
-
-    if (
-        node.type ===
-        NODE_TYPES.CHAPTER
-    ) {
-
-        /*
-         * 章目前只有：
-         *
-         * 删除
-         */
-
-    }
-
-
-    // ==============================
-    // 序
-    // ==============================
-
-    if (
-        node.type ===
-        NODE_TYPES.PREFACE
-    ) {
-
-        /*
-         * 序目前只有：
-         *
-         * 删除
-         */
-
-    }
-
-
-    // ==============================
-    // 加入操作区域
-    // ==============================
-
-    wrapper.appendChild(
-        actions
-    );
+    // 注意：
+    // 这里故意不再创建右侧 node-actions。
+    // 所有操作统一移动到底部固定操作栏。
 
 
     return wrapper;
