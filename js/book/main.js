@@ -3,9 +3,9 @@
 // ==============================
 
 
-// ==============================
+// ==================================================
 // 初始化
-// ==============================
+// ==================================================
 
 function init() {
 
@@ -34,20 +34,119 @@ function init() {
     }
 
 
+    // ==================================================
+    // 初始化布局方向
+    // ==================================================
+
+    if (
+        currentBook.layoutDirection !==
+            "vertical" &&
+        currentBook.layoutDirection !==
+            "horizontal"
+    ) {
+
+        currentBook.layoutDirection =
+            "vertical";
+    }
+
+
+    // ==================================================
+    // 重置页面状态
+    // ==================================================
+
     resetBookPageState();
+
+
+    // ==================================================
+    // 恢复布局方向
+    // ==================================================
+
+    if (
+        currentBook.layoutDirection ===
+        "horizontal"
+    ) {
+
+        currentBook.layoutDirection =
+            "horizontal";
+
+    } else {
+
+        currentBook.layoutDirection =
+            "vertical";
+    }
+
+
+    // ==================================================
+    // 恢复书名位置
+    //
+    // 如果之前保存过位置，
+    // 就继续使用。
+    // ==================================================
+
+    if (
+        currentBook.bookPosition &&
+        typeof currentBook.bookPosition ===
+            "object"
+    ) {
+
+        const savedX =
+            Number(
+                currentBook.bookPosition.x
+            );
+
+        const savedY =
+            Number(
+                currentBook.bookPosition.y
+            );
+
+
+        if (
+            Number.isFinite(savedX)
+        ) {
+
+            bookPosition.x =
+                savedX;
+        }
+
+
+        if (
+            Number.isFinite(savedY)
+        ) {
+
+            bookPosition.y =
+                savedY;
+        }
+    }
+
 
     updateBookStructureState();
 
+
     renderBookTitle();
+
 
     setupEvents();
 
+
+    setupLayoutToggle();
+
+
+    updateLayoutToggle();
+
+
     updatePrefaceButton();
+
 
     renderTree();
 
 
-    if (!bookResizeInitialized) {
+    // ==================================================
+    // 窗口尺寸变化
+    // ==================================================
+
+    if (
+        !bookResizeInitialized
+    ) {
 
         window.addEventListener(
             "resize",
@@ -58,14 +157,16 @@ function init() {
             }
         );
 
-        bookResizeInitialized = true;
+
+        bookResizeInitialized =
+            true;
     }
 }
 
 
-// ==============================
+// ==================================================
 // 返回
-// ==============================
+// ==================================================
 
 function goBack() {
 
@@ -76,9 +177,102 @@ function goBack() {
 }
 
 
-// ==============================
+// ==================================================
+// 布局切换按钮
+// ==================================================
+
+function setupLayoutToggle() {
+
+    const button =
+        document.querySelector(
+            "#layoutToggle"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    if (
+        button.dataset.initialized ===
+        "true"
+    ) {
+
+        return;
+    }
+
+
+    button.addEventListener(
+        "click",
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            toggleBookLayoutDirection();
+
+        }
+    );
+
+
+    button.dataset.initialized =
+        "true";
+}
+
+
+// ==================================================
+// 更新布局切换按钮文字
+// ==================================================
+
+function updateLayoutToggle() {
+
+    const button =
+        document.querySelector(
+            "#layoutToggle"
+        );
+
+
+    if (!button) {
+        return;
+    }
+
+
+    const direction =
+        getBookLayoutDirection();
+
+
+    if (
+        direction ===
+        "horizontal"
+    ) {
+
+        button.textContent =
+            "↔ 横向";
+
+        button.setAttribute(
+            "aria-label",
+            "当前为横向布局，点击切换为纵向"
+        );
+
+    } else {
+
+        button.textContent =
+            "↕ 纵向";
+
+        button.setAttribute(
+            "aria-label",
+            "当前为纵向布局，点击切换为横向"
+        );
+    }
+}
+
+
+// ==================================================
 // 渲染书名
-// ==============================
+// ==================================================
 
 function renderBookTitle() {
 
@@ -92,6 +286,7 @@ function renderBookTitle() {
         !titleElement ||
         !currentBook
     ) {
+
         return;
     }
 
@@ -112,12 +307,210 @@ function renderBookTitle() {
 
     titleElement.style.webkitUserSelect =
         "none";
+
+    titleElement.style.transform =
+        "none";
+
+
+    // ==================================================
+    // 恢复已经保存的书名位置
+    // ==================================================
+
+    if (
+        Number.isFinite(
+            Number(bookPosition.x)
+        )
+    ) {
+
+        titleElement.style.left =
+            Number(bookPosition.x) +
+            "px";
+    }
+
+
+    if (
+        Number.isFinite(
+            Number(bookPosition.y)
+        )
+    ) {
+
+        titleElement.style.top =
+            Number(bookPosition.y) +
+            "px";
+    }
 }
 
 
-// ==============================
+// ==================================================
+// 确保书名拥有位置
+//
+// 注意：
+// 这里只负责第一次定位。
+// 一旦已经有位置，就绝不重新居中。
+// ==================================================
+
+function ensureBookTitlePosition() {
+
+    const bookTitle =
+        document.querySelector(
+            "#bookTitle"
+        );
+
+
+    const canvas =
+        document.querySelector(
+            ".tree-canvas"
+        );
+
+
+    if (
+        !bookTitle ||
+        !canvas
+    ) {
+
+        return;
+    }
+
+
+    bookTitle.style.position =
+        "absolute";
+
+    bookTitle.style.margin =
+        "0";
+
+    bookTitle.style.transform =
+        "none";
+
+
+    let left =
+        parseFloat(
+            bookTitle.style.left
+        );
+
+
+    let top =
+        parseFloat(
+            bookTitle.style.top
+        );
+
+
+    // ==================================================
+    // 已经有保存的位置
+    // ==================================================
+
+    if (
+        !Number.isFinite(left) &&
+        Number.isFinite(
+            Number(bookPosition.x)
+        )
+    ) {
+
+        left =
+            Number(
+                bookPosition.x
+            );
+
+
+        bookTitle.style.left =
+            left + "px";
+    }
+
+
+    if (
+        !Number.isFinite(top) &&
+        Number.isFinite(
+            Number(bookPosition.y)
+        )
+    ) {
+
+        top =
+            Number(
+                bookPosition.y
+            );
+
+
+        bookTitle.style.top =
+            top + "px";
+    }
+
+
+    // ==================================================
+    // 第一次打开
+    //
+    // 没有保存位置时才居中。
+    // ==================================================
+
+    if (
+        !Number.isFinite(left)
+    ) {
+
+        const width =
+            bookTitle.offsetWidth ||
+            BOOK_MIN_WIDTH;
+
+
+        left =
+            Math.max(
+                0,
+                (
+                    canvas.clientWidth -
+                    width
+                ) / 2
+            );
+
+
+        bookTitle.style.left =
+            left + "px";
+
+
+        bookPosition.x =
+            left;
+    }
+
+
+    if (
+        !Number.isFinite(top)
+    ) {
+
+        const height =
+            bookTitle.offsetHeight ||
+            BOOK_MIN_HEIGHT;
+
+
+        top =
+            Math.max(
+                20,
+                (
+                    canvas.clientHeight -
+                    height
+                ) / 2
+            );
+
+
+        bookTitle.style.top =
+            top + "px";
+
+
+        bookPosition.y =
+            top;
+    }
+
+
+    // ==================================================
+    // 同步状态
+    // ==================================================
+
+    bookPosition.x =
+        left;
+
+    bookPosition.y =
+        top;
+}
+
+
+// ==================================================
 // 渲染整棵树
-// ==============================
+// ==================================================
 
 function renderTree() {
 
@@ -131,10 +524,12 @@ function renderTree() {
             ".tree-canvas"
         );
 
+
     const tree =
         document.querySelector(
             "#tree"
         );
+
 
     const svg =
         document.querySelector(
@@ -142,7 +537,10 @@ function renderTree() {
         );
 
 
-    if (!canvas || !tree) {
+    if (
+        !canvas ||
+        !tree
+    ) {
 
         console.warn(
             "找不到 tree-canvas 或 #tree"
@@ -155,6 +553,20 @@ function renderTree() {
     updateBookStructureState();
 
 
+    // ==================================================
+    // 先确保书名位置
+    //
+    // 非常重要：
+    // calculateLayout 会读取书名当前位置。
+    // ==================================================
+
+    ensureBookTitlePosition();
+
+
+    // ==================================================
+    // 清理旧内容
+    // ==================================================
+
     tree.innerHTML = "";
 
 
@@ -164,8 +576,6 @@ function renderTree() {
 
     }
 
-
-    // 删除旧的 + / − 控制按钮
 
     document
         .querySelectorAll(
@@ -227,13 +637,6 @@ function renderTree() {
             "100%";
 
 
-        canvas.scrollLeft =
-            0;
-
-        canvas.scrollTop =
-            0;
-
-
         if (svg) {
 
             svg.setAttribute(
@@ -250,7 +653,6 @@ function renderTree() {
                 "viewBox",
                 `0 0 ${canvasWidth} ${canvasHeight}`
             );
-
         }
 
 
@@ -273,13 +675,17 @@ function renderTree() {
         );
 
 
-        // 没有结构时，
-        // 书名才自动居中
+        // ==================================================
+        // 没有结构时：
+        // 只有完全没有位置时才居中。
+        //
+        // 绝不覆盖用户已经拖动的位置。
+        // ==================================================
 
         requestAnimationFrame(
             function() {
 
-                centerBookTitle();
+                ensureBookTitlePosition();
 
             }
         );
@@ -307,6 +713,10 @@ function renderTree() {
     const layout =
         calculateLayout();
 
+
+    // ==================================================
+    // 当前画布尺寸
+    // ==================================================
 
     const canvasWidth =
         canvas.clientWidth ||
@@ -355,11 +765,7 @@ function renderTree() {
 
 
     // ==================================================
-    // 非常重要
-    //
-    // layout.js 已经完成全部节点定位。
-    //
-    // 这里绝对不能再次给节点 X 坐标做偏移。
+    // 保存布局
     // ==================================================
 
     currentLayout =
@@ -367,7 +773,7 @@ function renderTree() {
 
 
     // ==================================================
-    // SVG
+    // SVG 尺寸
     // ==================================================
 
     if (svg) {
@@ -386,100 +792,6 @@ function renderTree() {
             "viewBox",
             `0 0 ${treeWidth} ${treeHeight}`
         );
-
-    }
-
-
-    // ==================================================
-    // 书名
-    //
-    // 有结构以后：
-    // 不重新居中
-    // 不重新计算 X
-    // 不因为新增节点而移动
-    // ==================================================
-
-    const bookTitle =
-        document.querySelector(
-            "#bookTitle"
-        );
-
-
-    if (bookTitle) {
-
-        bookTitle.style.position =
-            "absolute";
-
-        bookTitle.style.margin =
-            "0";
-
-        bookTitle.style.transform =
-            "none";
-
-
-        // 如果书名还没有位置，
-        // 只在第一次设置一次。
-
-        const currentLeft =
-            parseFloat(
-                bookTitle.style.left
-            );
-
-
-        const currentTop =
-            parseFloat(
-                bookTitle.style.top
-            );
-
-
-        if (
-            !Number.isFinite(
-                currentLeft
-            )
-        ) {
-
-            const width =
-                bookTitle.offsetWidth ||
-                BOOK_MIN_WIDTH;
-
-
-            const x =
-                Math.max(
-                    10,
-                    canvasWidth / 2 -
-                    width / 2
-                );
-
-
-            bookTitle.style.left =
-                x + "px";
-
-
-            bookPosition.x =
-                x;
-
-        }
-
-
-        if (
-            !Number.isFinite(
-                currentTop
-            )
-        ) {
-
-            const y =
-                25;
-
-
-            bookTitle.style.top =
-                y + "px";
-
-
-            bookPosition.y =
-                y;
-
-        }
-
     }
 
 
@@ -526,7 +838,6 @@ function renderTree() {
             tree.appendChild(
                 element
             );
-
         }
     );
 
@@ -546,7 +857,6 @@ function renderTree() {
                 drawConnections(
                     currentLayout
                 );
-
             }
 
 
@@ -557,9 +867,11 @@ function renderTree() {
 }
 
 
-// ==============================
+// ==================================================
 // 没有结构时：书名居中
-// ==============================
+//
+// 只有第一次没有位置时使用。
+// ==================================================
 
 function centerBookTitle() {
 
@@ -584,15 +896,45 @@ function centerBookTitle() {
     }
 
 
-    bookTitle.style.position =
-        "absolute";
+    // ==================================================
+    // 如果已经存在位置
+    // 直接保留
+    // ==================================================
 
-    bookTitle.style.margin =
-        "0";
+    const currentLeft =
+        parseFloat(
+            bookTitle.style.left
+        );
 
-    bookTitle.style.transform =
-        "none";
 
+    const currentTop =
+        parseFloat(
+            bookTitle.style.top
+        );
+
+
+    if (
+        Number.isFinite(
+            currentLeft
+        ) &&
+        Number.isFinite(
+            currentTop
+        )
+    ) {
+
+        bookPosition.x =
+            currentLeft;
+
+        bookPosition.y =
+            currentTop;
+
+        return;
+    }
+
+
+    // ==================================================
+    // 第一次才居中
+    // ==================================================
 
     const canvasWidth =
         canvas.clientWidth;
@@ -606,6 +948,10 @@ function centerBookTitle() {
         canvasWidth <= 0 ||
         canvasHeight <= 0
     ) {
+
+        requestAnimationFrame(
+            centerBookTitle
+        );
 
         return;
     }
@@ -633,51 +979,44 @@ function centerBookTitle() {
 
 
     const x =
-        (
-            canvasWidth -
-            bookWidth
-        ) / 2;
+        Math.max(
+            0,
+            (
+                canvasWidth -
+                bookWidth
+            ) / 2
+        );
 
 
     const y =
-        (
-            canvasHeight -
-            bookHeight
-        ) / 2;
+        Math.max(
+            0,
+            (
+                canvasHeight -
+                bookHeight
+            ) / 2
+        );
 
 
     bookTitle.style.left =
-        Math.max(
-            0,
-            x
-        ) + "px";
+        x + "px";
 
 
     bookTitle.style.top =
-        Math.max(
-            0,
-            y
-        ) + "px";
+        y + "px";
 
 
     bookPosition.x =
-        Math.max(
-            0,
-            x
-        );
-
+        x;
 
     bookPosition.y =
-        Math.max(
-            0,
-            y
-        );
+        y;
 }
 
 
-// ==============================
+// ==================================================
 // 恢复选择状态
-// ==============================
+// ==================================================
 
 function restoreSelection() {
 
@@ -705,7 +1044,6 @@ function restoreSelection() {
 
             return;
         }
-
     }
 
 
@@ -713,9 +1051,9 @@ function restoreSelection() {
 }
 
 
-// ==============================
+// ==================================================
 // 启动
-// ==============================
+// ==================================================
 
 if (
     document.readyState ===
@@ -730,5 +1068,4 @@ if (
 } else {
 
     init();
-
 }
