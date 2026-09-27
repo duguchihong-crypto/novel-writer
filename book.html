@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>全书</title>
-
 <style>
+
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+}
+
+html,
+body {
+    width: 100%;
+    height: 100%;
 }
 
 body {
@@ -22,31 +21,137 @@ body {
         "Microsoft YaHei",
         sans-serif;
 
-    background: #f7f8fa;
-    color: #222;
+    background: #ffffff;
+    color: #333;
 
-    min-height: 100vh;
-
-    padding-top: 72px;
+    overflow: hidden;
 }
 
 
 /* =========================
-   顶部固定栏
+   顶部
 ========================= */
 
 .top-bar {
+
     position: fixed;
 
     top: 0;
     left: 0;
     right: 0;
 
-    height: 72px;
+    height: 56px;
 
-    background: #fff;
+    background: rgba(255,255,255,0.97);
 
-    border-bottom: 1px solid #e8e8e8;
+    border-bottom: 1px solid #eeeeee;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 1000;
+}
+
+.page-title {
+
+    font-size: 18px;
+    font-weight: 600;
+
+    color: #222;
+}
+
+.back-button {
+
+    position: absolute;
+
+    left: 16px;
+
+    border: none;
+
+    background: none;
+
+    font-size: 16px;
+
+    color: #555;
+
+    cursor: pointer;
+
+    padding: 8px 4px;
+}
+
+.back-button:active {
+    opacity: 0.5;
+}
+
+
+/* =========================
+   主区域
+========================= */
+
+.main {
+
+    position: fixed;
+
+    top: 56px;
+    left: 0;
+    right: 0;
+
+    bottom: 88px;
+
+    overflow-y: auto;
+
+    padding: 36px 20px 60px;
+
+    -webkit-overflow-scrolling: touch;
+}
+
+
+/* =========================
+   结构区域
+========================= */
+
+.structure-area {
+
+    width: 100%;
+
+    max-width: 760px;
+
+    margin: 0 auto;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+}
+
+
+/* =========================
+   书名
+========================= */
+
+.book-node {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+}
+
+.book-box {
+
+    min-width: 180px;
+
+    max-width: 90vw;
+
+    min-height: 52px;
+
+    padding: 13px 28px;
 
     display: flex;
 
@@ -54,57 +159,299 @@ body {
 
     justify-content: center;
 
-    z-index: 100;
-}
+    border-radius: 10px;
 
-.page-title {
-    font-size: 20px;
+    /* 赤 */
 
-    font-weight: 700;
-}
+    border: 1.5px solid #e59a9a;
 
+    background: #fff0f0;
 
-/* 左侧返回 */
+    color: #8f2424;
 
-.back-button {
-    position: absolute;
+    font-size: 19px;
 
-    left: 20px;
-
-    border: none;
-
-    background: none;
-
-    color: #4f7cff;
-
-    font-size: 15px;
+    font-weight: 600;
 
     cursor: pointer;
 
-    padding: 8px;
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.04);
+
+    user-select: none;
+}
+
+
+/* 书名下面的线 */
+
+.book-down-line {
+
+    width: 1.5px;
+
+    height: 34px;
+
+    background: #d7d7d7;
 }
 
 
 /* =========================
-   主体
+   结构树
 ========================= */
 
-.container {
+.tree {
+
     width: 100%;
 
-    max-width: 900px;
+    display: flex;
 
-    margin: 0 auto;
+    flex-direction: column;
 
-    padding: 45px 20px 80px;
+    align-items: center;
+}
+
+
+/* 根节点 */
+
+.root-node {
+
+    position: relative;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    width: 100%;
 }
 
 
 /* =========================
-   书名区域
+   节点
 ========================= */
 
-.book-title-area {
+.node-row {
+
+    position: relative;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    width: 100%;
+
+    min-height: 56px;
+}
+
+
+.node-box {
+
+    position: relative;
+
+    min-width: 150px;
+
+    max-width: calc(100vw - 120px);
+
+    min-height: 48px;
+
+    padding: 11px 20px;
+
+    border-radius: 9px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    user-select: none;
+
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.035);
+}
+
+
+/* =========================
+   五色体系
+========================= */
+
+
+/*
+    赤
+    书名
+*/
+
+.book-box {
+
+    border-color: #e59a9a;
+
+    background: #fff0f0;
+
+    color: #8f2424;
+}
+
+
+/*
+    青
+    序
+*/
+
+.node-preface {
+
+    border: 1.5px solid #8bbfc2;
+
+    background: #edf9fa;
+
+    color: #17666b;
+}
+
+
+/*
+    黄
+    卷
+*/
+
+.node-volume {
+
+    border: 1.5px solid #e1ca72;
+
+    background: #fffbea;
+
+    color: #806800;
+}
+
+
+/*
+    白
+    篇
+
+    白色不能直接用纯白，
+    否则会和页面背景融在一起。
+*/
+
+.node-part {
+
+    border: 1.5px solid #c9c9c9;
+
+    background: #fafafa;
+
+    color: #4b4b4b;
+}
+
+
+/*
+    黑
+    章
+
+    黑色也不使用纯黑背景，
+    保持浅底深字。
+*/
+
+.node-chapter {
+
+    border: 1.5px solid #8d8d8d;
+
+    background: #f2f2f2;
+
+    color: #202020;
+}
+
+
+/* =========================
+   右侧操作
+========================= */
+
+.node-actions {
+
+    position: absolute;
+
+    left: calc(50% + 95px);
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    white-space: nowrap;
+}
+
+
+.action-button {
+
+    height: 32px;
+
+    padding: 0 9px;
+
+    border: 1px solid #e5e5e5;
+
+    border-radius: 7px;
+
+    background: #ffffff;
+
+    color: #666;
+
+    font-size: 13px;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 1px 4px rgba(0,0,0,0.04);
+}
+
+.action-button:active {
+
+    background: #f5f5f5;
+}
+
+
+/* 删除 */
+
+.delete-button {
+
+    width: 32px;
+
+    padding: 0;
+
+    font-size: 15px;
+
+    color: #888;
+}
+
+
+/* =========================
+   连接线
+========================= */
+
+.vertical-line {
+
+    width: 1.5px;
+
+    height: 28px;
+
+    background: #d7d7d7;
+}
+
+
+/* =========================
+   子结构
+========================= */
+
+.children {
+
+    position: relative;
 
     width: 100%;
 
@@ -114,255 +461,55 @@ body {
 
     align-items: center;
 
-    position: relative;
+    padding-top: 0;
 }
 
 
-/* 书名 */
+/* 多个子节点的横线 */
 
-.book-title {
+.children.has-multiple::before {
 
-    font-size: 25px;
-
-    font-weight: 700;
-
-    text-align: center;
-
-    cursor: grab;
-
-    user-select: none;
-
-    padding: 8px 25px;
-
-    min-width: 120px;
-
-    max-width: 90%;
-
-    word-break: break-word;
-
-    position: relative;
-}
-
-.book-title:active {
-    cursor: grabbing;
-}
-
-
-/* =========================
-   书名下面的线
-========================= */
-
-.title-line {
-
-    width: 100%;
-
-    height: 1px;
-
-    background: #dfe2e7;
-
-    position: relative;
-
-    margin-top: 12px;
-}
-
-
-/* =========================
-   中间的 + / -
-========================= */
-
-.expand-button {
+    content: "";
 
     position: absolute;
 
+    top: 0;
+
     left: 50%;
 
+    width: calc(100% - 60px);
+
+    height: 1.5px;
+
+    background: #d7d7d7;
+
     transform: translateX(-50%);
+}
 
-    top: -15px;
 
-    width: 30px;
+.child-node {
 
-    height: 30px;
-
-    border-radius: 50%;
-
-    border: 1px solid #d8dce2;
-
-    background: #fff;
-
-    color: #666;
-
-    font-size: 20px;
-
-    line-height: 26px;
+    position: relative;
 
     display: flex;
+
+    flex-direction: column;
 
     align-items: center;
 
-    justify-content: center;
-
-    cursor: pointer;
-
-    z-index: 5;
-}
-
-.expand-button:hover {
-    background: #f5f6f8;
-}
-
-
-/* =========================
-   添加结构区域
-========================= */
-
-.add-panel {
-
     width: 100%;
-
-    display: none;
-
-    justify-content: center;
-
-    gap: 12px;
-
-    padding-top: 28px;
-
-    padding-bottom: 25px;
 }
 
 
-.add-panel.show {
-    display: flex;
-}
+.child-node::before {
 
+    content: "";
 
-/* 添加按钮 */
+    width: 1.5px;
 
-.add-structure-button {
+    height: 20px;
 
-    border: 1px solid #dfe2e7;
-
-    background: #fff;
-
-    color: #444;
-
-    border-radius: 9px;
-
-    padding: 10px 15px;
-
-    font-size: 14px;
-
-    cursor: pointer;
-
-    white-space: nowrap;
-
-    transition:
-        background 0.15s ease,
-        border-color 0.15s ease;
-}
-
-.add-structure-button:hover {
-    background: #f5f7fa;
-
-    border-color: #cfd4dc;
-}
-
-
-/* 已经添加过的序 */
-
-.add-structure-button.disabled {
-
-    color: #bbb;
-
-    background: #f1f2f4;
-
-    border-color: #e5e6e8;
-
-    cursor: not-allowed;
-}
-
-
-/* =========================
-   内容区域
-========================= */
-
-.structure-list {
-
-    width: 100%;
-
-    margin-top: 5px;
-}
-
-
-/* 每一个结构 */
-
-.structure-item {
-
-    background: #fff;
-
-    border: 1px solid #e7e9ed;
-
-    border-radius: 10px;
-
-    min-height: 54px;
-
-    margin-bottom: 10px;
-
-    display: flex;
-
-    align-items: center;
-
-    padding: 0 17px;
-
-    cursor: pointer;
-
-    transition:
-        background 0.15s ease,
-        transform 0.15s ease;
-}
-
-.structure-item:hover {
-
-    background: #fafbfc;
-
-    transform: translateX(2px);
-}
-
-
-/* 左边类型 */
-
-.structure-type {
-
-    font-size: 13px;
-
-    color: #999;
-
-    width: 42px;
-
-    flex-shrink: 0;
-}
-
-
-/* 名称 */
-
-.structure-name {
-
-    font-size: 15px;
-
-    font-weight: 600;
-
-    flex: 1;
-}
-
-
-/* 右边箭头 */
-
-.structure-arrow {
-
-    color: #aaa;
-
-    font-size: 19px;
+    background: #d7d7d7;
 }
 
 
@@ -370,26 +517,140 @@ body {
    空状态
 ========================= */
 
-.empty-text {
+.empty-hint {
 
-    text-align: center;
+    margin-top: 35px;
 
     color: #aaa;
 
     font-size: 14px;
 
-    padding-top: 25px;
+    text-align: center;
+
+    line-height: 1.8;
 }
 
 
 /* =========================
-   移动书名时的状态
+   底部固定按钮
 ========================= */
 
-.book-title.dragging {
+.bottom-bar {
 
-    opacity: 0.55;
+    position: fixed;
 
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 88px;
+
+    background: rgba(255,255,255,0.98);
+
+    border-top: 1px solid #eeeeee;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 9px;
+
+    padding:
+        12px
+        16px
+        calc(12px + env(safe-area-inset-bottom));
+
+    z-index: 1000;
+}
+
+
+/* =========================
+   底部按钮
+========================= */
+
+.add-button {
+
+    height: 44px;
+
+    min-width: 72px;
+
+    padding: 0 13px;
+
+    border-radius: 9px;
+
+    background: #ffffff;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+/* 赤 */
+
+.add-preface {
+
+    border: 1.5px solid #8bbfc2;
+
+    color: #17666b;
+
+    background: #edf9fa;
+}
+
+
+/* 黑 */
+
+.add-chapter {
+
+    border: 1.5px solid #8d8d8d;
+
+    color: #202020;
+
+    background: #f2f2f2;
+}
+
+
+/* 白 */
+
+.add-part {
+
+    border: 1.5px solid #c9c9c9;
+
+    color: #4b4b4b;
+
+    background: #fafafa;
+}
+
+
+/* 黄 */
+
+.add-volume {
+
+    border: 1.5px solid #e1ca72;
+
+    color: #806800;
+
+    background: #fffbea;
+}
+
+
+.add-button:active {
+
+    transform: scale(0.96);
+}
+
+
+/* 序已经存在 */
+
+.add-button.disabled {
+
+    opacity: 0.4;
+
+    cursor: not-allowed;
 }
 
 
@@ -399,758 +660,76 @@ body {
 
 @media (max-width: 600px) {
 
-    .back-button {
-        left: 12px;
+    .main {
+
+        padding-left: 10px;
+
+        padding-right: 10px;
     }
 
-    .container {
-        padding:
-            35px 14px 60px;
+    .book-box {
+
+        min-width: 150px;
+
+        font-size: 17px;
+
+        padding-left: 22px;
+
+        padding-right: 22px;
     }
 
-    .book-title {
-        font-size: 22px;
+    .node-box {
+
+        min-width: 125px;
+
+        font-size: 14px;
+
+        padding-left: 14px;
+
+        padding-right: 14px;
     }
 
-    .add-panel {
+    .node-actions {
 
-        gap: 7px;
+        left: calc(50% + 70px);
 
-        padding-top: 25px;
-
+        gap: 4px;
     }
 
-    .add-structure-button {
+    .action-button {
 
-        padding:
-            9px 10px;
+        padding: 0 6px;
 
-        font-size: 13px;
+        font-size: 11px;
+
+        height: 29px;
+    }
+
+    .delete-button {
+
+        width: 29px;
+    }
+
+    .bottom-bar {
+
+        gap: 6px;
+
+        padding-left: 8px;
+
+        padding-right: 8px;
+    }
+
+    .add-button {
+
+        min-width: 0;
+
+        flex: 1;
+
+        padding: 0 5px;
+
+        font-size: 14px;
     }
 
 }
+
 </style>
-</head>
-
-<body>
-
-
-<!-- =========================
-     顶部
-========================= -->
-
-<header class="top-bar">
-
-    <button
-        class="back-button"
-        onclick="goBack()">
-
-        ← 返回
-
-    </button>
-
-
-    <div class="page-title">
-
-        全书
-
-    </div>
-
-</header>
-
-
-
-<!-- =========================
-     主体
-========================= -->
-
-<main class="container">
-
-
-    <!-- =====================
-         书名
-    ====================== -->
-
-    <section
-        id="bookTitleArea"
-        class="book-title-area">
-
-
-        <div
-            id="bookTitle"
-            class="book-title"
-            draggable="true">
-
-            我的小说
-
-        </div>
-
-
-        <!-- 横线 -->
-
-        <div class="title-line">
-
-
-            <!-- + / - -->
-
-            <button
-                id="expandButton"
-                class="expand-button"
-                onclick="toggleAddPanel()">
-
-                +
-
-            </button>
-
-        </div>
-
-
-        <!-- =================
-             添加栏
-        ================== -->
-
-        <div
-            id="addPanel"
-            class="add-panel">
-
-
-            <button
-                id="addPrefaceButton"
-                class="add-structure-button"
-                onclick="addPreface()">
-
-                ＋序
-
-            </button>
-
-
-            <button
-                class="add-structure-button"
-                onclick="addChapter()">
-
-                ＋章
-
-            </button>
-
-
-            <button
-                class="add-structure-button"
-                onclick="addPart()">
-
-                ＋篇
-
-            </button>
-
-
-            <button
-                class="add-structure-button"
-                onclick="addVolume()">
-
-                ＋卷
-
-            </button>
-
-
-        </div>
-
-
-    </section>
-
-
-
-    <!-- =====================
-         全书结构
-    ====================== -->
-
-    <section
-        id="structureList"
-        class="structure-list">
-
-    </section>
-
-
-</main>
-
-
-
-<script>
-
-/* =========================
-   当前书籍
-========================= */
-
-let currentBook = null;
-
-
-/* =========================
-   读取书籍
-========================= */
-
-function loadBook() {
-
-    const currentBookId =
-        localStorage.getItem(
-            "currentBookId"
-        );
-
-
-    const savedBooks =
-        localStorage.getItem(
-            "novelBooks"
-        );
-
-
-    const books =
-        savedBooks
-        ? JSON.parse(savedBooks)
-        : [];
-
-
-    if (!currentBookId) {
-
-        alert("没有选择书籍");
-
-        window.location.href =
-            "index.html";
-
-        return;
-
-    }
-
-
-    currentBook =
-        books.find(function(book) {
-
-            return String(book.id) ===
-                String(currentBookId);
-
-        });
-
-
-    if (!currentBook) {
-
-        alert("找不到这本书");
-
-        window.location.href =
-            "index.html";
-
-        return;
-
-    }
-
-
-    /* 显示书名 */
-
-    document.getElementById(
-        "bookTitle"
-    ).textContent =
-        currentBook.title ||
-        "未命名书籍";
-
-
-    /* 初始化结构 */
-
-    if (!currentBook.structure) {
-
-        currentBook.structure = [];
-
-    }
-
-
-    renderStructure();
-
-}
-
-
-/* =========================
-   展开 / 收起
-========================= */
-
-function toggleAddPanel() {
-
-    const panel =
-        document.getElementById(
-            "addPanel"
-        );
-
-    const button =
-        document.getElementById(
-            "expandButton"
-        );
-
-
-    if (
-        panel.classList.contains("show")
-    ) {
-
-        panel.classList.remove("show");
-
-        button.textContent = "+";
-
-    } else {
-
-        panel.classList.add("show");
-
-        button.textContent = "−";
-
-    }
-
-}
-
-
-/* =========================
-   添加序
-========================= */
-
-function addPreface() {
-
-    if (!currentBook) {
-        return;
-    }
-
-
-    /* 序只能存在一个 */
-
-    const alreadyExists =
-        currentBook.structure.some(
-            function(item) {
-
-                return item.type === "序";
-
-            }
-        );
-
-
-    if (alreadyExists) {
-
-        return;
-
-    }
-
-
-    const item = {
-
-        id: Date.now(),
-
-        type: "序",
-
-        name: "序",
-
-        order:
-            currentBook.structure.length
-
-    };
-
-
-    currentBook.structure.push(item);
-
-
-    saveBook();
-
-    renderStructure();
-
-
-    /* 序添加后按钮变灰 */
-
-    updatePrefaceButton();
-
-}
-
-
-/* =========================
-   添加章
-========================= */
-
-function addChapter() {
-
-    addStructure(
-        "章",
-        "第" +
-        getNextNumber("章") +
-        "章"
-    );
-
-}
-
-
-/* =========================
-   添加篇
-========================= */
-
-function addPart() {
-
-    addStructure(
-        "篇",
-        "第" +
-        getNextNumber("篇") +
-        "篇"
-    );
-
-}
-
-
-/* =========================
-   添加卷
-========================= */
-
-function addVolume() {
-
-    addStructure(
-        "卷",
-        "第" +
-        getNextNumber("卷") +
-        "卷"
-    );
-
-}
-
-
-/* =========================
-   通用添加
-========================= */
-
-function addStructure(
-    type,
-    name
-) {
-
-    if (!currentBook) {
-        return;
-    }
-
-
-    const item = {
-
-        id: Date.now(),
-
-        type: type,
-
-        name: name,
-
-        order:
-            currentBook.structure.length
-
-    };
-
-
-    currentBook.structure.push(item);
-
-
-    saveBook();
-
-    renderStructure();
-
-}
-
-
-/* =========================
-   自动编号
-========================= */
-
-function getNextNumber(type) {
-
-    const count =
-        currentBook.structure.filter(
-            function(item) {
-
-                return item.type === type;
-
-            }
-        ).length;
-
-
-    return count + 1;
-
-}
-
-
-/* =========================
-   显示结构
-========================= */
-
-function renderStructure() {
-
-    const list =
-        document.getElementById(
-            "structureList"
-        );
-
-
-    list.innerHTML = "";
-
-
-    if (
-        !currentBook ||
-        !currentBook.structure ||
-        currentBook.structure.length === 0
-    ) {
-
-        list.innerHTML = `
-            <div class="empty-text">
-                还没有添加全书结构
-            </div>
-        `;
-
-        updatePrefaceButton();
-
-        return;
-
-    }
-
-
-    currentBook.structure.forEach(
-        function(item) {
-
-
-            const element =
-                document.createElement(
-                    "div"
-                );
-
-
-            element.className =
-                "structure-item";
-
-
-            element.onclick =
-                function() {
-
-                    openStructure(
-                        item.id
-                    );
-
-                };
-
-
-            element.innerHTML = `
-
-                <div class="structure-type">
-                    ${item.type}
-                </div>
-
-                <div class="structure-name">
-                    ${escapeHTML(item.name)}
-                </div>
-
-                <div class="structure-arrow">
-                    ›
-                </div>
-
-            `;
-
-
-            list.appendChild(element);
-
-        }
-    );
-
-
-    updatePrefaceButton();
-
-}
-
-
-/* =========================
-   序按钮状态
-========================= */
-
-function updatePrefaceButton() {
-
-    const button =
-        document.getElementById(
-            "addPrefaceButton"
-        );
-
-
-    if (!currentBook) {
-        return;
-    }
-
-
-    const exists =
-        currentBook.structure.some(
-            function(item) {
-
-                return item.type === "序";
-
-            }
-        );
-
-
-    if (exists) {
-
-        button.classList.add(
-            "disabled"
-        );
-
-        button.textContent =
-            "序 ✓";
-
-        button.onclick =
-            function() {};
-
-    } else {
-
-        button.classList.remove(
-            "disabled"
-        );
-
-        button.textContent =
-            "＋序";
-
-        button.onclick =
-            addPreface;
-
-    }
-
-}
-
-
-/* =========================
-   打开结构
-========================= */
-
-function openStructure(id) {
-
-    const item =
-        currentBook.structure.find(
-            function(item) {
-
-                return item.id === id;
-
-            }
-        );
-
-
-    if (!item) {
-        return;
-    }
-
-
-    alert(
-        item.type +
-        "：" +
-        item.name +
-        "\n\n" +
-        "下一步可以进入该结构继续添加内容。"
-    );
-
-}
-
-
-/* =========================
-   保存
-========================= */
-
-function saveBook() {
-
-    const savedBooks =
-        localStorage.getItem(
-            "novelBooks"
-        );
-
-
-    const books =
-        savedBooks
-        ? JSON.parse(savedBooks)
-        : [];
-
-
-    const index =
-        books.findIndex(
-            function(book) {
-
-                return String(book.id) ===
-                    String(currentBook.id);
-
-            }
-        );
-
-
-    if (index !== -1) {
-
-        books[index] =
-            currentBook;
-
-        localStorage.setItem(
-            "novelBooks",
-            JSON.stringify(books)
-        );
-
-    }
-
-}
-
-
-/* =========================
-   返回
-========================= */
-
-function goBack() {
-
-    window.location.href =
-        "index.html";
-
-}
-
-
-/* =========================
-   防止文字破坏页面
-========================= */
-
-function escapeHTML(text) {
-
-    return String(text)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-
-}
-
-
-/* =========================
-   书名拖动
-========================= */
-
-const titleElement =
-    document.getElementById(
-        "bookTitle"
-    );
-
-
-titleElement.addEventListener(
-    "dragstart",
-    function() {
-
-        titleElement.classList.add(
-            "dragging"
-        );
-
-    }
-);
-
-
-titleElement.addEventListener(
-    "dragend",
-    function() {
-
-        titleElement.classList.remove(
-            "dragging"
-        );
-
-    }
-);
-
-
-/* =========================
-   页面启动
-========================= */
-
-loadBook();
-
-</script>
-
-</body>
-</html>
