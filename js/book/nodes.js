@@ -1,210 +1,32 @@
-// ==============================
-// 全书页面：节点
-// ==============================
-
-
 // ==================================================
-// 创建 ID
+// 节点创建
 // ==================================================
 
-function createId() {
-
-    return (
-        Date.now().toString(36) +
-        "_" +
-        Math.random()
-            .toString(36)
-            .slice(2, 10)
-    );
-}
-
-
-// ==================================================
-// 创建节点
-//
-// 序 / 章 = 正文
-// 卷 / 篇 = 大纲
-// ==================================================
-
-function createNode(
-    type,
-    title,
-    number
-) {
+function createNode(type, title, number) {
 
     return {
-
         id:
-            createId(),
+            "node_" +
+            Date.now() +
+            "_" +
+            Math.random()
+                .toString(36)
+                .substring(2, 9),
 
-        type:
-            type,
+        type: type,
 
-        title:
-            title || "",
+        title: title || "",
 
-        number:
-            Number.isFinite(
-                Number(number)
-            )
-                ? Number(number)
-                : 0,
+        number: number || 1,
 
-        // 正文内容
-        content:
-            "",
+        outline: "",
 
-        // 大纲内容
-        outline:
-            "",
+        content: "",
 
-        children:
-            [],
+        collapsed: false,
 
-        collapsed:
-            false
+        children: []
     };
-}
-
-
-// ==================================================
-// 节点颜色
-// ==================================================
-
-function getNodeClass(type) {
-
-    switch (type) {
-
-        case NODE_TYPES.PREFACE:
-
-            return NODE_COLOR_TYPES.PREFACE;
-
-        case NODE_TYPES.VOLUME:
-
-            return NODE_COLOR_TYPES.VOLUME;
-
-        case NODE_TYPES.PART:
-
-            return NODE_COLOR_TYPES.PART;
-
-        case NODE_TYPES.CHAPTER:
-
-            return NODE_COLOR_TYPES.CHAPTER;
-
-        default:
-
-            return "";
-    }
-}
-
-
-// ==================================================
-// 节点名称
-// ==================================================
-
-function getNodeTypeName(type) {
-
-    return NODE_TYPE_NAMES[type] || "";
-}
-
-
-// ==================================================
-// 是否为正文节点
-//
-// 只有：
-// 序
-// 章
-// ==================================================
-
-function isWritingNode(node) {
-
-    if (!node) {
-        return false;
-    }
-
-    return (
-        node.type === NODE_TYPES.PREFACE ||
-        node.type === NODE_TYPES.CHAPTER
-    );
-}
-
-
-// ==================================================
-// 是否为大纲节点
-//
-// 卷
-// 篇
-// ==================================================
-
-function isOutlineNode(node) {
-
-    if (!node) {
-        return false;
-    }
-
-    return (
-        node.type === NODE_TYPES.VOLUME ||
-        node.type === NODE_TYPES.PART
-    );
-}
-
-
-// ==================================================
-// 进入正文编辑器
-// ==================================================
-
-function openChapterEditor(nodeId) {
-
-    if (!currentBook) {
-
-        console.warn(
-            "没有当前小说"
-        );
-
-        return;
-    }
-
-
-    const node =
-        getNodeById(nodeId);
-
-
-    if (!node) {
-
-        console.warn(
-            "找不到章节节点：",
-            nodeId
-        );
-
-        return;
-    }
-
-
-    // 只有序、章可以进入正文
-
-    if (!isWritingNode(node)) {
-
-        return;
-    }
-
-
-    // 保存当前章节
-
-    localStorage.setItem(
-        "currentChapterId",
-        String(node.id)
-    );
-
-
-    // 保存当前小说
-
-    saveBook();
-
-
-    // 进入正文
-
-    window.location.href =
-        "./chapter.html";
 }
 
 
@@ -219,51 +41,44 @@ function createNodeElement(node) {
     }
 
 
-    const wrapper =
+    const element =
         document.createElement("div");
 
 
-    wrapper.className =
+    // ------------------------------
+    // 基础 class
+    // ------------------------------
+
+    element.className =
         "tree-node";
 
 
-    wrapper.dataset.nodeId =
-        node.id;
-
-
-    const box =
+    const nodeBox =
         document.createElement("div");
 
 
-    box.className =
+    nodeBox.className =
         "node-box";
 
 
-    const nodeClass =
-        getNodeClass(
-            node.type
-        );
+    // ------------------------------
+    // 节点颜色
+    // ------------------------------
 
+    if (
+        NODE_COLOR_TYPES &&
+        NODE_COLOR_TYPES[node.type]
+    ) {
 
-    if (nodeClass) {
-
-        box.classList.add(
-            nodeClass
+        nodeBox.classList.add(
+            NODE_COLOR_TYPES[node.type]
         );
     }
 
 
-    box.dataset.nodeId =
-        node.id;
-
-
-    box.dataset.nodeType =
-        node.type;
-
-
-    // ==================================================
+    // ------------------------------
     // 节点标题
-    // ==================================================
+    // ------------------------------
 
     const title =
         document.createElement("div");
@@ -275,44 +90,33 @@ function createNodeElement(node) {
 
     title.textContent =
         node.title ||
-        getNodeTypeName(
-            node.type
-        );
+        NODE_TYPE_NAMES[node.type] ||
+        "未命名";
 
 
-    box.appendChild(
-        title
-    );
+    nodeBox.appendChild(title);
+
+
+    element.appendChild(nodeBox);
+
+
+    // ------------------------------
+    // 节点 ID
+    // ------------------------------
+
+    element.dataset.nodeId =
+        node.id;
+
+
+    nodeBox.dataset.nodeId =
+        node.id;
 
 
     // ==================================================
-    // 折叠状态
+    // 点击节点
     // ==================================================
 
-    if (
-        node.collapsed === true
-    ) {
-
-        box.classList.add(
-            "is-collapsed"
-        );
-    }
-
-
-    // ==================================================
-    // 节点点击
-    //
-    // 统一使用 click。
-    //
-    // 序 / 章：
-    // → chapter.html
-    //
-    // 卷 / 篇：
-    // → 留在全书页面
-    // → 显示底部操作栏
-    // ==================================================
-
-    box.addEventListener(
+    nodeBox.addEventListener(
         "click",
         function(event) {
 
@@ -321,45 +125,233 @@ function createNodeElement(node) {
             event.stopPropagation();
 
 
-            // ------------------------------
-            // 序 / 章
-            // ------------------------------
-
-            if (
-                isWritingNode(node)
-            ) {
-
-                openChapterEditor(
-                    node.id
-                );
-
-                return;
-            }
-
-
-            // ------------------------------
-            // 卷 / 篇
-            // ------------------------------
-
-            if (
-                isOutlineNode(node)
-            ) {
-
-                selectNode(
-                    node.id
-                );
-
-                return;
-            }
-
+            handleNodeClick(
+                node.id
+            );
         }
     );
 
 
-    wrapper.appendChild(
-        box
+    // ==================================================
+    // 触摸节点
+    // ==================================================
+
+    nodeBox.addEventListener(
+        "touchend",
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+
+            handleNodeClick(
+                node.id
+            );
+        },
+        {
+            passive: false
+        }
     );
 
 
-    return wrapper;
+    // ==================================================
+    // 双击
+    //
+    // 暂时不进入编辑器。
+    // 后面可以做重命名。
+    // ==================================================
+
+    nodeBox.addEventListener(
+        "dblclick",
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+        }
+    );
+
+
+    return element;
+}
+
+
+// ==================================================
+// 节点点击处理
+// ==================================================
+
+function handleNodeClick(nodeId) {
+
+    const node =
+        getNodeById(nodeId);
+
+
+    if (!node) {
+
+        console.warn(
+            "找不到节点：",
+            nodeId
+        );
+
+        return;
+    }
+
+
+    // ==================================================
+    // 序
+    //
+    // 序是真正的正文节点
+    // → 进入 chapter.html
+    // ==================================================
+
+    if (
+        node.type ===
+        NODE_TYPES.PREFACE
+    ) {
+
+        openChapterEditor(
+            node.id
+        );
+
+        return;
+    }
+
+
+    // ==================================================
+    // 章
+    //
+    // 章是真正的正文节点
+    // → 进入 chapter.html
+    // ==================================================
+
+    if (
+        node.type ===
+        NODE_TYPES.CHAPTER
+    ) {
+
+        openChapterEditor(
+            node.id
+        );
+
+        return;
+    }
+
+
+    // ==================================================
+    // 卷
+    //
+    // 只是大纲
+    // → 不进入正文
+    // → 选择卷
+    // → 显示底部操作栏
+    // ==================================================
+
+    if (
+        node.type ===
+        NODE_TYPES.VOLUME
+    ) {
+
+        selectNode(
+            node.id
+        );
+
+        return;
+    }
+
+
+    // ==================================================
+    // 篇
+    //
+    // 只是大纲
+    // → 不进入正文
+    // → 选择篇
+    // → 显示底部操作栏
+    // ==================================================
+
+    if (
+        node.type ===
+        NODE_TYPES.PART
+    ) {
+
+        selectNode(
+            node.id
+        );
+
+        return;
+    }
+}
+
+
+// ==================================================
+// 打开正文编辑器
+// ==================================================
+
+function openChapterEditor(nodeId) {
+
+    const node =
+        getNodeById(nodeId);
+
+
+    if (!node) {
+
+        console.warn(
+            "无法打开正文：找不到节点",
+            nodeId
+        );
+
+        return;
+    }
+
+
+    // ------------------------------
+    // 保存当前选择
+    // ------------------------------
+
+    localStorage.setItem(
+        "currentChapterId",
+        String(node.id)
+    );
+
+
+    // ------------------------------
+    // 确保正文字段存在
+    // ------------------------------
+
+    if (
+        typeof node.content !==
+        "string"
+    ) {
+
+        node.content = "";
+    }
+
+
+    // ------------------------------
+    // 序 / 章
+    // 都可以拥有正文
+    // ------------------------------
+
+    if (
+        typeof node.outline !==
+        "string"
+    ) {
+
+        node.outline = "";
+    }
+
+
+    // ------------------------------
+    // 先保存小说
+    // ------------------------------
+
+    saveBook();
+
+
+    // ------------------------------
+    // 进入正文编辑器
+    // ------------------------------
+
+    window.location.href =
+        "./chapter.html";
 }
