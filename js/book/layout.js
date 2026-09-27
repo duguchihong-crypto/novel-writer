@@ -1,6 +1,7 @@
 // ==============================
-// 全书页面：自动布局
+// 全书页面：树形布局
 // ==============================
+
 
 function calculateLayout() {
 
@@ -12,9 +13,12 @@ function calculateLayout() {
         };
     }
 
-    const roots = Array.isArray(currentBook.structure)
-        ? currentBook.structure
-        : [];
+
+    const roots =
+        Array.isArray(currentBook.structure)
+            ? currentBook.structure
+            : [];
+
 
     const layout = {
         nodes: [],
@@ -22,14 +26,14 @@ function calculateLayout() {
         height: 0
     };
 
-    // 没有任何结构
+
     if (roots.length === 0) {
         return layout;
     }
 
 
     // ==============================
-    // 计算节点下面的叶子数量
+    // 计算叶子节点数量
     // ==============================
 
     function getLeafCount(node) {
@@ -38,7 +42,7 @@ function calculateLayout() {
             return 1;
         }
 
-        // 折叠节点本身就是一个叶子
+
         if (
             node.collapsed === true ||
             !Array.isArray(node.children) ||
@@ -47,58 +51,85 @@ function calculateLayout() {
             return 1;
         }
 
+
         let count = 0;
 
+
         node.children.forEach(child => {
-            count += getLeafCount(child);
+
+            count +=
+                getLeafCount(child);
+
         });
+
 
         return Math.max(1, count);
     }
 
 
     // ==============================
-    // 计算一个节点子树需要的宽度
+    // 计算子树宽度
     // ==============================
 
     function getSubtreeWidth(node) {
 
-        const leafCount = getLeafCount(node);
+        const leafCount =
+            getLeafCount(node);
+
 
         return (
             leafCount * NODE_WIDTH +
-            Math.max(0, leafCount - 1) * SIBLING_GAP
+            Math.max(
+                0,
+                leafCount - 1
+            ) * SIBLING_GAP
         );
     }
 
 
     // ==============================
-    // 计算一组节点需要的总宽度
+    // 计算一组节点总宽度
     // ==============================
 
     function getNodesWidth(nodes) {
 
-        if (!nodes || nodes.length === 0) {
+        if (
+            !nodes ||
+            nodes.length === 0
+        ) {
             return 0;
         }
 
+
         let width = 0;
 
-        nodes.forEach((node, index) => {
 
-            width += getSubtreeWidth(node);
+        nodes.forEach(
+            (node, index) => {
 
-            if (index < nodes.length - 1) {
-                width += SIBLING_GAP;
+                width +=
+                    getSubtreeWidth(node);
+
+
+                if (
+                    index <
+                    nodes.length - 1
+                ) {
+
+                    width +=
+                        SIBLING_GAP;
+                }
+
             }
-        });
+        );
+
 
         return width;
     }
 
 
     // ==============================
-    // 递归放置节点
+    // 排列节点
     // ==============================
 
     function placeNodes(
@@ -108,47 +139,64 @@ function calculateLayout() {
         parentCenterX
     ) {
 
-        if (!nodes || nodes.length === 0) {
+        if (
+            !nodes ||
+            nodes.length === 0
+        ) {
             return;
         }
 
-        let currentX = startX;
+
+        let currentX =
+            startX;
 
 
         nodes.forEach(node => {
 
-            const subtreeWidth = getSubtreeWidth(node);
+            const subtreeWidth =
+                getSubtreeWidth(node);
 
-            // 当前节点位于整个子树的中央
+
             const centerX =
                 currentX +
                 subtreeWidth / 2;
+
 
             const x =
                 centerX -
                 NODE_WIDTH / 2;
 
+
             const y =
                 level *
-                (NODE_HEIGHT + LEVEL_GAP);
+                (
+                    NODE_HEIGHT +
+                    LEVEL_GAP
+                );
 
 
-            // 保存布局信息
             layout.nodes.push({
 
-                id: node.id,
+                id:
+                    node.id,
 
-                node: node,
+                node:
+                    node,
 
-                x: x,
+                x:
+                    x,
 
-                y: y,
+                y:
+                    y,
 
-                level: level,
+                level:
+                    level,
 
-                parentCenterX: parentCenterX,
+                parentCenterX:
+                    parentCenterX,
 
-                centerX: centerX,
+                centerX:
+                    centerX,
 
                 centerY:
                     y +
@@ -157,7 +205,7 @@ function calculateLayout() {
 
 
             // ==============================
-            // 放置子节点
+            // 子节点
             // ==============================
 
             if (
@@ -167,28 +215,32 @@ function calculateLayout() {
             ) {
 
                 placeNodes(
+
                     node.children,
+
                     currentX,
+
                     level + 1,
+
                     centerX
+
                 );
             }
 
 
-            // 下一个同级节点
             currentX +=
                 subtreeWidth +
                 SIBLING_GAP;
+
         });
     }
 
 
-    // ==============================
-    // 开始布局
-    // ==============================
+    const totalWidth =
+        getNodesWidth(roots);
 
-    const totalWidth = getNodesWidth(roots);
 
+    // 从第 0 层开始
     placeNodes(
         roots,
         0,
@@ -198,34 +250,43 @@ function calculateLayout() {
 
 
     // ==============================
-    // 计算实际画布尺寸
+    // 获取实际尺寸
     // ==============================
 
     let maxX = 0;
     let maxY = 0;
 
+
     layout.nodes.forEach(item => {
 
-        maxX = Math.max(
-            maxX,
-            item.x + NODE_WIDTH
-        );
+        maxX =
+            Math.max(
+                maxX,
+                item.x +
+                NODE_WIDTH
+            );
 
-        maxY = Math.max(
-            maxY,
-            item.y + NODE_HEIGHT
-        );
+
+        maxY =
+            Math.max(
+                maxY,
+                item.y +
+                NODE_HEIGHT
+            );
 
     });
 
 
-    // 至少留出一点边距
     const PADDING = 40;
 
-    layout.width = Math.max(
-        totalWidth,
-        maxX
-    ) + PADDING * 2;
+
+    layout.width =
+        Math.max(
+            totalWidth,
+            maxX
+        ) +
+        PADDING * 2;
+
 
     layout.height =
         maxY +
@@ -233,16 +294,22 @@ function calculateLayout() {
 
 
     // ==============================
-    // 整棵树整体向右、向下留出边距
+    // 加上内部边距
     // ==============================
 
     layout.nodes.forEach(item => {
 
-        item.x += PADDING;
-        item.y += PADDING;
+        item.x +=
+            PADDING;
 
-        item.centerX += PADDING;
-        item.centerY += PADDING;
+        item.y +=
+            PADDING;
+
+        item.centerX +=
+            PADDING;
+
+        item.centerY +=
+            PADDING;
 
     });
 
