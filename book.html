@@ -2,138 +2,158 @@
 <html lang="zh-CN">
 
 <head>
+    <meta charset="UTF-8">
 
-<meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    <title>全书</title>
 
-<title>全书</title>
-
-<link
-    rel="stylesheet"
-    href="css/book.css">
-
+    <link
+        rel="stylesheet"
+        href="css/book.css"
+    >
 </head>
 
 
 <body>
 
+    <!-- ==========================
+         顶部栏
+    =========================== -->
 
-<header class="top-bar">
+    <header class="top-bar">
 
-    <button
-        id="backButton"
-        class="back-button">
-
-        ← 返回
-
-    </button>
-
-
-    <div class="page-title">
-
-        全书
-
-    </div>
-
-</header>
+        <button
+            id="backButton"
+            class="back-button"
+            type="button"
+        >
+            ← 返回
+        </button>
 
 
+        <div class="page-title">
+            全书
+        </div>
 
-<main
-    id="main"
-    class="main">
 
-    <div
-        id="structureArea"
-        class="structure-area">
+        <div class="top-placeholder"></div>
+
+    </header>
+
+
+
+    <!-- ==========================
+         全书画布
+    =========================== -->
+
+    <main class="tree-canvas">
+
+        <!--
+            SVG 用来绘制书名、
+            序、卷、篇、章之间的连接线
+        -->
+
+        <svg
+            id="connections"
+            class="connections"
+        ></svg>
+
+
+        <!-- ======================
+             书名
+        ======================= -->
 
         <div
-            id="canvas"
-            class="tree-canvas">
-
-            <svg
-                id="connectionLayer"
-                class="connection-layer">
-            </svg>
+            id="bookTitle"
+            class="book-title"
+        >
+            未命名书籍
+        </div>
 
 
-            <div
-                id="bookNode"
-                class="book-node">
+        <!-- ======================
+             树结构
+        ======================= -->
 
-                <div
-                    id="bookTitle"
-                    class="book-box">
-
-                    我的小说
-
-                </div>
-
-            </div>
+        <div
+            id="tree"
+            class="tree"
+        ></div>
 
 
-            <div id="tree"></div>
+        <!-- ======================
+             书级操作栏
+        ======================= -->
+
+        <div
+            id="bookActions"
+            class="book-actions"
+            style="display: none;"
+        >
+
+            <button
+                id="addPreface"
+                type="button"
+            >
+                ＋序
+            </button>
+
+
+            <button
+                id="addChapter"
+                type="button"
+            >
+                ＋章
+            </button>
+
+
+            <button
+                id="addPart"
+                type="button"
+            >
+                ＋篇
+            </button>
+
+
+            <button
+                id="addVolume"
+                type="button"
+            >
+                ＋卷
+            </button>
 
         </div>
 
-    </div>
-
-</main>
+    </main>
 
 
 
-<div
-    id="bottomBar"
-    class="bottom-bar">
+    <!-- ==========================
+         JavaScript
+         
+         注意：
+         顺序不能改变
+    =========================== -->
 
+    <script src="js/book/state.js"></script>
 
-    <button
-        id="addPrefaceButton"
-        class="add-button add-preface">
+    <script src="js/book/storage.js"></script>
 
-        ＋序
+    <script src="js/book/nodes.js"></script>
 
-    </button>
+    <script src="js/book/layout.js"></script>
 
+    <script src="js/book/connections.js"></script>
 
-    <button
-        id="addChapterButton"
-        class="add-button add-chapter">
+    <script src="js/book/actions.js"></script>
 
-        ＋章
+    <script src="js/book/events.js"></script>
 
-    </button>
-
-
-    <button
-        id="addPartButton"
-        class="add-button add-part">
-
-        ＋篇
-
-    </button>
-
-
-    <button
-        id="addVolumeButton"
-        class="add-button add-volume">
-
-        ＋卷
-
-    </button>
-
-
-</div>
-
-
-
-<script
-    src="js/book.js">
-</script>
-
+    <script src="js/book/main.js"></script>
 
 </body>
 
