@@ -151,8 +151,6 @@ body {
     z-index: 200;
 }
 
-/* ★ 新增：打开菜单时显示 */
-
 .menu.show {
     display: block;
 }
@@ -311,10 +309,10 @@ body {
 }
 
 /* ==================================================
-   删除按钮
+   书籍三个点按钮
 ================================================== */
 
-.delete-book-button {
+.book-menu-button {
     position: absolute;
 
     top: 9px;
@@ -332,7 +330,9 @@ body {
 
     color: #777;
 
-    font-size: 17px;
+    font-size: 24px;
+
+    line-height: 1;
 
     display: flex;
 
@@ -342,7 +342,7 @@ body {
 
     cursor: pointer;
 
-    z-index: 10;
+    z-index: 20;
 
     box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.12);
@@ -353,16 +353,22 @@ body {
         transform 0.15s ease;
 }
 
-.delete-book-button:hover {
-    background: #fff0f0;
+.book-menu-button:hover {
+    background: #f5f6f8;
 
-    color: #e5484d;
+    color: #333;
 
     transform: scale(1.05);
 }
 
-.delete-book-button:active {
+.book-menu-button:active {
     transform: scale(0.95);
+}
+
+/* 排序模式下隐藏三个点 */
+
+.sorting .book-menu-button {
+    display: none;
 }
 
 /* ==================================================
@@ -522,7 +528,9 @@ body {
     white-space: nowrap;
 }
 
-.list-view .delete-book-button {
+/* 列表模式三个点 */
+
+.list-view .book-menu-button {
     top: 50%;
 
     right: 12px;
@@ -531,13 +539,13 @@ body {
         translateY(-50%);
 }
 
-.list-view .delete-book-button:hover {
+.list-view .book-menu-button:hover {
     transform:
         translateY(-50%)
         scale(1.05);
 }
 
-.list-view .delete-book-button:active {
+.list-view .book-menu-button:active {
     transform:
         translateY(-50%)
         scale(0.95);
@@ -565,7 +573,7 @@ body {
 }
 
 /* ==================================================
-   长按菜单
+   长按 / 三个点菜单
 ================================================== */
 
 .book-context-menu {
@@ -627,7 +635,7 @@ body {
 }
 
 /* ==================================================
-   长按菜单标题
+   菜单标题
 ================================================== */
 
 .context-menu-title {
@@ -649,7 +657,7 @@ body {
 }
 
 /* ==================================================
-   长按菜单按钮
+   菜单按钮
 ================================================== */
 
 .context-menu-button {
@@ -686,8 +694,12 @@ body {
     border-bottom: none;
 }
 
+.context-menu-button:hover {
+    background: #f7f8fa;
+}
+
 .context-menu-button:active {
-    background: #f5f6f8;
+    background: #f0f1f3;
 }
 
 .context-menu-icon {
@@ -734,10 +746,6 @@ body {
 
 .sorting .book-card:active {
     cursor: grabbing;
-}
-
-.sorting .delete-book-button {
-    display: none;
 }
 
 @keyframes sortShake {
@@ -874,7 +882,9 @@ body {
             8px 12px;
     }
 
-    .delete-book-button {
+    /* 手机三个点 */
+
+    .book-menu-button {
         width: 32px;
 
         height: 32px;
@@ -882,6 +892,8 @@ body {
         top: 7px;
 
         right: 7px;
+
+        font-size: 23px;
     }
 
     .book-context-menu {
@@ -912,6 +924,10 @@ body {
 
     .list-view .book-title {
         font-size: 15px;
+    }
+
+    .list-view .book-menu-button {
+        right: 10px;
     }
 
 }
