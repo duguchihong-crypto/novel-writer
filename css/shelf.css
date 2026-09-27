@@ -8,6 +8,14 @@
     padding: 0;
 }
 
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+
 body {
     font-family:
         -apple-system,
@@ -27,6 +35,7 @@ body {
 
     padding-bottom: 70px;
 }
+
 
 /* ==================================================
    顶部
@@ -54,11 +63,13 @@ body {
     z-index: 100;
 }
 
+
 .logo {
     font-size: 20px;
 
     font-weight: 700;
 }
+
 
 .top-actions {
     margin-left: auto;
@@ -69,6 +80,7 @@ body {
 
     gap: 10px;
 }
+
 
 .create-button,
 .settings-button,
@@ -84,7 +96,10 @@ body {
     font-size: 14px;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
 }
+
 
 .create-button {
     background: #4f7cff;
@@ -92,17 +107,20 @@ body {
     color: #fff;
 }
 
+
 .settings-button {
     background: #eef0f4;
 
     color: #333;
 }
 
+
 .create-button:active,
 .settings-button:active,
 .finish-sort-button:active {
     transform: scale(0.97);
 }
+
 
 /* ==================================================
    完成排序按钮
@@ -116,13 +134,16 @@ body {
     color: #fff;
 }
 
+
 .sorting .create-button {
     display: none;
 }
 
+
 .sorting .finish-sort-button {
     display: block;
 }
+
 
 /* ==================================================
    顶部菜单
@@ -151,19 +172,21 @@ body {
     z-index: 200;
 }
 
-/* ★ 新增：打开菜单时显示 */
 
 .menu.show {
     display: block;
 }
 
+
 .create-menu {
     right: 100px;
 }
 
+
 .settings-menu {
     right: 24px;
 }
+
 
 .menu button {
     width: 100%;
@@ -181,15 +204,20 @@ body {
     font-size: 14px;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
 }
+
 
 .menu button:hover {
     background: #f5f6f8;
 }
 
+
 .menu button:active {
     background: #eef0f4;
 }
+
 
 /* ==================================================
    主内容
@@ -203,6 +231,7 @@ body {
     padding: 0 20px;
 }
 
+
 /* ==================================================
    空书架
 ================================================== */
@@ -215,11 +244,13 @@ body {
     color: #888;
 }
 
+
 .empty-icon {
     font-size: 42px;
 
     margin-bottom: 18px;
 }
+
 
 .empty-title {
     font-size: 18px;
@@ -231,11 +262,13 @@ body {
     margin-bottom: 8px;
 }
 
+
 .empty-text {
     font-size: 14px;
 
     color: #999;
 }
+
 
 /* ==================================================
    书架基础
@@ -249,6 +282,7 @@ body {
     gap: 22px;
 }
 
+
 /* ==================================================
    网格模式
 ================================================== */
@@ -260,6 +294,7 @@ body {
             minmax(180px, 1fr)
         );
 }
+
 
 /* ==================================================
    书籍卡片
@@ -288,7 +323,10 @@ body {
     -webkit-touch-callout: none;
 
     touch-action: manipulation;
+
+    -webkit-tap-highlight-color: transparent;
 }
+
 
 .book-card:hover {
     transform: translateY(-2px);
@@ -296,6 +334,7 @@ body {
     box-shadow:
         0 8px 22px rgba(0, 0, 0, 0.08);
 }
+
 
 /* ==================================================
    长按视觉反馈
@@ -309,6 +348,7 @@ body {
 
     border-color: #c5cee0;
 }
+
 
 /* ==================================================
    删除按钮
@@ -351,7 +391,10 @@ body {
         background 0.15s ease,
         color 0.15s ease,
         transform 0.15s ease;
+
+    -webkit-tap-highlight-color: transparent;
 }
+
 
 .delete-book-button:hover {
     background: #fff0f0;
@@ -361,9 +404,11 @@ body {
     transform: scale(1.05);
 }
 
+
 .delete-book-button:active {
     transform: scale(0.95);
 }
+
 
 /* ==================================================
    封面
@@ -387,9 +432,11 @@ body {
     cursor: pointer;
 }
 
+
 .book-cover:hover {
     opacity: 0.94;
 }
+
 
 .book-cover img {
     width: 100%;
@@ -402,6 +449,7 @@ body {
 
     pointer-events: none;
 }
+
 
 .default-cover {
     width: 100%;
@@ -426,6 +474,7 @@ body {
     font-size: 46px;
 }
 
+
 /* ==================================================
    书名
 ================================================== */
@@ -436,6 +485,7 @@ body {
 
     background: #fff;
 }
+
 
 .book-title {
     font-size: 16px;
@@ -457,9 +507,11 @@ body {
     user-select: none;
 }
 
+
 .book-title:hover {
     color: #4f7cff;
 }
+
 
 /* ==================================================
    列表模式
@@ -472,6 +524,7 @@ body {
 
     gap: 10px;
 }
+
 
 .list-view .book-card {
     width: 100%;
@@ -487,6 +540,7 @@ body {
     overflow: hidden;
 }
 
+
 .list-view .book-cover {
     flex: 0 0 66px;
 
@@ -499,9 +553,11 @@ body {
     border-radius: 0;
 }
 
+
 .list-view .default-cover {
     font-size: 28px;
 }
+
 
 .list-view .book-info {
     flex: 1;
@@ -511,6 +567,7 @@ body {
     padding:
         0 50px 0 14px;
 }
+
 
 .list-view .book-title {
     font-size: 16px;
@@ -522,6 +579,7 @@ body {
     white-space: nowrap;
 }
 
+
 .list-view .delete-book-button {
     top: 50%;
 
@@ -531,17 +589,20 @@ body {
         translateY(-50%);
 }
 
+
 .list-view .delete-book-button:hover {
     transform:
         translateY(-50%)
         scale(1.05);
 }
 
+
 .list-view .delete-book-button:active {
     transform:
         translateY(-50%)
         scale(0.95);
 }
+
 
 /* ==================================================
    长按菜单遮罩
@@ -560,9 +621,11 @@ body {
     display: none;
 }
 
+
 .book-menu-overlay.show {
     display: block;
 }
+
 
 /* ==================================================
    长按菜单
@@ -602,9 +665,11 @@ body {
         0.15s ease-out;
 }
 
+
 .book-context-menu.show {
     display: block;
 }
+
 
 @keyframes contextMenuAppear {
 
@@ -625,6 +690,7 @@ body {
     }
 
 }
+
 
 /* ==================================================
    长按菜单标题
@@ -647,6 +713,7 @@ body {
 
     text-overflow: ellipsis;
 }
+
 
 /* ==================================================
    长按菜单按钮
@@ -680,15 +747,20 @@ body {
     text-align: left;
 
     cursor: pointer;
+
+    -webkit-tap-highlight-color: transparent;
 }
+
 
 .context-menu-button:last-child {
     border-bottom: none;
 }
 
+
 .context-menu-button:active {
     background: #f5f6f8;
 }
+
 
 .context-menu-icon {
     width: 34px;
@@ -696,9 +768,11 @@ body {
     font-size: 18px;
 }
 
+
 .context-menu-button.delete-action {
     color: #e5484d;
 }
+
 
 /* ==================================================
    排序模式
@@ -723,8 +797,25 @@ body {
     text-align: center;
 }
 
+
+/* 排序模式开启 */
+
+.sorting .sort-hint {
+    display: block;
+}
+
+
+/* 排序状态下的书 */
+
 .sorting .book-card {
     cursor: grab;
+
+    user-select: none;
+    -webkit-user-select: none;
+
+    -webkit-touch-callout: none;
+
+    touch-action: none;
 
     animation:
         sortShake
@@ -732,27 +823,135 @@ body {
         infinite alternate;
 }
 
+
+/* 正在按住 */
+
 .sorting .book-card:active {
     cursor: grabbing;
 }
+
+
+/* 排序时隐藏删除按钮 */
 
 .sorting .delete-book-button {
     display: none;
 }
 
+
+/* 排序时关闭普通 hover */
+
+.sorting .book-card:hover {
+    transform: none;
+
+    box-shadow: none;
+}
+
+
+/* ==================================================
+   排序动画
+================================================== */
+
 @keyframes sortShake {
 
     from {
         transform:
-            rotate(-0.3deg);
+            rotate(-0.25deg);
     }
 
     to {
         transform:
-            rotate(0.3deg);
+            rotate(0.25deg);
     }
 
 }
+
+
+/* ==================================================
+   触摸排序
+================================================== */
+
+/*
+   真正开始拖动以后才添加这个 class。
+   防止拖动过程中网页上下滚动。
+*/
+
+body.touch-sorting {
+    overflow: hidden;
+
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    touch-action: none;
+}
+
+
+/* ==================================================
+   正在拖动的书
+================================================== */
+
+.book-card.touch-dragging {
+    opacity: 0.88;
+
+    transform:
+        scale(1.04);
+
+    box-shadow:
+        0 14px 32px
+        rgba(0, 0, 0, 0.22);
+
+    z-index: 999;
+
+    pointer-events: none;
+
+    animation: none;
+
+    transition:
+        transform 0.08s ease,
+        opacity 0.08s ease;
+}
+
+
+/* ==================================================
+   拖动占位
+================================================== */
+
+.book-card.sorting-placeholder {
+    box-sizing: border-box;
+
+    border:
+        2px dashed #4f7cff;
+
+    background:
+        rgba(79, 124, 255, 0.08);
+
+    border-radius: 12px;
+
+    opacity: 0.75;
+
+    box-shadow: none;
+
+    animation: none;
+
+    transform: none;
+
+    pointer-events: none;
+}
+
+
+/* ==================================================
+   触摸排序时禁止选择文字
+================================================== */
+
+body.touch-sorting,
+body.touch-sorting * {
+    user-select: none;
+
+    -webkit-user-select: none;
+
+    -webkit-touch-callout: none;
+}
+
 
 /* ==================================================
    底部导航
@@ -781,6 +980,7 @@ body {
     z-index: 100;
 }
 
+
 .bottom-nav button {
     border: none;
 
@@ -796,13 +996,17 @@ body {
 
     padding:
         8px 20px;
+
+    -webkit-tap-highlight-color: transparent;
 }
+
 
 .bottom-nav button.active {
     color: #4f7cff;
 
     font-weight: 600;
 }
+
 
 /* ==================================================
    手机
@@ -815,9 +1019,11 @@ body {
             0 14px;
     }
 
+
     .logo {
         font-size: 19px;
     }
+
 
     .create-button,
     .settings-button,
@@ -828,13 +1034,16 @@ body {
         font-size: 13px;
     }
 
+
     .create-menu {
         right: 82px;
     }
 
+
     .settings-menu {
         right: 14px;
     }
+
 
     .container {
         padding:
@@ -842,6 +1051,7 @@ body {
 
         margin-top: 28px;
     }
+
 
     /* 手机网格固定两列 */
 
@@ -852,27 +1062,33 @@ body {
         gap: 14px;
     }
 
+
     .book-info {
         padding:
             11px 11px 13px;
     }
 
+
     .book-title {
         font-size: 15px;
     }
+
 
     .empty-shelf {
         padding-top: 100px;
     }
 
+
     .bottom-nav {
         height: 64px;
     }
+
 
     .bottom-nav button {
         padding:
             8px 12px;
     }
+
 
     .delete-book-button {
         width: 32px;
@@ -884,6 +1100,7 @@ body {
         right: 7px;
     }
 
+
     .book-context-menu {
         width:
             calc(100vw - 32px);
@@ -891,11 +1108,13 @@ body {
         max-width: 360px;
     }
 
+
     /* 手机列表 */
 
     .list-view .book-card {
         min-height: 82px;
     }
+
 
     .list-view .book-cover {
         flex-basis: 58px;
@@ -905,16 +1124,38 @@ body {
         height: 78px;
     }
 
+
     .list-view .book-info {
         padding:
             0 48px 0 13px;
     }
 
+
     .list-view .book-title {
         font-size: 15px;
     }
 
+
+    /* 手机拖动 */
+
+    .book-card.touch-dragging {
+        transform:
+            scale(1.03);
+
+        box-shadow:
+            0 12px 28px
+            rgba(0, 0, 0, 0.22);
+    }
+
+
+    .book-card.sorting-placeholder {
+        min-height: 80px;
+
+        border-radius: 12px;
+    }
+
 }
+
 
 /* ==================================================
    更宽屏幕
@@ -928,6 +1169,19 @@ body {
                 auto-fill,
                 minmax(190px, 1fr)
             );
+    }
+
+}
+
+
+/* ==================================================
+   触摸设备排序
+================================================== */
+
+@media (hover: none) and (pointer: coarse) {
+
+    .sorting .book-card {
+        touch-action: none;
     }
 
 }
