@@ -2,22 +2,45 @@
 // 全书页面：节点
 // ==============================
 
+
+// ==============================
+// 创建唯一 ID
+// ==============================
+
 function createId() {
-    return Date.now().toString() + Math.random().toString(16).slice(2);
+
+    return (
+        Date.now().toString(36) +
+        "_" +
+        Math.random()
+            .toString(36)
+            .slice(2, 10)
+    );
 }
 
 
-// 创建一个结构节点
-function createNode(type, title, number) {
+// ==============================
+// 创建结构节点数据
+// ==============================
+
+function createNode(
+    type,
+    title,
+    number
+) {
 
     return {
+
         id: createId(),
 
         type: type,
 
         title: title || "",
 
-        number: number || 0,
+        number:
+            Number.isFinite(Number(number))
+                ? Number(number)
+                : 0,
 
         children: [],
 
@@ -26,22 +49,25 @@ function createNode(type, title, number) {
 }
 
 
+// ==============================
 // 获取节点 CSS 类型
+// ==============================
+
 function getNodeClass(type) {
 
     switch (type) {
 
-        case "preface":
-            return "node-preface";
+        case NODE_TYPES.PREFACE:
+            return NODE_COLOR_TYPES.PREFACE;
 
-        case "volume":
-            return "node-volume";
+        case NODE_TYPES.VOLUME:
+            return NODE_COLOR_TYPES.VOLUME;
 
-        case "part":
-            return "node-part";
+        case NODE_TYPES.PART:
+            return NODE_COLOR_TYPES.PART;
 
-        case "chapter":
-            return "node-chapter";
+        case NODE_TYPES.CHAPTER:
+            return NODE_COLOR_TYPES.CHAPTER;
 
         default:
             return "";
@@ -49,164 +75,385 @@ function getNodeClass(type) {
 }
 
 
-// 创建操作按钮
-function createActionButton(text, className, callback) {
+// ==============================
+// 获取节点类型名称
+// ==============================
 
-    const button = document.createElement("button");
+function getNodeTypeName(type) {
+
+    return (
+        NODE_TYPE_NAMES[type] ||
+        ""
+    );
+}
+
+
+// ==============================
+// 创建操作按钮
+// ==============================
+
+function createActionButton(
+    text,
+    className,
+    callback
+) {
+
+    const button =
+        document.createElement("button");
+
 
     button.type = "button";
 
-    button.className = className;
 
-    button.textContent = text;
+    if (className) {
 
-    button.addEventListener("click", function(event) {
+        button.className =
+            className;
 
-        event.stopPropagation();
+    } else {
 
-        callback();
+        button.className =
+            "node-action-button";
+    }
 
-    });
+
+    button.textContent =
+        text;
+
+
+    button.addEventListener(
+        "click",
+        function(event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            if (
+                typeof callback ===
+                "function"
+            ) {
+
+                callback();
+
+            }
+
+        }
+    );
+
 
     return button;
 }
 
 
+// ==============================
 // 创建节点 DOM
+// ==============================
+
 function createNodeElement(node) {
 
-    const wrapper = document.createElement("div");
-
-    wrapper.className = "tree-node";
-
-    wrapper.dataset.nodeId = node.id;
+    if (!node) {
+        return null;
+    }
 
 
+    // ==============================
+    // 最外层
+    // ==============================
+
+    const wrapper =
+        document.createElement("div");
+
+
+    wrapper.className =
+        "tree-node";
+
+
+    wrapper.dataset.nodeId =
+        node.id;
+
+
+    // ==============================
     // 节点框
-    const box = document.createElement("div");
+    // ==============================
+
+    const box =
+        document.createElement("div");
+
 
     box.className =
-        "node-box " +
+        "node-box";
+
+
+    const nodeClass =
         getNodeClass(node.type);
 
-    box.dataset.nodeId = node.id;
+
+    if (nodeClass) {
+
+        box.classList.add(
+            nodeClass
+        );
+
+    }
 
 
+    box.dataset.nodeId =
+        node.id;
+
+
+    box.dataset.nodeType =
+        node.type;
+
+
+    // ==============================
     // 节点文字
-    const title = document.createElement("div");
+    // ==============================
 
-    title.className = "node-title";
-
-    title.textContent = node.title;
-
-    box.appendChild(title);
+    const title =
+        document.createElement("div");
 
 
+    title.className =
+        "node-title";
+
+
+    title.textContent =
+        node.title ||
+        getNodeTypeName(node.type);
+
+
+    box.appendChild(
+        title
+    );
+
+
+    // ==============================
+    // 折叠状态
+    // ==============================
+
+    if (node.collapsed === true) {
+
+        box.classList.add(
+            "is-collapsed"
+        );
+
+    }
+
+
+    // ==============================
     // 点击节点
-    box.addEventListener("click", function(event) {
+    // ==============================
 
-        event.stopPropagation();
+    box.addEventListener(
+        "click",
+        function(event) {
 
-        selectNode(node.id);
+            event.preventDefault();
 
-    });
+            event.stopPropagation();
 
+            selectNode(
+                node.id
+            );
 
-    wrapper.appendChild(box);
-
-
-    // 节点操作按钮
-    const actions = document.createElement("div");
-
-    actions.className = "node-actions";
-
-    actions.style.display = "none";
-
-
-    // 删除
-    const deleteButton = createActionButton(
-        "删除",
-        "node-action-delete",
-        function() {
-            deleteNode(node.id);
         }
     );
 
-    actions.appendChild(deleteButton);
+
+    wrapper.appendChild(
+        box
+    );
 
 
+    // ==============================
+    // 操作区域
+    // ==============================
+
+    const actions =
+        document.createElement("div");
+
+
+    actions.className =
+        "node-actions";
+
+
+    actions.style.display =
+        "none";
+
+
+    actions.dataset.nodeId =
+        node.id;
+
+
+    // ==============================
+    // 删除按钮
+    // ==============================
+
+    const deleteButton =
+        createActionButton(
+            "删除",
+            "node-action-delete",
+            function() {
+
+                deleteNode(
+                    node.id
+                );
+
+            }
+        );
+
+
+    actions.appendChild(
+        deleteButton
+    );
+
+
+    // ==============================
     // 卷
-    if (node.type === "volume") {
+    // ==============================
 
-        const sameButton = createActionButton(
-            "＋同级",
-            "",
-            function() {
-                addSameLevel(node.id);
-            }
+    if (
+        node.type ===
+        NODE_TYPES.VOLUME
+    ) {
+
+        const sameButton =
+            createActionButton(
+                "＋同级",
+                "node-action-button",
+                function() {
+
+                    addSameLevel(
+                        node.id
+                    );
+
+                }
+            );
+
+
+        const partButton =
+            createActionButton(
+                "＋篇",
+                "node-action-button",
+                function() {
+
+                    addChild(
+                        node.id,
+                        NODE_TYPES.PART
+                    );
+
+                }
+            );
+
+
+        const chapterButton =
+            createActionButton(
+                "＋章",
+                "node-action-button",
+                function() {
+
+                    addChild(
+                        node.id,
+                        NODE_TYPES.CHAPTER
+                    );
+
+                }
+            );
+
+
+        actions.appendChild(
+            sameButton
         );
 
-        const partButton = createActionButton(
-            "＋篇",
-            "",
-            function() {
-                addChild(node.id, "part");
-            }
+        actions.appendChild(
+            partButton
         );
 
-        const chapterButton = createActionButton(
-            "＋章",
-            "",
-            function() {
-                addChild(node.id, "chapter");
-            }
+        actions.appendChild(
+            chapterButton
         );
-
-        actions.appendChild(sameButton);
-        actions.appendChild(partButton);
-        actions.appendChild(chapterButton);
     }
 
 
+    // ==============================
     // 篇
-    if (node.type === "part") {
+    // ==============================
 
-        const sameButton = createActionButton(
-            "＋同级",
-            "",
-            function() {
-                addSameLevel(node.id);
-            }
+    if (
+        node.type ===
+        NODE_TYPES.PART
+    ) {
+
+        const sameButton =
+            createActionButton(
+                "＋同级",
+                "node-action-button",
+                function() {
+
+                    addSameLevel(
+                        node.id
+                    );
+
+                }
+            );
+
+
+        const chapterButton =
+            createActionButton(
+                "＋章",
+                "node-action-button",
+                function() {
+
+                    addChild(
+                        node.id,
+                        NODE_TYPES.CHAPTER
+                    );
+
+                }
+            );
+
+
+        actions.appendChild(
+            sameButton
         );
 
-        const chapterButton = createActionButton(
-            "＋章",
-            "",
-            function() {
-                addChild(node.id, "chapter");
-            }
+        actions.appendChild(
+            chapterButton
         );
-
-        actions.appendChild(sameButton);
-        actions.appendChild(chapterButton);
     }
 
 
+    // ==============================
     // 章
-    if (node.type === "chapter") {
+    // ==============================
 
-        // 章目前只有删除
+    if (
+        node.type ===
+        NODE_TYPES.CHAPTER
+    ) {
+
+        // 目前只有删除
     }
 
 
+    // ==============================
     // 序
-    if (node.type === "preface") {
+    // ==============================
 
-        // 序目前只有删除
+    if (
+        node.type ===
+        NODE_TYPES.PREFACE
+    ) {
+
+        // 目前只有删除
     }
 
 
-    wrapper.appendChild(actions);
+    wrapper.appendChild(
+        actions
+    );
+
 
     return wrapper;
 }
