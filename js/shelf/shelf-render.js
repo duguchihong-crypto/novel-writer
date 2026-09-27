@@ -2,11 +2,6 @@
    书架页面渲染
 ================================================== */
 
-
-/* ==================================================
-   获取页面元素
-================================================== */
-
 function getBookGrid() {
     return document.getElementById("bookGrid");
 }
@@ -14,11 +9,6 @@ function getBookGrid() {
 function getEmptyShelf() {
     return document.getElementById("emptyShelf");
 }
-
-
-/* ==================================================
-   渲染整个书架
-================================================== */
 
 function renderBooks() {
 
@@ -29,58 +19,30 @@ function renderBooks() {
         return;
     }
 
-    /*
-     * 清空旧内容
-     */
     bookGrid.innerHTML = "";
 
-
-    /*
-     * 没有书籍
-     */
     if (!Array.isArray(books) || books.length === 0) {
 
         if (emptyShelf) {
             emptyShelf.style.display = "block";
         }
 
-        applyShelfViewMode();
-
         return;
     }
 
-
-    /*
-     * 有书籍
-     */
     if (emptyShelf) {
         emptyShelf.style.display = "none";
     }
 
-
-    /*
-     * 创建书籍卡片
-     */
     books.forEach(function(book) {
 
         const card = createBookCard(book);
 
-        if (card) {
-            bookGrid.appendChild(card);
-        }
+        bookGrid.appendChild(card);
     });
 
-
-    /*
-     * 应用网格 / 列表
-     */
     applyShelfViewMode();
 }
-
-
-/* ==================================================
-   创建一本书的卡片
-================================================== */
 
 function createBookCard(book) {
 
@@ -91,9 +53,9 @@ function createBookCard(book) {
     card.dataset.bookId = book.id;
 
 
-    /* ==================================================
+    /* ==============================
        封面
-    ================================================== */
+    ============================== */
 
     const cover = document.createElement("div");
 
@@ -106,67 +68,48 @@ function createBookCard(book) {
 
         image.src = book.cover;
 
-        image.alt = book.title || "小说封面";
+        image.alt =
+            book.title || "小说封面";
 
         cover.appendChild(image);
 
     } else {
 
-        const defaultCover = document.createElement("div");
+        cover.className += " default-cover";
 
-        defaultCover.className = "default-cover";
-
-        defaultCover.textContent = "📖";
-
-        cover.appendChild(defaultCover);
+        cover.textContent = "📖";
     }
 
 
-    /* ==================================================
-       书籍信息
-    ================================================== */
+    /* ==============================
+       书名
+    ============================== */
 
     const info = document.createElement("div");
 
     info.className = "book-info";
 
 
-    /*
-     * 书名
-     */
     const title = document.createElement("div");
 
     title.className = "book-title";
 
-    title.textContent = book.title || "未命名小说";
-
-
-    /*
-     * 书籍信息
-     */
-    const meta = document.createElement("div");
-
-    meta.className = "book-meta";
-
-    meta.textContent = "小说";
+    title.textContent =
+        book.title || "未命名小说";
 
 
     info.appendChild(title);
 
-    info.appendChild(meta);
 
-
-    /* ==================================================
+    /* ==============================
        删除按钮
-    ================================================== */
+    ============================== */
 
-    const deleteButton = document.createElement("button");
+    const deleteButton =
+        document.createElement("button");
 
-    /*
-     * 注意：
-     * 必须和 shelf-events.js 使用的 class 一致
-     */
-    deleteButton.className = "delete-book-button";
+    deleteButton.className =
+        "delete-book-button";
 
     deleteButton.type = "button";
 
@@ -176,13 +119,15 @@ function createBookCard(book) {
 
     deleteButton.setAttribute(
         "aria-label",
-        "删除《" + (book.title || "未命名小说") + "》"
+        "删除《" +
+        (book.title || "未命名小说") +
+        "》"
     );
 
 
-    /* ==================================================
-       组装
-    ================================================== */
+    /* ==============================
+       组合卡片
+    ============================== */
 
     card.appendChild(cover);
 
@@ -194,11 +139,6 @@ function createBookCard(book) {
     return card;
 }
 
-
-/* ==================================================
-   应用网格 / 列表模式
-================================================== */
-
 function applyShelfViewMode() {
 
     const bookGrid = getBookGrid();
@@ -207,35 +147,24 @@ function applyShelfViewMode() {
         return;
     }
 
-
     bookGrid.classList.remove(
         "grid-view",
         "list-view"
     );
 
-
-    /*
-     * 列表
-     */
     if (shelfViewMode === "list") {
 
-        bookGrid.classList.add("list-view");
+        bookGrid.classList.add(
+            "list-view"
+        );
 
-    }
+    } else {
 
-    /*
-     * 默认网格
-     */
-    else {
-
-        bookGrid.classList.add("grid-view");
+        bookGrid.classList.add(
+            "grid-view"
+        );
     }
 }
-
-
-/* ==================================================
-   网格模式
-================================================== */
 
 function renderGridView() {
 
@@ -243,15 +172,13 @@ function renderGridView() {
 
     applyShelfViewMode();
 
-    if (typeof saveShelfViewMode === "function") {
+    if (
+        typeof saveShelfViewMode === "function"
+    ) {
+
         saveShelfViewMode("grid");
     }
 }
-
-
-/* ==================================================
-   列表模式
-================================================== */
 
 function renderListView() {
 
@@ -259,15 +186,13 @@ function renderListView() {
 
     applyShelfViewMode();
 
-    if (typeof saveShelfViewMode === "function") {
+    if (
+        typeof saveShelfViewMode === "function"
+    ) {
+
         saveShelfViewMode("list");
     }
 }
-
-
-/* ==================================================
-   排序模式
-================================================== */
 
 function renderSortingMode() {
 
@@ -277,21 +202,19 @@ function renderSortingMode() {
         return;
     }
 
-
     if (isSorting) {
 
-        bookGrid.classList.add("sorting");
+        bookGrid.classList.add(
+            "sorting"
+        );
 
     } else {
 
-        bookGrid.classList.remove("sorting");
+        bookGrid.classList.remove(
+            "sorting"
+        );
     }
 }
-
-
-/* ==================================================
-   刷新书架
-================================================== */
 
 function refreshShelf() {
 
