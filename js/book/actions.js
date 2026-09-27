@@ -38,10 +38,18 @@ function addRootPreface() {
 
     saveBook();
 
-    selectedNodeId = null;
-    selectedIsBook = true;
+
+    // 自动选中新创建的「序」
+    selectedNodeId =
+        node.id;
+
+    selectedIsBook =
+        false;
+
 
     renderTree();
+
+    updatePrefaceButton();
 }
 
 
@@ -80,24 +88,32 @@ function addRootNode(type) {
     switch (type) {
 
         case "volume":
+
             title =
                 "第" +
                 number +
                 "卷：";
+
             break;
 
+
         case "part":
+
             title =
                 "第" +
                 number +
                 "篇：";
+
             break;
 
+
         case "chapter":
+
             title =
                 "第" +
                 number +
                 "章：";
+
             break;
     }
 
@@ -116,11 +132,18 @@ function addRootNode(type) {
     saveBook();
 
 
-    selectedNodeId = null;
-    selectedIsBook = true;
+    // 自动选中新创建的节点
+    selectedNodeId =
+        node.id;
+
+    selectedIsBook =
+        false;
 
 
     renderTree();
+
+
+    updatePrefaceButton();
 }
 
 
@@ -187,13 +210,22 @@ function findParentArray(
     nodes = currentBook.structure
 ) {
 
-    for (let i = 0; i < nodes.length; i++) {
+    for (
+        let i = 0;
+        i < nodes.length;
+        i++
+    ) {
 
-        if (nodes[i].id === nodeId) {
+        if (
+            nodes[i].id === nodeId
+        ) {
 
             return {
+
                 array: nodes,
+
                 index: i,
+
                 node: nodes[i]
             };
         }
@@ -258,14 +290,18 @@ function addSameLevel(nodeId) {
             number +
             "卷：";
 
-    } else if (node.type === "part") {
+    }
+
+    else if (node.type === "part") {
 
         title =
             "第" +
             number +
             "篇：";
 
-    } else if (node.type === "chapter") {
+    }
+
+    else if (node.type === "chapter") {
 
         title =
             "第" +
@@ -291,13 +327,18 @@ function addSameLevel(nodeId) {
 
     saveBook();
 
+
     selectedNodeId =
         newNode.id;
 
-    selectedIsBook = false;
+    selectedIsBook =
+        false;
 
 
     renderTree();
+
+
+    updatePrefaceButton();
 }
 
 
@@ -324,6 +365,7 @@ function addChild(
 
 
     if (!parent.children) {
+
         parent.children = [];
     }
 
@@ -345,7 +387,9 @@ function addChild(
             number +
             "篇：";
 
-    } else if (type === "chapter") {
+    }
+
+    else if (type === "chapter") {
 
         title =
             "第" +
@@ -367,6 +411,7 @@ function addChild(
     );
 
 
+    // 添加孩子后自动展开父节点
     parent.collapsed = false;
 
 
@@ -376,10 +421,14 @@ function addChild(
     selectedNodeId =
         newNode.id;
 
-    selectedIsBook = false;
+    selectedIsBook =
+        false;
 
 
     renderTree();
+
+
+    updatePrefaceButton();
 }
 
 
@@ -406,6 +455,9 @@ function toggleNode(nodeId) {
 
 
     renderTree();
+
+
+    updatePrefaceButton();
 }
 
 
@@ -445,15 +497,20 @@ function deleteNode(nodeId) {
     );
 
 
-    selectedNodeId = null;
+    selectedNodeId =
+        null;
 
-    selectedIsBook = false;
+    selectedIsBook =
+        false;
 
 
     saveBook();
 
 
     renderTree();
+
+
+    updatePrefaceButton();
 }
 
 
@@ -493,7 +550,9 @@ function updatePrefaceButton() {
             "disabled"
         );
 
-    } else {
+    }
+
+    else {
 
         button.classList.remove(
             "disabled"
