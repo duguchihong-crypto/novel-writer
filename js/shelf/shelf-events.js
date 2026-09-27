@@ -1860,4 +1860,161 @@ function bindShelfEvents() {
 
 function handleBookClick(event) {
 
-    if (is
+    if (isSorting) {
+        return;
+    }
+
+    /*
+       删除按钮
+    */
+
+    const deleteButton =
+        event.target.closest(
+            ".delete-book-button"
+        );
+
+    if (deleteButton) {
+
+        const id =
+            deleteButton.dataset.bookId;
+
+        deleteBook(id);
+
+        return;
+    }
+
+
+    /*
+       封面 / 书名 / 卡片
+    */
+
+    const card =
+        event.target.closest(
+            ".book-card"
+        );
+
+    if (!card) return;
+
+    const bookId =
+        card.dataset.bookId;
+
+    openBook(bookId);
+}
+
+
+/* ==================================================
+   普通书籍触摸
+================================================== */
+
+function handleBookPointerDown(event) {
+
+    if (isSorting) return;
+
+    /*
+       点击删除按钮时，
+       不启动长按。
+    */
+
+    if (
+        event.target.closest(
+            ".delete-book-button"
+        )
+    ) {
+        return;
+    }
+
+    const card =
+        event.target.closest(
+            ".book-card"
+        );
+
+    if (!card) return;
+
+    startLongPress(
+        event,
+        card
+    );
+}
+
+
+function handleBookPointerMove(event) {
+
+    if (isSorting) return;
+
+    cancelLongPress();
+}
+
+
+function handleBookPointerUp(event) {
+
+    if (isSorting) return;
+
+    cancelLongPress();
+}
+
+
+function handleBookPointerCancel(event) {
+
+    if (isSorting) return;
+
+    cancelLongPress();
+}
+
+
+/* ==================================================
+   底部导航
+================================================== */
+
+if (shelfNav) {
+
+    shelfNav.addEventListener(
+        "click",
+        function() {
+
+            console.log(
+                "书架"
+            );
+
+        }
+    );
+}
+
+
+if (toolsNav) {
+
+    toolsNav.addEventListener(
+        "click",
+        function() {
+
+            console.log(
+                "工具"
+            );
+
+        }
+    );
+}
+
+
+if (meNav) {
+
+    meNav.addEventListener(
+        "click",
+        function() {
+
+            console.log(
+                "我的"
+            );
+
+        }
+    );
+}
+
+
+/* ==================================================
+   启动
+================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    initShelf
+);
