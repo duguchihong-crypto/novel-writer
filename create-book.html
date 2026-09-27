@@ -255,8 +255,6 @@ body {
 }
 
 
-/* 封面预览 */
-
 .cover-preview {
 
     width: 180px;
@@ -387,7 +385,9 @@ body {
 }
 
 
-/* 删除封面 */
+/* ==================================================
+   删除封面
+================================================== */
 
 .remove-cover-button {
 
@@ -503,6 +503,8 @@ body {
     font-size: 13px;
 
     text-align: center;
+
+    line-height: 1.5;
 }
 
 
@@ -674,16 +676,12 @@ body {
             </div>
 
 
-            <!-- 隐藏的文件选择器 -->
-
             <input
                 id="coverInput"
                 type="file"
                 accept="image/*"
             >
 
-
-            <!-- 选择封面 -->
 
             <label
                 for="coverInput"
@@ -692,8 +690,6 @@ body {
                 🖼️ 选择封面
             </label>
 
-
-            <!-- 删除封面 -->
 
             <button
                 id="removeCoverButton"
@@ -705,9 +701,15 @@ body {
 
 
             <div class="cover-hint">
+
                 支持手机中的图片。
                 <br>
+
                 建议使用竖版封面。
+                <br>
+
+                封面会自动压缩后保存。
+
             </div>
 
         </section>
@@ -789,8 +791,7 @@ const errorMessage =
     );
 
 
-let selectedCover =
-    "";
+let selectedCover = "";
 
 
 // ==================================================
@@ -826,37 +827,38 @@ coverInput.addEventListener(
         if (!file) {
 
             return;
+
         }
 
 
-        // ------------------------------
-        // 必须是图片
-        // ------------------------------
-
         if (
             !file.type ||
-            !file.type.startsWith(
-                "image/"
-            )
+            !file.type.startsWith("image/")
         ) {
 
             showError(
                 "请选择图片文件。"
             );
 
-            coverInput.value =
-                "";
+            coverInput.value = "";
 
             return;
+
         }
 
 
         clearError();
 
 
-        // ------------------------------
-        // 读取图片
-        // ------------------------------
+        // ------------------------------------------
+        // 显示处理中
+        // ------------------------------------------
+
+        createButton.disabled = true;
+
+        createButton.textContent =
+            "正在处理封面…";
+
 
         const reader =
             new FileReader();
@@ -870,32 +872,53 @@ coverInput.addEventListener(
 
 
                 if (
-                    typeof result !==
-                    "string"
+                    typeof result !== "string"
                 ) {
 
                     showError(
                         "读取封面失败。"
                     );
 
+                    resetCreateButton();
+
                     return;
+
                 }
 
-
-                // --------------------------
-                // 压缩封面
-                // --------------------------
 
                 compressImage(
                     result,
                     function(compressed) {
 
+                        if (
+                            !compressed ||
+                            typeof compressed !== "string"
+                        ) {
+
+                            showError(
+                                "封面压缩失败，请换一张图片。"
+                            );
+
+                            resetCreateButton();
+
+                            return;
+
+                        }
+
+
                         selectedCover =
                             compressed;
+
 
                         showCover(
                             compressed
                         );
+
+
+                        clearError();
+
+
+                        resetCreateButton();
 
                     }
                 );
@@ -910,10 +933,13 @@ coverInput.addEventListener(
                     "读取封面失败，请重新选择图片。"
                 );
 
+                resetCreateButton();
+
             };
 
 
         reader.readAsDataURL(file);
+
     }
 );
 
@@ -967,6 +993,8 @@ removeCoverButton.addEventListener(
         removeCoverButton.style.display =
             "none";
 
+        clearError();
+
     }
 );
 
@@ -974,8 +1002,10 @@ removeCoverButton.addEventListener(
 // ==================================================
 // 压缩图片
 //
-// 原图可能非常大。
-// 这里统一缩小到最长边 1000px。
+// 最大边：700px
+// JPEG：0.65
+//
+// 这是书籍封面，不需要保存原图质量。
 // ==================================================
 
 function compressImage(
@@ -990,21 +1020,35 @@ function compressImage(
     image.onload =
         function() {
 
-            const maxSize =
-                1000;
-
-
             let width =
+                image.naturalWidth ||
                 image.width;
 
 
             let height =
+                image.naturalHeight ||
                 image.height;
 
 
-            // --------------------------
-            // 缩放
-            // --------------------------
+            if (
+                !width ||
+                !height
+            ) {
+
+                callback("");
+
+                return;
+
+            }
+
+
+            const maxSize =
+                700;
+
+
+            // ------------------------------------------
+            // 缩小
+            // ------------------------------------------
 
             if (
                 width > maxSize ||
@@ -1012,14 +1056,17 @@ function compressImage(
             ) {
 
                 if (
-                    width > height
+                    width >= height
                 ) {
 
                     height =
-                        Math.round(
-                            height *
-                            maxSize /
-                            width
+                        Math.max(
+                            1,
+                            Math.round(
+                                height *
+                                maxSize /
+                                width
+                            )
                         );
 
                     width =
@@ -1028,21 +1075,26 @@ function compressImage(
                 } else {
 
                     width =
-                        Math.round(
-                            width *
-                            maxSize /
-                            height
+                        Math.max(
+                            1,
+                            Math.round(
+                                width *
+                                maxSize /
+                                height
+                            )
                         );
 
                     height =
                         maxSize;
+
                 }
+
             }
 
 
-            // --------------------------
-            // Canvas
-            // --------------------------
+            // ------------------------------------------
+            // 创建 Canvas
+            // ------------------------------------------
 
             const canvas =
                 document.createElement(
@@ -1066,12 +1118,30 @@ function compressImage(
 
             if (!context) {
 
-                callback(
-                    dataURL
-                );
+                callback("");
 
                 return;
+
             }
+
+
+            // ------------------------------------------
+            // 白色背景
+            //
+            // 防止 PNG 透明背景转 JPEG
+            // 后出现奇怪的黑色背景。
+            // ------------------------------------------
+
+            context.fillStyle =
+                "#ffffff";
+
+
+            context.fillRect(
+                0,
+                0,
+                width,
+                height
+            );
 
 
             context.drawImage(
@@ -1083,15 +1153,51 @@ function compressImage(
             );
 
 
-            // --------------------------
-            // JPEG
-            // --------------------------
+            // ------------------------------------------
+            // JPEG 压缩
+            // ------------------------------------------
 
-            const compressed =
+            let compressed =
                 canvas.toDataURL(
                     "image/jpeg",
-                    0.82
+                    0.65
                 );
+
+
+            // ------------------------------------------
+            // 如果还是太大，再继续压缩
+            // ------------------------------------------
+
+            const maxCharacters =
+                500000;
+
+
+            if (
+                compressed.length >
+                maxCharacters
+            ) {
+
+                compressed =
+                    canvas.toDataURL(
+                        "image/jpeg",
+                        0.5
+                    );
+
+            }
+
+
+            if (
+                compressed.length >
+                maxCharacters
+            ) {
+
+                compressed =
+                    canvas.toDataURL(
+                        "image/jpeg",
+                        0.35
+                    );
+
+            }
 
 
             callback(
@@ -1104,15 +1210,14 @@ function compressImage(
     image.onerror =
         function() {
 
-            callback(
-                dataURL
-            );
+            callback("");
 
         };
 
 
     image.src =
         dataURL;
+
 }
 
 
@@ -1128,9 +1233,9 @@ createButton.addEventListener(
             bookTitleInput.value.trim();
 
 
-        // ------------------------------
+        // ------------------------------------------
         // 检查书名
-        // ------------------------------
+        // ------------------------------------------
 
         if (!title) {
 
@@ -1141,6 +1246,7 @@ createButton.addEventListener(
             bookTitleInput.focus();
 
             return;
+
         }
 
 
@@ -1155,9 +1261,9 @@ createButton.addEventListener(
             "正在创建…";
 
 
-        // ------------------------------
+        // ------------------------------------------
         // 读取已有书籍
-        // ------------------------------
+        // ------------------------------------------
 
         let books = [];
 
@@ -1177,6 +1283,7 @@ createButton.addEventListener(
                     )
                     : [];
 
+
         } catch (error) {
 
             console.error(
@@ -1184,7 +1291,9 @@ createButton.addEventListener(
                 error
             );
 
+
             books = [];
+
         }
 
 
@@ -1195,9 +1304,9 @@ createButton.addEventListener(
         }
 
 
-        // ------------------------------
-        // ID
-        // ------------------------------
+        // ------------------------------------------
+        // 创建 ID
+        // ------------------------------------------
 
         const bookId =
             "book_" +
@@ -1208,9 +1317,9 @@ createButton.addEventListener(
                 .substring(2, 9);
 
 
-        // ==================================================
-        // 新书数据
-        // ==================================================
+        // ------------------------------------------
+        // 新书
+        // ------------------------------------------
 
         const newBook = {
 
@@ -1223,25 +1332,11 @@ createButton.addEventListener(
             cover:
                 selectedCover || "",
 
-            // --------------------------
-            // 全书结构
-            // --------------------------
-
             structure:
                 [],
 
-            // --------------------------
-            // 默认布局
-            // --------------------------
-
             layoutDirection:
                 "vertical",
-
-            // --------------------------
-            // 书名位置
-            //
-            // null = 第一次进入全书时自动居中
-            // --------------------------
 
             bookPosition: {
 
@@ -1254,27 +1349,57 @@ createButton.addEventListener(
         };
 
 
-        // ------------------------------
-        // 加入书架
-        // ------------------------------
-
         books.push(
             newBook
         );
 
 
-        // ------------------------------
+        // ------------------------------------------
+        // 准备保存
+        // ------------------------------------------
+
+        let serializedBooks = "";
+
+
+        try {
+
+            serializedBooks =
+                JSON.stringify(
+                    books
+                );
+
+
+        } catch (error) {
+
+            console.error(
+                "转换小说数据失败：",
+                error
+            );
+
+
+            showError(
+                "小说数据处理失败，请重新尝试。"
+            );
+
+
+            resetCreateButton();
+
+            return;
+
+        }
+
+
+        // ------------------------------------------
         // 保存
-        // ------------------------------
+        // ------------------------------------------
 
         try {
 
             localStorage.setItem(
                 "novelBooks",
-                JSON.stringify(
-                    books
-                )
+                serializedBooks
             );
+
 
         } catch (error) {
 
@@ -1284,41 +1409,87 @@ createButton.addEventListener(
             );
 
 
-            showError(
-                "保存失败，可能是浏览器储存空间不足。"
-            );
+            // ==========================================
+            // 明确判断储存空间不足
+            // ==========================================
+
+            if (
+                error &&
+                (
+                    error.name ===
+                    "QuotaExceededError" ||
+
+                    error.code ===
+                    22 ||
+
+                    error.code ===
+                    1014
+                )
+            ) {
+
+                showError(
+                    "封面占用的储存空间太大，请换一张图片后再试。"
+                );
+
+            } else {
+
+                showError(
+                    "小说保存失败，请重新尝试。"
+                );
+
+            }
 
 
-            createButton.disabled =
-                false;
-
-
-            createButton.textContent =
-                "创建小说";
-
+            resetCreateButton();
 
             return;
+
         }
 
 
-        // ------------------------------
+        // ------------------------------------------
         // 设置当前小说
-        // ------------------------------
+        // ------------------------------------------
 
-        localStorage.setItem(
-            "currentBookId",
-            String(bookId)
-        );
+        try {
 
-
-        localStorage.removeItem(
-            "currentChapterId"
-        );
+            localStorage.setItem(
+                "currentBookId",
+                String(bookId)
+            );
 
 
-        // ------------------------------
-        // 进入全书
-        // ------------------------------
+            localStorage.removeItem(
+                "currentChapterId"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "设置当前小说失败：",
+                error
+            );
+
+
+            // 如果这里失败，也不要进入错误页面。
+            // 因为小说本身已经成功保存。
+
+            showError(
+                "小说已经保存，但无法打开新小说。请返回书架重新打开。"
+            );
+
+
+            resetCreateButton();
+
+            return;
+
+        }
+
+
+        // ------------------------------------------
+        // 创建成功
+        // ------------------------------------------
 
         window.location.href =
             "book.html";
@@ -1342,11 +1513,27 @@ function clearError() {
 
     errorMessage.textContent =
         "";
+
 }
 
 
 // ==================================================
-// 自动清除错误
+// 恢复创建按钮
+// ==================================================
+
+function resetCreateButton() {
+
+    createButton.disabled =
+        false;
+
+    createButton.textContent =
+        "创建小说";
+
+}
+
+
+// ==================================================
+// 输入书名时清除错误
 // ==================================================
 
 bookTitleInput.addEventListener(
