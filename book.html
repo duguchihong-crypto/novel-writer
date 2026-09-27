@@ -26,6 +26,8 @@
 
     <header class="top-bar">
 
+        <!-- 返回 -->
+
         <button
             id="backButton"
             class="back-button"
@@ -35,12 +37,25 @@
         </button>
 
 
+        <!-- 页面标题 -->
+
         <div class="page-title">
             全书
         </div>
 
 
-        <div class="top-placeholder"></div>
+        <!-- ======================
+             布局切换
+        ======================= -->
+
+        <button
+            id="layoutToggle"
+            class="layout-toggle"
+            type="button"
+            aria-label="切换布局方向"
+        >
+            ↕ 纵向
+        </button>
 
     </header>
 
@@ -53,14 +68,25 @@
     <main class="tree-canvas">
 
         <!--
-            SVG 用来绘制书名、
-            序、卷、篇、章之间的连接线
+            SVG：
+
+            用来绘制：
+
+            书名
+              ↓
+            序 / 卷 / 篇 / 章
+
+            以及：
+
+            + / −
+            对应的连接线
         -->
 
         <svg
             id="connections"
             class="connections"
         ></svg>
+
 
 
         <!-- ======================
@@ -75,6 +101,7 @@
         </div>
 
 
+
         <!-- ======================
              树结构
         ======================= -->
@@ -85,48 +112,27 @@
         ></div>
 
 
+
         <!-- ======================
-             书级操作栏
+             底部操作栏
+             
+             注意：
+
+             这里不再预先写
+             ＋序
+             ＋章
+             ＋篇
+             ＋卷
+
+             events.js 会根据
+             当前选择动态生成。
         ======================= -->
 
         <div
             id="bookActions"
             class="book-actions"
             style="display: none;"
-        >
-
-            <button
-                id="addPreface"
-                type="button"
-            >
-                ＋序
-            </button>
-
-
-            <button
-                id="addChapter"
-                type="button"
-            >
-                ＋章
-            </button>
-
-
-            <button
-                id="addPart"
-                type="button"
-            >
-                ＋篇
-            </button>
-
-
-            <button
-                id="addVolume"
-                type="button"
-            >
-                ＋卷
-            </button>
-
-        </div>
+        ></div>
 
     </main>
 
@@ -134,8 +140,7 @@
 
     <!-- ==========================
          JavaScript
-         
-         注意：
+
          顺序不能改变
     =========================== -->
 
