@@ -260,12 +260,16 @@ function drawConnections(layout) {
 //
 // 书名
 //   │
-//   ├──── 卷
 //   │
-//   └──── 卷
+//  卷
+//   │
+//   │
+//  篇
+//   │
+//   │
+//  章
 //
-// 父 → 下
-// 同级 → 左右
+// 所有连接点均为节点正中央
 // ==================================================
 
 function drawVerticalConnections(
@@ -288,12 +292,18 @@ function drawVerticalConnections(
             roots[0];
 
 
+        // 节点顶部
+
         const rootTop =
             root.y;
 
 
+        // 节点真正的水平中心
+        // 不再依赖预先保存的 centerX
+
         const rootCenterX =
-            root.centerX;
+            root.x +
+            root.width / 2;
 
 
         const middleY =
@@ -354,11 +364,13 @@ function drawVerticalConnections(
 
 
         const firstCenterX =
-            firstRoot.centerX;
+            firstRoot.x +
+            firstRoot.width / 2;
 
 
         const lastCenterX =
-            lastRoot.centerX;
+            lastRoot.x +
+            lastRoot.width / 2;
 
 
         const branchY =
@@ -371,7 +383,9 @@ function drawVerticalConnections(
             35;
 
 
-        // 书名向下
+        // ==================================================
+        // 书名 → 主干
+        // ==================================================
 
         drawPath([
             {
@@ -392,7 +406,9 @@ function drawVerticalConnections(
         ]);
 
 
+        // ==================================================
         // 横向主干
+        // ==================================================
 
         drawPath([
             {
@@ -413,15 +429,22 @@ function drawVerticalConnections(
         ]);
 
 
-        // 每个根节点
+        // ==================================================
+        // 主干 → 每个根节点
+        // ==================================================
 
         roots.forEach(
             root => {
 
+                const rootCenterX =
+                    root.x +
+                    root.width / 2;
+
+
                 drawPath([
                     {
                         x:
-                            root.centerX,
+                            rootCenterX,
 
                         y:
                             branchY
@@ -429,7 +452,7 @@ function drawVerticalConnections(
 
                     {
                         x:
-                            root.centerX,
+                            rootCenterX,
 
                         y:
                             root.y
@@ -489,8 +512,13 @@ function drawVerticalConnections(
             }
 
 
+            // ==================================================
+            // 父节点真正的水平中心
+            // ==================================================
+
             const parentCenterX =
-                parentItem.centerX;
+                parentItem.x +
+                parentItem.width / 2;
 
 
             const parentBottom =
@@ -510,8 +538,11 @@ function drawVerticalConnections(
                     children[0];
 
 
+                // 孩子真正的水平中心
+
                 const childCenterX =
-                    child.centerX;
+                    child.x +
+                    child.width / 2;
 
 
                 const childTop =
@@ -524,6 +555,14 @@ function drawVerticalConnections(
                         childTop
                     ) / 2;
 
+
+                // ==================================================
+                // 父节点底部中心
+                // →
+                // 中间点
+                // →
+                // 孩子顶部中心
+                // ==================================================
 
                 drawPath([
                     {
@@ -560,9 +599,11 @@ function drawVerticalConnections(
                 ]);
 
 
+                // ==================================================
                 // + / −
                 //
-                // 放在真正的连接线中央
+                // 放在横向连接段的正中央
+                // ==================================================
 
                 addLineControl(
                     parent,
@@ -593,11 +634,13 @@ function drawVerticalConnections(
 
 
             const firstCenterX =
-                firstChild.centerX;
+                firstChild.x +
+                firstChild.width / 2;
 
 
             const lastCenterX =
-                lastChild.centerX;
+                lastChild.x +
+                lastChild.width / 2;
 
 
             const branchY =
@@ -608,7 +651,9 @@ function drawVerticalConnections(
                 );
 
 
-            // 父节点向下
+            // ==================================================
+            // 父节点 → 分叉主干
+            // ==================================================
 
             drawPath([
                 {
@@ -629,7 +674,9 @@ function drawVerticalConnections(
             ]);
 
 
+            // ==================================================
             // 子节点横向主干
+            // ==================================================
 
             drawPath([
                 {
@@ -650,15 +697,22 @@ function drawVerticalConnections(
             ]);
 
 
-            // 每个孩子向上
+            // ==================================================
+            // 横向主干 → 每个孩子
+            // ==================================================
 
             children.forEach(
                 child => {
 
+                    const childCenterX =
+                        child.x +
+                        child.width / 2;
+
+
                     drawPath([
                         {
                             x:
-                                child.centerX,
+                                childCenterX,
 
                             y:
                                 branchY
@@ -666,7 +720,7 @@ function drawVerticalConnections(
 
                         {
                             x:
-                                child.centerX,
+                                childCenterX,
 
                             y:
                                 child.y
@@ -676,9 +730,11 @@ function drawVerticalConnections(
             );
 
 
+            // ==================================================
             // + / −
             //
             // 放在整个分叉主干的正中央
+            // ==================================================
 
             addLineControl(
                 parent,
@@ -702,8 +758,7 @@ function drawVerticalConnections(
 //             │
 //             └── 篇
 //
-// 父 → 右
-// 同级 → 上下
+// 所有连接点均为节点正中央
 // ==================================================
 
 function drawHorizontalConnections(
@@ -730,8 +785,11 @@ function drawHorizontalConnections(
             root.x;
 
 
+        // 节点真正的垂直中心
+
         const rootCenterY =
-            root.centerY;
+            root.y +
+            root.height / 2;
 
 
         const middleX =
@@ -792,11 +850,13 @@ function drawHorizontalConnections(
 
 
         const firstCenterY =
-            firstRoot.centerY;
+            firstRoot.y +
+            firstRoot.height / 2;
 
 
         const lastCenterY =
-            lastRoot.centerY;
+            lastRoot.y +
+            lastRoot.height / 2;
 
 
         const branchX =
@@ -809,7 +869,9 @@ function drawHorizontalConnections(
             35;
 
 
-        // 书名向右
+        // ==================================================
+        // 书名 → 主干
+        // ==================================================
 
         drawPath([
             {
@@ -830,7 +892,9 @@ function drawHorizontalConnections(
         ]);
 
 
+        // ==================================================
         // 纵向主干
+        // ==================================================
 
         drawPath([
             {
@@ -851,10 +915,17 @@ function drawHorizontalConnections(
         ]);
 
 
-        // 每个根节点向右
+        // ==================================================
+        // 主干 → 每个根节点
+        // ==================================================
 
         roots.forEach(
             root => {
+
+                const rootCenterY =
+                    root.y +
+                    root.height / 2;
+
 
                 drawPath([
                     {
@@ -862,7 +933,7 @@ function drawHorizontalConnections(
                             branchX,
 
                         y:
-                            root.centerY
+                            rootCenterY
                     },
 
                     {
@@ -870,7 +941,7 @@ function drawHorizontalConnections(
                             root.x,
 
                         y:
-                            root.centerY
+                            rootCenterY
                     }
                 ]);
             }
@@ -927,13 +998,18 @@ function drawHorizontalConnections(
             }
 
 
+            // ==================================================
+            // 父节点真正的垂直中心
+            // ==================================================
+
+            const parentCenterY =
+                parentItem.y +
+                parentItem.height / 2;
+
+
             const parentRight =
                 parentItem.x +
                 parentItem.width;
-
-
-            const parentCenterY =
-                parentItem.centerY;
 
 
             // ==================================================
@@ -952,8 +1028,11 @@ function drawHorizontalConnections(
                     child.x;
 
 
+                // 孩子真正的垂直中心
+
                 const childCenterY =
-                    child.centerY;
+                    child.y +
+                    child.height / 2;
 
 
                 const middleX =
@@ -962,6 +1041,14 @@ function drawHorizontalConnections(
                         childLeft
                     ) / 2;
 
+
+                // ==================================================
+                // 父节点右侧中心
+                // →
+                // 中间点
+                // →
+                // 孩子左侧中心
+                // ==================================================
 
                 drawPath([
                     {
@@ -999,6 +1086,7 @@ function drawHorizontalConnections(
 
 
                 // + / −
+
                 addLineControl(
                     parent,
                     middleX,
@@ -1028,11 +1116,13 @@ function drawHorizontalConnections(
 
 
             const firstCenterY =
-                firstChild.centerY;
+                firstChild.y +
+                firstChild.height / 2;
 
 
             const lastCenterY =
-                lastChild.centerY;
+                lastChild.y +
+                lastChild.height / 2;
 
 
             const branchX =
@@ -1043,7 +1133,9 @@ function drawHorizontalConnections(
                 );
 
 
-            // 父节点向右
+            // ==================================================
+            // 父节点 → 分叉主干
+            // ==================================================
 
             drawPath([
                 {
@@ -1064,7 +1156,9 @@ function drawHorizontalConnections(
             ]);
 
 
+            // ==================================================
             // 子节点纵向主干
+            // ==================================================
 
             drawPath([
                 {
@@ -1085,10 +1179,17 @@ function drawHorizontalConnections(
             ]);
 
 
-            // 每个孩子向左
+            // ==================================================
+            // 纵向主干 → 每个孩子
+            // ==================================================
 
             children.forEach(
                 child => {
+
+                    const childCenterY =
+                        child.y +
+                        child.height / 2;
+
 
                     drawPath([
                         {
@@ -1096,7 +1197,7 @@ function drawHorizontalConnections(
                                 branchX,
 
                             y:
-                                child.centerY
+                                childCenterY
                         },
 
                         {
@@ -1104,16 +1205,18 @@ function drawHorizontalConnections(
                                 child.x,
 
                             y:
-                                child.centerY
+                                childCenterY
                         }
                     ]);
                 }
             );
 
 
+            // ==================================================
             // + / −
             //
             // 放在分叉主干中央
+            // ==================================================
 
             addLineControl(
                 parent,
@@ -1172,7 +1275,9 @@ function addLineControl(
     // 精确定位
     //
     // centerX / centerY
-    // 都来自 layout 的实际坐标
+    // 是连接线真正的中心坐标
+    //
+    // CSS 中 margin 必须保持 0
     // ==================================================
 
     control.style.left =
@@ -1209,7 +1314,9 @@ function addLineControl(
     );
 
 
+    // ==================================================
     // 防止点击按钮触发画布取消选择
+    // ==================================================
 
     control.addEventListener(
         "pointerdown",
