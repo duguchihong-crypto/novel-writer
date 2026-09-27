@@ -643,7 +643,7 @@ function handleBookGridClick(event) {
         )
     ) {
 
-        openEditBook(bookId);
+        openBook(bookId);
 
         return;
     }
