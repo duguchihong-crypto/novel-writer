@@ -219,14 +219,16 @@ body {
 
     border: 1px solid #e8e8e8;
 
-    transition: transform 0.15s ease,
-                box-shadow 0.15s ease;
+    transition:
+        transform 0.15s ease,
+        box-shadow 0.15s ease;
 }
 
 .book-card:hover {
     transform: translateY(-2px);
 
-    box-shadow: 0 8px 22px rgba(0,0,0,0.08);
+    box-shadow:
+        0 8px 22px rgba(0,0,0,0.08);
 }
 
 .book-cover {
@@ -716,7 +718,7 @@ function loadBooks() {
 
 
 /* =========================
-   防止书名/简介破坏页面
+   防止文字破坏页面
 ========================= */
 
 function escapeHTML(text) {
@@ -738,18 +740,21 @@ function escapeHTML(text) {
 function openBook(id) {
 
     /*
-       现在先提示。
-
-       下一步我们会制作：
-       book.html
-       = 书籍管理页面
+       保存当前打开的书籍
     */
 
-    alert(
-        "书籍已创建。\n\n" +
-        "下一步将进入书籍管理页面。"
+    localStorage.setItem(
+        "currentBookId",
+        id
     );
 
+
+    /*
+       进入书籍管理页面
+    */
+
+    window.location.href =
+        "book.html";
 }
 
 
