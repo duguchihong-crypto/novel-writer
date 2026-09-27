@@ -77,11 +77,13 @@ function initShelf() {
         loadBooks();
     }
 
+
     /* 读取书架显示模式 */
 
     if (typeof loadShelfViewMode === "function") {
         loadShelfViewMode();
     }
+
 
     /* 默认网格 */
 
@@ -93,11 +95,13 @@ function initShelf() {
         shelfViewMode = "grid";
     }
 
+
     /* 渲染书籍 */
 
     if (typeof renderBooks === "function") {
         renderBooks();
     }
+
 
     /* 应用显示模式 */
 
@@ -106,6 +110,7 @@ function initShelf() {
     }
 
     applyViewClass();
+
 
     /* 绑定事件 */
 
@@ -127,6 +132,7 @@ function applyViewClass() {
         "grid-view",
         "list-view"
     );
+
 
     if (shelfViewMode === "list") {
 
@@ -237,7 +243,9 @@ function bindShelfEvents() {
     }
 
 
-    /* 书籍区域 */
+    /* ==================================================
+       书籍区域
+    ================================================== */
 
     if (bookGrid) {
 
@@ -278,7 +286,9 @@ function bindShelfEvents() {
     }
 
 
-    /* 长按菜单 */
+    /* ==================================================
+       长按菜单
+    ================================================== */
 
     if (contextEdit) {
 
@@ -288,6 +298,7 @@ function bindShelfEvents() {
         );
     }
 
+
     if (contextSort) {
 
         contextSort.addEventListener(
@@ -296,6 +307,7 @@ function bindShelfEvents() {
         );
     }
 
+
     if (contextGroup) {
 
         contextGroup.addEventListener(
@@ -303,6 +315,7 @@ function bindShelfEvents() {
             contextMoveBook
         );
     }
+
 
     if (contextDelete) {
 
@@ -313,7 +326,9 @@ function bindShelfEvents() {
     }
 
 
-    /* 长按遮罩 */
+    /* ==================================================
+       长按遮罩
+    ================================================== */
 
     if (bookMenuOverlay) {
 
@@ -324,7 +339,9 @@ function bindShelfEvents() {
     }
 
 
-    /* 底部导航 */
+    /* ==================================================
+       底部导航
+    ================================================== */
 
     if (shelfNav) {
 
@@ -334,6 +351,7 @@ function bindShelfEvents() {
         );
     }
 
+
     if (toolsNav) {
 
         toolsNav.addEventListener(
@@ -341,6 +359,7 @@ function bindShelfEvents() {
             goTools
         );
     }
+
 
     if (meNav) {
 
@@ -351,7 +370,9 @@ function bindShelfEvents() {
     }
 
 
-    /* 页面点击 */
+    /* ==================================================
+       页面点击
+    ================================================== */
 
     document.addEventListener(
         "click",
@@ -379,9 +400,11 @@ function handleCreateButtonClick(event) {
             "settingsMenu"
         );
 
+
     if (!createMenu) {
         return;
     }
+
 
     if (settingsMenu) {
 
@@ -389,6 +412,7 @@ function handleCreateButtonClick(event) {
             "show"
         );
     }
+
 
     if (
         createMenu.classList.contains(
@@ -428,9 +452,11 @@ function handleSettingsButtonClick(event) {
             "createMenu"
         );
 
+
     if (!settingsMenu) {
         return;
     }
+
 
     if (createMenu) {
 
@@ -438,6 +464,7 @@ function handleSettingsButtonClick(event) {
             "show"
         );
     }
+
 
     if (
         settingsMenu.classList.contains(
@@ -474,6 +501,7 @@ function handleDocumentClick(event) {
             "settingsMenu"
         );
 
+
     const clickedCreateButton =
         event.target.closest(
             "#createButton"
@@ -494,6 +522,7 @@ function handleDocumentClick(event) {
             "#settingsMenu"
         );
 
+
     if (
         createMenu &&
         !clickedCreateButton &&
@@ -504,6 +533,7 @@ function handleDocumentClick(event) {
             "show"
         );
     }
+
 
     if (
         settingsMenu &&
@@ -570,6 +600,7 @@ function setGridView(event) {
 
     applyViewClass();
 
+
     if (
         typeof saveShelfViewMode ===
         "function"
@@ -580,6 +611,7 @@ function setGridView(event) {
         );
     }
 
+
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -589,6 +621,7 @@ function setGridView(event) {
     }
 
     applyViewClass();
+
 
     if (isSorting) {
 
@@ -616,6 +649,7 @@ function setListView(event) {
 
     applyViewClass();
 
+
     if (
         typeof saveShelfViewMode ===
         "function"
@@ -626,6 +660,7 @@ function setListView(event) {
         );
     }
 
+
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -635,6 +670,7 @@ function setListView(event) {
     }
 
     applyViewClass();
+
 
     if (isSorting) {
 
@@ -649,10 +685,62 @@ function setListView(event) {
 
 function handleBookGridClick(event) {
 
+    /* ==================================================
+       三个点菜单
+    ================================================== */
+
+    const menuButton =
+        event.target.closest(
+            ".book-menu-button"
+        );
+
+
+    if (menuButton) {
+
+        event.preventDefault();
+        event.stopPropagation();
+
+        cancelLongPress();
+
+
+        const card =
+            menuButton.closest(
+                ".book-card"
+            );
+
+
+        if (!card) {
+            return;
+        }
+
+
+        const bookId =
+            card.dataset.bookId;
+
+
+        showBookContextMenu(
+            bookId,
+            card
+        );
+
+
+        return;
+    }
+
+
+    /* ==================================================
+       旧删除按钮兼容
+       
+       如果旧 HTML 暂时还存在
+       .delete-book-button
+       仍然可以删除。
+    ================================================== */
+
     const deleteButton =
         event.target.closest(
             ".delete-book-button"
         );
+
 
     if (deleteButton) {
 
@@ -661,21 +749,30 @@ function handleBookGridClick(event) {
 
         cancelLongPress();
 
+
         const card =
             deleteButton.closest(
                 ".book-card"
             );
 
+
         if (!card) {
             return;
         }
+
 
         deleteBook(
             card.dataset.bookId
         );
 
+
         return;
     }
+
+
+    /* ==================================================
+       长按已经触发
+    ================================================== */
 
     if (longPressTriggered) {
 
@@ -685,28 +782,47 @@ function handleBookGridClick(event) {
         return;
     }
 
+
+    /* ==================================================
+       排序模式
+    ================================================== */
+
     if (isSorting) {
         return;
     }
+
+
+    /* ==================================================
+       获取书籍卡片
+    ================================================== */
 
     const card =
         event.target.closest(
             ".book-card"
         );
 
+
     if (!card) {
         return;
     }
 
+
     const bookId =
         card.dataset.bookId;
+
 
     const book =
         getBookById(bookId);
 
+
     if (!book) {
         return;
     }
+
+
+    /* ==================================================
+       点击封面
+    ================================================== */
 
     if (
         event.target.closest(
@@ -718,6 +834,11 @@ function handleBookGridClick(event) {
 
         return;
     }
+
+
+    /* ==================================================
+       点击标题
+    ================================================== */
 
     if (
         event.target.closest(
@@ -741,18 +862,22 @@ function openBook(bookId) {
     const book =
         getBookById(bookId);
 
+
     if (!book) {
         return;
     }
+
 
     localStorage.setItem(
         "currentBookId",
         String(bookId)
     );
 
+
     localStorage.removeItem(
         "currentChapterId"
     );
+
 
     window.location.href =
         "book.html";
@@ -768,18 +893,22 @@ function openEditBook(bookId) {
     const book =
         getBookById(bookId);
 
+
     if (!book) {
         return;
     }
+
 
     localStorage.setItem(
         "currentBookId",
         String(bookId)
     );
 
+
     localStorage.removeItem(
         "currentChapterId"
     );
+
 
     window.location.href =
         "edit-book.html";
@@ -795,13 +924,16 @@ function deleteBook(bookId) {
     const book =
         getBookById(bookId);
 
+
     if (!book) {
         return;
     }
 
+
     const title =
         book.title ||
         "未命名小说";
+
 
     const confirmed =
         window.confirm(
@@ -811,9 +943,11 @@ function deleteBook(bookId) {
             "删除后，这本书及其全书结构将无法恢复。"
         );
 
+
     if (!confirmed) {
         return;
     }
+
 
     books =
         books.filter(
@@ -824,9 +958,11 @@ function deleteBook(bookId) {
             }
         );
 
+
     if (!saveBooks()) {
         return;
     }
+
 
     if (
         typeof renderBooks ===
@@ -836,10 +972,12 @@ function deleteBook(bookId) {
         renderBooks();
     }
 
+
     if (isSorting) {
 
         renderSortingMode();
     }
+
 
     applyViewClass();
 }
@@ -855,9 +993,11 @@ function handlePointerDown(event) {
         return;
     }
 
+
     if (event.isPrimary === false) {
         return;
     }
+
 
     if (
         event.pointerType === "mouse" &&
@@ -866,14 +1006,35 @@ function handlePointerDown(event) {
         return;
     }
 
+
     const card =
         event.target.closest(
             ".book-card"
         );
 
+
     if (!card) {
         return;
     }
+
+
+    /* ==================================================
+       点击三个点时
+       不启动长按
+    ================================================== */
+
+    if (
+        event.target.closest(
+            ".book-menu-button"
+        )
+    ) {
+        return;
+    }
+
+
+    /* ==================================================
+       兼容旧删除按钮
+    ================================================== */
 
     if (
         event.target.closest(
@@ -883,23 +1044,30 @@ function handlePointerDown(event) {
         return;
     }
 
+
     cancelLongPress();
+
 
     pressedCard =
         card;
 
+
     pressStartX =
         event.clientX;
+
 
     pressStartY =
         event.clientY;
 
+
     longPressTriggered =
         false;
+
 
     card.classList.add(
         "long-pressing"
     );
+
 
     longPressTimer =
         setTimeout(
@@ -909,23 +1077,29 @@ function handlePointerDown(event) {
                     return;
                 }
 
+
                 const bookId =
                     pressedCard.dataset.bookId;
+
 
                 longPressBookId =
                     bookId;
 
+
                 longPressTriggered =
                     true;
+
 
                 pressedCard.classList.remove(
                     "long-pressing"
                 );
 
+
                 showBookContextMenu(
                     bookId,
                     pressedCard
                 );
+
 
                 longPressTimer =
                     null;
@@ -949,17 +1123,20 @@ function handlePointerMove(event) {
         return;
     }
 
+
     const distanceX =
         Math.abs(
             event.clientX -
             pressStartX
         );
 
+
     const distanceY =
         Math.abs(
             event.clientY -
             pressStartY
         );
+
 
     if (
         distanceX >
@@ -989,6 +1166,7 @@ function handlePointerUp() {
             null;
     }
 
+
     if (!longPressTriggered) {
 
         if (pressedCard) {
@@ -997,6 +1175,7 @@ function handlePointerUp() {
                 "long-pressing"
             );
         }
+
 
         pressedCard =
             null;
@@ -1035,12 +1214,14 @@ function cancelLongPress() {
             null;
     }
 
+
     if (pressedCard) {
 
         pressedCard.classList.remove(
             "long-pressing"
         );
     }
+
 
     pressedCard =
         null;
@@ -1058,7 +1239,7 @@ function handleContextMenu(event) {
 
 
 /* ==================================================
-   显示长按菜单
+   显示书籍菜单
 ================================================== */
 
 function showBookContextMenu(
@@ -1069,12 +1250,19 @@ function showBookContextMenu(
     const book =
         getBookById(bookId);
 
+
     if (!book) {
         return;
     }
 
+
     longPressBookId =
         bookId;
+
+
+    /* ==================================================
+       菜单标题
+    ================================================== */
 
     if (contextMenuTitle) {
 
@@ -1083,12 +1271,22 @@ function showBookContextMenu(
             "未命名小说";
     }
 
+
+    /* ==================================================
+       显示遮罩
+    ================================================== */
+
     if (bookMenuOverlay) {
 
         bookMenuOverlay.classList.add(
             "show"
         );
     }
+
+
+    /* ==================================================
+       显示菜单
+    ================================================== */
 
     if (bookContextMenu) {
 
@@ -1097,8 +1295,14 @@ function showBookContextMenu(
         );
     }
 
+
     document.body.style.overflow =
         "hidden";
+
+
+    /* ==================================================
+       标记当前书籍
+    ================================================== */
 
     if (card) {
 
@@ -1110,7 +1314,7 @@ function showBookContextMenu(
 
 
 /* ==================================================
-   关闭长按菜单
+   关闭书籍菜单
 ================================================== */
 
 function closeBookContextMenu() {
@@ -1122,6 +1326,7 @@ function closeBookContextMenu() {
         );
     }
 
+
     if (bookContextMenu) {
 
         bookContextMenu.classList.remove(
@@ -1129,11 +1334,31 @@ function closeBookContextMenu() {
         );
     }
 
+
     document.body.style.overflow =
         "";
 
+
+    /* ==================================================
+       清除当前书籍
+    ================================================== */
+
     longPressBookId =
         null;
+
+
+    document
+        .querySelectorAll(
+            ".book-card.long-pressed"
+        )
+        .forEach(
+            function(card) {
+
+                card.classList.remove(
+                    "long-pressed"
+                );
+            }
+        );
 }
 
 
@@ -1146,11 +1371,14 @@ function contextEditBook() {
     const bookId =
         longPressBookId;
 
+
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     openEditBook(bookId);
 }
@@ -1177,11 +1405,14 @@ function contextMoveBook() {
     const bookId =
         longPressBookId;
 
+
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     moveBookToGroup(bookId);
 }
@@ -1196,11 +1427,14 @@ function contextDeleteBook() {
     const bookId =
         longPressBookId;
 
+
     closeBookContextMenu();
+
 
     if (!bookId) {
         return;
     }
+
 
     deleteBook(bookId);
 }
@@ -1217,10 +1451,12 @@ function closeAllMenus() {
             "createMenu"
         );
 
+
     const settingsMenu =
         document.getElementById(
             "settingsMenu"
         );
+
 
     if (createMenu) {
 
@@ -1228,6 +1464,7 @@ function closeAllMenus() {
             "show"
         );
     }
+
 
     if (settingsMenu) {
 
@@ -1248,20 +1485,18 @@ function startSorting() {
 
     closeBookContextMenu();
 
+
     if (isSorting) {
         return;
     }
 
+
     isSorting =
         true;
 
+
     /*
-       注意：
-       原 CSS 使用的是
-
-       .sorting .book-card
-
-       所以 sorting 必须加到 bookGrid。
+       sorting 加到 bookGrid
     */
 
     if (bookGrid) {
@@ -1271,501 +1506,5 @@ function startSorting() {
         );
     }
 
-    if (
-        typeof renderSortingMode ===
-        "function"
-    ) {
-
-        renderSortingMode();
-    }
-
-    const cards =
-        document.querySelectorAll(
-            ".book-card"
-        );
-
-    cards.forEach(
-        function(card) {
-
-            card.setAttribute(
-                "draggable",
-                "true"
-            );
-
-            card.addEventListener(
-                "dragstart",
-                handleDragStart
-            );
-
-            card.addEventListener(
-                "dragover",
-                handleDragOver
-            );
-
-            card.addEventListener(
-                "drop",
-                handleDrop
-            );
-
-            card.addEventListener(
-                "dragend",
-                handleDragEnd
-            );
-        }
-    );
-}
-
-
-/* ==================================================
-   拖动开始
-================================================== */
-
-function handleDragStart(event) {
-
-    if (!isSorting) {
-        return;
-    }
-
-    draggingCard =
-        event.currentTarget;
-
-    isDraggingBook =
-        true;
-
-    draggingCard.classList.add(
-        "dragging"
-    );
-
-    if (event.dataTransfer) {
-
-        event.dataTransfer.effectAllowed =
-            "move";
-
-        event.dataTransfer.setData(
-            "text/plain",
-            draggingCard.dataset.bookId
-        );
-    }
-}
-
-
-/* ==================================================
-   拖动经过
-================================================== */
-
-function handleDragOver(event) {
 
     if (
-        !isSorting ||
-        !draggingCard
-    ) {
-        return;
-    }
-
-    event.preventDefault();
-
-    const target =
-        event.currentTarget;
-
-    if (
-        !target ||
-        target === draggingCard
-    ) {
-        return;
-    }
-
-    const rect =
-        target.getBoundingClientRect();
-
-
-    /* ==================================================
-       列表模式
-    ================================================== */
-
-    if (
-        bookGrid.classList.contains(
-            "list-view"
-        )
-    ) {
-
-        const middleY =
-            rect.top +
-            rect.height / 2;
-
-        if (
-            event.clientY <
-            middleY
-        ) {
-
-            bookGrid.insertBefore(
-                draggingCard,
-                target
-            );
-
-        } else {
-
-            bookGrid.insertBefore(
-                draggingCard,
-                target.nextSibling
-            );
-        }
-    }
-
-
-    /* ==================================================
-       网格模式
-    ================================================== */
-
-    else {
-
-        const middleX =
-            rect.left +
-            rect.width / 2;
-
-        const middleY =
-            rect.top +
-            rect.height / 2;
-
-        const offsetX =
-            event.clientX -
-            middleX;
-
-        const offsetY =
-            event.clientY -
-            middleY;
-
-
-        /*
-           判断鼠标主要位于
-           左右还是上下。
-        */
-
-        if (
-            Math.abs(offsetX) >
-            Math.abs(offsetY)
-        ) {
-
-            /*
-               左半边
-            */
-
-            if (
-                event.clientX <
-                middleX
-            ) {
-
-                bookGrid.insertBefore(
-                    draggingCard,
-                    target
-                );
-
-            }
-
-            /*
-               右半边
-            */
-
-            else {
-
-                bookGrid.insertBefore(
-                    draggingCard,
-                    target.nextSibling
-                );
-            }
-
-        } else {
-
-            /*
-               上半边
-            */
-
-            if (
-                event.clientY <
-                middleY
-            ) {
-
-                bookGrid.insertBefore(
-                    draggingCard,
-                    target
-                );
-
-            }
-
-            /*
-               下半边
-            */
-
-            else {
-
-                bookGrid.insertBefore(
-                    draggingCard,
-                    target.nextSibling
-                );
-            }
-        }
-    }
-
-
-    /*
-       更新目标高亮
-    */
-
-    document
-        .querySelectorAll(
-            ".book-card.drag-over"
-        )
-        .forEach(
-            function(card) {
-
-                card.classList.remove(
-                    "drag-over"
-                );
-            }
-        );
-
-    target.classList.add(
-        "drag-over"
-    );
-}
-
-
-/* ==================================================
-   放置
-================================================== */
-
-function handleDrop(event) {
-
-    event.preventDefault();
-
-    updateBookOrder();
-}
-
-
-/* ==================================================
-   拖动结束
-================================================== */
-
-function handleDragEnd() {
-
-    if (draggingCard) {
-
-        draggingCard.classList.remove(
-            "dragging"
-        );
-    }
-
-    document
-        .querySelectorAll(
-            ".book-card.drag-over"
-        )
-        .forEach(
-            function(card) {
-
-                card.classList.remove(
-                    "drag-over"
-                );
-            }
-        );
-
-    updateBookOrder();
-
-    draggingCard =
-        null;
-
-    isDraggingBook =
-        false;
-}
-
-
-/* ==================================================
-   更新书籍顺序
-================================================== */
-
-function updateBookOrder() {
-
-    if (!bookGrid) {
-        return;
-    }
-
-    if (!Array.isArray(books)) {
-        return;
-    }
-
-    const cards =
-        Array.from(
-            bookGrid.querySelectorAll(
-                ".book-card"
-            )
-        );
-
-    const newBooks = [];
-
-    cards.forEach(
-        function(card) {
-
-            const bookId =
-                card.dataset.bookId;
-
-            const book =
-                getBookById(bookId);
-
-            if (book) {
-
-                newBooks.push(
-                    book
-                );
-            }
-        }
-    );
-
-    if (
-        newBooks.length ===
-        books.length
-    ) {
-
-        books =
-            newBooks;
-    }
-}
-
-
-/* ==================================================
-   完成排序
-================================================== */
-
-function finishSorting() {
-
-    if (!isSorting) {
-        return;
-    }
-
-    updateBookOrder();
-
-    if (
-        typeof saveBooks ===
-        "function"
-    ) {
-
-        saveBooks();
-    }
-
-    isSorting =
-        false;
-
-    draggingCard =
-        null;
-
-    isDraggingBook =
-        false;
-
-    /*
-       从 bookGrid 移除 sorting。
-    */
-
-    if (bookGrid) {
-
-        bookGrid.classList.remove(
-            "sorting"
-        );
-    }
-
-    document
-        .querySelectorAll(
-            ".book-card"
-        )
-        .forEach(
-            function(card) {
-
-                card.removeAttribute(
-                    "draggable"
-                );
-
-                card.classList.remove(
-                    "dragging"
-                );
-
-                card.classList.remove(
-                    "drag-over"
-                );
-
-                card.classList.remove(
-                    "long-pressed"
-                );
-            }
-        );
-
-    if (
-        typeof renderBooks ===
-        "function"
-    ) {
-
-        renderBooks();
-    }
-
-    if (
-        typeof applyShelfViewMode ===
-        "function"
-    ) {
-
-        applyShelfViewMode();
-    }
-
-    applyViewClass();
-}
-
-
-/* ==================================================
-   移至分组
-================================================== */
-
-function moveBookToGroup(bookId) {
-
-    const book =
-        getBookById(bookId);
-
-    if (!book) {
-        return;
-    }
-
-    alert(
-        "准备将《" +
-        (
-            book.title ||
-            "未命名书籍"
-        ) +
-        "》移动到分组。\n\n" +
-        "分组系统下一步加入。"
-    );
-}
-
-
-/* ==================================================
-   底部导航
-================================================== */
-
-function goShelf() {
-
-    window.location.href =
-        "index.html";
-}
-
-function goTools() {
-
-    alert(
-        "工具功能正在开发中。"
-    );
-}
-
-function goMe() {
-
-    alert(
-        "我的功能正在开发中。"
-    );
-}
-
-
-/* ==================================================
-   启动
-================================================== */
-
-initShelf();
