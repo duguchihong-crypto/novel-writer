@@ -33,6 +33,51 @@ function calculateLayout() {
 
 
     // ==============================
+    // 第一层与书名之间的距离
+    // ==============================
+
+    const ROOT_GAP = 35;
+
+
+    // ==============================
+    // 获取书名高度
+    // ==============================
+
+    const bookTitle =
+        document.querySelector("#bookTitle");
+
+
+    let bookHeight =
+        BOOK_MIN_HEIGHT;
+
+
+    if (bookTitle) {
+
+        bookHeight =
+            bookTitle.offsetHeight ||
+            BOOK_MIN_HEIGHT;
+    }
+
+
+    // ==============================
+    // 书名顶部位置
+    // 与 main.js 保持一致
+    // ==============================
+
+    const BOOK_TOP = 25;
+
+
+    // ==============================
+    // 第一层节点 Y 坐标
+    // ==============================
+
+    const ROOT_Y =
+        BOOK_TOP +
+        bookHeight +
+        ROOT_GAP;
+
+
+    // ==============================
     // 计算叶子节点数量
     // ==============================
 
@@ -63,7 +108,10 @@ function calculateLayout() {
         });
 
 
-        return Math.max(1, count);
+        return Math.max(
+            1,
+            count
+        );
     }
 
 
@@ -129,7 +177,7 @@ function calculateLayout() {
 
 
     // ==============================
-    // 排列节点
+    // 放置节点
     // ==============================
 
     function placeNodes(
@@ -167,12 +215,34 @@ function calculateLayout() {
                 NODE_WIDTH / 2;
 
 
-            const y =
-                level *
-                (
-                    NODE_HEIGHT +
-                    LEVEL_GAP
-                );
+            // ==========================================
+            // 第一层：
+            // 直接放在书名下面
+            // ==========================================
+
+            let y;
+
+
+            if (level === 0) {
+
+                y =
+                    ROOT_Y;
+
+            } else {
+
+                // ======================================
+                // 第二层及以后：
+                // 正常层级间距
+                // ======================================
+
+                y =
+                    ROOT_Y +
+                    level *
+                    (
+                        NODE_HEIGHT +
+                        LEVEL_GAP
+                    );
+            }
 
 
             layout.nodes.push({
@@ -236,11 +306,18 @@ function calculateLayout() {
     }
 
 
+    // ==============================
+    // 总宽度
+    // ==============================
+
     const totalWidth =
         getNodesWidth(roots);
 
 
-    // 从第 0 层开始
+    // ==============================
+    // 开始布局
+    // ==============================
+
     placeNodes(
         roots,
         0,
@@ -250,7 +327,7 @@ function calculateLayout() {
 
 
     // ==============================
-    // 获取实际尺寸
+    // 计算实际尺寸
     // ==============================
 
     let maxX = 0;
@@ -276,6 +353,10 @@ function calculateLayout() {
 
     });
 
+
+    // ==============================
+    // 画布内边距
+    // ==============================
 
     const PADDING = 40;
 
