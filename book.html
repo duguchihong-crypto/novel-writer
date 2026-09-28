@@ -19,9 +19,7 @@
 
 </head>
 
-
 <body>
-
 
     <!-- ==================================================
          顶部栏
@@ -29,8 +27,7 @@
 
     <header class="top-bar">
 
-
-        <!-- 返回 -->
+        <!-- 返回书架 -->
 
         <button
             id="backButton"
@@ -63,9 +60,7 @@
             ↕ 纵向
         </button>
 
-
     </header>
-
 
 
     <!-- ==================================================
@@ -80,12 +75,15 @@
          X = 1500
          Y = 1500
 
-         以下元素全部使用同一个坐标系统：
+         所有内容使用同一个坐标系统：
 
          1. 小说书名
-         2. 序 / 卷 / 篇 / 章
-         3. SVG连接线
-         4. + / − 操作按钮
+         2. 序
+         3. 卷
+         4. 篇
+         5. 章
+         6. SVG连接线
+         7. 操作按钮
     ================================================== -->
 
     <main class="tree-canvas">
@@ -102,28 +100,38 @@
         ></svg>
 
 
-
         <!-- ==================================================
              小说书名
 
-             ★★★ 这里不再写死「未命名书籍」 ★★★
+             注意：
 
-             JavaScript 会根据：
+             这里绝对不要写：
 
-                 currentBookId
-                     ↓
-                 novelBooks
-                     ↓
-                 book.title
+             未命名书籍
+             未命名小说
+             任何固定书名
 
-             自动显示真正的小说名称。
+             书名统一由：
+
+             js/book/main.js
+
+             从：
+
+             currentBookId
+                    ↓
+             novelBooks
+                    ↓
+             book.title
+
+             读取。
+
+             防止多个 JavaScript 同时修改书名。
         ================================================== -->
 
         <div
             id="bookTitle"
             class="book-title"
         ></div>
-
 
 
         <!-- ==================================================
@@ -136,7 +144,6 @@
         ></div>
 
 
-
         <!-- ==================================================
              操作栏
         ================================================== -->
@@ -147,15 +154,13 @@
             style="display: none;"
         ></div>
 
-
     </main>
-
 
 
     <!-- ==================================================
          JavaScript
 
-         正确加载顺序：
+         必须按照以下顺序加载：
 
          1. state.js
          2. storage.js
@@ -165,6 +170,8 @@
          6. actions.js
          7. events.js
          8. main.js
+
+         main.js 最后执行页面初始化。
     ================================================== -->
 
 
@@ -208,240 +215,23 @@
     <script src="js/book/main.js"></script>
 
 
-
-    <!-- ==================================================
-         ★★★ 小说书名加载 ★★★
-
-         从 LocalStorage 中读取真正的小说名称。
-
-         数据结构：
-
-             novelBooks
-                 ↓
-             [
-                 {
-                     id: "...",
-                     title: "宝可梦：赤红传",
-                     cover: "...",
-                     ...
-                 }
-             ]
-
-             currentBookId
-                 ↓
-             找到对应 book
-                 ↓
-             book.title
-                 ↓
-             #bookTitle
-    ================================================== -->
-
-    <script>
-
-        function loadCurrentBookTitle() {
-
-            const titleElement =
-                document.getElementById(
-                    "bookTitle"
-                );
-
-
-            if (!titleElement) {
-
-                return;
-
-            }
-
-
-            /* ------------------------------------------
-               获取当前小说 ID
-            ------------------------------------------ */
-
-            let currentBookId = null;
-
-
-            try {
-
-                currentBookId =
-                    localStorage.getItem(
-                        "currentBookId"
-                    );
-
-            } catch (error) {
-
-                console.error(
-                    "读取 currentBookId 失败：",
-                    error
-                );
-
-            }
-
-
-            /* ------------------------------------------
-               没有当前小说
-            ------------------------------------------ */
-
-            if (!currentBookId) {
-
-                titleElement.textContent =
-                    "未命名小说";
-
-                document.title =
-                    "全书";
-
-                return;
-
-            }
-
-
-            /* ------------------------------------------
-               获取所有小说
-            ------------------------------------------ */
-
-            let savedBooks = null;
-
-
-            try {
-
-                savedBooks =
-                    localStorage.getItem(
-                        "novelBooks"
-                    );
-
-            } catch (error) {
-
-                console.error(
-                    "读取 novelBooks 失败：",
-                    error
-                );
-
-            }
-
-
-            if (!savedBooks) {
-
-                titleElement.textContent =
-                    "未命名小说";
-
-                document.title =
-                    "全书";
-
-                return;
-
-            }
-
-
-            /* ------------------------------------------
-               解析小说数据
-            ------------------------------------------ */
-
-            let books = [];
-
-
-            try {
-
-                const parsedBooks =
-                    JSON.parse(
-                        savedBooks
-                    );
-
-
-                if (
-                    Array.isArray(
-                        parsedBooks
-                    )
-                ) {
-
-                    books =
-                        parsedBooks;
-
-                }
-
-            } catch (error) {
-
-                console.error(
-                    "解析 novelBooks 失败：",
-                    error
-                );
-
-            }
-
-
-            /* ------------------------------------------
-               查找当前小说
-            ------------------------------------------ */
-
-            const currentBook =
-                books.find(
-                    function(book) {
-
-                        return (
-                            String(book.id) ===
-                            String(currentBookId)
-                        );
-
-                    }
-                );
-
-
-            /* ------------------------------------------
-               显示小说名称
-            ------------------------------------------ */
-
-            if (
-                currentBook &&
-                currentBook.title
-            ) {
-
-                titleElement.textContent =
-                    currentBook.title;
-
-
-                /*
-                 * 浏览器标签页
-                 */
-
-                document.title =
-                    currentBook.title +
-                    " - 全书";
-
-            } else {
-
-                titleElement.textContent =
-                    "未命名小说";
-
-                document.title =
-                    "全书";
-
-            }
-
-        }
-
-
-        /* ==================================================
-           页面加载完成后读取小说名称
-        ================================================== */
-
-        document.addEventListener(
-            "DOMContentLoaded",
-            function() {
-
-                loadCurrentBookTitle();
-
-            }
-        );
-
-    </script>
-
-
-
     <!-- ==================================================
          返回书架
+
+         注意：
+
+         书名加载不再放在这里。
+
+         书名统一由 main.js 管理。
     ================================================== -->
 
     <script>
 
         function returnToShelf() {
+
+            /* ------------------------------------------
+               保存当前小说
+            ------------------------------------------ */
 
             try {
 
@@ -464,6 +254,10 @@
             }
 
 
+            /* ------------------------------------------
+               清除当前章节
+            ------------------------------------------ */
+
             try {
 
                 localStorage.removeItem(
@@ -479,6 +273,10 @@
 
             }
 
+
+            /* ------------------------------------------
+               清除返回标记
+            ------------------------------------------ */
 
             try {
 
@@ -496,6 +294,10 @@
             }
 
 
+            /* ------------------------------------------
+               返回书架
+            ------------------------------------------ */
+
             window.location.replace(
                 "index.html"
             );
@@ -503,7 +305,6 @@
         }
 
     </script>
-
 
 </body>
 
