@@ -12,43 +12,267 @@
 
     <title>全书</title>
 
+    <style>
 
-    <!-- ==================================================
-         原有样式
-    ================================================== -->
-
-    <link
-        rel="stylesheet"
-        href="./css/book.css?v=40001"
-    >
+        * {
+            box-sizing: border-box;
+        }
 
 
-    <!-- ==================================================
-         新树系统样式
-    ================================================== -->
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
 
-    <link
-        rel="stylesheet"
-        href="./css/book/tree.css?v=10001"
-    >
+
+        /* ================================
+           顶部
+        ================================= */
+
+        #topBar {
+            position: fixed;
+            left: 0;
+            top: 0;
+
+            width: 100%;
+            height: 56px;
+
+            background: #ffffff;
+            border-bottom: 1px solid #dddddd;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 16px;
+
+            z-index: 1000;
+        }
+
+
+        #topBar button {
+            border: none;
+            background: #f2f2f2;
+
+            padding: 8px 14px;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+        }
+
+
+        #pageTitle {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
+        /* ================================
+           画布
+        ================================= */
+
+        #canvas {
+            position: absolute;
+
+            left: 0;
+            top: 56px;
+            right: 0;
+            bottom: 0;
+
+            overflow: auto;
+
+            background: #f7f7f7;
+        }
+
+
+        /* ================================
+           工作区域
+        ================================= */
+
+        #workspace {
+            position: relative;
+
+            width: 2000px;
+            height: 1600px;
+
+            margin: 0;
+            padding: 0;
+        }
+
+
+        /* ================================
+           SVG连接线
+        ================================= */
+
+        #connections {
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 2000px;
+            height: 1600px;
+
+            z-index: 1;
+
+            overflow: visible;
+
+            pointer-events: none;
+        }
+
+
+        .tree-line {
+            stroke: #222222;
+
+            stroke-width: 4;
+
+            fill: none;
+
+            stroke-linecap: round;
+
+            vector-effect: non-scaling-stroke;
+        }
+
+
+        /* ================================
+           树
+        ================================= */
+
+        #tree {
+            position: absolute;
+
+            left: 0;
+            top: 0;
+
+            width: 2000px;
+            height: 1600px;
+
+            z-index: 2;
+
+            margin: 0;
+            padding: 0;
+        }
+
+
+        /* ================================
+           节点
+        ================================= */
+
+        .tree-node {
+            position: absolute;
+
+            width: 150px;
+            height: 50px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: white;
+
+            border: 2px solid #222222;
+
+            border-radius: 12px;
+
+            color: #222222;
+
+            font-size: 16px;
+
+            text-align: center;
+
+            user-select: none;
+
+            cursor: pointer;
+
+            z-index: 10;
+        }
+
+
+        .tree-node.selected {
+            box-shadow:
+                0 0 0 3px rgba(0, 0, 0, 0.25);
+        }
+
+
+        /* ================================
+           底部操作栏
+        ================================= */
+
+        #actionBar {
+            position: fixed;
+
+            left: 50%;
+            bottom: 20px;
+
+            transform: translateX(-50%);
+
+            display: flex;
+
+            gap: 8px;
+
+            padding: 10px;
+
+            background: white;
+
+            border: 1px solid #dddddd;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 4px 20px rgba(0, 0, 0, 0.12);
+
+            z-index: 2000;
+        }
+
+
+        #actionBar button {
+            border: none;
+
+            background: #eeeeee;
+
+            padding: 10px 16px;
+
+            border-radius: 8px;
+
+            font-size: 15px;
+
+            cursor: pointer;
+        }
+
+
+        #actionBar button:active {
+            transform: scale(0.96);
+        }
+
+
+        /* 原来的书名隐藏 */
+
+        #bookTitle {
+            display: none !important;
+        }
+
+    </style>
 
 </head>
 
 
 <body>
 
-    <!-- ==================================================
-         顶部栏
-    ================================================== -->
 
-    <header
-        id="topBar"
-        class="top-bar"
-    >
+    <!-- ================================
+         顶部
+    ================================= -->
+
+    <header id="topBar">
 
         <button
-            id="backButton"
-            class="top-button"
             type="button"
             onclick="window.location.href='./index.html';"
         >
@@ -56,17 +280,13 @@
         </button>
 
 
-        <div
-            id="pageTitle"
-            class="page-title"
-        >
+        <div id="pageTitle">
             全书
         </div>
 
 
         <button
             id="layoutButton"
-            class="top-button"
             type="button"
         >
             ↕ 纵向
@@ -75,124 +295,87 @@
     </header>
 
 
-    <!-- ==================================================
+    <!-- ================================
          画布
-    ================================================== -->
+    ================================= -->
 
-    <main
-        id="canvas"
-        class="canvas"
-    >
-
-        <div
-            id="workspace"
-            class="workspace"
-        >
-
-            <!-- ==================================================
-                 连接线
-            ================================================== -->
-
-            <svg
-                id="connections"
-                class="connections"
-            ></svg>
+    <main id="canvas">
 
 
-            <!-- ==================================================
-                 原来的书名节点
-                 
-                 新 tree.js 会自己生成书名节点。
-                 这里保留 HTML 结构，但由 tree.css 隐藏。
-            ================================================== -->
+        <div id="workspace">
 
-            <div
-                id="bookTitle"
-                class="book-title"
-            >
+
+            <!-- 连接线 -->
+
+            <svg id="connections"></svg>
+
+
+            <!-- 原来的书名 -->
+
+            <div id="bookTitle">
                 新书
             </div>
 
 
-            <!-- ==================================================
-                 树
-            ================================================== -->
+            <!-- 树 -->
 
-            <div
-                id="tree"
-                class="tree"
-            ></div>
+            <div id="tree"></div>
 
-
-            <!-- ==================================================
-                 底部固定操作栏
-                 
-                 顺序：
-                 序 → 章 → 篇 → 卷
-            ================================================== -->
-
-            <div
-                id="actionBar"
-                class="action-bar"
-            >
-
-                <button
-                    type="button"
-                    class="action-preface"
-                    data-action="preface"
-                >
-                    ＋序
-                </button>
-
-
-                <button
-                    type="button"
-                    class="action-chapter"
-                    data-action="chapter"
-                >
-                    ＋章
-                </button>
-
-
-                <button
-                    type="button"
-                    class="action-part"
-                    data-action="part"
-                >
-                    ＋篇
-                </button>
-
-
-                <button
-                    type="button"
-                    class="action-volume"
-                    data-action="volume"
-                >
-                    ＋卷
-                </button>
-
-            </div>
 
         </div>
+
 
     </main>
 
 
-    <!-- ==================================================
+    <!-- ================================
+         操作栏
+    ================================= -->
+
+    <div id="actionBar">
+
+
+        <button
+            type="button"
+            data-action="preface"
+        >
+            ＋序
+        </button>
+
+
+        <button
+            type="button"
+            data-action="chapter"
+        >
+            ＋章
+        </button>
+
+
+        <button
+            type="button"
+            data-action="part"
+        >
+            ＋篇
+        </button>
+
+
+        <button
+            type="button"
+            data-action="volume"
+        >
+            ＋卷
+        </button>
+
+
+    </div>
+
+
+    <!-- ================================
          新树系统
-         
-         注意：
-         不再加载旧 main.js
-    ================================================== -->
+    ================================= -->
 
     <script src="./js/book/tree.js?v=10001"></script>
 
-
-    <!-- ==================================================
-         自动居中
-    ================================================== -->
-
-    <script src="./js/book/center-view.js?v=40001"></script>
 
 </body>
 
