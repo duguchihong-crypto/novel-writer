@@ -1,7 +1,3 @@
-/* ======================================================
-   基础
-====================================================== */
-
 * {
     box-sizing: border-box;
     -webkit-tap-highlight-color: transparent;
@@ -51,10 +47,6 @@ body {
 
     padding: 0 12px;
 
-    /* ==============================
-       顶部：赤
-    ============================== */
-
     background: #d92d2d;
 
     color: #ffffff;
@@ -80,8 +72,6 @@ body {
 
     border-radius: 9px;
 
-    /* 深赤 */
-
     background: #b71c1c;
 
     color: #ffffff;
@@ -106,7 +96,7 @@ body {
 
 
 /* ======================================================
-   页面标题：全书
+   页面标题
 ====================================================== */
 
 .page-title {
@@ -149,6 +139,21 @@ body {
     isolation: isolate;
 
     -webkit-overflow-scrolling: touch;
+}
+
+
+/* ======================================================
+   3000 × 3000 工作区
+====================================================== */
+
+.workspace {
+
+    position: relative;
+
+    width: 3000px;
+    height: 3000px;
+
+    flex-shrink: 0;
 }
 
 
@@ -501,6 +506,13 @@ body {
     }
 
 
+    .workspace {
+
+        width: 3000px;
+        height: 3000px;
+    }
+
+
     .book-title {
 
         min-width: 180px;
@@ -539,4 +551,5 @@ body {
 
         font-size: 14px;
     }
+
 }
