@@ -45,7 +45,6 @@ function renderBooks() {
 
 
     if (!bookGrid) {
-
         return;
     }
 
@@ -143,7 +142,7 @@ function createBookCard(book) {
 
 
     card.dataset.bookId =
-        book.id;
+        String(book.id);
 
 
     /* ==================================================
@@ -176,7 +175,10 @@ function createBookCard(book) {
         "book-cover";
 
 
-    if (book.cover) {
+    if (
+        typeof book.cover === "string" &&
+        book.cover.trim() !== ""
+    ) {
 
         const image =
             document.createElement(
@@ -189,12 +191,28 @@ function createBookCard(book) {
 
 
         image.alt =
-            book.title ||
-            "小说封面";
+            getBookTitle(book);
 
 
         image.draggable =
             false;
+
+
+        image.addEventListener(
+            "error",
+            function() {
+
+                cover.innerHTML = "";
+
+                cover.classList.add(
+                    "default-cover"
+                );
+
+                cover.textContent =
+                    "📖";
+
+            }
+        );
 
 
         cover.appendChild(
@@ -215,7 +233,7 @@ function createBookCard(book) {
 
     /* ==================================================
        书籍信息
-    ================================================== */
+================================================== */
 
     const info =
         document.createElement(
@@ -229,7 +247,7 @@ function createBookCard(book) {
 
     /* ==================================================
        书名
-    ================================================== */
+================================================== */
 
     const title =
         document.createElement(
@@ -241,14 +259,18 @@ function createBookCard(book) {
         "book-title";
 
 
+    const bookTitle =
+        getBookTitle(book);
+
+
     title.textContent =
-        book.title ||
-        "未命名小说";
+        bookTitle;
 
 
-    title.title =
-        book.title ||
-        "未命名小说";
+    title.setAttribute(
+        "title",
+        bookTitle
+    );
 
 
     info.appendChild(
@@ -258,7 +280,7 @@ function createBookCard(book) {
 
     /* ==================================================
        三个点菜单按钮
-    ================================================== */
+================================================== */
 
     const menuButton =
         document.createElement(
@@ -279,16 +301,13 @@ function createBookCard(book) {
 
 
     menuButton.dataset.bookId =
-        book.id;
+        String(book.id);
 
 
     menuButton.setAttribute(
         "aria-label",
         "打开《" +
-        (
-            book.title ||
-            "未命名小说"
-        ) +
+        bookTitle +
         "》菜单"
     );
 
@@ -301,7 +320,7 @@ function createBookCard(book) {
 
     /* ==================================================
        组合卡片
-    ================================================== */
+================================================== */
 
     card.appendChild(
         cover
@@ -323,6 +342,32 @@ function createBookCard(book) {
 
 
 /* ==================================================
+   获取书名
+================================================== */
+
+function getBookTitle(book) {
+
+    if (
+        book &&
+        typeof book.title === "string"
+    ) {
+
+        const title =
+            book.title.trim();
+
+
+        if (title !== "") {
+
+            return title;
+        }
+    }
+
+
+    return "未命名小说";
+}
+
+
+/* ==================================================
    应用网格 / 列表模式
 ================================================== */
 
@@ -333,7 +378,6 @@ function applyShelfViewMode() {
 
 
     if (!bookGrid) {
-
         return;
     }
 
@@ -426,19 +470,9 @@ function renderSortingMode() {
 
 
     if (!bookGrid) {
-
         return;
     }
 
-
-    /*
-     * 排序状态主要由 body 控制
-     *
-     * CSS：
-     * .sorting .book-menu-button
-     * .sorting .settings-button
-     * .sorting .finish-sort-button
-     */
 
     if (isSorting) {
 
@@ -480,7 +514,6 @@ function renderSelectedBook() {
 
 
     if (!bookGrid) {
-
         return;
     }
 
