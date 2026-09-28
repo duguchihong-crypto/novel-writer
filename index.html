@@ -29,16 +29,12 @@
 
 <header class="top-bar">
 
-
     <div class="logo">
         我的书架
     </div>
 
 
     <div class="top-actions">
-
-
-        <!-- 完成排序 -->
 
         <button
             id="finishSortButton"
@@ -49,8 +45,6 @@
         </button>
 
 
-        <!-- 新建 -->
-
         <button
             id="createButton"
             class="create-button"
@@ -60,8 +54,6 @@
         </button>
 
 
-        <!-- 设置 -->
-
         <button
             id="settingsButton"
             class="settings-button"
@@ -69,7 +61,6 @@
         >
             ⚙ 设置
         </button>
-
 
     </div>
 
@@ -97,6 +88,16 @@
     </button>
 
 
+    <!-- 新建分组 -->
+
+    <button
+        id="createCollectionButton"
+        type="button"
+    >
+        📁 新建分组
+    </button>
+
+
 </div>
 
 
@@ -111,8 +112,6 @@
 >
 
 
-    <!-- 排序 -->
-
     <button
         id="sortBooksButton"
         type="button"
@@ -121,8 +120,6 @@
     </button>
 
 
-    <!-- 网格 -->
-
     <button
         id="gridButton"
         type="button"
@@ -130,8 +127,6 @@
         ▦ 网格
     </button>
 
-
-    <!-- 列表 -->
 
     <button
         id="listButton"
@@ -152,9 +147,7 @@
 <main class="container">
 
 
-    <!-- ==================================================
-         排序提示
-    ================================================== -->
+    <!-- 排序提示 -->
 
     <div
         id="sortHint"
@@ -165,15 +158,12 @@
 
 
 
-    <!-- ==================================================
-         空书架
-    ================================================== -->
+    <!-- 空书架 -->
 
     <div
         id="emptyShelf"
         class="empty-shelf"
     >
-
 
         <div class="empty-icon">
             📚
@@ -189,14 +179,11 @@
             点击「＋ 新建」开始创作
         </div>
 
-
     </div>
 
 
 
-    <!-- ==================================================
-         书籍
-    ================================================== -->
+    <!-- 书籍 -->
 
     <div
         id="bookGrid"
@@ -228,8 +215,6 @@
     class="book-context-menu"
 >
 
-
-    <!-- 当前小说名称 -->
 
     <div
         id="contextMenuTitle"
@@ -310,8 +295,6 @@
 <nav class="bottom-nav">
 
 
-    <!-- 书架 -->
-
     <button
         id="shelfNav"
         class="active"
@@ -321,8 +304,6 @@
     </button>
 
 
-    <!-- 工具 -->
-
     <button
         id="toolsNav"
         type="button"
@@ -330,8 +311,6 @@
         🧰 工具
     </button>
 
-
-    <!-- 我的 -->
 
     <button
         id="meNav"
@@ -346,7 +325,7 @@
 
 
 <!-- ==================================================
-     书架系统
+     原有书架系统
 ================================================== -->
 
 <script
@@ -367,6 +346,54 @@
 <script
     src="js/shelf/shelf-events.js?v=6"
 ></script>
+
+
+
+<!-- ==================================================
+     新建分组
+     
+     暂未开发。
+     
+     点击后只显示提示，
+     不创建任何数据。
+================================================== -->
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const createCollectionButton =
+                document.getElementById(
+                    "createCollectionButton"
+                );
+
+
+            if (
+                !createCollectionButton
+            ) {
+
+                return;
+
+            }
+
+
+            createCollectionButton.addEventListener(
+                "click",
+                function () {
+
+                    alert(
+                        "分组功能正在开发中"
+                    );
+
+                }
+            );
+
+        }
+    );
+
+</script>
 
 
 
