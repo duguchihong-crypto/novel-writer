@@ -400,19 +400,22 @@ body {
 
 
 /* ======================================================
-   底部操作栏
+   书名下方操作栏
 ====================================================== */
 
 .action-bar {
 
-    position: fixed;
+    position: absolute;
 
-    left: 50%;
-    bottom: 20px;
+    left: 1500px;
+    top: 1575px;
 
     transform: translateX(-50%);
 
     display: none;
+
+    align-items: center;
+    justify-content: center;
 
     gap: 8px;
 
@@ -426,8 +429,14 @@ body {
 
     box-shadow:
         0 4px 14px rgba(0, 0, 0, 0.20);
+
+    white-space: nowrap;
 }
 
+
+/* ======================================================
+   显示操作栏
+====================================================== */
 
 .action-bar.show {
 
@@ -436,7 +445,7 @@ body {
 
 
 /* ======================================================
-   底部按钮
+   操作按钮
 ====================================================== */
 
 .action-bar button {
@@ -460,7 +469,10 @@ body {
     cursor: pointer;
 
     appearance: none;
+
     -webkit-appearance: none;
+
+    white-space: nowrap;
 }
 
 
@@ -535,7 +547,9 @@ body {
 
     .action-bar {
 
-        bottom: 14px;
+        left: 1500px;
+
+        top: 1575px;
 
         gap: 6px;
 
