@@ -23,6 +23,10 @@ let selectedElement = null;
 
 // ==================================================
 // 书名位置
+//
+// 注意：
+// 这里保存的是书名左上角坐标。
+// 坐标属于 3000 × 3000 画布。
 // ==================================================
 
 let bookPosition = {
@@ -30,6 +34,7 @@ let bookPosition = {
     x: null,
 
     y: null
+
 };
 
 
@@ -44,14 +49,23 @@ let bookWasDragged = false;
 let bookMoveStarted = false;
 
 
-// 鼠标 / 触摸开始位置
+// ==================================================
+// 鼠标 / 触摸按下位置
+//
+// 这是“指针坐标”。
+// 不是书名坐标。
+// ==================================================
 
 let dragStartX = 0;
 
 let dragStartY = 0;
 
 
+// ==================================================
 // 拖动开始时书名的位置
+//
+// 这是“书名坐标”。
+// ==================================================
 
 let dragOriginalX = 0;
 
@@ -167,6 +181,11 @@ let currentLayout = null;
 
 // ==================================================
 // 画布尺寸
+//
+// 注意：
+// 这里不定义 BOOK_CANVAS_SIZE。
+// 该常量由 main.js 统一定义，
+// 避免重复 const 导致报错。
 // ==================================================
 
 let treeCanvasWidth = 0;
@@ -233,12 +252,20 @@ let savedScrollY = 0;
 
 function resetBookPageState() {
 
+    // ------------------------------------------
+    // 当前选择
+    // ------------------------------------------
+
     selectedNodeId = null;
 
     selectedIsBook = false;
 
     selectedElement = null;
 
+
+    // ------------------------------------------
+    // 书名位置
+    // ------------------------------------------
 
     bookPosition = {
 
@@ -248,6 +275,10 @@ function resetBookPageState() {
 
     };
 
+
+    // ------------------------------------------
+    // 书名拖动
+    // ------------------------------------------
 
     draggingBook = false;
 
@@ -265,8 +296,16 @@ function resetBookPageState() {
     dragOriginalY = 0;
 
 
+    // ------------------------------------------
+    // 页面状态
+    // ------------------------------------------
+
     bookPageMode = "normal";
 
+
+    // ------------------------------------------
+    // 当前布局
+    // ------------------------------------------
 
     currentLayout = null;
 
@@ -280,8 +319,16 @@ function resetBookPageState() {
     treeHeight = 0;
 
 
+    // ------------------------------------------
+    // 连线
+    // ------------------------------------------
+
     connectionsVisible = false;
 
+
+    // ------------------------------------------
+    // 操作栏
+    // ------------------------------------------
 
     actionBarMode = "none";
 
@@ -290,6 +337,10 @@ function resetBookPageState() {
     actionButtonPressed = false;
 
 
+    // ------------------------------------------
+    // 触摸
+    // ------------------------------------------
+
     touchStarted = false;
 
     touchStartX = 0;
@@ -297,11 +348,25 @@ function resetBookPageState() {
     touchStartY = 0;
 
 
+    // ------------------------------------------
+    // 自动布局
+    // ------------------------------------------
+
     autoLayoutEnabled = false;
 
     hasStructure = false;
 
     hasPreface = false;
+
+
+    // ------------------------------------------
+    // 滚动位置
+    // ------------------------------------------
+
+    savedScrollX = 0;
+
+    savedScrollY = 0;
+
 }
 
 
@@ -322,6 +387,7 @@ function updateBookStructureState() {
         connectionsVisible = false;
 
         return;
+
     }
 
 
@@ -354,6 +420,7 @@ function updateBookStructureState() {
 
     connectionsVisible =
         hasStructure;
+
 }
 
 
@@ -367,7 +434,9 @@ function getNodeById(
 ) {
 
     if (!currentBook) {
+
         return null;
+
     }
 
 
@@ -415,11 +484,14 @@ function getNodeById(
                 return result;
 
             }
+
         }
+
     }
 
 
     return null;
+
 }
 
 
@@ -470,6 +542,7 @@ function getAllNodes(
 
 
     return result;
+
 }
 
 
@@ -482,6 +555,7 @@ function nodeExists(nodeId) {
     return Boolean(
         getNodeById(nodeId)
     );
+
 }
 
 
@@ -492,6 +566,7 @@ function nodeExists(nodeId) {
 function getNodeCount() {
 
     return getAllNodes().length;
+
 }
 
 
@@ -511,6 +586,7 @@ function getSelectedNode() {
     return getNodeById(
         selectedNodeId
     );
+
 }
 
 
@@ -531,6 +607,7 @@ function setSelectedNode(nodeId) {
 
     actionNodeId =
         nodeId;
+
 }
 
 
@@ -551,6 +628,7 @@ function setSelectedBook() {
 
     actionNodeId =
         null;
+
 }
 
 
@@ -574,6 +652,7 @@ function resetSelectionState() {
 
     actionNodeId =
         null;
+
 }
 
 
@@ -586,6 +665,7 @@ function isBookSelected() {
     return (
         selectedIsBook === true
     );
+
 }
 
 
@@ -599,6 +679,7 @@ function isNodeSelected() {
         selectedNodeId !== null &&
         selectedNodeId !== undefined
     );
+
 }
 
 
@@ -615,6 +696,7 @@ function getBookPosition() {
         y: bookPosition.y
 
     };
+
 }
 
 
@@ -627,11 +709,24 @@ function setBookPosition(
     y
 ) {
 
-    bookPosition.x =
+    const nextX =
         Number(x);
 
-    bookPosition.y =
+    const nextY =
         Number(y);
+
+
+    bookPosition.x =
+        Number.isFinite(nextX)
+            ? nextX
+            : null;
+
+
+    bookPosition.y =
+        Number.isFinite(nextY)
+            ? nextY
+            : null;
+
 }
 
 
@@ -648,6 +743,7 @@ function resetBookPosition() {
         y: null
 
     };
+
 }
 
 
@@ -672,6 +768,7 @@ function hasSavedBookPosition() {
         )
 
     );
+
 }
 
 
@@ -691,6 +788,7 @@ function beginBookDrag() {
 
     bookWasDragged =
         false;
+
 }
 
 
@@ -705,11 +803,19 @@ function endBookDrag() {
 
     bookPageMode =
         "normal";
+
 }
 
 
 // ==================================================
 // 判断拖动距离
+//
+// 注意：
+//
+// dragStartX / dragStartY
+// 永远代表“指针按下的位置”。
+//
+// 不能把它们改成书名的 left / top。
 // ==================================================
 
 function checkDragDistance(
@@ -743,10 +849,12 @@ function checkDragDistance(
             true;
 
         return true;
+
     }
 
 
     return false;
+
 }
 
 
@@ -756,11 +864,33 @@ function checkDragDistance(
 
 function saveCurrentScrollPosition() {
 
+    const canvas =
+        document.querySelector(
+            ".tree-canvas"
+        );
+
+
+    if (canvas) {
+
+        savedScrollX =
+            canvas.scrollLeft;
+
+        savedScrollY =
+            canvas.scrollTop;
+
+        return;
+
+    }
+
+
+    // 兼容没有画布时的情况
+
     savedScrollX =
         window.scrollX || 0;
 
     savedScrollY =
         window.scrollY || 0;
+
 }
 
 
@@ -770,8 +900,28 @@ function saveCurrentScrollPosition() {
 
 function restoreScrollPosition() {
 
+    const canvas =
+        document.querySelector(
+            ".tree-canvas"
+        );
+
+
+    if (canvas) {
+
+        canvas.scrollLeft =
+            savedScrollX;
+
+        canvas.scrollTop =
+            savedScrollY;
+
+        return;
+
+    }
+
+
     window.scrollTo(
         savedScrollX,
         savedScrollY
     );
+
 }
