@@ -67,179 +67,18 @@ function hideActionBar() {
 
 
 /* ======================================================
-   书名：点击 + 拖动
+   书名：点击
 ====================================================== */
 
 if (bookTitle) {
 
-    let pointerDown = false;
-
-    let dragging = false;
-
-    let startX = 0;
-    let startY = 0;
-
-    let startLeft = 0;
-    let startTop = 0;
-
-
-    /* ==================================================
-       按下
-    ================================================== */
-
     bookTitle.addEventListener(
-        "pointerdown",
+        "click",
         function (event) {
 
-            pointerDown = true;
+            event.stopPropagation();
 
-            dragging = false;
-
-            startX =
-                event.clientX;
-
-            startY =
-                event.clientY;
-
-            startLeft =
-                bookTitle.offsetLeft;
-
-            startTop =
-                bookTitle.offsetTop;
-
-            bookTitle.style.cursor =
-                "grabbing";
-
-            bookTitle.setPointerCapture(
-                event.pointerId
-            );
-
-        }
-    );
-
-
-    /* ==================================================
-       移动
-    ================================================== */
-
-    bookTitle.addEventListener(
-        "pointermove",
-        function (event) {
-
-            if (!pointerDown) {
-                return;
-            }
-
-            const moveX =
-                event.clientX - startX;
-
-            const moveY =
-                event.clientY - startY;
-
-            const distance =
-                Math.sqrt(
-                    moveX * moveX +
-                    moveY * moveY
-                );
-
-
-            /* ==========================================
-               移动超过 6px 才算拖动
-            ========================================== */
-
-            if (distance > 6) {
-
-                dragging = true;
-
-            }
-
-
-            if (!dragging) {
-                return;
-            }
-
-
-            /* ==========================================
-               拖动书名
-            ========================================== */
-
-            bookTitle.style.left =
-                (
-                    startLeft +
-                    moveX
-                ) + "px";
-
-            bookTitle.style.top =
-                (
-                    startTop +
-                    moveY
-                ) + "px";
-
-        }
-    );
-
-
-    /* ==================================================
-       抬起
-    ================================================== */
-
-    bookTitle.addEventListener(
-        "pointerup",
-        function (event) {
-
-            if (!pointerDown) {
-                return;
-            }
-
-            pointerDown = false;
-
-            bookTitle.style.cursor =
-                "grab";
-
-
-            /* ==========================================
-               没有拖动
-               → 视为点击
-            ========================================== */
-
-            if (!dragging) {
-
-                toggleActionBar();
-
-            }
-
-
-            dragging = false;
-
-
-            try {
-
-                bookTitle.releasePointerCapture(
-                    event.pointerId
-                );
-
-            } catch (error) {
-
-            }
-
-        }
-    );
-
-
-    /* ==================================================
-       取消
-    ================================================== */
-
-    bookTitle.addEventListener(
-        "pointercancel",
-        function () {
-
-            pointerDown = false;
-
-            dragging = false;
-
-            bookTitle.style.cursor =
-                "grab";
+            toggleActionBar();
 
         }
     );
@@ -256,16 +95,6 @@ if (actionBar) {
     /* ==================================================
        防止点击操作栏触发空白关闭
     ================================================== */
-
-    actionBar.addEventListener(
-        "pointerdown",
-        function (event) {
-
-            event.stopPropagation();
-
-        }
-    );
-
 
     actionBar.addEventListener(
         "click",
@@ -367,7 +196,7 @@ document.addEventListener(
 
 
         /* ==============================================
-           其他地方
+           点击其他区域
            → 关闭
         ============================================== */
 
