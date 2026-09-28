@@ -4,9 +4,7 @@
 
 * {
     box-sizing: border-box;
-
     margin: 0;
-
     padding: 0;
 }
 
@@ -20,13 +18,11 @@ body {
         sans-serif;
 
     background: #f7f8fa;
-
     color: #222;
 
     min-height: 100vh;
 
     padding-top: 72px;
-
     padding-bottom: 70px;
 }
 
@@ -44,10 +40,11 @@ body {
 
     height: 72px;
 
-    background: #fff;
+    background: #c62828;
 
-    border-bottom:
-        1px solid #e8e8e8;
+    color: #fff;
+
+    border-bottom: none;
 
     display: flex;
 
@@ -61,7 +58,6 @@ body {
 
 .logo {
     font-size: 20px;
-
     font-weight: 700;
 }
 
@@ -95,24 +91,23 @@ body {
 
 
 .create-button {
-    background: #4f7cff;
+    background: #00acc1;
 
     color: #fff;
 }
 
 
 .settings-button {
-    background: #eef0f4;
+    background: rgba(255, 255, 255, 0.18);
 
-    color: #333;
+    color: #fff;
 }
 
 
 .create-button:active,
 .settings-button:active,
 .finish-sort-button:active {
-    transform:
-        scale(0.97);
+    transform: scale(0.97);
 }
 
 
@@ -123,13 +118,18 @@ body {
 .finish-sort-button {
     display: none;
 
-    background: #4f7cff;
+    background: #fbc02d;
 
-    color: #fff;
+    color: #222;
 }
 
 
 .sorting .create-button {
+    display: none;
+}
+
+
+.sorting .settings-button {
     display: none;
 }
 
@@ -148,7 +148,7 @@ body {
 
     position: fixed;
 
-    top: 62px;
+    top: 78px;
 
     width: 170px;
 
@@ -161,7 +161,7 @@ body {
 
     box-shadow:
         0 8px 25px
-        rgba(0, 0, 0, 0.08);
+        rgba(0, 0, 0, 0.12);
 
     overflow: hidden;
 
@@ -322,8 +322,7 @@ body {
 
 
 .book-card:hover {
-    transform:
-        translateY(-2px);
+    transform: translateY(-2px);
 
     box-shadow:
         0 8px 22px
@@ -336,15 +335,13 @@ body {
 ================================================== */
 
 .book-card.long-pressing {
-    transform:
-        scale(0.97);
+    transform: scale(0.97);
 
     box-shadow:
         0 4px 16px
         rgba(0, 0, 0, 0.12);
 
-    border-color:
-        #c5cee0;
+    border-color: #fbc02d;
 }
 
 
@@ -356,11 +353,9 @@ body {
     position: absolute;
 
     top: 9px;
-
     right: 9px;
 
     width: 34px;
-
     height: 34px;
 
     padding: 0;
@@ -406,33 +401,19 @@ body {
 }
 
 
-/* ==================================================
-   三个点：鼠标悬停
-================================================== */
-
 .book-menu-button:hover {
     background: #f5f6f8;
 
     color: #333;
 
-    transform:
-        scale(1.05);
+    transform: scale(1.05);
 }
 
-
-/* ==================================================
-   三个点：点击
-================================================== */
 
 .book-menu-button:active {
-    transform:
-        scale(0.95);
+    transform: scale(0.95);
 }
 
-
-/* ==================================================
-   三个点：焦点
-================================================== */
 
 .book-menu-button:focus {
     outline: none;
@@ -441,7 +422,7 @@ body {
 
 .book-menu-button:focus-visible {
     outline:
-        2px solid #4f7cff;
+        2px solid #00acc1;
 
     outline-offset: 2px;
 }
@@ -486,7 +467,6 @@ body {
 
 .book-cover img {
     width: 100%;
-
     height: 100%;
 
     object-fit: cover;
@@ -499,7 +479,6 @@ body {
 
 .default-cover {
     width: 100%;
-
     height: 100%;
 
     display: flex;
@@ -555,7 +534,7 @@ body {
 
 
 .book-title:hover {
-    color: #4f7cff;
+    color: #00acc1;
 }
 
 
@@ -826,7 +805,7 @@ body {
 
 
 .context-menu-button.delete-action {
-    color: #e5484d;
+    color: #222;
 }
 
 
@@ -842,9 +821,9 @@ body {
     padding:
         11px 14px;
 
-    background: #eef3ff;
+    background: #fff8d6;
 
-    color: #4f6fc7;
+    color: #806600;
 
     border-radius: 9px;
 
@@ -901,10 +880,9 @@ body {
 
     height: 68px;
 
-    background: #fff;
+    background: #222;
 
-    border-top:
-        1px solid #e8e8e8;
+    border-top: none;
 
     display: flex;
 
@@ -917,11 +895,15 @@ body {
 
 
 .bottom-nav button {
+    flex: 1;
+
+    height: 100%;
+
     border: none;
 
-    background: none;
+    background: transparent;
 
-    color: #777;
+    color: #aaa;
 
     font-family: inherit;
 
@@ -931,13 +913,25 @@ body {
 
     padding:
         8px 20px;
+
+    transition:
+        background 0.15s ease,
+        color 0.15s ease;
 }
 
 
 .bottom-nav button.active {
-    color: #4f7cff;
+    background: #fbc02d;
 
-    font-weight: 600;
+    color: #222;
+
+    font-weight: 700;
+
+    border-radius: 10px;
+
+    margin: 6px;
+
+    height: calc(100% - 12px);
 }
 
 
@@ -948,14 +942,19 @@ body {
 @media (max-width: 600px) {
 
     .top-bar {
+        height: 64px;
 
         padding:
             0 14px;
     }
 
 
-    .logo {
+    body {
+        padding-top: 64px;
+    }
 
+
+    .logo {
         font-size: 19px;
     }
 
@@ -972,12 +971,14 @@ body {
 
 
     .create-menu {
+        top: 70px;
 
         right: 82px;
     }
 
 
     .settings-menu {
+        top: 70px;
 
         right: 14px;
     }
@@ -991,8 +992,6 @@ body {
         margin-top: 28px;
     }
 
-
-    /* 手机网格固定两列 */
 
     .book-grid.grid-view {
 
@@ -1038,10 +1037,6 @@ body {
     }
 
 
-    /* ==================================================
-       手机三个点
-    ================================================== */
-
     .book-menu-button {
 
         width: 32px;
@@ -1056,10 +1051,6 @@ body {
     }
 
 
-    /* ==================================================
-       手机菜单
-    ================================================== */
-
     .book-context-menu {
 
         width:
@@ -1068,10 +1059,6 @@ body {
         max-width: 360px;
     }
 
-
-    /* ==================================================
-       手机列表
-    ================================================== */
 
     .list-view .book-card {
 
