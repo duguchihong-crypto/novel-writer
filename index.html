@@ -135,6 +135,10 @@
 <main class="container">
 
 
+    <!-- ============================== -->
+    <!-- 排序提示 -->
+    <!-- ============================== -->
+
     <div
         id="sortHint"
         class="sort-hint"
@@ -144,7 +148,20 @@
 
 
 
+    <!-- ============================== -->
+    <!-- 分组 -->
+    <!-- ============================== -->
+
+    <div
+        id="groupContainer"
+        class="group-container"
+    ></div>
+
+
+
+    <!-- ============================== -->
     <!-- 空书架 -->
+    <!-- ============================== -->
 
     <div
         id="emptyShelf"
@@ -169,7 +186,9 @@
 
 
 
+    <!-- ============================== -->
     <!-- 书籍 -->
+    <!-- ============================== -->
 
     <div
         id="bookGrid"
@@ -178,6 +197,103 @@
 
 
 </main>
+
+
+
+<!-- ============================== -->
+<!-- 新建分组弹窗 -->
+<!-- ============================== -->
+
+<div
+    id="createGroupOverlay"
+    class="modal-overlay"
+>
+
+    <div
+        id="createGroupModal"
+        class="group-modal"
+    >
+
+
+        <!-- ============================== -->
+        <!-- 弹窗标题 -->
+        <!-- ============================== -->
+
+        <div class="group-modal-header">
+
+            <div class="group-modal-title">
+                新建分组
+            </div>
+
+
+            <button
+                id="closeCreateGroupButton"
+                class="modal-close-button"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+
+        <!-- ============================== -->
+        <!-- 输入区域 -->
+        <!-- ============================== -->
+
+        <div class="group-modal-body">
+
+            <label
+                class="group-name-label"
+                for="groupNameInput"
+            >
+                分组名称
+            </label>
+
+
+            <input
+                id="groupNameInput"
+                class="group-name-input"
+                type="text"
+                maxlength="30"
+                placeholder="例如：连载中"
+                autocomplete="off"
+            >
+
+        </div>
+
+
+
+        <!-- ============================== -->
+        <!-- 按钮 -->
+        <!-- ============================== -->
+
+        <div class="group-modal-footer">
+
+            <button
+                id="cancelCreateGroupButton"
+                class="modal-cancel-button"
+                type="button"
+            >
+                取消
+            </button>
+
+
+            <button
+                id="confirmCreateGroupButton"
+                class="modal-confirm-button"
+                type="button"
+            >
+                创建
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
 
 
 
@@ -275,6 +391,10 @@
             🗑️
         </span>
 
+        <span class="context-menu-icon">
+            🗑️
+        </span>
+
         <span>
             删除书籍
         </span>
@@ -323,7 +443,7 @@
 
 
 <!-- ============================== -->
-<!-- JS -->
+<!-- 原有书架系统 -->
 <!-- ============================== -->
 
 <script
@@ -344,6 +464,32 @@
 <script
     src="js/shelf/shelf-events.js?v=6"
 ></script>
+
+
+
+<!-- ============================== -->
+<!-- 新建分组系统 -->
+<!-- ============================== -->
+
+<script
+    src="js/group/group-state.js?v=1"
+></script>
+
+
+<script
+    src="js/group/group-storage.js?v=1"
+></script>
+
+
+<script
+    src="js/group/group-render.js?v=1"
+></script>
+
+
+<script
+    src="js/group/group-events.js?v=1"
+></script>
+
 
 
 </body>
