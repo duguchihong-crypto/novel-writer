@@ -103,7 +103,7 @@ body {
 
 
 /* ==================================================
-   返回按钮
+   返回
 ================================================== */
 
 .back-button {
@@ -139,7 +139,7 @@ body {
 
 
 /* ==================================================
-   布局切换按钮
+   布局切换
 ================================================== */
 
 .layout-toggle {
@@ -178,11 +178,6 @@ body {
     white-space: nowrap;
 
     -webkit-tap-highlight-color: transparent;
-
-    transition:
-        background 0.15s ease,
-        border-color 0.15s ease,
-        transform 0.12s ease;
 }
 
 .layout-toggle:hover {
@@ -201,8 +196,7 @@ body {
 
 
 /* ==================================================
-   主画布
-   ★ 自由移动画布
+   3000 × 3000 主坐标画布
 ================================================== */
 
 .tree-canvas {
@@ -210,12 +204,12 @@ body {
     position: fixed;
 
     top: 56px;
-
     left: 0;
-
     right: 0;
-
     bottom: 0;
+
+    width: auto;
+    height: auto;
 
     overflow: auto;
 
@@ -223,45 +217,40 @@ body {
 
     -webkit-overflow-scrolling: touch;
 
+    /*
+       普通画布允许滚动。
+
+       书名自己使用 touch-action:none，
+       所以拖动书名时不会被浏览器当成
+       普通滚动画布。
+    */
     touch-action: pan-x pan-y;
 
     overscroll-behavior: contain;
-
-    /*
-       不限制内部内容。
-
-       真正的可移动区域由
-       #tree 的大型画布决定。
-    */
 
     isolation: isolate;
 }
 
 
 /* ==================================================
-   实际树区域
-   ★★★ 自由画布核心 ★★★
+   树区域
+   ★ 整个坐标系固定为 3000 × 3000
 ================================================== */
 
 #tree {
 
-    position: relative;
+    position: absolute;
 
-    /*
-       给书名和树结构提供足够大的
-       四方向自由移动空间。
-    */
+    left: 0;
+    top: 0;
 
     width: 3000px;
-
     height: 3000px;
 
     min-width: 3000px;
-
     min-height: 3000px;
 
     margin: 0;
-
     padding: 0;
 
     overflow: visible;
@@ -271,7 +260,7 @@ body {
 
 
 /* ==================================================
-   SVG 连线
+   SVG
 ================================================== */
 
 .connections {
@@ -279,15 +268,12 @@ body {
     position: absolute;
 
     left: 0;
-
     top: 0;
 
     width: 3000px;
-
     height: 3000px;
 
     min-width: 3000px;
-
     min-height: 3000px;
 
     overflow: visible;
@@ -316,18 +302,29 @@ body {
 
 /* ==================================================
    书名
-   ★ 自由拖动
+   ★★★ 关键 ★★★
+   
+   书名和 #tree 使用完全相同的
+   3000 × 3000 坐标系。
+
+   JS 只负责 left / top。
+
+   禁止使用 translate(-50%, -50%)
+   否则会和 JS 的中心计算重复。
 ================================================== */
 
 .book-title {
 
     position: absolute;
 
+    left: 0;
+    top: 0;
+
     z-index: 20;
 
     min-width: 180px;
 
-    max-width: min(320px, 75vw);
+    max-width: 320px;
 
     min-height: 58px;
 
@@ -365,14 +362,14 @@ body {
         0 2px 8px rgba(0, 0, 0, 0.05);
 
     /*
-       JS 负责 left / top。
+       非常重要：
 
-       CSS 不再把书名锁死在
-       左上角或某个固定位置。
+       不允许 transform 改变书名几何中心。
     */
 
-    left: 0;
-    top: 0;
+    transform: none;
+
+    margin: 0;
 
     cursor: grab;
 
@@ -382,13 +379,16 @@ body {
 
     -webkit-touch-callout: none;
 
+    /*
+       书名拖动由 JS 接管。
+    */
+
     touch-action: none;
 
     -webkit-tap-highlight-color: transparent;
 
     transition:
-        box-shadow 0.12s ease,
-        transform 0.12s ease;
+        box-shadow 0.12s ease;
 }
 
 .book-title:active {
@@ -405,7 +405,7 @@ body {
 
 
 /* ==================================================
-   节点外层
+   节点
 ================================================== */
 
 .tree-node {
@@ -499,7 +499,7 @@ body {
 
 
 /* ==================================================
-   节点选中
+   节点选择
 ================================================== */
 
 .tree-node.selected .node-box {
@@ -574,7 +574,7 @@ body {
 
 
 /* ==================================================
-   节点操作区域
+   节点操作
 ================================================== */
 
 .node-actions {
@@ -654,7 +654,7 @@ body {
 
 
 /* ==================================================
-   连线上的 + / −
+   + / -
 ================================================== */
 
 .line-control {
@@ -662,11 +662,9 @@ body {
     position: absolute;
 
     width: 26px;
-
     height: 26px;
 
     padding: 0;
-
     margin: 0;
 
     border:
@@ -681,7 +679,6 @@ body {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     font-size: 16px;
@@ -718,16 +715,16 @@ body {
 
 
 /* ==================================================
-   空状态提示
+   空状态
 ================================================== */
 
 .tree-empty {
 
     position: absolute;
 
-    left: 50%;
+    left: 1500px;
 
-    top: 150px;
+    top: 1650px;
 
     transform:
         translateX(-50%);
@@ -742,14 +739,12 @@ body {
 
     text-align: center;
 
-    white-space: normal;
-
     pointer-events: none;
 }
 
 
 /* ==================================================
-   书名操作栏
+   底部操作栏
 ================================================== */
 
 .book-actions {
@@ -757,9 +752,7 @@ body {
     position: fixed;
 
     left: 0;
-
     right: 0;
-
     bottom: 0;
 
     min-height: 76px;
@@ -793,7 +786,7 @@ body {
 
 
 /* ==================================================
-   书名操作按钮基础
+   操作按钮
 ================================================== */
 
 .book-actions button {
@@ -890,7 +883,7 @@ body {
 
 
 /* ==================================================
-   普通节点操作按钮
+   普通
 ================================================== */
 
 .book-actions button.default {
@@ -905,7 +898,7 @@ body {
 
 
 /* ==================================================
-   删除按钮
+   删除
 ================================================== */
 
 .book-actions button.danger {
@@ -920,7 +913,7 @@ body {
 
 
 /* ==================================================
-   禁用的序按钮
+   禁用序
 ================================================== */
 
 .book-actions button.preface:disabled {
@@ -932,42 +925,10 @@ body {
 
 
 /* ==================================================
-   手机适配
+   手机
 ================================================== */
 
 @media (max-width: 600px) {
-
-    .tree-canvas {
-
-        top: 56px;
-
-        bottom: 0;
-    }
-
-
-    #tree {
-
-        width: 3000px;
-
-        height: 3000px;
-
-        min-width: 3000px;
-
-        min-height: 3000px;
-    }
-
-
-    .connections {
-
-        width: 3000px;
-
-        height: 3000px;
-
-        min-width: 3000px;
-
-        min-height: 3000px;
-    }
-
 
     .layout-toggle {
 
@@ -1049,10 +1010,7 @@ body {
     .line-control {
 
         width: 26px;
-
         height: 26px;
-
-        margin: 0;
 
         font-size: 16px;
     }
@@ -1063,7 +1021,6 @@ body {
         gap: 5px;
 
         padding-left: 7px;
-
         padding-right: 7px;
     }
 
@@ -1083,8 +1040,6 @@ body {
 
     .tree-empty {
 
-        top: 130px;
-
         width: 250px;
 
         font-size: 13px;
@@ -1093,7 +1048,7 @@ body {
 
 
 /* ==================================================
-   更小屏幕
+   小屏幕
 ================================================== */
 
 @media (max-width: 380px) {
@@ -1138,7 +1093,6 @@ body {
         gap: 4px;
 
         padding-left: 5px;
-
         padding-right: 5px;
     }
 
