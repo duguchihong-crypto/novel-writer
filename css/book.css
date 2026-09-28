@@ -382,14 +382,11 @@ body {
 
     position: fixed;
 
-    left: 0;
-    right: 0;
+    left: 50%;
 
     bottom: 0;
 
-    width: 100%;
-
-    height: 64px;
+    transform: translateX(-50%);
 
     display: none;
 
@@ -398,21 +395,27 @@ body {
 
     gap: 8px;
 
-    padding:
-        8px 10px
-        calc(8px + env(safe-area-inset-bottom))
-        10px;
+    width: max-content;
+
+    max-width: calc(100vw - 20px);
+
+    padding: 8px 10px;
+
+    padding-bottom:
+        calc(8px + env(safe-area-inset-bottom));
 
     background: #ffffff;
 
-    border-top: 1px solid #dddddd;
+    border: 1px solid #dddddd;
 
-    border-radius: 0;
+    border-bottom: none;
+
+    border-radius: 14px 14px 0 0;
 
     z-index: 20000;
 
     box-shadow:
-        0 -3px 12px rgba(0, 0, 0, 0.12);
+        0 -4px 14px rgba(0, 0, 0, 0.15);
 
     white-space: nowrap;
 }
@@ -434,7 +437,7 @@ body {
 
 .action-bar button {
 
-    height: 44px;
+    height: 40px;
 
     min-width: 64px;
 
@@ -442,7 +445,7 @@ body {
 
     border: 2px solid;
 
-    border-radius: 10px;
+    border-radius: 9px;
 
     font-size: 15px;
 
@@ -455,9 +458,6 @@ body {
     -webkit-appearance: none;
 
     white-space: nowrap;
-
-    transition:
-        transform 0.1s;
 }
 
 
@@ -596,28 +596,30 @@ body {
 
     .action-bar {
 
-        height: 64px;
+        left: 50%;
+
+        bottom: 0;
 
         gap: 6px;
 
-        padding:
-            8px 6px
-            calc(8px + env(safe-area-inset-bottom))
-            6px;
+        max-width: calc(100vw - 10px);
+
+        padding: 7px 6px;
+
+        padding-bottom:
+            calc(7px + env(safe-area-inset-bottom));
+
+        border-radius: 12px 12px 0 0;
     }
 
 
     .action-bar button {
 
-        flex: 1;
+        min-width: 58px;
 
-        min-width: 0;
+        height: 40px;
 
-        max-width: 90px;
-
-        height: 42px;
-
-        padding: 0 8px;
+        padding: 0 10px;
 
         font-size: 14px;
     }
