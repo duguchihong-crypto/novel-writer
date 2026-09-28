@@ -23,6 +23,14 @@ function getEmptyShelf() {
 }
 
 
+function getSortHint() {
+
+    return document.getElementById(
+        "sortHint"
+    );
+}
+
+
 /* ==================================================
    渲染书架
 ================================================== */
@@ -37,6 +45,7 @@ function renderBooks() {
 
 
     if (!bookGrid) {
+
         return;
     }
 
@@ -63,6 +72,11 @@ function renderBooks() {
                 "block";
         }
 
+
+        applyShelfViewMode();
+
+        renderSortingMode();
+
         return;
     }
 
@@ -88,6 +102,7 @@ function renderBooks() {
             const card =
                 createBookCard(book);
 
+
             bookGrid.appendChild(
                 card
             );
@@ -97,10 +112,17 @@ function renderBooks() {
 
 
     /* ==================================================
-       应用书架显示模式
+       应用显示模式
     ================================================== */
 
     applyShelfViewMode();
+
+
+    /* ==================================================
+       应用排序模式
+    ================================================== */
+
+    renderSortingMode();
 }
 
 
@@ -122,6 +144,22 @@ function createBookCard(book) {
 
     card.dataset.bookId =
         book.id;
+
+
+    /* ==================================================
+       排序状态
+    ================================================== */
+
+    if (
+        isSorting &&
+        String(draggingCard) ===
+        String(book.id)
+    ) {
+
+        card.classList.add(
+            "dragging"
+        );
+    }
 
 
     /* ==================================================
@@ -155,14 +193,19 @@ function createBookCard(book) {
             "小说封面";
 
 
+        image.draggable =
+            false;
+
+
         cover.appendChild(
             image
         );
 
     } else {
 
-        cover.className +=
-            " default-cover";
+        cover.classList.add(
+            "default-cover"
+        );
 
 
         cover.textContent =
@@ -203,15 +246,9 @@ function createBookCard(book) {
         "未命名小说";
 
 
-    /*
-       这里只添加书名。
-
-       不创建：
-       .book-meta
-
-       不添加：
-       「小说」
-    */
+    title.title =
+        book.title ||
+        "未命名小说";
 
 
     info.appendChild(
@@ -237,10 +274,6 @@ function createBookCard(book) {
         "button";
 
 
-    /*
-       三个竖点
-    */
-
     menuButton.textContent =
         "⋮";
 
@@ -259,12 +292,6 @@ function createBookCard(book) {
         "》菜单"
     );
 
-
-    /*
-       防止按钮在拖动、
-       长按等情况下产生
-       不必要的默认行为
-    */
 
     menuButton.setAttribute(
         "aria-haspopup",
@@ -306,6 +333,7 @@ function applyShelfViewMode() {
 
 
     if (!bookGrid) {
+
         return;
     }
 
@@ -393,23 +421,99 @@ function renderSortingMode() {
         getBookGrid();
 
 
+    const sortHint =
+        getSortHint();
+
+
     if (!bookGrid) {
+
         return;
     }
 
 
+    /*
+     * 排序状态主要由 body 控制
+     *
+     * CSS：
+     * .sorting .book-menu-button
+     * .sorting .settings-button
+     * .sorting .finish-sort-button
+     */
+
     if (isSorting) {
 
-        bookGrid.classList.add(
+        document.body.classList.add(
             "sorting"
         );
+
+
+        if (sortHint) {
+
+            sortHint.style.display =
+                "block";
+        }
 
     } else {
 
-        bookGrid.classList.remove(
+        document.body.classList.remove(
             "sorting"
         );
+
+
+        if (sortHint) {
+
+            sortHint.style.display =
+                "none";
+        }
     }
+}
+
+
+/* ==================================================
+   当前选中书籍
+================================================== */
+
+function renderSelectedBook() {
+
+    const bookGrid =
+        getBookGrid();
+
+
+    if (!bookGrid) {
+
+        return;
+    }
+
+
+    const cards =
+        bookGrid.querySelectorAll(
+            ".book-card"
+        );
+
+
+    cards.forEach(
+        function(card) {
+
+            card.classList.remove(
+                "selected"
+            );
+
+
+            if (
+                selectedBookId !== null &&
+                String(
+                    card.dataset.bookId
+                ) ===
+                String(selectedBookId)
+            ) {
+
+                card.classList.add(
+                    "selected"
+                );
+            }
+
+        }
+    );
 }
 
 
@@ -422,4 +526,6 @@ function refreshShelf() {
     renderBooks();
 
     renderSortingMode();
+
+    renderSelectedBook();
 }
