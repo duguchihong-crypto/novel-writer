@@ -824,6 +824,34 @@ function resetCreateButton() {
 
 
 /* ==================================================
+   清除当前打开的小说
+================================================== */
+
+function clearCurrentBook() {
+
+    try {
+
+        localStorage.removeItem(
+            "currentBookId"
+        );
+
+        localStorage.removeItem(
+            "currentChapterId"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "清除当前小说状态失败：",
+            error
+        );
+
+    }
+
+}
+
+
+/* ==================================================
    返回书架
 ================================================== */
 
@@ -833,32 +861,15 @@ document
         "click",
         function() {
 
+            clearCurrentBook();
+
             /*
-             * 返回书架前清除当前打开状态
+             * 强制回到书架
              */
 
-            try {
-
-                localStorage.removeItem(
-                    "currentBookId"
-                );
-
-                localStorage.removeItem(
-                    "currentChapterId"
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "清除当前小说状态失败：",
-                    error
-                );
-
-            }
-
-
-            window.location.href =
-                "index.html";
+            window.location.replace(
+                "index.html"
+            );
 
         }
     );
@@ -1727,24 +1738,29 @@ function createBook() {
 
 
     /* ==================================================
-       关键：
-       创建小说后绝不设置 currentBookId
+       创建完成：
+       绝对不保存 currentBookId
+    ================================================== */
+
+    clearCurrentBook();
+
+
+    /* ==================================================
+       设置一次性标记
+       用于防止旧代码自动打开小说
     ================================================== */
 
     try {
 
-        localStorage.removeItem(
-            "currentBookId"
-        );
-
-        localStorage.removeItem(
-            "currentChapterId"
+        sessionStorage.setItem(
+            "returnToShelfAfterCreate",
+            "1"
         );
 
     } catch (error) {
 
         console.error(
-            "清除当前小说状态失败：",
+            "设置返回书架标记失败：",
             error
         );
 
@@ -1756,17 +1772,18 @@ function createBook() {
 
 
     /* ==================================================
-       只返回书架
+       强制返回书架
     ================================================== */
 
     setTimeout(
         function() {
 
-            window.location.href =
-                "index.html";
+            window.location.replace(
+                "index.html"
+            );
 
         },
-        100
+        150
     );
 
 }
@@ -1822,6 +1839,8 @@ bookTitleInput.addEventListener(
 /* ==================================================
    初始化
 ================================================== */
+
+clearCurrentBook();
 
 bookTitleInput.focus();
 
