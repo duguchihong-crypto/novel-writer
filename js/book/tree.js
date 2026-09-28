@@ -6,11 +6,10 @@
 // 上 → 下
 // 右 → 左
 // 第一项永远在最右边
-// 每个节点最多两个直接子节点
+// 每个普通节点最多两个直接子节点
 //
 // 连接线：
-// 必须从父节点中心
-// 连接到子节点中心
+// 父节点中心 → 子节点中心
 //
 // ==================================================
 
@@ -30,6 +29,9 @@ const workspace =
 
 const actionBar =
     document.getElementById("actionBar");
+
+const canvas =
+    document.getElementById("canvas");
 
 
 // ==================================================
@@ -55,30 +57,25 @@ if (!tree || !svg || !workspace) {
 
 const CONFIG = {
 
-    // 普通节点宽度
+    // 普通节点尺寸
     nodeWidth: 150,
-
-    // 普通节点高度
     nodeHeight: 50,
 
-    // 书名宽度
+    // 书名节点尺寸
     bookWidth: 180,
-
-    // 书名高度
     bookHeight: 58,
 
-    // 节点横向距离
+    // 同级节点之间的间距
     horizontalGap: 100,
 
-    // 层级纵向距离
+    // 上下层级之间的距离
     verticalGap: 160,
 
-    // 工作区边距
+    // 工作区四周安全距离
     padding: 300,
 
     // 工作区最小尺寸
     minWidth: 3000,
-
     minHeight: 3000
 
 };
@@ -114,7 +111,7 @@ nodes.set(
 
 
 // ==================================================
-// 当前选中的节点
+// 当前选中节点
 // ==================================================
 
 let selectedNodeId = null;
@@ -156,12 +153,46 @@ function getNode(id) {
 function getChildren(node) {
 
     return node.children
-
         .map(
             id => nodes.get(id)
         )
-
         .filter(Boolean);
+
+}
+
+
+// ==================================================
+// 获取普通子节点
+//
+// 「序」单独处理
+// 不占用卷/篇/章的两个名额
+// ==================================================
+
+function getNormalChildren(node) {
+
+    return getChildren(node)
+        .filter(
+            child =>
+                child.type !== "preface"
+        );
+
+}
+
+
+// ==================================================
+// 获取序
+// ==================================================
+
+function getPreface(node) {
+
+    return (
+        getChildren(node)
+            .find(
+                child =>
+                    child.type === "preface"
+            ) ||
+        null
+    );
 
 }
 
@@ -206,6 +237,9 @@ function getChildType(node) {
         case "chapter":
             return null;
 
+        case "preface":
+            return null;
+
         default:
             return null;
 
@@ -240,32 +274,117 @@ function getTypeName(type) {
 
 
 // ==================================================
+// 获取节点实际尺寸
+// ==================================================
+
+function getNodeSize(node) {
+
+    if (node.type === "book") {
+
+        return {
+
+            width: CONFIG.bookWidth,
+
+            height: CONFIG.bookHeight
+
+        };
+
+    }
+
+    return {
+
+        width: CONFIG.nodeWidth,
+
+        height: CONFIG.nodeHeight
+
+    };
+
+}
+
+
+// ==================================================
 // 创建节点
 // ==================================================
 
 function createNode(parent, type) {
 
-    // 最多两个直接子节点
-    if (
-        parent.children.length >= 2
-    ) {
+    // ------------------------------------------
+    // 序
+    // ------------------------------------------
 
-        return null;
+    if (type === "preface") {
+
+        // 序只能挂在书名下面
+        if (
+            parent.type !== "book"
+        ) {
+
+            return null;
+
+        }
+
+
+        // 序只能有一个
+        if (
+            getPreface(parent)
+        ) {
+
+            return null;
+
+        }
+
+
+        const node = {
+
+            id: createId(),
+
+            type: "preface",
+
+            title: "序章",
+
+            parentId: parent.id,
+
+            children: []
+
+        };
+
+
+        nodes.set(
+            node.id,
+            node
+        );
+
+
+        /*
+         * 序也放入 children。
+         *
+         * 但布局和普通子节点
+         * 会单独处理。
+         */
+
+        parent.children.unshift(
+            node.id
+        );
+
+
+        return node;
 
     }
 
 
-    let title;
+    // ------------------------------------------
+    // 普通节点最多两个
+    // ------------------------------------------
+
+    const normalChildren =
+        getNormalChildren(parent);
 
 
-    if (type === "preface") {
+    if (
+        normalChildren.length >= 2
+    ) {
 
-        title = "序章";
-
-    } else {
-
-        title =
-            `第${parent.children.length + 1}${getTypeName(type)}`;
+        return null;
 
     }
 
@@ -276,7 +395,7 @@ function createNode(parent, type) {
 
         type: type,
 
-        title: title,
+        title: "",
 
         parentId: parent.id,
 
@@ -292,7 +411,7 @@ function createNode(parent, type) {
 
 
     /*
-     * 新节点永远放在数组最前面。
+     * 新节点放在数组最前面。
      *
      * 第一次：
      *
@@ -328,12 +447,25 @@ function renumber(parent) {
         getChildren(parent);
 
 
+    // ------------------------------------------
+    // 普通节点
+    // ------------------------------------------
+
     const normalChildren =
         children.filter(
             child =>
                 child.type !== "preface"
         );
 
+
+    /*
+     * children 顺序：
+     *
+     * [第二卷, 第一卷]
+     *
+     * index 0 → 第二卷
+     * index 1 → 第一卷
+     */
 
     const count =
         normalChildren.length;
@@ -353,6 +485,10 @@ function renumber(parent) {
     );
 
 
+    // ------------------------------------------
+    // 序
+    // ------------------------------------------
+
     children.forEach(
         child => {
 
@@ -360,7 +496,8 @@ function renumber(parent) {
                 child.type === "preface"
             ) {
 
-                child.title = "序章";
+                child.title =
+                    "序章";
 
             }
 
@@ -368,6 +505,66 @@ function renumber(parent) {
             renumber(child);
 
         }
+    );
+
+}
+
+
+// ==================================================
+// 判断节点是否允许添加指定类型
+// ==================================================
+
+function canAdd(parent, type) {
+
+    if (!parent) {
+
+        return false;
+
+    }
+
+
+    // ------------------------------------------
+    // 序
+    // ------------------------------------------
+
+    if (type === "preface") {
+
+        return (
+            parent.type === "book" &&
+            !getPreface(parent)
+        );
+
+    }
+
+
+    // ------------------------------------------
+    // 普通节点
+    // ------------------------------------------
+
+    const childType =
+        getChildType(parent);
+
+
+    if (
+        !childType
+    ) {
+
+        return false;
+
+    }
+
+
+    if (
+        type !== childType
+    ) {
+
+        return false;
+
+    }
+
+
+    return (
+        getNormalChildren(parent).length < 2
     );
 
 }
@@ -397,8 +594,8 @@ function addNode(type) {
 
 
     // ------------------------------------------
-    // 没有选中节点
-    // 默认书名
+    // 没有选中
+    // 默认挂在书名下面
     // ------------------------------------------
 
     if (!parent) {
@@ -408,97 +605,41 @@ function addNode(type) {
     }
 
 
-    // ==================================================
-    // 序章
-    // ==================================================
+    // ------------------------------------------
+    // 检查
+    // ------------------------------------------
 
-    if (type === "preface") {
+    if (
+        !canAdd(
+            parent,
+            type
+        )
+    ) {
 
-        // 序只能挂在书名下面
-        if (
-            parent.type !== "book"
-        ) {
+        return;
 
-            return;
-
-        }
-
-
-        const exists =
-            getChildren(parent)
-                .some(
-                    child =>
-                        child.type === "preface"
-                );
+    }
 
 
-        // 序已经存在
-        if (exists) {
+    // ------------------------------------------
+    // 创建
+    // ------------------------------------------
 
-            return;
-
-        }
-
-
+    const node =
         createNode(
             parent,
-            "preface"
+            type
         );
 
 
-        selectedNodeId = null;
-
-
-        render();
-
+    if (!node) {
 
         return;
 
     }
 
 
-    // ==================================================
-    // 普通节点
-    // ==================================================
-
-    const childType =
-        getChildType(parent);
-
-
-    // 没有下一层
-    if (!childType) {
-
-        return;
-
-    }
-
-
-    // 类型不匹配
-    if (
-        type !== childType
-    ) {
-
-        return;
-
-    }
-
-
-    // 最多两个
-    if (
-        parent.children.length >= 2
-    ) {
-
-        return;
-
-    }
-
-
-    createNode(
-        parent,
-        type
-    );
-
-
+    // 添加完成后取消选择
     selectedNodeId = null;
 
 
@@ -538,7 +679,10 @@ function deleteNode(id) {
         getParent(node);
 
 
-    // 从父节点中移除
+    // ------------------------------------------
+    // 从父节点移除
+    // ------------------------------------------
+
     if (parent) {
 
         parent.children =
@@ -550,7 +694,10 @@ function deleteNode(id) {
     }
 
 
+    // ------------------------------------------
     // 删除整个子树
+    // ------------------------------------------
+
     function removeSubtree(
         currentNode
     ) {
@@ -614,16 +761,29 @@ function calculateLayout() {
         depth
     ) {
 
-        const children =
-            getChildren(node);
+        /*
+         * 序不参与普通二叉树布局。
+         *
+         * 也就是说：
+         *
+         * 书名
+         * ├── 序
+         * ├── 第二卷
+         * └── 第一卷
+         *
+         * 这里的“卷”仍然是普通子节点。
+         */
+
+        const normalChildren =
+            getNormalChildren(node);
 
 
         // ==========================================
-        // 没有子节点
+        // 没有普通子节点
         // ==========================================
 
         if (
-            children.length === 0
+            normalChildren.length === 0
         ) {
 
             const x =
@@ -655,13 +815,13 @@ function calculateLayout() {
 
 
         // ==========================================
-        // 有子节点
+        // 有普通子节点
         // ==========================================
 
         const childX = [];
 
 
-        children.forEach(
+        normalChildren.forEach(
             child => {
 
                 const x =
@@ -689,9 +849,16 @@ function calculateLayout() {
             );
 
 
-        // 父节点位于所有子节点的正中央
+        /*
+         * 父节点严格位于
+         * 子节点中心。
+         */
+
         const x =
-            (minX + maxX) / 2;
+            (
+                minX +
+                maxX
+            ) / 2;
 
 
         const y =
@@ -713,7 +880,10 @@ function calculateLayout() {
     }
 
 
-    // 开始布局
+    // ------------------------------------------
+    // 从根开始
+    // ------------------------------------------
+
     layout(
         root,
         0
@@ -721,11 +891,14 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 找到整个树的最小 X
+    // 找到树的边界
     // ==================================================
 
     let minX =
         Infinity;
+
+    let maxX =
+        -Infinity;
 
 
     positions.forEach(
@@ -737,37 +910,6 @@ function calculateLayout() {
                     position.x
                 );
 
-        }
-    );
-
-
-    // ==================================================
-    // 让整棵树的中心位于工作区中心
-    // ==================================================
-
-    const workspaceCenterX =
-        CONFIG.minWidth / 2;
-
-
-    /*
-     * 这里不是简单：
-     *
-     * padding - minX
-     *
-     * 而是让整棵树整体移动到
-     * 工作区中央。
-     */
-
-    const currentMinX =
-        minX;
-
-
-    let maxX =
-        -Infinity;
-
-
-    positions.forEach(
-        position => {
 
             maxX =
                 Math.max(
@@ -779,16 +921,51 @@ function calculateLayout() {
     );
 
 
-    const currentTreeCenterX =
+    if (
+        !Number.isFinite(minX) ||
+        !Number.isFinite(maxX)
+    ) {
+
+        return positions;
+
+    }
+
+
+    // ==================================================
+    // 计算最终工作区宽度
+    // ==================================================
+
+    const treeWidth =
+        maxX -
+        minX;
+
+
+    const workspaceWidth =
+        Math.max(
+            CONFIG.minWidth,
+            treeWidth +
+            CONFIG.padding * 2
+        );
+
+
+    // ==================================================
+    // 让整棵树位于工作区中央
+    // ==================================================
+
+    const workspaceCenterX =
+        workspaceWidth / 2;
+
+
+    const treeCenterX =
         (
-            currentMinX +
+            minX +
             maxX
         ) / 2;
 
 
     const offset =
         workspaceCenterX -
-        currentTreeCenterX;
+        treeCenterX;
 
 
     positions.forEach(
@@ -797,17 +974,6 @@ function calculateLayout() {
             position.x +=
                 offset;
 
-        }
-    );
-
-
-    // ==================================================
-    // 整体向下移动
-    // ==================================================
-
-    positions.forEach(
-        position => {
-
             position.y +=
                 CONFIG.padding;
 
@@ -815,7 +981,13 @@ function calculateLayout() {
     );
 
 
-    return positions;
+    return {
+
+        positions: positions,
+
+        width: workspaceWidth
+
+    };
 
 }
 
@@ -825,23 +997,22 @@ function calculateLayout() {
 // ==================================================
 
 function resizeCanvas(
-    positions
+    layoutResult
 ) {
 
-    let maxX = 0;
+    const positions =
+        layoutResult.positions;
+
+
+    const width =
+        layoutResult.width;
+
 
     let maxY = 0;
 
 
     positions.forEach(
         position => {
-
-            maxX =
-                Math.max(
-                    maxX,
-                    position.x
-                );
-
 
             maxY =
                 Math.max(
@@ -853,14 +1024,6 @@ function resizeCanvas(
     );
 
 
-    const width =
-        Math.max(
-            CONFIG.minWidth,
-            maxX +
-            CONFIG.padding
-        );
-
-
     const height =
         Math.max(
             CONFIG.minHeight,
@@ -869,9 +1032,9 @@ function resizeCanvas(
         );
 
 
-    // ==========================================
-    // 工作区
-    // ==========================================
+    // ------------------------------------------
+    // workspace
+    // ------------------------------------------
 
     workspace.style.width =
         `${width}px`;
@@ -880,9 +1043,9 @@ function resizeCanvas(
         `${height}px`;
 
 
-    // ==========================================
-    // 树
-    // ==========================================
+    // ------------------------------------------
+    // tree
+    // ------------------------------------------
 
     tree.style.width =
         `${width}px`;
@@ -891,9 +1054,9 @@ function resizeCanvas(
         `${height}px`;
 
 
-    // ==========================================
+    // ------------------------------------------
     // SVG
-    // ==========================================
+    // ------------------------------------------
 
     svg.style.width =
         `${width}px`;
@@ -956,55 +1119,37 @@ function createNodeElement(
         node.title;
 
 
-    // ==================================================
-    // 节点实际尺寸
-    // ==================================================
+    // ------------------------------------------
+    // 获取尺寸
+    // ------------------------------------------
 
-    let nodeWidth =
-        CONFIG.nodeWidth;
-
-
-    let nodeHeight =
-        CONFIG.nodeHeight;
+    const size =
+        getNodeSize(node);
 
 
-    // 书名特殊尺寸
-    if (
-        node.type === "book"
-    ) {
-
-        nodeWidth =
-            CONFIG.bookWidth;
-
-        nodeHeight =
-            CONFIG.bookHeight;
-
-    }
-
-
-    // ==================================================
-    // 节点位置
-    // ==================================================
+    // ------------------------------------------
+    // 位置
+    // ------------------------------------------
 
     element.style.left =
-        `${position.x - nodeWidth / 2}px`;
+        `${position.x - size.width / 2}px`;
 
 
     element.style.top =
-        `${position.y - nodeHeight / 2}px`;
+        `${position.y - size.height / 2}px`;
 
 
     element.style.width =
-        `${nodeWidth}px`;
+        `${size.width}px`;
 
 
     element.style.height =
-        `${nodeHeight}px`;
+        `${size.height}px`;
 
 
-    // ==================================================
+    // ------------------------------------------
     // 点击选择
-    // ==================================================
+    // ------------------------------------------
 
     element.addEventListener(
         "click",
@@ -1040,9 +1185,9 @@ function createNodeElement(
     );
 
 
-    // ==================================================
+    // ------------------------------------------
     // 右键删除
-    // ==================================================
+    // ------------------------------------------
 
     element.addEventListener(
         "contextmenu",
@@ -1082,9 +1227,9 @@ function drawLine(
         );
 
 
-    // ==========================================
+    // ------------------------------------------
     // 父节点中心
-    // ==========================================
+    // ------------------------------------------
 
     const x1 =
         parentPosition.x;
@@ -1094,9 +1239,9 @@ function drawLine(
         parentPosition.y;
 
 
-    // ==========================================
+    // ------------------------------------------
     // 子节点中心
-    // ==========================================
+    // ------------------------------------------
 
     const x2 =
         childPosition.x;
@@ -1106,18 +1251,18 @@ function drawLine(
         childPosition.y;
 
 
-    // ==========================================
+    // ------------------------------------------
     // 中间水平线
-    // ==========================================
+    // ------------------------------------------
 
     const middleY =
         y1 +
         (y2 - y1) / 2;
 
 
-    // ==========================================
-    // 正交连接线
-    // ==========================================
+    // ------------------------------------------
+    // 正交连接
+    // ------------------------------------------
 
     const d =
         [
@@ -1202,6 +1347,11 @@ function drawConnections(
             }
 
 
+            /*
+             * 序仍然属于父节点 children，
+             * 但这里正常连接。
+             */
+
             const children =
                 getChildren(parent);
 
@@ -1237,56 +1387,136 @@ function drawConnections(
 
 
 // ==================================================
+// 自动滚动到树中心
+// ==================================================
+
+function centerViewport() {
+
+    if (!canvas) {
+
+        return;
+
+    }
+
+
+    const workspaceWidth =
+        workspace.offsetWidth;
+
+
+    const workspaceHeight =
+        workspace.offsetHeight;
+
+
+    const viewportWidth =
+        canvas.clientWidth;
+
+
+    const viewportHeight =
+        canvas.clientHeight;
+
+
+    if (
+        workspaceWidth <= viewportWidth &&
+        workspaceHeight <= viewportHeight
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+     * 根节点在工作区水平中央。
+     *
+     * 因此直接把 viewport
+     * 滚动到工作区中心。
+     */
+
+    const targetLeft =
+        Math.max(
+            0,
+            (
+                workspaceWidth -
+                viewportWidth
+            ) / 2
+        );
+
+
+    const targetTop =
+        Math.max(
+            0,
+            (
+                CONFIG.padding -
+                viewportHeight / 2
+            )
+        );
+
+
+    canvas.scrollLeft =
+        targetLeft;
+
+
+    canvas.scrollTop =
+        targetTop;
+
+}
+
+
+// ==================================================
 // 渲染
 // ==================================================
 
 function render() {
 
-    // ==========================================
+    // ------------------------------------------
     // 重新编号
-    // ==========================================
+    // ------------------------------------------
 
     renumber(root);
 
 
-    // ==========================================
+    // ------------------------------------------
     // 清空
-    // ==========================================
+    // ------------------------------------------
 
     tree.innerHTML = "";
 
     svg.innerHTML = "";
 
 
-    // ==========================================
-    // 计算位置
-    // ==========================================
+    // ------------------------------------------
+    // 计算布局
+    // ------------------------------------------
 
-    const positions =
+    const layoutResult =
         calculateLayout();
 
 
-    // ==========================================
+    const positions =
+        layoutResult.positions;
+
+
+    // ------------------------------------------
     // 调整工作区
-    // ==========================================
+    // ------------------------------------------
 
     resizeCanvas(
-        positions
+        layoutResult
     );
 
 
-    // ==========================================
-    // 先画线
-    // ==========================================
+    // ------------------------------------------
+    // 先画连接线
+    // ------------------------------------------
 
     drawConnections(
         positions
     );
 
 
-    // ==========================================
+    // ------------------------------------------
     // 再画节点
-    // ==========================================
+    // ------------------------------------------
 
     nodes.forEach(
         node => {
@@ -1311,6 +1541,7 @@ function render() {
                 );
 
 
+            // 恢复当前选择
             if (
                 selectedNodeId ===
                 node.id
@@ -1326,6 +1557,19 @@ function render() {
             tree.appendChild(
                 element
             );
+
+        }
+    );
+
+
+    // ------------------------------------------
+    // 第一次渲染后居中
+    // ------------------------------------------
+
+    requestAnimationFrame(
+        function() {
+
+            centerViewport();
 
         }
     );
@@ -1384,7 +1628,8 @@ workspace.addEventListener(
             event.target === tree
         ) {
 
-            selectedNodeId = null;
+            selectedNodeId =
+                null;
 
 
             document
