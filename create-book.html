@@ -591,10 +591,6 @@ body {
 <body>
 
 
-<!-- ==================================================
-     顶部
-================================================== -->
-
 <header class="top-bar">
 
     <button
@@ -613,10 +609,6 @@ body {
 </header>
 
 
-<!-- ==================================================
-     页面
-================================================== -->
-
 <main class="page">
 
     <div class="create-container">
@@ -631,10 +623,6 @@ body {
             创建一本新的小说，开始你的创作。
         </p>
 
-
-        <!-- ==================================================
-             小说名称
-        ================================================== -->
 
         <section class="form-section">
 
@@ -658,10 +646,6 @@ body {
 
         </section>
 
-
-        <!-- ==================================================
-             封面
-        ================================================== -->
 
         <section
             class="form-section cover-section"
@@ -747,20 +731,12 @@ body {
         </section>
 
 
-        <!-- ==================================================
-             错误
-        ================================================== -->
-
         <div
             id="errorMessage"
             class="error-message"
             aria-live="polite"
         ></div>
 
-
-        <!-- ==================================================
-             创建
-        ================================================== -->
 
         <button
             id="createButton"
@@ -813,7 +789,7 @@ let selectedCover = "";
 
 
 /* ==================================================
-   工具：错误
+   错误
 ================================================== */
 
 function showError(message) {
@@ -833,7 +809,7 @@ function clearError() {
 
 
 /* ==================================================
-   工具：恢复按钮
+   恢复按钮
 ================================================== */
 
 function resetCreateButton() {
@@ -1090,12 +1066,6 @@ function compressImage(
             }
 
 
-            /*
-             * 第一层压缩
-             *
-             * 最大边 700px
-             */
-
             const maxSize =
                 700;
 
@@ -1170,10 +1140,6 @@ function compressImage(
             }
 
 
-            /*
-             * 白色背景
-             */
-
             context.fillStyle =
                 "#ffffff";
 
@@ -1195,24 +1161,12 @@ function compressImage(
             );
 
 
-            /*
-             * 第一档
-             */
-
             let compressed =
                 canvas.toDataURL(
                     "image/jpeg",
                     0.65
                 );
 
-
-            /*
-             * localStorage 对 Base64
-             * 非常敏感。
-             *
-             * 尽量把单张封面控制在
-             * 较小体积。
-             */
 
             const maxCharacters =
                 300000;
@@ -1245,12 +1199,6 @@ function compressImage(
 
             }
 
-
-            /*
-             * 仍然太大：
-             *
-             * 再把最大边降低到 500px。
-             */
 
             if (
                 compressed.length >
@@ -1337,10 +1285,6 @@ function compressImage(
             }
 
 
-            /*
-             * 最终仍然太大
-             */
-
             if (
                 compressed.length >
                 maxCharacters
@@ -1421,13 +1365,6 @@ function loadBooks() {
             error
         );
 
-
-        /*
-         * 不直接删除。
-         *
-         * 先备份损坏的数据，
-         * 防止用户原来的书全部消失。
-         */
 
         try {
 
@@ -1555,8 +1492,7 @@ function saveBooks(books) {
 
 
 /* ==================================================
-   删除当前创建过程中可能产生的
-   超大封面
+   封面过大时不保存封面
 ================================================== */
 
 function trySaveWithoutCover(
@@ -1606,10 +1542,6 @@ function trySaveWithoutCover(
 
 function createBook() {
 
-    /*
-     * 防止连续点击
-     */
-
     if (
         createButton.disabled
     ) {
@@ -1623,10 +1555,6 @@ function createBook() {
         bookTitleInput.value.trim();
 
 
-    /*
-     * 检查书名
-     */
-
     if (!title) {
 
         showError(
@@ -1639,10 +1567,6 @@ function createBook() {
 
     }
 
-
-    /*
-     * 检查 localStorage
-     */
 
     if (!checkStorage()) {
 
@@ -1665,17 +1589,9 @@ function createBook() {
         "正在创建…";
 
 
-    /*
-     * 读取现有书籍
-     */
-
     const books =
         loadBooks();
 
-
-    /*
-     * 创建新书
-     */
 
     const bookId =
         createBookId();
@@ -1709,31 +1625,16 @@ function createBook() {
     };
 
 
-    /*
-     * 加入书架
-     */
-
     books.push(
         newBook
     );
 
-
-    /*
-     * 第一次保存
-     */
 
     let saveResult =
         saveBooks(
             books
         );
 
-
-    /*
-     * 如果保存失败，
-     * 很可能是封面太大。
-     *
-     * 自动尝试不保存封面。
-     */
 
     if (
         !saveResult.success &&
@@ -1751,11 +1652,6 @@ function createBook() {
             fallback.result.success
         ) {
 
-            /*
-             * 保存成功，
-             * 但是没有封面。
-             */
-
             showError(
                 "小说已创建，但封面储存空间不足，已暂时不保存封面。"
             );
@@ -1768,10 +1664,6 @@ function createBook() {
 
     }
 
-
-    /*
-     * 保存仍然失败
-     */
 
     if (
         !saveResult.success
@@ -1815,10 +1707,6 @@ function createBook() {
     }
 
 
-    /*
-     * 保存当前小说 ID
-     */
-
     try {
 
         localStorage.setItem(
@@ -1826,10 +1714,6 @@ function createBook() {
             String(bookId)
         );
 
-
-        /*
-         * 新小说没有当前章节
-         */
 
         localStorage.removeItem(
             "currentChapterId"
@@ -1856,24 +1740,22 @@ function createBook() {
     }
 
 
-    /*
-     * 成功
-     */
-
     createButton.textContent =
         "创建成功";
 
 
     /*
-     * 让 localStorage 写入完成后
-     * 再跳转。
+     * 创建成功后：
+     * 返回我的书架
+     *
+     * 不再直接进入 book.html
      */
 
     setTimeout(
         function() {
 
             window.location.href =
-                "book.html";
+                "index.html";
 
         },
         100
