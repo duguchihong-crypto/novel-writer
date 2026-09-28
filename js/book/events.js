@@ -357,10 +357,6 @@ function addBottomButton(
         "book-action-button";
 
 
-    // ==========================================
-    // 按钮类型
-    // ==========================================
-
     if (type) {
 
         button.classList.add(
@@ -372,10 +368,6 @@ function addBottomButton(
     button.textContent =
         text;
 
-
-    // ==========================================
-    // 根据按钮类型设置颜色
-    // ==========================================
 
     applyBottomButtonStyle(
         button,
@@ -393,7 +385,6 @@ function addBottomButton(
         function(event) {
 
             event.stopPropagation();
-
 
             actionButtonPressed =
                 true;
@@ -437,11 +428,6 @@ function addBottomButton(
 
 // ==================================================
 // 底部按钮颜色
-//
-// ＋序 → 浅青
-// ＋章 → 浅黑
-// ＋篇 → 浅白
-// ＋卷 → 浅黄
 // ==================================================
 
 function applyBottomButtonStyle(
@@ -455,10 +441,7 @@ function applyBottomButtonStyle(
     }
 
 
-    // ==========================================
     // ＋序
-    // ==========================================
-
     if (
         type === "preface" ||
         text === "＋序"
@@ -470,13 +453,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1.5px solid #b7dfdc",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -484,15 +465,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
     }
 
 
-    // ==========================================
     // ＋章
-    // ==========================================
-
     if (
         type === "chapter" ||
         text === "＋章"
@@ -504,13 +481,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1.5px solid #c8c8c8",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -518,15 +493,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
     }
 
 
-    // ==========================================
     // ＋篇
-    // ==========================================
-
     if (
         type === "part" ||
         text === "＋篇"
@@ -538,13 +509,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1.5px solid #dedede",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -552,15 +521,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
     }
 
 
-    // ==========================================
     // ＋卷
-    // ==========================================
-
     if (
         type === "volume" ||
         text === "＋卷"
@@ -572,13 +537,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1.5px solid #eadf9e",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -586,15 +549,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
     }
 
 
-    // ==========================================
     // 普通按钮
-    // ==========================================
-
     if (
         type === "default"
     ) {
@@ -605,13 +564,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1px solid #dddddd",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -619,15 +576,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
     }
 
 
-    // ==========================================
-    // 删除按钮
-    // ==========================================
-
+    // 删除
     if (
         type === "danger"
     ) {
@@ -638,13 +591,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1px solid #efcccc",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -841,29 +792,49 @@ function startBookDrag(event) {
     const currentX =
         parseFloat(
             bookTitle.style.left
-        ) || 0;
+        );
 
 
     const currentY =
         parseFloat(
             bookTitle.style.top
-        ) || 0;
+        );
 
 
     dragStartX =
-        position.x;
+        Number.isFinite(currentX)
+            ? currentX
+            : 1500 -
+              (
+                  bookTitle.offsetWidth ||
+                  BOOK_MIN_WIDTH
+              ) / 2;
 
 
     dragStartY =
-        position.y;
+        Number.isFinite(currentY)
+            ? currentY
+            : 1500 -
+              (
+                  bookTitle.offsetHeight ||
+                  BOOK_MIN_HEIGHT
+              ) / 2;
 
 
     dragOriginalX =
-        currentX;
+        dragStartX;
 
 
     dragOriginalY =
-        currentY;
+        dragStartY;
+
+
+    dragPointerStartX =
+        position.x;
+
+
+    dragPointerStartY =
+        position.y;
 
 
     bookWasDragged =
@@ -934,12 +905,12 @@ function moveBookDrag(event) {
 
     const dx =
         position.x -
-        dragStartX;
+        dragPointerStartX;
 
 
     const dy =
         position.y -
-        dragStartY;
+        dragPointerStartY;
 
 
     let newX =
@@ -962,37 +933,39 @@ function moveBookDrag(event) {
         BOOK_MIN_HEIGHT;
 
 
-    const availableWidth =
+    // ==========================================
+    // 3000 × 3000 主画布
+    // ==========================================
+
+    const canvasWidth =
         Math.max(
-            canvas.clientWidth,
+            BOOK_CANVAS_SIZE || 3000,
             canvas.scrollWidth,
-            window.innerWidth
+            canvas.clientWidth
         );
 
 
-    const availableHeight =
+    const canvasHeight =
         Math.max(
-            canvas.clientHeight,
+            BOOK_CANVAS_SIZE || 3000,
             canvas.scrollHeight,
-            window.innerHeight
+            canvas.clientHeight
         );
 
 
     const maxX =
         Math.max(
             0,
-            availableWidth -
-            bookWidth -
-            10
+            canvasWidth -
+            bookWidth
         );
 
 
     const maxY =
         Math.max(
             0,
-            availableHeight -
-            bookHeight -
-            10
+            canvasHeight -
+            bookHeight
         );
 
 
@@ -1016,6 +989,10 @@ function moveBookDrag(event) {
         );
 
 
+    // ==========================================
+    // 设置书名位置
+    // ==========================================
+
     bookTitle.style.left =
         newX + "px";
 
@@ -1024,11 +1001,27 @@ function moveBookDrag(event) {
         newY + "px";
 
 
+    // ==========================================
+    // 保存位置
+    // ==========================================
+
     setBookPosition(
         newX,
         newY
     );
 
+
+    bookWasDragged =
+        true;
+
+
+    bookMoveStarted =
+        true;
+
+
+    // ==========================================
+    // 根据书名位置实时重新布局
+    // ==========================================
 
     updateTreePositionFromBook();
 }
@@ -1062,20 +1055,32 @@ function updateTreePositionFromBook() {
 
     if (
         !canvas ||
-        !bookTitle ||
-        !currentLayout
+        !bookTitle
     ) {
         return;
     }
 
 
+    // ==========================================
+    // 重新计算树
+    // ==========================================
+
     const newLayout =
         calculateLayout();
+
+
+    if (!newLayout) {
+        return;
+    }
 
 
     currentLayout =
         newLayout;
 
+
+    // ==========================================
+    // 更新树尺寸
+    // ==========================================
 
     const tree =
         document.querySelector(
@@ -1087,6 +1092,7 @@ function updateTreePositionFromBook() {
 
         tree.style.width =
             Math.max(
+                3000,
                 newLayout.width,
                 canvas.clientWidth
             ) + "px";
@@ -1094,11 +1100,16 @@ function updateTreePositionFromBook() {
 
         tree.style.height =
             Math.max(
+                3000,
                 newLayout.height,
                 canvas.clientHeight
             ) + "px";
     }
 
+
+    // ==========================================
+    // 更新节点位置
+    // ==========================================
 
     newLayout.nodes.forEach(
         item => {
@@ -1124,6 +1135,10 @@ function updateTreePositionFromBook() {
     );
 
 
+    // ==========================================
+    // 更新 SVG
+    // ==========================================
+
     const svg =
         document.querySelector(
             "#connections"
@@ -1134,6 +1149,7 @@ function updateTreePositionFromBook() {
 
         const width =
             Math.max(
+                3000,
                 newLayout.width,
                 canvas.clientWidth
             );
@@ -1141,6 +1157,7 @@ function updateTreePositionFromBook() {
 
         const height =
             Math.max(
+                3000,
                 newLayout.height,
                 canvas.clientHeight
             );
@@ -1164,6 +1181,10 @@ function updateTreePositionFromBook() {
         );
     }
 
+
+    // ==========================================
+    // 重画连接线
+    // ==========================================
 
     drawConnections(
         newLayout
@@ -1218,6 +1239,10 @@ function finishBookDrag(event) {
         }
 
 
+        // ======================================
+        // 拖动结束后保存
+        // ======================================
+
         saveBook();
     }
 
@@ -1235,6 +1260,14 @@ function finishBookDrag(event) {
 
 
     dragStartY =
+        0;
+
+
+    dragPointerStartX =
+        0;
+
+
+    dragPointerStartY =
         0;
 }
 
@@ -1254,6 +1287,8 @@ function handleBookMouseDown(event) {
 
 
     event.preventDefault();
+
+    event.stopPropagation();
 
 
     selectBook();
@@ -1301,6 +1336,8 @@ function handleBookTouchStart(event) {
 
 
     event.preventDefault();
+
+    event.stopPropagation();
 
 
     touchStarted =
