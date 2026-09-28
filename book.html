@@ -17,17 +17,86 @@
         href="css/book.css"
     >
 
+    <style>
+
+        /* ==================================================
+           强制显示的小说书名
+        ================================================== */
+
+        #FORCE_BOOK_TITLE {
+
+            position: fixed !important;
+
+            left: 50% !important;
+            top: 50% !important;
+
+            transform:
+                translate(-50%, -50%) !important;
+
+            display: flex !important;
+
+            align-items: center !important;
+            justify-content: center !important;
+
+            visibility: visible !important;
+
+            opacity: 1 !important;
+
+            width: auto !important;
+
+            min-width: 180px !important;
+
+            min-height: 58px !important;
+
+            padding:
+                12px 26px !important;
+
+            box-sizing: border-box !important;
+
+            background: #ff4d4d !important;
+
+            border:
+                3px solid #ff0000 !important;
+
+            border-radius: 14px !important;
+
+            color: #ffffff !important;
+
+            font-size: 24px !important;
+
+            font-weight: bold !important;
+
+            line-height: 1.4 !important;
+
+            text-align: center !important;
+
+            white-space: normal !important;
+
+            word-break: break-word !important;
+
+            z-index: 2147483647 !important;
+
+            pointer-events: none !important;
+
+            user-select: none !important;
+
+            margin: 0 !important;
+
+        }
+
+    </style>
+
 </head>
 
+
 <body>
+
 
     <!-- ==================================================
          顶部栏
     ================================================== -->
 
     <header class="top-bar">
-
-        <!-- 返回书架 -->
 
         <button
             id="backButton"
@@ -39,8 +108,6 @@
         </button>
 
 
-        <!-- 页面标题 -->
-
         <div
             id="pageTitle"
             class="page-title"
@@ -48,8 +115,6 @@
             全书
         </div>
 
-
-        <!-- 布局方向 -->
 
         <button
             id="layoutToggle"
@@ -65,33 +130,12 @@
 
     <!-- ==================================================
          全书画布
-
-         固定坐标系统：
-
-         3000 × 3000
-
-         中心：
-
-         X = 1500
-         Y = 1500
-
-         所有内容使用同一个坐标系统：
-
-         1. 小说书名
-         2. 序
-         3. 卷
-         4. 篇
-         5. 章
-         6. SVG连接线
-         7. 操作按钮
     ================================================== -->
 
     <main class="tree-canvas">
 
 
-        <!-- ==================================================
-             SVG连接线
-        ================================================== -->
+        <!-- SVG连接线 -->
 
         <svg
             id="connections"
@@ -100,33 +144,7 @@
         ></svg>
 
 
-        <!-- ==================================================
-             小说书名
-
-             注意：
-
-             这里绝对不要写：
-
-             未命名书籍
-             未命名小说
-             任何固定书名
-
-             书名统一由：
-
-             js/book/main.js
-
-             从：
-
-             currentBookId
-                    ↓
-             novelBooks
-                    ↓
-             book.title
-
-             读取。
-
-             防止多个 JavaScript 同时修改书名。
-        ================================================== -->
+        <!-- 原来的书名节点 -->
 
         <div
             id="bookTitle"
@@ -134,9 +152,7 @@
         ></div>
 
 
-        <!-- ==================================================
-             全书树结构
-        ================================================== -->
+        <!-- 全书树结构 -->
 
         <div
             id="tree"
@@ -144,9 +160,7 @@
         ></div>
 
 
-        <!-- ==================================================
-             操作栏
-        ================================================== -->
+        <!-- 操作栏 -->
 
         <div
             id="bookActions"
@@ -158,80 +172,347 @@
 
 
     <!-- ==================================================
-         JavaScript
-
-         必须按照以下顺序加载：
-
-         1. state.js
-         2. storage.js
-         3. nodes.js
-         4. layout.js
-         5. connections.js
-         6. actions.js
-         7. events.js
-         8. main.js
-
-         main.js 最后执行页面初始化。
+         强制书名
+         
+         完全独立于 #bookTitle
     ================================================== -->
 
+    <div
+        id="FORCE_BOOK_TITLE"
+    >
+        未命名书籍
+    </div>
 
-    <!-- 1. 状态 -->
+
+    <!-- ==================================================
+         原有 JavaScript
+    ================================================== -->
 
     <script src="js/book/state.js"></script>
 
-
-    <!-- 2. 数据存储 -->
-
     <script src="js/book/storage.js"></script>
-
-
-    <!-- 3. 节点 -->
 
     <script src="js/book/nodes.js"></script>
 
-
-    <!-- 4. 自动布局 -->
-
     <script src="js/book/layout.js"></script>
-
-
-    <!-- 5. 连接线 -->
 
     <script src="js/book/connections.js"></script>
 
-
-    <!-- 6. 操作栏 -->
-
     <script src="js/book/actions.js"></script>
 
-
-    <!-- 7. 鼠标 / 触摸 / 拖动事件 -->
-
     <script src="js/book/events.js"></script>
-
-
-    <!-- 8. 页面初始化 -->
 
     <script src="js/book/main.js"></script>
 
 
     <!-- ==================================================
+         强制书名系统
+    ================================================== -->
+
+    <script>
+
+        (function () {
+
+            "use strict";
+
+
+            function getRealBookTitle() {
+
+                /* ------------------------------------------
+                   第一优先：
+
+                   currentBook.title
+                ------------------------------------------ */
+
+                try {
+
+                    if (
+                        typeof currentBook !==
+                        "undefined" &&
+
+                        currentBook &&
+
+                        typeof currentBook.title ===
+                        "string" &&
+
+                        currentBook.title.trim() !==
+                        ""
+                    ) {
+
+                        return currentBook.title.trim();
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "读取 currentBook 失败：",
+                        error
+                    );
+
+                }
+
+
+                /* ------------------------------------------
+                   第二优先：
+
+                   currentBookId
+                   ↓
+                   novelBooks
+                ------------------------------------------ */
+
+                try {
+
+                    var currentBookId =
+                        localStorage.getItem(
+                            "currentBookId"
+                        );
+
+
+                    var booksText =
+                        localStorage.getItem(
+                            "novelBooks"
+                        );
+
+
+                    if (
+                        currentBookId &&
+                        booksText
+                    ) {
+
+                        var books =
+                            JSON.parse(
+                                booksText
+                            );
+
+
+                        if (
+                            Array.isArray(books)
+                        ) {
+
+                            for (
+                                var i = 0;
+                                i < books.length;
+                                i++
+                            ) {
+
+                                if (
+                                    String(
+                                        books[i].id
+                                    ) ===
+                                    String(
+                                        currentBookId
+                                    )
+                                ) {
+
+                                    if (
+                                        typeof books[i].title ===
+                                        "string" &&
+
+                                        books[i].title.trim() !==
+                                        ""
+                                    ) {
+
+                                        return books[i]
+                                            .title
+                                            .trim();
+
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "读取 novelBooks 失败：",
+                        error
+                    );
+
+                }
+
+
+                /* ------------------------------------------
+                   最后备用
+                ------------------------------------------ */
+
+                return "未命名书籍";
+
+            }
+
+
+            function forceShowTitle() {
+
+                var titleElement =
+                    document.getElementById(
+                        "FORCE_BOOK_TITLE"
+                    );
+
+
+                if (!titleElement) {
+
+                    return;
+
+                }
+
+
+                /* ------------------------------------------
+                   获取真正书名
+                ------------------------------------------ */
+
+                var title =
+                    getRealBookTitle();
+
+
+                titleElement.textContent =
+                    title;
+
+
+                /* ------------------------------------------
+                   再次强制显示
+                ------------------------------------------ */
+
+                titleElement.hidden =
+                    false;
+
+                titleElement.removeAttribute(
+                    "hidden"
+                );
+
+
+                titleElement.style.setProperty(
+                    "display",
+                    "flex",
+                    "important"
+                );
+
+
+                titleElement.style.setProperty(
+                    "visibility",
+                    "visible",
+                    "important"
+                );
+
+
+                titleElement.style.setProperty(
+                    "opacity",
+                    "1",
+                    "important"
+                );
+
+
+                titleElement.style.setProperty(
+                    "z-index",
+                    "2147483647",
+                    "important"
+                );
+
+
+                titleElement.style.setProperty(
+                    "position",
+                    "fixed",
+                    "important"
+                );
+
+
+                titleElement.style.setProperty(
+                    "left",
+                    "50%",
+                    "important"
+                );
+
+
+                titleElement.style.setProperty(
+                    "top",
+                    "50%",
+                    "important"
+                );
+
+
+                titleElement.style.setProperty(
+                    "transform",
+                    "translate(-50%, -50%)",
+                    "important"
+                );
+
+            }
+
+
+            /* ==================================================
+               立即执行
+            ================================================== */
+
+            forceShowTitle();
+
+
+            /* ==================================================
+               等 main.js 初始化完成
+            ================================================== */
+
+            setTimeout(
+                forceShowTitle,
+                50
+            );
+
+
+            setTimeout(
+                forceShowTitle,
+                200
+            );
+
+
+            setTimeout(
+                forceShowTitle,
+                500
+            );
+
+
+            setTimeout(
+                forceShowTitle,
+                1000
+            );
+
+
+            setTimeout(
+                forceShowTitle,
+                2000
+            );
+
+
+            /* ==================================================
+               持续监测
+            ================================================== */
+
+            setInterval(
+                forceShowTitle,
+                3000
+            );
+
+
+            /* ==================================================
+               暴露到全局
+            ================================================== */
+
+            window.forceShowBookTitle =
+                forceShowTitle;
+
+        })();
+
+    </script>
+
+
+    <!-- ==================================================
          返回书架
-
-         注意：
-
-         书名加载不再放在这里。
-
-         书名统一由 main.js 管理。
     ================================================== -->
 
     <script>
 
         function returnToShelf() {
-
-            /* ------------------------------------------
-               保存当前小说
-            ------------------------------------------ */
 
             try {
 
@@ -254,10 +535,6 @@
             }
 
 
-            /* ------------------------------------------
-               清除当前章节
-            ------------------------------------------ */
-
             try {
 
                 localStorage.removeItem(
@@ -273,10 +550,6 @@
 
             }
 
-
-            /* ------------------------------------------
-               清除返回标记
-            ------------------------------------------ */
 
             try {
 
@@ -294,10 +567,6 @@
             }
 
 
-            /* ------------------------------------------
-               返回书架
-            ------------------------------------------ */
-
             window.location.replace(
                 "index.html"
             );
@@ -305,6 +574,7 @@
         }
 
     </script>
+
 
 </body>
 
