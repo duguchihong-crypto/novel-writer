@@ -13,6 +13,7 @@ const currentBook = books.find(
     book => String(book.id) === String(currentBookId)
 );
 
+
 /* ======================================================
    基础元素
 ====================================================== */
@@ -26,6 +27,7 @@ const actionBar =
 const tree =
     document.getElementById("tree");
 
+
 /* ======================================================
    显示书名
 ====================================================== */
@@ -37,39 +39,6 @@ if (bookTitle) {
 
 }
 
-/* ======================================================
-   操作栏位置
-====================================================== */
-
-function updateActionBarPosition() {
-
-    if (
-        !bookTitle ||
-        !actionBar
-    ) {
-        return;
-    }
-
-    const titleLeft =
-        bookTitle.offsetLeft;
-
-    const titleTop =
-        bookTitle.offsetTop;
-
-    const titleHeight =
-        bookTitle.offsetHeight;
-
-    actionBar.style.left =
-        titleLeft + "px";
-
-    actionBar.style.top =
-        (
-            titleTop +
-            titleHeight / 2 +
-            25
-        ) + "px";
-
-}
 
 /* ======================================================
    显示 / 隐藏操作栏
@@ -81,11 +50,21 @@ function toggleActionBar() {
         return;
     }
 
-    updateActionBarPosition();
-
     actionBar.classList.toggle("show");
 
 }
+
+
+function hideActionBar() {
+
+    if (!actionBar) {
+        return;
+    }
+
+    actionBar.classList.remove("show");
+
+}
+
 
 /* ======================================================
    书名：点击 + 拖动
@@ -102,6 +81,7 @@ if (bookTitle) {
 
     let startLeft = 0;
     let startTop = 0;
+
 
     /* ==================================================
        按下
@@ -137,6 +117,7 @@ if (bookTitle) {
         }
     );
 
+
     /* ==================================================
        移动
     ================================================== */
@@ -161,6 +142,7 @@ if (bookTitle) {
                     moveY * moveY
                 );
 
+
             /* ==========================================
                移动超过 6px 才算拖动
             ========================================== */
@@ -171,9 +153,15 @@ if (bookTitle) {
 
             }
 
+
             if (!dragging) {
                 return;
             }
+
+
+            /* ==========================================
+               拖动书名
+            ========================================== */
 
             bookTitle.style.left =
                 (
@@ -187,10 +175,9 @@ if (bookTitle) {
                     moveY
                 ) + "px";
 
-            updateActionBarPosition();
-
         }
     );
+
 
     /* ==================================================
        抬起
@@ -209,9 +196,10 @@ if (bookTitle) {
             bookTitle.style.cursor =
                 "grab";
 
+
             /* ==========================================
-               没有发生拖动
-               → 这是一次点击
+               没有拖动
+               → 视为点击
             ========================================== */
 
             if (!dragging) {
@@ -220,7 +208,9 @@ if (bookTitle) {
 
             }
 
+
             dragging = false;
+
 
             try {
 
@@ -234,6 +224,7 @@ if (bookTitle) {
 
         }
     );
+
 
     /* ==================================================
        取消
@@ -255,11 +246,16 @@ if (bookTitle) {
 
 }
 
+
 /* ======================================================
-   操作栏点击
+   操作栏
 ====================================================== */
 
 if (actionBar) {
+
+    /* ==================================================
+       防止点击操作栏触发空白关闭
+    ================================================== */
 
     actionBar.addEventListener(
         "pointerdown",
@@ -270,6 +266,7 @@ if (actionBar) {
         }
     );
 
+
     actionBar.addEventListener(
         "click",
         function (event) {
@@ -279,7 +276,52 @@ if (actionBar) {
         }
     );
 
+
+    /* ==================================================
+       ＋序 ＋章 ＋篇 ＋卷
+    ================================================== */
+
+    const actionButtons =
+        actionBar.querySelectorAll(
+            "button[data-action]"
+        );
+
+
+    actionButtons.forEach(
+        function (button) {
+
+            button.addEventListener(
+                "click",
+                function (event) {
+
+                    event.stopPropagation();
+
+
+                    const action =
+                        button.dataset.action;
+
+
+                    /* ==================================
+                       新增节点
+                    ================================== */
+
+                    addRootNode(action);
+
+
+                    /* ==================================
+                       新增完成后关闭操作栏
+                    ================================== */
+
+                    hideActionBar();
+
+                }
+            );
+
+        }
+    );
+
 }
+
 
 /* ======================================================
    点击空白区域
@@ -293,70 +335,47 @@ document.addEventListener(
             return;
         }
 
+
+        /* ==============================================
+           点击书名
+           → 不关闭
+        ============================================== */
+
         if (
             event.target === bookTitle ||
-            bookTitle.contains(event.target)
+            bookTitle?.contains(event.target)
         ) {
+
             return;
+
         }
+
+
+        /* ==============================================
+           点击操作栏
+           → 不关闭
+        ============================================== */
 
         if (
             event.target === actionBar ||
             actionBar.contains(event.target)
         ) {
+
             return;
+
         }
 
-        actionBar.classList.remove("show");
+
+        /* ==============================================
+           其他地方
+           → 关闭
+        ============================================== */
+
+        hideActionBar();
 
     }
 );
 
-/* ======================================================
-   窗口变化
-====================================================== */
-
-window.addEventListener(
-    "resize",
-    function () {
-
-        updateActionBarPosition();
-
-    }
-);
-
-/* ======================================================
-   ＋序 ＋卷 ＋篇 ＋章
-====================================================== */
-
-if (actionBar) {
-
-    const actionButtons =
-        actionBar.querySelectorAll(
-            "button[data-action]"
-        );
-
-    actionButtons.forEach(
-        function (button) {
-
-            button.addEventListener(
-                "click",
-                function (event) {
-
-                    event.stopPropagation();
-
-                    const action =
-                        button.dataset.action;
-
-                    addRootNode(action);
-
-                }
-            );
-
-        }
-    );
-
-}
 
 /* ======================================================
    新增根节点
@@ -368,11 +387,13 @@ function addRootNode(type) {
         return;
     }
 
+
     if (!Array.isArray(currentBook.nodes)) {
 
         currentBook.nodes = [];
 
     }
+
 
     /* ==================================================
        序只能有一个
@@ -386,6 +407,7 @@ function addRootNode(type) {
                     node.type === "preface"
             );
 
+
         if (exists) {
 
             return;
@@ -393,6 +415,11 @@ function addRootNode(type) {
         }
 
     }
+
+
+    /* ==================================================
+       创建节点
+    ================================================== */
 
     const node = {
 
@@ -420,15 +447,18 @@ function addRootNode(type) {
 
     };
 
+
     currentBook.nodes.push(
         node
     );
+
 
     saveBooks();
 
     renderNodes();
 
 }
+
 
 /* ======================================================
    生成节点名称
@@ -445,11 +475,13 @@ function getNodeTitle(
                 node.type === type
         ).length + 1;
 
+
     if (type === "preface") {
 
         return "序章";
 
     }
+
 
     if (type === "volume") {
 
@@ -459,6 +491,7 @@ function getNodeTitle(
 
     }
 
+
     if (type === "part") {
 
         return "第" +
@@ -466,6 +499,7 @@ function getNodeTitle(
             "篇";
 
     }
+
 
     if (type === "chapter") {
 
@@ -475,9 +509,11 @@ function getNodeTitle(
 
     }
 
+
     return "新节点";
 
 }
+
 
 /* ======================================================
    中文数字
@@ -499,11 +535,13 @@ function toChineseNumber(number) {
         "十"
     ];
 
+
     if (number <= 10) {
 
         return numbers[number];
 
     }
+
 
     if (number < 20) {
 
@@ -511,6 +549,7 @@ function toChineseNumber(number) {
             numbers[number - 10];
 
     }
+
 
     if (number < 100) {
 
@@ -522,6 +561,7 @@ function toChineseNumber(number) {
         const ones =
             number % 10;
 
+
         return numbers[tens] +
             "十" +
             (
@@ -532,9 +572,11 @@ function toChineseNumber(number) {
 
     }
 
+
     return String(number);
 
 }
+
 
 /* ======================================================
    保存
@@ -549,6 +591,7 @@ function saveBooks() {
 
 }
 
+
 /* ======================================================
    渲染节点
 ====================================================== */
@@ -562,12 +605,15 @@ function renderNodes() {
         return;
     }
 
+
     tree.innerHTML = "";
+
 
     const nodes =
         Array.isArray(currentBook.nodes)
             ? currentBook.nodes
             : [];
+
 
     nodes.forEach(
         function (node) {
@@ -575,24 +621,31 @@ function renderNodes() {
             const element =
                 document.createElement("div");
 
+
             element.className =
                 "node " +
                 node.type;
 
+
             element.dataset.id =
                 node.id;
+
 
             element.textContent =
                 node.title;
 
+
             element.style.left =
                 node.x + "px";
+
 
             element.style.top =
                 node.y + "px";
 
+
             element.style.transform =
                 "translate(-50%, -50%)";
+
 
             tree.appendChild(
                 element
@@ -603,10 +656,9 @@ function renderNodes() {
 
 }
 
+
 /* ======================================================
    初始化
 ====================================================== */
-
-updateActionBarPosition();
 
 renderNodes();
