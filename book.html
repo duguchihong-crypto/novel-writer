@@ -36,6 +36,7 @@
             id="backButton"
             class="back-button"
             type="button"
+            onclick="returnToShelf()"
         >
             ← 返回
         </button>
@@ -291,6 +292,85 @@
     <!-- 8. 页面初始化 -->
 
     <script src="js/book/main.js"></script>
+
+
+
+    <!-- ==================================================
+         返回书架
+
+         不依赖 events.js。
+
+         点击「← 返回」后：
+
+         1. 保存当前小说
+         2. 清除当前章节
+         3. 清除创建小说返回标记
+         4. 直接返回 index.html
+
+         使用 replace，避免浏览器返回键再次回到全书页面。
+    ================================================== -->
+
+    <script>
+
+        function returnToShelf() {
+
+            try {
+
+                if (
+                    typeof saveBook === "function"
+                ) {
+                    saveBook();
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "保存小说失败：",
+                    error
+                );
+
+            }
+
+
+            try {
+
+                localStorage.removeItem(
+                    "currentChapterId"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "清除当前章节失败：",
+                    error
+                );
+
+            }
+
+
+            try {
+
+                sessionStorage.removeItem(
+                    "returnToShelfAfterCreate"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "清除返回标记失败：",
+                    error
+                );
+
+            }
+
+
+            window.location.replace(
+                "index.html"
+            );
+
+        }
+
+    </script>
 
 
 </body>
