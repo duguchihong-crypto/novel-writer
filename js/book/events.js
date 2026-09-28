@@ -5,11 +5,6 @@
 
 // ==================================================
 // 获取指针位置
-//
-// 返回：
-// 3000 × 3000 画布坐标
-//
-// 不是浏览器屏幕坐标。
 // ==================================================
 
 function getPointerPosition(event) {
@@ -34,10 +29,6 @@ function getPointerPosition(event) {
     let clientY = 0;
 
 
-    // ------------------------------------------
-    // 触摸
-    // ------------------------------------------
-
     if (
         event.touches &&
         event.touches.length > 0
@@ -51,11 +42,6 @@ function getPointerPosition(event) {
 
     }
 
-
-    // ------------------------------------------
-    // touchend / touchcancel
-    // ------------------------------------------
-
     else if (
         event.changedTouches &&
         event.changedTouches.length > 0
@@ -68,11 +54,6 @@ function getPointerPosition(event) {
             event.changedTouches[0].clientY;
 
     }
-
-
-    // ------------------------------------------
-    // 鼠标 / Pointer
-    // ------------------------------------------
 
     else {
 
@@ -132,10 +113,6 @@ function updateBookActions() {
     actions.innerHTML = "";
 
 
-    // ------------------------------------------
-    // 没有选择
-    // ------------------------------------------
-
     if (
         !selectedIsBook &&
         !selectedNodeId
@@ -148,10 +125,6 @@ function updateBookActions() {
 
     }
 
-
-    // ------------------------------------------
-    // 选择书名
-    // ------------------------------------------
 
     if (selectedIsBook) {
 
@@ -168,10 +141,6 @@ function updateBookActions() {
 
     }
 
-
-    // ------------------------------------------
-    // 选择节点
-    // ------------------------------------------
 
     const node =
         getSelectedNode();
@@ -207,8 +176,6 @@ function createBookActionButtons(
     container
 ) {
 
-    // ＋序
-
     addBottomButton(
         container,
         "＋序",
@@ -220,8 +187,6 @@ function createBookActionButtons(
         "preface"
     );
 
-
-    // ＋章
 
     addBottomButton(
         container,
@@ -235,8 +200,6 @@ function createBookActionButtons(
     );
 
 
-    // ＋篇
-
     addBottomButton(
         container,
         "＋篇",
@@ -248,8 +211,6 @@ function createBookActionButtons(
         "part"
     );
 
-
-    // ＋卷
 
     addBottomButton(
         container,
@@ -277,10 +238,6 @@ function createNodeActionButtons(
     node
 ) {
 
-    // ------------------------------------------
-    // 删除
-    // ------------------------------------------
-
     addBottomButton(
         container,
         "删除",
@@ -294,10 +251,6 @@ function createNodeActionButtons(
         "danger"
     );
 
-
-    // ------------------------------------------
-    // 卷
-    // ------------------------------------------
 
     if (
         node.type ===
@@ -350,10 +303,6 @@ function createNodeActionButtons(
     }
 
 
-    // ------------------------------------------
-    // 篇
-    // ------------------------------------------
-
     if (
         node.type ===
         NODE_TYPES.PART
@@ -388,20 +337,6 @@ function createNodeActionButtons(
         );
 
     }
-
-
-    // ------------------------------------------
-    // 章
-    //
-    // 目前只有删除。
-    // ------------------------------------------
-
-
-    // ------------------------------------------
-    // 序
-    //
-    // 目前只有删除。
-    // ------------------------------------------
 
 }
 
@@ -451,10 +386,6 @@ function addBottomButton(
     );
 
 
-    // ------------------------------------------
-    // 按下
-    // ------------------------------------------
-
     button.addEventListener(
         "pointerdown",
         function(event) {
@@ -467,10 +398,6 @@ function addBottomButton(
         }
     );
 
-
-    // ------------------------------------------
-    // 点击
-    // ------------------------------------------
 
     button.addEventListener(
         "click",
@@ -522,10 +449,6 @@ function applyBottomButtonStyle(
     }
 
 
-    // ------------------------------------------
-    // ＋序
-    // ------------------------------------------
-
     if (
         type === "preface" ||
         text === "＋序"
@@ -556,10 +479,6 @@ function applyBottomButtonStyle(
 
     }
 
-
-    // ------------------------------------------
-    // ＋章
-    // ------------------------------------------
 
     if (
         type === "chapter" ||
@@ -592,10 +511,6 @@ function applyBottomButtonStyle(
     }
 
 
-    // ------------------------------------------
-    // ＋篇
-    // ------------------------------------------
-
     if (
         type === "part" ||
         text === "＋篇"
@@ -626,10 +541,6 @@ function applyBottomButtonStyle(
 
     }
 
-
-    // ------------------------------------------
-    // ＋卷
-    // ------------------------------------------
 
     if (
         type === "volume" ||
@@ -662,10 +573,6 @@ function applyBottomButtonStyle(
     }
 
 
-    // ------------------------------------------
-    // 普通
-    // ------------------------------------------
-
     if (
         type === "default"
     ) {
@@ -695,10 +602,6 @@ function applyBottomButtonStyle(
 
     }
 
-
-    // ------------------------------------------
-    // 删除
-    // ------------------------------------------
 
     if (
         type === "danger"
@@ -907,14 +810,6 @@ function clearSelection() {
 
 // ==================================================
 // 开始拖动书名
-//
-// dragStartX / dragStartY
-// = 指针按下时的画布坐标
-//
-// dragOriginalX / dragOriginalY
-// = 书名按下时的左上角坐标
-//
-// 两者不能混在一起。
 // ==================================================
 
 function startBookDrag(event) {
@@ -938,10 +833,6 @@ function startBookDrag(event) {
         );
 
 
-    // ------------------------------------------
-    // 当前书名坐标
-    // ------------------------------------------
-
     let currentX =
         parseFloat(
             bookTitle.style.left
@@ -953,11 +844,6 @@ function startBookDrag(event) {
             bookTitle.style.top
         );
 
-
-    // ------------------------------------------
-    // DOM 没有位置
-    // 从状态读取
-    // ------------------------------------------
 
     if (
         !Number.isFinite(currentX) &&
@@ -984,11 +870,6 @@ function startBookDrag(event) {
 
     }
 
-
-    // ------------------------------------------
-    // 如果仍然没有位置
-    // 使用 3000 × 3000 中心
-    // ------------------------------------------
 
     const bookWidth =
         bookTitle.offsetWidth ||
@@ -1033,10 +914,6 @@ function startBookDrag(event) {
     }
 
 
-    // ------------------------------------------
-    // 指针开始位置
-    // ------------------------------------------
-
     dragStartX =
         position.x;
 
@@ -1044,10 +921,6 @@ function startBookDrag(event) {
     dragStartY =
         position.y;
 
-
-    // ------------------------------------------
-    // 书名开始位置
-    // ------------------------------------------
 
     dragOriginalX =
         currentX;
@@ -1057,10 +930,6 @@ function startBookDrag(event) {
         currentY;
 
 
-    // ------------------------------------------
-    // 重置拖动状态
-    // ------------------------------------------
-
     bookWasDragged =
         false;
 
@@ -1068,10 +937,6 @@ function startBookDrag(event) {
     bookMoveStarted =
         false;
 
-
-    // ------------------------------------------
-    // 确保 DOM 使用正确位置
-    // ------------------------------------------
 
     bookTitle.style.left =
         currentX + "px";
@@ -1086,10 +951,6 @@ function startBookDrag(event) {
         currentY
     );
 
-
-    // ------------------------------------------
-    // 开始拖动
-    // ------------------------------------------
 
     beginBookDrag();
 
@@ -1137,10 +998,6 @@ function moveBookDrag(event) {
         );
 
 
-    // ------------------------------------------
-    // 判断是否真正开始移动
-    // ------------------------------------------
-
     const moved =
         checkDragDistance(
             position.x,
@@ -1164,10 +1021,6 @@ function moveBookDrag(event) {
     }
 
 
-    // ------------------------------------------
-    // 指针移动距离
-    // ------------------------------------------
-
     const dx =
         position.x -
         dragStartX;
@@ -1177,10 +1030,6 @@ function moveBookDrag(event) {
         position.y -
         dragStartY;
 
-
-    // ------------------------------------------
-    // 书名新位置
-    // ------------------------------------------
 
     let newX =
         dragOriginalX +
@@ -1192,10 +1041,6 @@ function moveBookDrag(event) {
         dy;
 
 
-    // ------------------------------------------
-    // 书名尺寸
-    // ------------------------------------------
-
     const bookWidth =
         bookTitle.offsetWidth ||
         BOOK_MIN_WIDTH;
@@ -1205,10 +1050,6 @@ function moveBookDrag(event) {
         bookTitle.offsetHeight ||
         BOOK_MIN_HEIGHT;
 
-
-    // ------------------------------------------
-    // 画布尺寸
-    // ------------------------------------------
 
     const canvasSize =
         typeof BOOK_CANVAS_SIZE ===
@@ -1232,10 +1073,6 @@ function moveBookDrag(event) {
             canvas.clientHeight
         );
 
-
-    // ------------------------------------------
-    // 限制书名不能拖出画布
-    // ------------------------------------------
 
     const maxX =
         Math.max(
@@ -1273,10 +1110,6 @@ function moveBookDrag(event) {
         );
 
 
-    // ------------------------------------------
-    // 写入 DOM
-    // ------------------------------------------
-
     bookTitle.style.left =
         newX + "px";
 
@@ -1284,10 +1117,6 @@ function moveBookDrag(event) {
     bookTitle.style.top =
         newY + "px";
 
-
-    // ------------------------------------------
-    // 保存状态
-    // ------------------------------------------
 
     setBookPosition(
         newX,
@@ -1302,14 +1131,6 @@ function moveBookDrag(event) {
     bookMoveStarted =
         true;
 
-
-    // ------------------------------------------
-    // 更新树
-    //
-    // 不调用 renderTree()
-    //
-    // 所以不会强制滚动回中心。
-    // ------------------------------------------
 
     updateTreePositionFromBook();
 
@@ -1354,10 +1175,6 @@ function updateTreePositionFromBook() {
     }
 
 
-    // ------------------------------------------
-    // 重新计算布局
-    // ------------------------------------------
-
     const newLayout =
         calculateLayout();
 
@@ -1372,10 +1189,6 @@ function updateTreePositionFromBook() {
     currentLayout =
         newLayout;
 
-
-    // ------------------------------------------
-    // 更新树尺寸
-    // ------------------------------------------
 
     const tree =
         document.querySelector(
@@ -1409,10 +1222,6 @@ function updateTreePositionFromBook() {
 
     }
 
-
-    // ------------------------------------------
-    // 更新节点位置
-    // ------------------------------------------
 
     if (
         Array.isArray(
@@ -1448,10 +1257,6 @@ function updateTreePositionFromBook() {
 
     }
 
-
-    // ------------------------------------------
-    // 更新 SVG
-    // ------------------------------------------
 
     const svg =
         document.querySelector(
@@ -1497,10 +1302,6 @@ function updateTreePositionFromBook() {
     }
 
 
-    // ------------------------------------------
-    // 重画连接线
-    // ------------------------------------------
-
     drawConnections(
         newLayout
     );
@@ -1527,11 +1328,6 @@ function finishBookDrag(event) {
 
     endBookDrag();
 
-
-    // ------------------------------------------
-    // 真正发生拖动
-    // 才保存位置
-    // ------------------------------------------
 
     if (wasDragged) {
 
@@ -1570,8 +1366,6 @@ function finishBookDrag(event) {
         }
 
 
-        // 保存书籍
-
         if (
             typeof saveBook ===
             "function"
@@ -1583,10 +1377,6 @@ function finishBookDrag(event) {
 
     }
 
-
-    // ------------------------------------------
-    // 重置拖动状态
-    // ------------------------------------------
 
     touchStarted =
         false;
@@ -1775,10 +1565,6 @@ function handleBookTouchEnd(event) {
 
 function handleCanvasClick(event) {
 
-    // ------------------------------------------
-    // 操作按钮
-    // ------------------------------------------
-
     if (actionButtonPressed) {
 
         actionButtonPressed =
@@ -1788,10 +1574,6 @@ function handleCanvasClick(event) {
 
     }
 
-
-    // ------------------------------------------
-    // 刚刚拖动过书名
-    // ------------------------------------------
 
     if (bookWasDragged) {
 
@@ -1807,10 +1589,6 @@ function handleCanvasClick(event) {
         event.target;
 
 
-    // ------------------------------------------
-    // 书名
-    // ------------------------------------------
-
     if (
         target.closest &&
         target.closest(
@@ -1822,10 +1600,6 @@ function handleCanvasClick(event) {
 
     }
 
-
-    // ------------------------------------------
-    // 节点
-    // ------------------------------------------
 
     if (
         target.closest &&
@@ -1839,10 +1613,6 @@ function handleCanvasClick(event) {
     }
 
 
-    // ------------------------------------------
-    // 连线控制
-    // ------------------------------------------
-
     if (
         target.closest &&
         target.closest(
@@ -1854,10 +1624,6 @@ function handleCanvasClick(event) {
 
     }
 
-
-    // ------------------------------------------
-    // 底部操作栏
-    // ------------------------------------------
 
     if (
         target.closest &&
@@ -1871,11 +1637,72 @@ function handleCanvasClick(event) {
     }
 
 
-    // ------------------------------------------
-    // 空白
-    // ------------------------------------------
-
     clearSelection();
+
+}
+
+
+// ==================================================
+// 返回书架
+// ==================================================
+
+function handleBackToShelf(event) {
+
+    if (event) {
+
+        event.preventDefault();
+
+        event.stopPropagation();
+
+    }
+
+
+    // 防止重复点击
+
+    if (
+        window.__leavingBookPage
+    ) {
+
+        return;
+
+    }
+
+
+    window.__leavingBookPage =
+        true;
+
+
+    // 保存当前书籍
+
+    if (
+        typeof saveBook ===
+        "function"
+    ) {
+
+        saveBook();
+
+    }
+
+
+    // 清除当前章节
+
+    localStorage.removeItem(
+        "currentChapterId"
+    );
+
+
+    // 清除页面进入状态
+
+    sessionStorage.removeItem(
+        "returnToShelfAfterCreate"
+    );
+
+
+    // 直接替换当前页面
+
+    window.location.replace(
+        "index.html"
+    );
 
 }
 
@@ -1926,7 +1753,7 @@ function setupEvents() {
 
 
     // ==========================================
-    // 返回
+    // 返回书架
     // ==========================================
 
     const backButton =
@@ -1939,33 +1766,7 @@ function setupEvents() {
 
         backButton.addEventListener(
             "click",
-            function(event) {
-
-                event.preventDefault();
-
-                event.stopPropagation();
-
-
-                if (
-                    typeof saveBook ===
-                    "function"
-                ) {
-
-                    saveBook();
-
-                }
-
-
-                if (
-                    typeof goBack ===
-                    "function"
-                ) {
-
-                    goBack();
-
-                }
-
-            }
+            handleBackToShelf
         );
 
     }
