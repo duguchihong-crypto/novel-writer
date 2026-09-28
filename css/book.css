@@ -387,17 +387,17 @@ body {
 ====================================================== */
 
 .action-bar button {
-    height: 52px;
+    height: 60px;
 
-    min-width: 82px;
+    min-width: 90px;
 
     padding: 0 20px;
 
     border: 2px solid;
 
-    border-radius: 12px;
+    border-radius: 14px;
 
-    font-size: 18px;
+    font-size: 20px;
 
     font-weight: 600;
 
@@ -538,24 +538,28 @@ body {
         left: 50%;
         bottom: 0;
 
-        gap: 8px;
+        gap: 10px;
 
-        padding: 9px;
+        padding: 10px;
 
         padding-bottom:
-            calc(9px + env(safe-area-inset-bottom));
+            calc(10px + env(safe-area-inset-bottom));
     }
 
 
+    /* ================================================
+       手机底部超大按钮
+    ================================================ */
+
     .action-bar button {
-        min-width: 76px;
+        min-width: 90px;
 
-        height: 50px;
+        height: 60px;
 
-        padding: 0 16px;
+        padding: 0 20px;
 
-        font-size: 17px;
+        font-size: 20px;
 
-        border-radius: 11px;
+        border-radius: 14px;
     }
 }
