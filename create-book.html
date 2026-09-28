@@ -824,7 +824,7 @@ function resetCreateButton() {
 
 
 /* ==================================================
-   返回
+   返回书架
 ================================================== */
 
 document
@@ -832,6 +832,30 @@ document
     .addEventListener(
         "click",
         function() {
+
+            /*
+             * 返回书架前清除当前打开状态
+             */
+
+            try {
+
+                localStorage.removeItem(
+                    "currentBookId"
+                );
+
+                localStorage.removeItem(
+                    "currentChapterId"
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "清除当前小说状态失败：",
+                    error
+                );
+
+            }
+
 
             window.location.href =
                 "index.html";
@@ -1652,11 +1676,6 @@ function createBook() {
             fallback.result.success
         ) {
 
-            showError(
-                "小说已创建，但封面储存空间不足，已暂时不保存封面。"
-            );
-
-
             saveResult =
                 fallback.result;
 
@@ -1707,35 +1726,27 @@ function createBook() {
     }
 
 
+    /* ==================================================
+       关键：
+       创建小说后绝不设置 currentBookId
+    ================================================== */
+
     try {
 
-        localStorage.setItem(
-            "currentBookId",
-            String(bookId)
+        localStorage.removeItem(
+            "currentBookId"
         );
-
 
         localStorage.removeItem(
             "currentChapterId"
         );
 
-
     } catch (error) {
 
         console.error(
-            "保存 currentBookId 失败：",
+            "清除当前小说状态失败：",
             error
         );
-
-
-        showError(
-            "小说已经创建，但无法记录当前小说。请返回书架打开。"
-        );
-
-
-        resetCreateButton();
-
-        return;
 
     }
 
@@ -1744,12 +1755,9 @@ function createBook() {
         "创建成功";
 
 
-    /*
-     * 创建成功后：
-     * 返回我的书架
-     *
-     * 不再直接进入 book.html
-     */
+    /* ==================================================
+       只返回书架
+    ================================================== */
 
     setTimeout(
         function() {
