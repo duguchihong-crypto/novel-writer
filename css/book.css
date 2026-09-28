@@ -212,7 +212,8 @@ body {
 
 
 /* ======================================================
-   旧书名隐藏
+   旧版 HTML 书名
+   保留隐藏，避免与树中的书名重复
 ====================================================== */
 
 #bookTitle {
@@ -314,30 +315,43 @@ body {
 ====================================================== */
 
 .tree-node.node-book {
-    width: 180px;
+    width: 180px !important;
 
-    min-width: 180px;
-    max-width: 180px;
+    min-width: 180px !important;
+    max-width: 180px !important;
 
-    height: 58px;
+    height: 58px !important;
 
-    min-height: 58px;
-    max-height: 58px;
+    min-height: 58px !important;
+    max-height: 58px !important;
 
-    background: #ff4d4d;
+    padding: 6px 10px;
 
-    border: 3px solid #d90000;
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #ff4d4d !important;
+
+    border: 3px solid #d90000 !important;
 
     border-radius: 14px;
 
-    color: #ffffff;
+    color: #ffffff !important;
 
     font-size: 22px;
 
     font-weight: bold;
 
+    line-height: 1.2;
+
+    text-align: center;
+
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.18);
+
+    z-index: 10;
 }
 
 
@@ -394,18 +408,12 @@ body {
 
 
 /* ======================================================
-   重点修改
-   选中节点只增加外框
-   不改变原本颜色
+   选中
+   只增加外框
+   不改变节点原本颜色
 ====================================================== */
 
 .tree-node.selected {
-    background: inherit;
-
-    border-color: inherit;
-
-    color: inherit;
-
     box-shadow:
         0 0 0 3px rgba(224, 173, 0, 0.45),
         0 4px 12px rgba(0, 0, 0, 0.16);
@@ -416,18 +424,18 @@ body {
 
 /* ======================================================
    书名选中
-   保持红色
+   仍然保持红色
 ====================================================== */
 
 .tree-node.node-book.selected {
-    background: #ff4d4d;
+    background: #ff4d4d !important;
 
-    border-color: #a90000;
+    border-color: #d90000 !important;
 
-    color: #ffffff;
+    color: #ffffff !important;
 
     box-shadow:
-        0 0 0 3px rgba(169, 0, 0, 0.25),
+        0 0 0 3px rgba(224, 173, 0, 0.45),
         0 4px 12px rgba(0, 0, 0, 0.18);
 
     z-index: 20;
@@ -444,6 +452,10 @@ body {
     border-color: #9adbd7;
 
     color: #087f78;
+
+    box-shadow:
+        0 0 0 3px rgba(224, 173, 0, 0.45),
+        0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
 
@@ -457,6 +469,10 @@ body {
     border-color: #e5ca63;
 
     color: #9a7800;
+
+    box-shadow:
+        0 0 0 3px rgba(224, 173, 0, 0.45),
+        0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
 
@@ -470,6 +486,10 @@ body {
     border-color: #d6d6d6;
 
     color: #555555;
+
+    box-shadow:
+        0 0 0 3px rgba(224, 173, 0, 0.45),
+        0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
 
@@ -483,6 +503,10 @@ body {
     border-color: #bdbdbd;
 
     color: #222222;
+
+    box-shadow:
+        0 0 0 3px rgba(224, 173, 0, 0.45),
+        0 4px 12px rgba(0, 0, 0, 0.16);
 }
 
 
@@ -773,15 +797,15 @@ body {
 
 
     .tree-node.node-book {
-        width: 180px;
+        width: 180px !important;
 
-        min-width: 180px;
-        max-width: 180px;
+        min-width: 180px !important;
+        max-width: 180px !important;
 
-        height: 58px;
+        height: 58px !important;
 
-        min-height: 58px;
-        max-height: 58px;
+        min-height: 58px !important;
+        max-height: 58px !important;
 
         font-size: 22px;
     }
@@ -830,6 +854,7 @@ body {
 
         border-radius: 9px !important;
     }
+
 }
 
 
@@ -865,4 +890,5 @@ body {
 
         border-radius: 8px !important;
     }
+
 }
