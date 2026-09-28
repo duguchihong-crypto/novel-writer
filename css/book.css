@@ -380,7 +380,13 @@ body {
 
 .action-bar {
 
-    position: absolute;
+    position: fixed;
+
+    left: 50%;
+
+    bottom: 14px;
+
+    transform: translateX(-50%);
 
     display: none;
 
@@ -391,7 +397,9 @@ body {
 
     padding: 8px;
 
-    background: #111111;
+    background: #ffffff;
+
+    border: 1px solid #dddddd;
 
     border-radius: 14px;
 
@@ -424,13 +432,9 @@ body {
 
     padding: 0 14px;
 
-    border: none;
+    border: 2px solid;
 
     border-radius: 9px;
-
-    background: #16b8d4;
-
-    color: #ffffff;
 
     font-size: 15px;
 
@@ -445,6 +449,70 @@ body {
     white-space: nowrap;
 }
 
+
+/* ======================================================
+   ＋序
+   浅青色框 + 深青色字
+====================================================== */
+
+.action-preface {
+
+    background: #d9f7f5;
+
+    border-color: #9adbd7;
+
+    color: #087f78;
+}
+
+
+/* ======================================================
+   ＋章
+   浅黑色框 + 深黑色字
+====================================================== */
+
+.action-chapter {
+
+    background: #eeeeee;
+
+    border-color: #bdbdbd;
+
+    color: #222222;
+}
+
+
+/* ======================================================
+   ＋篇
+   浅白色框 + 深白色字
+====================================================== */
+
+.action-part {
+
+    background: #ffffff;
+
+    border-color: #dddddd;
+
+    color: #888888;
+}
+
+
+/* ======================================================
+   ＋卷
+   浅黄色框 + 深黄色字
+====================================================== */
+
+.action-volume {
+
+    background: #fff4c7;
+
+    border-color: #e5ca63;
+
+    color: #9a7800;
+}
+
+
+/* ======================================================
+   点击效果
+====================================================== */
 
 .action-bar button:active {
 
@@ -516,6 +584,10 @@ body {
 
 
     .action-bar {
+
+        left: 50%;
+
+        bottom: 12px;
 
         gap: 6px;
 
