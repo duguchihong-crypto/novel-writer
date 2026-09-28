@@ -29,6 +29,7 @@
         我的书架
     </div>
 
+
     <div class="top-actions">
 
         <button
@@ -39,6 +40,7 @@
             完成
         </button>
 
+
         <button
             id="createButton"
             class="create-button"
@@ -46,6 +48,7 @@
         >
             ＋ 新建
         </button>
+
 
         <button
             id="settingsButton"
@@ -60,7 +63,10 @@
 </header>
 
 
+
+<!-- ============================== -->
 <!-- 新建菜单 -->
+<!-- ============================== -->
 
 <div
     id="createMenu"
@@ -74,6 +80,7 @@
         📖 新建书籍
     </button>
 
+
     <button
         id="createCollectionButton"
         type="button"
@@ -84,7 +91,10 @@
 </div>
 
 
+
+<!-- ============================== -->
 <!-- 设置菜单 -->
+<!-- ============================== -->
 
 <div
     id="settingsMenu"
@@ -98,12 +108,14 @@
         ↕ 排序
     </button>
 
+
     <button
         id="gridButton"
         type="button"
     >
         ▦ 网格
     </button>
+
 
     <button
         id="listButton"
@@ -114,6 +126,11 @@
 
 </div>
 
+
+
+<!-- ============================== -->
+<!-- 主内容 -->
+<!-- ============================== -->
 
 <main class="container">
 
@@ -126,6 +143,9 @@
     </div>
 
 
+
+    <!-- 空书架 -->
+
     <div
         id="emptyShelf"
         class="empty-shelf"
@@ -135,9 +155,11 @@
             📚
         </div>
 
+
         <div class="empty-title">
             书架还是空的
         </div>
+
 
         <div class="empty-text">
             点击「＋ 新建」开始创作
@@ -145,6 +167,9 @@
 
     </div>
 
+
+
+    <!-- 书籍 -->
 
     <div
         id="bookGrid"
@@ -155,7 +180,10 @@
 </main>
 
 
+
+<!-- ============================== -->
 <!-- 长按遮罩 -->
+<!-- ============================== -->
 
 <div
     id="bookMenuOverlay"
@@ -163,12 +191,16 @@
 ></div>
 
 
+
+<!-- ============================== -->
 <!-- 长按菜单 -->
+<!-- ============================== -->
 
 <div
     id="bookContextMenu"
     class="book-context-menu"
 >
+
 
     <div
         id="contextMenuTitle"
@@ -176,6 +208,7 @@
     >
         小说
     </div>
+
 
 
     <button
@@ -195,6 +228,7 @@
     </button>
 
 
+
     <button
         id="contextSort"
         class="context-menu-button"
@@ -210,6 +244,7 @@
         </span>
 
     </button>
+
 
 
     <button
@@ -229,6 +264,7 @@
     </button>
 
 
+
     <button
         id="contextDelete"
         class="context-menu-button delete-action"
@@ -245,12 +281,17 @@
 
     </button>
 
+
 </div>
 
 
+
+<!-- ============================== -->
 <!-- 底部导航 -->
+<!-- ============================== -->
 
 <nav class="bottom-nav">
+
 
     <button
         id="shelfNav"
@@ -260,12 +301,14 @@
         📚 书架
     </button>
 
+
     <button
         id="toolsNav"
         type="button"
     >
         🧰 工具
     </button>
+
 
     <button
         id="meNav"
@@ -274,25 +317,32 @@
         👤 我的
     </button>
 
+
 </nav>
 
 
+
+<!-- ============================== -->
 <!-- JS -->
+<!-- ============================== -->
 
 <script
-    src="js/shelf/shelf-state.js"
+    src="js/shelf/shelf-state.js?v=6"
 ></script>
 
-<script
-    src="js/shelf/shelf-storage.js"
-></script>
 
 <script
-    src="js/shelf/shelf-render.js?v=4"
+    src="js/shelf/shelf-storage.js?v=6"
 ></script>
 
+
 <script
-    src="js/shelf/shelf-events.js?v=3"
+    src="js/shelf/shelf-render.js?v=6"
+></script>
+
+
+<script
+    src="js/shelf/shelf-events.js?v=6"
 ></script>
 
 
