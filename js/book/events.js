@@ -14,7 +14,6 @@ function getPointerPosition(event) {
             ".tree-canvas"
         );
 
-
     if (!canvas) {
 
         return {
@@ -24,10 +23,8 @@ function getPointerPosition(event) {
 
     }
 
-
     let clientX = 0;
     let clientY = 0;
-
 
     if (
         event.touches &&
@@ -69,10 +66,8 @@ function getPointerPosition(event) {
 
     }
 
-
     const rect =
         canvas.getBoundingClientRect();
-
 
     return {
 
@@ -102,16 +97,13 @@ function updateBookActions() {
             "#bookActions"
         );
 
-
     if (!actions) {
 
         return;
 
     }
 
-
     actions.innerHTML = "";
-
 
     if (
         !selectedIsBook &&
@@ -125,26 +117,21 @@ function updateBookActions() {
 
     }
 
-
     if (selectedIsBook) {
 
         actions.style.display =
             "flex";
 
-
         createBookActionButtons(
             actions
         );
-
 
         return;
 
     }
 
-
     const node =
         getSelectedNode();
-
 
     if (!node) {
 
@@ -155,10 +142,8 @@ function updateBookActions() {
 
     }
 
-
     actions.style.display =
         "flex";
-
 
     createNodeActionButtons(
         actions,
@@ -187,7 +172,6 @@ function createBookActionButtons(
         "preface"
     );
 
-
     addBottomButton(
         container,
         "＋章",
@@ -198,7 +182,6 @@ function createBookActionButtons(
         },
         "chapter"
     );
-
 
     addBottomButton(
         container,
@@ -211,7 +194,6 @@ function createBookActionButtons(
         "part"
     );
 
-
     addBottomButton(
         container,
         "＋卷",
@@ -222,7 +204,6 @@ function createBookActionButtons(
         },
         "volume"
     );
-
 
     updatePrefaceButton();
 
@@ -251,7 +232,6 @@ function createNodeActionButtons(
         "danger"
     );
 
-
     if (
         node.type ===
         NODE_TYPES.VOLUME
@@ -270,7 +250,6 @@ function createNodeActionButtons(
             "default"
         );
 
-
         addBottomButton(
             container,
             "＋篇",
@@ -284,7 +263,6 @@ function createNodeActionButtons(
             },
             "part"
         );
-
 
         addBottomButton(
             container,
@@ -301,7 +279,6 @@ function createNodeActionButtons(
         );
 
     }
-
 
     if (
         node.type ===
@@ -320,7 +297,6 @@ function createNodeActionButtons(
             },
             "default"
         );
-
 
         addBottomButton(
             container,
@@ -357,14 +333,11 @@ function addBottomButton(
             "button"
         );
 
-
     button.type =
         "button";
 
-
     button.className =
         "book-action-button";
-
 
     if (type) {
 
@@ -374,17 +347,14 @@ function addBottomButton(
 
     }
 
-
     button.textContent =
         text;
-
 
     applyBottomButtonStyle(
         button,
         type,
         text
     );
-
 
     button.addEventListener(
         "pointerdown",
@@ -398,7 +368,6 @@ function addBottomButton(
         }
     );
 
-
     button.addEventListener(
         "click",
         function(event) {
@@ -407,10 +376,8 @@ function addBottomButton(
 
             event.stopPropagation();
 
-
             actionButtonPressed =
                 false;
-
 
             if (
                 typeof callback ===
@@ -423,7 +390,6 @@ function addBottomButton(
 
         }
     );
-
 
     container.appendChild(
         button
@@ -448,7 +414,6 @@ function applyBottomButtonStyle(
 
     }
 
-
     if (
         type === "preface" ||
         text === "＋序"
@@ -460,13 +425,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1.5px solid #b7dfdc",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -474,11 +437,9 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
 
     }
-
 
     if (
         type === "chapter" ||
@@ -491,13 +452,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1.5px solid #c8c8c8",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -505,11 +464,9 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
 
     }
-
 
     if (
         type === "part" ||
@@ -522,13 +479,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1.5px solid #dedede",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -536,11 +491,9 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
 
     }
-
 
     if (
         type === "volume" ||
@@ -553,13 +506,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1.5px solid #eadf9e",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -567,11 +518,9 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
 
     }
-
 
     if (
         type === "default"
@@ -583,13 +532,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1px solid #dddddd",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -597,11 +544,9 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         return;
 
     }
-
 
     if (
         type === "danger"
@@ -613,13 +558,11 @@ function applyBottomButtonStyle(
             "important"
         );
 
-
         button.style.setProperty(
             "border",
             "1px solid #efcccc",
             "important"
         );
-
 
         button.style.setProperty(
             "color",
@@ -648,7 +591,6 @@ function updateNodeSelectionUI() {
                 const id =
                     element.dataset.nodeId;
 
-
                 if (
                     selectedNodeId &&
                     String(id) ===
@@ -660,7 +602,9 @@ function updateNodeSelectionUI() {
                         "selected"
                     );
 
-                } else {
+                }
+
+                else {
 
                     element.classList.remove(
                         "selected"
@@ -685,13 +629,11 @@ function updateBookSelectionUI() {
             "#bookTitle"
         );
 
-
     if (!bookTitle) {
 
         return;
 
     }
-
 
     if (
         selectedIsBook === true
@@ -701,7 +643,9 @@ function updateBookSelectionUI() {
             "selected"
         );
 
-    } else {
+    }
+
+    else {
 
         bookTitle.classList.remove(
             "selected"
@@ -733,6 +677,17 @@ function updateSelectionUI() {
 
 function selectBook() {
 
+    const bookTitle =
+        document.querySelector(
+            "#bookTitle"
+        );
+
+    if (!bookTitle) {
+
+        return;
+
+    }
+
     setSelectedBook();
 
     updateSelectionUI();
@@ -754,12 +709,10 @@ function selectNode(nodeId) {
 
     }
 
-
     const node =
         getNodeById(
             nodeId
         );
-
 
     if (!node) {
 
@@ -769,20 +722,16 @@ function selectNode(nodeId) {
 
     }
 
-
     setSelectedNode(
         nodeId
     );
-
 
     selectedElement =
         document.querySelector(
             `.tree-node[data-node-id="${nodeId}"]`
         );
 
-
     updateSelectionUI();
-
 
     if (selectedElement) {
 
@@ -819,35 +768,32 @@ function startBookDrag(event) {
             "#bookTitle"
         );
 
-
     if (!bookTitle) {
 
         return;
 
     }
 
-
     const position =
         getPointerPosition(
             event
         );
-
 
     let currentX =
         parseFloat(
             bookTitle.style.left
         );
 
-
     let currentY =
         parseFloat(
             bookTitle.style.top
         );
 
-
     if (
         !Number.isFinite(currentX) &&
-        Number.isFinite(Number(bookPosition.x))
+        Number.isFinite(
+            Number(bookPosition.x)
+        )
     ) {
 
         currentX =
@@ -857,10 +803,11 @@ function startBookDrag(event) {
 
     }
 
-
     if (
         !Number.isFinite(currentY) &&
-        Number.isFinite(Number(bookPosition.y))
+        Number.isFinite(
+            Number(bookPosition.y)
+        )
     ) {
 
         currentY =
@@ -870,23 +817,19 @@ function startBookDrag(event) {
 
     }
 
-
     const bookWidth =
         bookTitle.offsetWidth ||
         BOOK_MIN_WIDTH;
 
-
     const bookHeight =
         bookTitle.offsetHeight ||
         BOOK_MIN_HEIGHT;
-
 
     const canvasSize =
         typeof BOOK_CANVAS_SIZE ===
         "number"
             ? BOOK_CANVAS_SIZE
             : 3000;
-
 
     if (
         !Number.isFinite(currentX)
@@ -900,7 +843,6 @@ function startBookDrag(event) {
 
     }
 
-
     if (
         !Number.isFinite(currentY)
     ) {
@@ -913,44 +855,34 @@ function startBookDrag(event) {
 
     }
 
-
     dragStartX =
         position.x;
-
 
     dragStartY =
         position.y;
 
-
     dragOriginalX =
         currentX;
-
 
     dragOriginalY =
         currentY;
 
-
     bookWasDragged =
         false;
-
 
     bookMoveStarted =
         false;
 
-
     bookTitle.style.left =
         currentX + "px";
 
-
     bookTitle.style.top =
         currentY + "px";
-
 
     setBookPosition(
         currentX,
         currentY
     );
-
 
     beginBookDrag();
 
@@ -969,18 +901,15 @@ function moveBookDrag(event) {
 
     }
 
-
     const bookTitle =
         document.querySelector(
             "#bookTitle"
         );
 
-
     const canvas =
         document.querySelector(
             ".tree-canvas"
         );
-
 
     if (
         !bookTitle ||
@@ -991,12 +920,10 @@ function moveBookDrag(event) {
 
     }
 
-
     const position =
         getPointerPosition(
             event
         );
-
 
     const moved =
         checkDragDistance(
@@ -1004,13 +931,11 @@ function moveBookDrag(event) {
             position.y
         );
 
-
     if (!moved) {
 
         return;
 
     }
-
 
     if (
         event.cancelable
@@ -1020,43 +945,35 @@ function moveBookDrag(event) {
 
     }
 
-
     const dx =
         position.x -
         dragStartX;
-
 
     const dy =
         position.y -
         dragStartY;
 
-
     let newX =
         dragOriginalX +
         dx;
-
 
     let newY =
         dragOriginalY +
         dy;
 
-
     const bookWidth =
         bookTitle.offsetWidth ||
         BOOK_MIN_WIDTH;
 
-
     const bookHeight =
         bookTitle.offsetHeight ||
         BOOK_MIN_HEIGHT;
-
 
     const canvasSize =
         typeof BOOK_CANVAS_SIZE ===
         "number"
             ? BOOK_CANVAS_SIZE
             : 3000;
-
 
     const canvasWidth =
         Math.max(
@@ -1065,14 +982,12 @@ function moveBookDrag(event) {
             canvas.clientWidth
         );
 
-
     const canvasHeight =
         Math.max(
             canvasSize,
             canvas.scrollHeight,
             canvas.clientHeight
         );
-
 
     const maxX =
         Math.max(
@@ -1081,14 +996,12 @@ function moveBookDrag(event) {
             bookWidth
         );
 
-
     const maxY =
         Math.max(
             0,
             canvasHeight -
             bookHeight
         );
-
 
     newX =
         Math.max(
@@ -1099,7 +1012,6 @@ function moveBookDrag(event) {
             )
         );
 
-
     newY =
         Math.max(
             0,
@@ -1109,28 +1021,22 @@ function moveBookDrag(event) {
             )
         );
 
-
     bookTitle.style.left =
         newX + "px";
 
-
     bookTitle.style.top =
         newY + "px";
-
 
     setBookPosition(
         newX,
         newY
     );
 
-
     bookWasDragged =
         true;
 
-
     bookMoveStarted =
         true;
-
 
     updateTreePositionFromBook();
 
@@ -1152,18 +1058,15 @@ function updateTreePositionFromBook() {
 
     }
 
-
     const canvas =
         document.querySelector(
             ".tree-canvas"
         );
 
-
     const bookTitle =
         document.querySelector(
             "#bookTitle"
         );
-
 
     if (
         !canvas ||
@@ -1174,10 +1077,8 @@ function updateTreePositionFromBook() {
 
     }
 
-
     const newLayout =
         calculateLayout();
-
 
     if (!newLayout) {
 
@@ -1185,23 +1086,19 @@ function updateTreePositionFromBook() {
 
     }
 
-
     currentLayout =
         newLayout;
-
 
     const tree =
         document.querySelector(
             "#tree"
         );
 
-
     const canvasSize =
         typeof BOOK_CANVAS_SIZE ===
         "number"
             ? BOOK_CANVAS_SIZE
             : 3000;
-
 
     if (tree) {
 
@@ -1212,7 +1109,6 @@ function updateTreePositionFromBook() {
                 canvas.clientWidth
             ) + "px";
 
-
         tree.style.height =
             Math.max(
                 canvasSize,
@@ -1221,7 +1117,6 @@ function updateTreePositionFromBook() {
             ) + "px";
 
     }
-
 
     if (
         Array.isArray(
@@ -1237,17 +1132,14 @@ function updateTreePositionFromBook() {
                         `.tree-node[data-node-id="${item.node.id}"]`
                     );
 
-
                 if (!element) {
 
                     return;
 
                 }
 
-
                 element.style.left =
                     item.x + "px";
-
 
                 element.style.top =
                     item.y + "px";
@@ -1257,12 +1149,10 @@ function updateTreePositionFromBook() {
 
     }
 
-
     const svg =
         document.querySelector(
             "#connections"
         );
-
 
     if (svg) {
 
@@ -1273,7 +1163,6 @@ function updateTreePositionFromBook() {
                 canvas.clientWidth
             );
 
-
         const height =
             Math.max(
                 canvasSize,
@@ -1281,18 +1170,15 @@ function updateTreePositionFromBook() {
                 canvas.clientHeight
             );
 
-
         svg.setAttribute(
             "width",
             width
         );
 
-
         svg.setAttribute(
             "height",
             height
         );
-
 
         svg.setAttribute(
             "viewBox",
@@ -1300,7 +1186,6 @@ function updateTreePositionFromBook() {
         );
 
     }
-
 
     drawConnections(
         newLayout
@@ -1321,13 +1206,10 @@ function finishBookDrag(event) {
 
     }
 
-
     const wasDragged =
         bookWasDragged;
 
-
     endBookDrag();
-
 
     if (wasDragged) {
 
@@ -1336,7 +1218,6 @@ function finishBookDrag(event) {
                 "#bookTitle"
             );
 
-
         if (bookTitle) {
 
             const x =
@@ -1344,12 +1225,10 @@ function finishBookDrag(event) {
                     bookTitle.style.left
                 );
 
-
             const y =
                 parseFloat(
                     bookTitle.style.top
                 );
-
 
             if (
                 Number.isFinite(x) &&
@@ -1365,7 +1244,6 @@ function finishBookDrag(event) {
 
         }
 
-
         if (
             typeof saveBook ===
             "function"
@@ -1377,26 +1255,20 @@ function finishBookDrag(event) {
 
     }
 
-
     touchStarted =
         false;
-
 
     bookMoveStarted =
         false;
 
-
     dragStartX =
         0;
-
 
     dragStartY =
         0;
 
-
     dragOriginalX =
         0;
-
 
     dragOriginalY =
         0;
@@ -1419,14 +1291,11 @@ function handleBookMouseDown(event) {
 
     }
 
-
     event.preventDefault();
 
     event.stopPropagation();
 
-
     selectBook();
-
 
     startBookDrag(
         event
@@ -1446,7 +1315,6 @@ function handleBookMouseMove(event) {
         return;
 
     }
-
 
     moveBookDrag(
         event
@@ -1483,18 +1351,14 @@ function handleBookTouchStart(event) {
 
     }
 
-
     event.preventDefault();
 
     event.stopPropagation();
 
-
     touchStarted =
         true;
 
-
     selectBook();
-
 
     startBookDrag(
         event
@@ -1518,7 +1382,6 @@ function handleBookTouchMove(event) {
 
     }
 
-
     if (
         event.cancelable
     ) {
@@ -1526,7 +1389,6 @@ function handleBookTouchMove(event) {
         event.preventDefault();
 
     }
-
 
     moveBookDrag(
         event
@@ -1547,11 +1409,9 @@ function handleBookTouchEnd(event) {
 
     }
 
-
     finishBookDrag(
         event
     );
-
 
     touchStarted =
         false;
@@ -1574,7 +1434,6 @@ function handleCanvasClick(event) {
 
     }
 
-
     if (bookWasDragged) {
 
         bookWasDragged =
@@ -1584,10 +1443,8 @@ function handleCanvasClick(event) {
 
     }
 
-
     const target =
         event.target;
-
 
     if (
         target.closest &&
@@ -1600,7 +1457,6 @@ function handleCanvasClick(event) {
 
     }
 
-
     if (
         target.closest &&
         target.closest(
@@ -1611,7 +1467,6 @@ function handleCanvasClick(event) {
         return;
 
     }
-
 
     if (
         target.closest &&
@@ -1624,7 +1479,6 @@ function handleCanvasClick(event) {
 
     }
 
-
     if (
         target.closest &&
         target.closest(
@@ -1635,7 +1489,6 @@ function handleCanvasClick(event) {
         return;
 
     }
-
 
     clearSelection();
 
@@ -1656,9 +1509,6 @@ function handleBackToShelf(event) {
 
     }
 
-
-    // 防止重复点击
-
     if (
         window.__leavingBookPage
     ) {
@@ -1667,12 +1517,8 @@ function handleBackToShelf(event) {
 
     }
 
-
     window.__leavingBookPage =
         true;
-
-
-    // 保存当前书籍
 
     if (
         typeof saveBook ===
@@ -1683,22 +1529,13 @@ function handleBackToShelf(event) {
 
     }
 
-
-    // 清除当前章节
-
     localStorage.removeItem(
         "currentChapterId"
     );
 
-
-    // 清除页面进入状态
-
     sessionStorage.removeItem(
         "returnToShelfAfterCreate"
     );
-
-
-    // 直接替换当前页面
 
     window.location.replace(
         "index.html"
@@ -1719,24 +1556,20 @@ function setupEvents() {
 
     }
 
-
     const canvas =
         document.querySelector(
             ".tree-canvas"
         );
-
 
     const bookTitle =
         document.querySelector(
             "#bookTitle"
         );
 
-
     const bookActions =
         document.querySelector(
             "#bookActions"
         );
-
 
     if (
         !canvas ||
@@ -1753,6 +1586,26 @@ function setupEvents() {
 
 
     // ==========================================
+    // 强制确保书名节点存在并可见
+    // ==========================================
+
+    bookTitle.style.display =
+        "flex";
+
+    bookTitle.style.visibility =
+        "visible";
+
+    bookTitle.style.opacity =
+        "1";
+
+    bookTitle.style.position =
+        "absolute";
+
+    bookTitle.style.zIndex =
+        "20";
+
+
+    // ==========================================
     // 返回书架
     // ==========================================
 
@@ -1760,7 +1613,6 @@ function setupEvents() {
         document.querySelector(
             "#backButton"
         );
-
 
     if (backButton) {
 
@@ -1781,12 +1633,10 @@ function setupEvents() {
         handleBookMouseDown
     );
 
-
     document.addEventListener(
         "mousemove",
         handleBookMouseMove
     );
-
 
     document.addEventListener(
         "mouseup",
@@ -1806,7 +1656,6 @@ function setupEvents() {
         }
     );
 
-
     document.addEventListener(
         "touchmove",
         handleBookTouchMove,
@@ -1815,7 +1664,6 @@ function setupEvents() {
         }
     );
 
-
     document.addEventListener(
         "touchend",
         handleBookTouchEnd,
@@ -1823,7 +1671,6 @@ function setupEvents() {
             passive: false
         }
     );
-
 
     document.addEventListener(
         "touchcancel",
@@ -1869,9 +1716,22 @@ function setupEvents() {
     bookEventsInitialized =
         true;
 
-
     bookPageInitialized =
         true;
+
+
+    // ==========================================
+    // 再次确认书名节点可见
+    // ==========================================
+
+    if (
+        typeof renderBookTitle ===
+        "function"
+    ) {
+
+        renderBookTitle();
+
+    }
 
 }
 
@@ -1890,7 +1750,9 @@ if (
         setupEvents
     );
 
-} else {
+}
+
+else {
 
     setupEvents();
 
