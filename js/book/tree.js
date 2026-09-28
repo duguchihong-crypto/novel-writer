@@ -9,11 +9,8 @@
 // 每个节点最多两个直接子节点
 //
 // 连接线：
-// 父节点中心
-//      │
-//      ├────────┐
-//      │        │
-// 子节点中心  子节点中心
+// 必须从父节点中心
+// 连接到子节点中心
 //
 // ==================================================
 
@@ -36,6 +33,23 @@ const actionBar =
 
 
 // ==================================================
+// 检查 DOM
+// ==================================================
+
+if (!tree || !svg || !workspace) {
+
+    console.error(
+        "tree.js：缺少 #tree、#connections 或 #workspace"
+    );
+
+    throw new Error(
+        "TreeSystem DOM 初始化失败"
+    );
+
+}
+
+
+// ==================================================
 // 参数
 // ==================================================
 
@@ -47,14 +61,19 @@ const CONFIG = {
     // 普通节点高度
     nodeHeight: 50,
 
-    // 节点之间的水平距离
-    horizontalGap: 80,
+    // 节点横向间距
+    horizontalGap: 100,
 
-    // 上下层之间的距离
-    verticalGap: 140,
+    // 层级纵向间距
+    verticalGap: 160,
 
-    // 画布边距
-    padding: 300
+    // 工作区边距
+    padding: 300,
+
+    // 最小工作区
+    minWidth: 3000,
+
+    minHeight: 3000
 
 };
 
@@ -107,7 +126,7 @@ function createId() {
         "-" +
         Math.random()
             .toString(36)
-            .substring(2, 9)
+            .slice(2, 9)
     );
 
 }
@@ -153,7 +172,6 @@ function getParent(node) {
 
     }
 
-
     return (
         nodes.get(node.parentId) ||
         null
@@ -168,28 +186,24 @@ function getParent(node) {
 
 function getChildType(node) {
 
-    if (node.type === "book") {
+    switch (node.type) {
 
-        return "volume";
+        case "book":
+            return "volume";
+
+        case "volume":
+            return "part";
+
+        case "part":
+            return "chapter";
+
+        case "chapter":
+            return null;
+
+        default:
+            return null;
 
     }
-
-
-    if (node.type === "volume") {
-
-        return "part";
-
-    }
-
-
-    if (node.type === "part") {
-
-        return "chapter";
-
-    }
-
-
-    return null;
 
 }
 
@@ -272,23 +286,18 @@ function createNode(parent, type) {
 
 
     /*
-     * 新节点永远放到数组最前面。
+     * 新节点放到数组最前面。
      *
      * 第一次：
      *
      * [第一卷]
      *
-     *
      * 第二次：
      *
      * [第二卷, 第一卷]
      *
-     *
-     * 布局时数组从左到右，
-     * 因此：
-     *
-     * 第二卷在左
-     * 第一卷在右
+     * 布局从左到右，
+     * 所以第一卷永远在最右。
      */
 
     parent.children.unshift(
@@ -310,24 +319,19 @@ function renumber(parent) {
     const children =
         getChildren(parent);
 
+    const normalChildren =
+        children.filter(
+            child =>
+                child.type !== "preface"
+        );
+
 
     const count =
-        children.length;
+        normalChildren.length;
 
 
-    children.forEach(
+    normalChildren.forEach(
         (child, index) => {
-
-            if (
-                child.type === "preface"
-            ) {
-
-                child.title = "序章";
-
-                return;
-
-            }
-
 
             const number =
                 count - index;
@@ -343,6 +347,14 @@ function renumber(parent) {
     children.forEach(
         child => {
 
+            if (
+                child.type === "preface"
+            ) {
+
+                child.title = "序章";
+
+            }
+
             renumber(child);
 
         }
@@ -357,10 +369,13 @@ function renumber(parent) {
 
 function addNode(type) {
 
-    let parent;
+    let parent = null;
 
 
-    // 如果有选中的节点
+    // ------------------------------------------
+    // 有选中节点
+    // ------------------------------------------
+
     if (selectedNodeId) {
 
         parent =
@@ -371,7 +386,11 @@ function addNode(type) {
     }
 
 
-    // 没有选中节点时默认书名
+    // ------------------------------------------
+    // 没有选中节点
+    // 默认书名
+    // ------------------------------------------
+
     if (!parent) {
 
         parent = root;
@@ -380,12 +399,12 @@ function addNode(type) {
 
 
     // ==================================================
-    // 添加序章
+    // 序章
     // ==================================================
 
     if (type === "preface") {
 
-        // 序只能挂在书名下面
+        // 只能挂在书名
         if (
             parent.type !== "book"
         ) {
@@ -395,7 +414,6 @@ function addNode(type) {
         }
 
 
-        // 序只能有一个
         const exists =
             getChildren(parent)
                 .some(
@@ -404,6 +422,7 @@ function addNode(type) {
                 );
 
 
+        // 已经存在
         if (exists) {
 
             return;
@@ -411,11 +430,17 @@ function addNode(type) {
         }
 
 
+        /*
+         * 序章也必须有自己的位置。
+         */
+
         createNode(
             parent,
             "preface"
         );
 
+
+        selectedNodeId = null;
 
         render();
 
@@ -425,7 +450,7 @@ function addNode(type) {
 
 
     // ==================================================
-    // 普通层级
+    // 普通节点
     // ==================================================
 
     const childType =
@@ -466,6 +491,9 @@ function addNode(type) {
     );
 
 
+    selectedNodeId = null;
+
+
     render();
 
 }
@@ -502,7 +530,7 @@ function deleteNode(id) {
         getParent(node);
 
 
-    // 从父节点移除
+    // 从父节点中删除
     if (parent) {
 
         parent.children =
@@ -514,7 +542,7 @@ function deleteNode(id) {
     }
 
 
-    // 删除整个子树
+    // 删除整棵子树
     function removeSubtree(
         currentNode
     ) {
@@ -557,7 +585,7 @@ function deleteNode(id) {
 
 
 // ==================================================
-// 计算布局
+// 计算树布局
 // ==================================================
 
 function calculateLayout() {
@@ -569,9 +597,9 @@ function calculateLayout() {
     let cursorX = 0;
 
 
-    // ==================================================
-    // 递归布局
-    // ==================================================
+    // ------------------------------------------
+    // 递归
+    // ------------------------------------------
 
     function layout(
         node,
@@ -582,9 +610,9 @@ function calculateLayout() {
             getChildren(node);
 
 
-        // ------------------------------------------
-        // 没有孩子
-        // ------------------------------------------
+        // ==========================================
+        // 叶子节点
+        // ==========================================
 
         if (
             children.length === 0
@@ -602,8 +630,8 @@ function calculateLayout() {
             positions.set(
                 node.id,
                 {
-                    x: x,
-                    y: y
+                    x,
+                    y
                 }
             );
 
@@ -618,48 +646,38 @@ function calculateLayout() {
         }
 
 
-        // ------------------------------------------
-        // 有孩子
-        // ------------------------------------------
+        // ==========================================
+        // 有子节点
+        // ==========================================
 
-        const childPositions = [];
+        const childX = [];
 
 
         children.forEach(
             child => {
 
-                const childX =
+                const x =
                     layout(
                         child,
                         depth + 1
                     );
 
 
-                childPositions.push(
-                    childX
-                );
+                childX.push(x);
 
             }
         );
 
 
         const minX =
-            Math.min(
-                ...childPositions
-            );
+            Math.min(...childX);
 
 
         const maxX =
-            Math.max(
-                ...childPositions
-            );
+            Math.max(...childX);
 
 
-        /*
-         * 父节点永远位于
-         * 所有孩子中心的正中间。
-         */
-
+        // 父节点正好位于子节点中心
         const x =
             (minX + maxX) / 2;
 
@@ -672,8 +690,8 @@ function calculateLayout() {
         positions.set(
             node.id,
             {
-                x: x,
-                y: y
+                x,
+                y
             }
         );
 
@@ -690,7 +708,7 @@ function calculateLayout() {
 
 
     // ==================================================
-    // 整体移动
+    // 整体向右移动
     // ==================================================
 
     let minX =
@@ -718,8 +736,21 @@ function calculateLayout() {
     positions.forEach(
         position => {
 
-            position.x +=
-                offset;
+            position.x += offset;
+
+        }
+    );
+
+
+    // ==================================================
+    // 整体向下移动
+    // ==================================================
+
+    positions.forEach(
+        position => {
+
+            position.y +=
+                CONFIG.padding;
 
         }
     );
@@ -731,7 +762,7 @@ function calculateLayout() {
 
 
 // ==================================================
-// 调整画布尺寸
+// 调整工作区
 // ==================================================
 
 function resizeCanvas(
@@ -765,33 +796,49 @@ function resizeCanvas(
 
     const width =
         Math.max(
-            3000,
+            CONFIG.minWidth,
             maxX +
-            CONFIG.padding +
-            CONFIG.nodeWidth
+            CONFIG.padding
         );
 
 
     const height =
         Math.max(
-            3000,
+            CONFIG.minHeight,
             maxY +
-            CONFIG.padding +
-            CONFIG.nodeHeight
+            CONFIG.padding
         );
 
 
-    tree.style.width =
+    // ==========================================
+    // 工作区
+    // ==========================================
+
+    workspace.style.width =
         `${width}px`;
 
+
+    workspace.style.height =
+        `${height}px`;
+
+
+    // ==========================================
+    // 树
+    // ==========================================
+
+    tree.style.width =
+        `${width}px`;
 
     tree.style.height =
         `${height}px`;
 
 
+    // ==========================================
+    // SVG
+    // ==========================================
+
     svg.style.width =
         `${width}px`;
-
 
     svg.style.height =
         `${height}px`;
@@ -834,7 +881,6 @@ function createNodeElement(
         "tree-node";
 
 
-    // 类型 class
     element.classList.add(
         `node-${node.type}`
     );
@@ -852,9 +898,9 @@ function createNodeElement(
         node.title;
 
 
-    // ------------------------------------------
-    // 节点位置
-    // ------------------------------------------
+    // ==========================================
+    // 位置
+    // ==========================================
 
     element.style.left =
         `${position.x - CONFIG.nodeWidth / 2}px`;
@@ -872,9 +918,9 @@ function createNodeElement(
         `${CONFIG.nodeHeight}px`;
 
 
-    // ------------------------------------------
+    // ==========================================
     // 点击选择
-    // ------------------------------------------
+    // ==========================================
 
     element.addEventListener(
         "click",
@@ -910,9 +956,9 @@ function createNodeElement(
     );
 
 
-    // ------------------------------------------
-    // 长按 / 右键删除
-    // ------------------------------------------
+    // ==========================================
+    // 右键删除
+    // ==========================================
 
     element.addEventListener(
         "contextmenu",
@@ -937,7 +983,7 @@ function createNodeElement(
 
 
 // ==================================================
-// 创建树状连接线
+// 创建连接线
 // ==================================================
 
 function drawLine(
@@ -952,30 +998,9 @@ function drawLine(
         );
 
 
-    /*
-     * ==================================================
-     *
-     * 父节点中心
-     *
-     *             ●
-     *             │
-     *             │
-     *       ┌─────┴─────┐
-     *       │           │
-     *       │           │
-     *       ●           ●
-     *
-     * ==================================================
-     *
-     * 起点：
-     * 父节点中心
-     *
-     * 终点：
-     * 子节点中心
-     *
-     * ==================================================
-     */
-
+    // ==========================================
+    // 父节点中心
+    // ==========================================
 
     const x1 =
         parentPosition.x;
@@ -985,6 +1010,10 @@ function drawLine(
         parentPosition.y;
 
 
+    // ==========================================
+    // 子节点中心
+    // ==========================================
+
     const x2 =
         childPosition.x;
 
@@ -993,9 +1022,9 @@ function drawLine(
         childPosition.y;
 
 
-    /*
-     * 中间水平线的 Y
-     */
+    // ==========================================
+    // 中间水平线
+    // ==========================================
 
     const middleY =
         y1 +
@@ -1003,24 +1032,30 @@ function drawLine(
 
 
     /*
-     * SVG路径：
+     * 从父节点中心开始：
      *
-     * M = 移动到父节点中心
+     * M x1 y1
      *
-     * V = 垂直向下
+     * 垂直向下：
      *
-     * H = 水平移动
+     * V middleY
      *
-     * V = 垂直向下到子节点中心
+     * 水平：
+     *
+     * H x2
+     *
+     * 垂直向下：
+     *
+     * V y2
      */
 
     const d =
-        `
-        M ${x1} ${y1}
-        V ${middleY}
-        H ${x2}
-        V ${y2}
-        `;
+        [
+            `M ${x1} ${y1}`,
+            `V ${middleY}`,
+            `H ${x2}`,
+            `V ${y2}`
+        ].join(" ");
 
 
     path.setAttribute(
@@ -1029,9 +1064,38 @@ function drawLine(
     );
 
 
-    path.classList.add(
-        "tree-line"
+    path.setAttribute(
+        "fill",
+        "none"
     );
+
+
+    path.setAttribute(
+        "stroke",
+        "#222"
+    );
+
+
+    path.setAttribute(
+        "stroke-width",
+        "4"
+    );
+
+
+    path.setAttribute(
+        "stroke-linecap",
+        "round"
+    );
+
+
+    path.setAttribute(
+        "stroke-linejoin",
+        "round"
+    );
+
+
+    path.style.pointerEvents =
+        "none";
 
 
     svg.appendChild(
@@ -1049,6 +1113,7 @@ function drawConnections(
     positions
 ) {
 
+    // 清空 SVG
     svg.innerHTML = "";
 
 
@@ -1108,51 +1173,51 @@ function drawConnections(
 
 function render() {
 
-    // ------------------------------------------
+    // ==========================================
     // 重新编号
-    // ------------------------------------------
+    // ==========================================
 
     renumber(root);
 
 
-    // ------------------------------------------
+    // ==========================================
     // 清空
-    // ------------------------------------------
+    // ==========================================
 
     tree.innerHTML = "";
 
     svg.innerHTML = "";
 
 
-    // ------------------------------------------
+    // ==========================================
     // 计算位置
-    // ------------------------------------------
+    // ==========================================
 
     const positions =
         calculateLayout();
 
 
-    // ------------------------------------------
-    // 调整画布
-    // ------------------------------------------
+    // ==========================================
+    // 调整工作区
+    // ==========================================
 
     resizeCanvas(
         positions
     );
 
 
-    // ------------------------------------------
+    // ==========================================
     // 先画线
-    // ------------------------------------------
+    // ==========================================
 
     drawConnections(
         positions
     );
 
 
-    // ------------------------------------------
+    // ==========================================
     // 再画节点
-    // ------------------------------------------
+    // ==========================================
 
     nodes.forEach(
         node => {
@@ -1205,14 +1270,6 @@ function render() {
 
 if (actionBar) {
 
-    /*
-     * 你的 CSS 默认：
-     *
-     * display: none;
-     *
-     * 所以必须主动显示。
-     */
-
     actionBar.classList.add(
         "show"
     );
@@ -1246,7 +1303,7 @@ if (actionBar) {
 
 
 // ==================================================
-// 点击空白区域
+// 点击空白
 // ==================================================
 
 workspace.addEventListener(
