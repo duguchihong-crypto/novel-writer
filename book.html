@@ -44,7 +44,10 @@
 
         <!-- 页面标题 -->
 
-        <div class="page-title">
+        <div
+            id="pageTitle"
+            class="page-title"
+        >
             全书
         </div>
 
@@ -90,27 +93,6 @@
 
         <!-- ==================================================
              SVG连接线
-
-             横向布局示例：
-
-             小说名 ───────── 卷
-                              │
-                              ├──────── 章
-                              │
-                              ├──────── 章
-                              │
-                              └──────── 章
-
-
-             纵向布局示例：
-
-             小说名
-                │
-                ├──── 卷
-                │
-                ├──── 卷
-                │
-                └──── 卷
         ================================================== -->
 
         <svg
@@ -124,44 +106,28 @@
         <!-- ==================================================
              小说书名
 
-             注意：
+             ★★★ 这里不再写死「未命名书籍」 ★★★
 
-             HTML中不设置：
+             JavaScript 会根据：
 
-                 left
-                 top
+                 currentBookId
+                     ↓
+                 novelBooks
+                     ↓
+                 book.title
 
-             由 JavaScript 控制。
-
-             第一次打开时：
-
-                 3000 × 3000
-
-                 中心 = 1500 / 1500
-
-             用户可以之后自由拖动。
+             自动显示真正的小说名称。
         ================================================== -->
 
         <div
             id="bookTitle"
             class="book-title"
-        >
-            未命名书籍
-        </div>
+        ></div>
 
 
 
         <!-- ==================================================
              全书树结构
-
-             节点：
-
-                 序
-                 卷
-                 篇
-                 章
-
-             节点的位置由 layout.js 计算。
         ================================================== -->
 
         <div
@@ -173,23 +139,6 @@
 
         <!-- ==================================================
              操作栏
-
-             由 actions.js 控制。
-
-             选择书名时：
-
-                 ＋序
-                 ＋卷
-                 ＋篇
-                 ＋章
-
-             选择节点时：
-
-                 ＋同级
-                 ＋篇
-                 ＋章
-
-             具体按钮由 actions.js 动态生成。
         ================================================== -->
 
         <div
@@ -206,8 +155,6 @@
     <!-- ==================================================
          JavaScript
 
-         ★★★ 非常重要 ★★★
-
          正确加载顺序：
 
          1. state.js
@@ -218,33 +165,7 @@
          6. actions.js
          7. events.js
          8. main.js
-
-
-         为什么 events.js 必须在 main.js 前面？
-
-         因为：
-
-             main.js
-                 ↓
-             init()
-                 ↓
-             setupEvents()
-
-         setupEvents() 是在 events.js 中定义的。
-
-         所以必须：
-
-             events.js
-                 ↓
-             main.js
-
-
-         否则可能出现：
-
-             ReferenceError:
-             setupEvents is not defined
     ================================================== -->
-
 
 
     <!-- 1. 状态 -->
@@ -252,11 +173,9 @@
     <script src="js/book/state.js"></script>
 
 
-
     <!-- 2. 数据存储 -->
 
     <script src="js/book/storage.js"></script>
-
 
 
     <!-- 3. 节点 -->
@@ -264,11 +183,9 @@
     <script src="js/book/nodes.js"></script>
 
 
-
     <!-- 4. 自动布局 -->
 
     <script src="js/book/layout.js"></script>
-
 
 
     <!-- 5. 连接线 -->
@@ -276,17 +193,14 @@
     <script src="js/book/connections.js"></script>
 
 
-
     <!-- 6. 操作栏 -->
 
     <script src="js/book/actions.js"></script>
 
 
-
     <!-- 7. 鼠标 / 触摸 / 拖动事件 -->
 
     <script src="js/book/events.js"></script>
-
 
 
     <!-- 8. 页面初始化 -->
@@ -296,18 +210,233 @@
 
 
     <!-- ==================================================
+         ★★★ 小说书名加载 ★★★
+
+         从 LocalStorage 中读取真正的小说名称。
+
+         数据结构：
+
+             novelBooks
+                 ↓
+             [
+                 {
+                     id: "...",
+                     title: "宝可梦：赤红传",
+                     cover: "...",
+                     ...
+                 }
+             ]
+
+             currentBookId
+                 ↓
+             找到对应 book
+                 ↓
+             book.title
+                 ↓
+             #bookTitle
+    ================================================== -->
+
+    <script>
+
+        function loadCurrentBookTitle() {
+
+            const titleElement =
+                document.getElementById(
+                    "bookTitle"
+                );
+
+
+            if (!titleElement) {
+
+                return;
+
+            }
+
+
+            /* ------------------------------------------
+               获取当前小说 ID
+            ------------------------------------------ */
+
+            let currentBookId = null;
+
+
+            try {
+
+                currentBookId =
+                    localStorage.getItem(
+                        "currentBookId"
+                    );
+
+            } catch (error) {
+
+                console.error(
+                    "读取 currentBookId 失败：",
+                    error
+                );
+
+            }
+
+
+            /* ------------------------------------------
+               没有当前小说
+            ------------------------------------------ */
+
+            if (!currentBookId) {
+
+                titleElement.textContent =
+                    "未命名小说";
+
+                document.title =
+                    "全书";
+
+                return;
+
+            }
+
+
+            /* ------------------------------------------
+               获取所有小说
+            ------------------------------------------ */
+
+            let savedBooks = null;
+
+
+            try {
+
+                savedBooks =
+                    localStorage.getItem(
+                        "novelBooks"
+                    );
+
+            } catch (error) {
+
+                console.error(
+                    "读取 novelBooks 失败：",
+                    error
+                );
+
+            }
+
+
+            if (!savedBooks) {
+
+                titleElement.textContent =
+                    "未命名小说";
+
+                document.title =
+                    "全书";
+
+                return;
+
+            }
+
+
+            /* ------------------------------------------
+               解析小说数据
+            ------------------------------------------ */
+
+            let books = [];
+
+
+            try {
+
+                const parsedBooks =
+                    JSON.parse(
+                        savedBooks
+                    );
+
+
+                if (
+                    Array.isArray(
+                        parsedBooks
+                    )
+                ) {
+
+                    books =
+                        parsedBooks;
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "解析 novelBooks 失败：",
+                    error
+                );
+
+            }
+
+
+            /* ------------------------------------------
+               查找当前小说
+            ------------------------------------------ */
+
+            const currentBook =
+                books.find(
+                    function(book) {
+
+                        return (
+                            String(book.id) ===
+                            String(currentBookId)
+                        );
+
+                    }
+                );
+
+
+            /* ------------------------------------------
+               显示小说名称
+            ------------------------------------------ */
+
+            if (
+                currentBook &&
+                currentBook.title
+            ) {
+
+                titleElement.textContent =
+                    currentBook.title;
+
+
+                /*
+                 * 浏览器标签页
+                 */
+
+                document.title =
+                    currentBook.title +
+                    " - 全书";
+
+            } else {
+
+                titleElement.textContent =
+                    "未命名小说";
+
+                document.title =
+                    "全书";
+
+            }
+
+        }
+
+
+        /* ==================================================
+           页面加载完成后读取小说名称
+        ================================================== */
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function() {
+
+                loadCurrentBookTitle();
+
+            }
+        );
+
+    </script>
+
+
+
+    <!-- ==================================================
          返回书架
-
-         不依赖 events.js。
-
-         点击「← 返回」后：
-
-         1. 保存当前小说
-         2. 清除当前章节
-         3. 清除创建小说返回标记
-         4. 直接返回 index.html
-
-         使用 replace，避免浏览器返回键再次回到全书页面。
     ================================================== -->
 
     <script>
@@ -317,9 +446,12 @@
             try {
 
                 if (
-                    typeof saveBook === "function"
+                    typeof saveBook ===
+                    "function"
                 ) {
+
                     saveBook();
+
                 }
 
             } catch (error) {
