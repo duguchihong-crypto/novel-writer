@@ -74,7 +74,6 @@ body {
         rgba(120, 0, 0, 0.18);
 }
 
-
 .logo {
     font-size: 21px;
 
@@ -84,7 +83,6 @@ body {
 
     white-space: nowrap;
 }
-
 
 .top-actions {
     margin-left: auto;
@@ -127,7 +125,6 @@ body {
         box-shadow 0.15s ease;
 }
 
-
 .create-button {
     background:
         linear-gradient(
@@ -143,7 +140,6 @@ body {
         rgba(0, 172, 193, 0.28);
 }
 
-
 .create-button:hover {
     background: #00a5b8;
 
@@ -151,7 +147,6 @@ body {
         0 5px 14px
         rgba(0, 172, 193, 0.34);
 }
-
 
 .settings-button {
     background:
@@ -162,12 +157,10 @@ body {
     backdrop-filter: blur(8px);
 }
 
-
 .settings-button:hover {
     background:
         rgba(255, 255, 255, 0.24);
 }
-
 
 .create-button:active,
 .settings-button:active,
@@ -197,12 +190,10 @@ body {
         rgba(251, 192, 45, 0.30);
 }
 
-
 .sorting .create-button,
 .sorting .settings-button {
     display: none;
 }
-
 
 .sorting .finish-sort-button {
     display: block;
@@ -240,7 +231,6 @@ body {
     padding: 5px;
 }
 
-
 .menu.show {
     display: block;
 
@@ -248,7 +238,6 @@ body {
         menuAppear
         0.14s ease-out;
 }
-
 
 @keyframes menuAppear {
 
@@ -270,16 +259,13 @@ body {
 
 }
 
-
 .create-menu {
     right: 105px;
 }
 
-
 .settings-menu {
     right: 22px;
 }
-
 
 .menu button {
     width: 100%;
@@ -307,11 +293,9 @@ body {
         background 0.12s ease;
 }
 
-
 .menu button:hover {
     background: #f3f5f7;
 }
-
 
 .menu button:active {
     background: #e9edf0;
@@ -362,7 +346,6 @@ body {
         rgba(0, 0, 0, 0.05);
 }
 
-
 .empty-icon {
     width: 78px;
 
@@ -393,7 +376,6 @@ body {
         rgba(251, 192, 45, 0.18);
 }
 
-
 .empty-title {
     font-size: 20px;
 
@@ -403,7 +385,6 @@ body {
 
     margin-bottom: 9px;
 }
-
 
 .empty-text {
     font-size: 14px;
@@ -429,14 +410,19 @@ body {
 
 /* ==================================================
    网格模式
+   固定三列
 ================================================== */
 
 .book-grid.grid-view {
+
+    display: grid;
+
     grid-template-columns:
-        repeat(
-            auto-fill,
-            minmax(185px, 1fr)
-        );
+        repeat(3, minmax(0, 1fr));
+
+    gap: 14px;
+
+    width: 100%;
 }
 
 
@@ -473,7 +459,6 @@ body {
 
     touch-action: manipulation;
 }
-
 
 .book-card:hover {
     transform:
@@ -556,7 +541,6 @@ body {
         transparent;
 }
 
-
 .book-menu-button:hover {
     background: #fff;
 
@@ -566,17 +550,14 @@ body {
         scale(1.08);
 }
 
-
 .book-menu-button:active {
     transform:
         scale(0.93);
 }
 
-
 .book-menu-button:focus {
     outline: none;
 }
-
 
 .book-menu-button:focus-visible {
     outline:
@@ -622,11 +603,9 @@ body {
     cursor: pointer;
 }
 
-
 .book-cover:hover {
     opacity: 0.96;
 }
-
 
 .book-cover img {
     width: 100%;
@@ -639,7 +618,6 @@ body {
 
     pointer-events: none;
 }
-
 
 .default-cover {
     width: 100%;
@@ -676,7 +654,6 @@ body {
     background: #fff;
 }
 
-
 .book-title {
     font-size: 16px;
 
@@ -702,7 +679,6 @@ body {
         color 0.15s ease;
 }
 
-
 .book-title:hover {
     color: #0097a7;
 }
@@ -713,6 +689,7 @@ body {
 ================================================== */
 
 .book-grid.list-view {
+
     display: flex;
 
     flex-direction: column;
@@ -720,8 +697,8 @@ body {
     gap: 11px;
 }
 
-
 .list-view .book-card {
+
     width: 100%;
 
     min-height: 96px;
@@ -733,8 +710,8 @@ body {
     border-radius: 13px;
 }
 
-
 .list-view .book-cover {
+
     flex:
         0 0 70px;
 
@@ -747,13 +724,12 @@ body {
     border-radius: 0;
 }
 
-
 .list-view .default-cover {
     font-size: 30px;
 }
 
-
 .list-view .book-info {
+
     flex: 1;
 
     min-width: 0;
@@ -762,8 +738,8 @@ body {
         0 54px 0 16px;
 }
 
-
 .list-view .book-title {
+
     font-size: 16px;
 
     white-space: nowrap;
@@ -779,6 +755,7 @@ body {
 ================================================== */
 
 .list-view .book-menu-button {
+
     top: 50%;
 
     right: 13px;
@@ -787,15 +764,15 @@ body {
         translateY(-50%);
 }
 
-
 .list-view .book-menu-button:hover {
+
     transform:
         translateY(-50%)
         scale(1.08);
 }
 
-
 .list-view .book-menu-button:active {
+
     transform:
         translateY(-50%)
         scale(0.93);
@@ -807,6 +784,7 @@ body {
 ================================================== */
 
 .book-menu-overlay {
+
     position: fixed;
 
     inset: 0;
@@ -822,7 +800,6 @@ body {
     display: none;
 }
 
-
 .book-menu-overlay.show {
     display: block;
 }
@@ -833,6 +810,7 @@ body {
 ================================================== */
 
 .book-context-menu {
+
     position: fixed;
 
     left: 50%;
@@ -867,11 +845,9 @@ body {
         0.16s ease-out;
 }
 
-
 .book-context-menu.show {
     display: block;
 }
-
 
 @keyframes contextMenuAppear {
 
@@ -899,6 +875,7 @@ body {
 ================================================== */
 
 .context-menu-title {
+
     padding:
         18px 19px 14px;
 
@@ -924,6 +901,7 @@ body {
 ================================================== */
 
 .context-menu-button {
+
     width: 100%;
 
     min-height: 56px;
@@ -956,28 +934,23 @@ body {
         background 0.12s ease;
 }
 
-
 .context-menu-button:last-child {
     border-bottom: none;
 }
-
 
 .context-menu-button:hover {
     background: #f6f7f8;
 }
 
-
 .context-menu-button:active {
     background: #eceff1;
 }
-
 
 .context-menu-icon {
     width: 36px;
 
     font-size: 18px;
 }
-
 
 .context-menu-button.delete-action {
     color: #333;
@@ -989,6 +962,7 @@ body {
 ================================================== */
 
 .sort-hint {
+
     display: none;
 
     margin-bottom: 16px;
@@ -1027,6 +1001,7 @@ body {
 ================================================== */
 
 .sorting .book-card {
+
     cursor: grab;
 
     animation:
@@ -1035,11 +1010,9 @@ body {
         infinite alternate;
 }
 
-
 .sorting .book-card:active {
     cursor: grabbing;
 }
-
 
 @keyframes sortShake {
 
@@ -1061,6 +1034,7 @@ body {
 ================================================== */
 
 .book-card.dragging {
+
     opacity: 0.55;
 
     transform:
@@ -1071,8 +1045,8 @@ body {
         rgba(0, 0, 0, 0.15);
 }
 
-
 .book-card.drag-over {
+
     border-color: #fbc02d;
 
     box-shadow:
@@ -1086,6 +1060,7 @@ body {
 ================================================== */
 
 .bottom-nav {
+
     position: fixed;
 
     bottom: 0;
@@ -1114,8 +1089,8 @@ body {
         rgba(0, 0, 0, 0.10);
 }
 
-
 .bottom-nav button {
+
     flex: 1;
 
     height: 62px;
@@ -1145,14 +1120,14 @@ body {
         transform 0.15s ease;
 }
 
-
 .bottom-nav button:active {
+
     transform:
         scale(0.96);
 }
 
-
 .bottom-nav button.active {
+
     background:
         linear-gradient(
             135deg,
@@ -1177,6 +1152,7 @@ body {
 @media (max-width: 600px) {
 
     body {
+
         padding-top: 64px;
 
         padding-bottom: 70px;
@@ -1186,6 +1162,7 @@ body {
     /* ---------- 顶部 ---------- */
 
     .top-bar {
+
         height: 64px;
 
         padding:
@@ -1194,6 +1171,7 @@ body {
 
 
     .logo {
+
         font-size: 18px;
 
         letter-spacing: 0;
@@ -1201,6 +1179,7 @@ body {
 
 
     .top-actions {
+
         gap: 6px;
     }
 
@@ -1221,6 +1200,7 @@ body {
 
 
     .create-button {
+
         padding-left: 11px;
 
         padding-right: 11px;
@@ -1230,6 +1210,7 @@ body {
     /* ---------- 菜单 ---------- */
 
     .menu {
+
         top: 70px;
 
         width: 170px;
@@ -1239,13 +1220,225 @@ body {
 
 
     .create-menu {
+
         right: 77px;
     }
 
 
     .settings-menu {
+
         right: 11px;
     }
 
 
-    /* ----------
+    /* ---------- 主内容 ---------- */
+
+    .container {
+
+        padding:
+            22px 10px 24px;
+    }
+
+
+    /* ---------- 空书架 ---------- */
+
+    .empty-shelf {
+
+        margin-top: 70px;
+
+        padding:
+            35px 20px;
+    }
+
+
+    /* ---------- 网格 ---------- */
+
+    .book-grid.grid-view {
+
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+
+        gap: 10px;
+
+        width: 100%;
+    }
+
+
+    /* ---------- 网格卡片 ---------- */
+
+    .grid-view .book-card {
+
+        width: 100%;
+
+        min-width: 0;
+
+        border-radius: 11px;
+    }
+
+
+    .grid-view .book-cover {
+
+        width: 100%;
+
+        aspect-ratio: 3 / 4;
+    }
+
+
+    .grid-view .book-info {
+
+        padding:
+            9px 8px 10px;
+    }
+
+
+    .grid-view .book-title {
+
+        font-size: 13px;
+
+        line-height: 1.35;
+    }
+
+
+    .grid-view .book-menu-button {
+
+        width: 29px;
+
+        height: 29px;
+
+        top: 7px;
+
+        right: 7px;
+
+        font-size: 18px;
+    }
+
+
+    /* ---------- 列表 ---------- */
+
+    .book-grid.list-view {
+
+        gap: 9px;
+    }
+
+
+    .list-view .book-card {
+
+        min-height: 84px;
+    }
+
+
+    .list-view .book-cover {
+
+        flex:
+            0 0 62px;
+
+        width: 62px;
+
+        height: 80px;
+    }
+
+
+    .list-view .book-info {
+
+        padding:
+            0 48px 0 13px;
+    }
+
+
+    .list-view .book-title {
+
+        font-size: 15px;
+    }
+
+
+    .list-view .book-menu-button {
+
+        width: 31px;
+
+        height: 31px;
+
+        right: 9px;
+
+        font-size: 20px;
+    }
+
+
+    /* ---------- 书籍菜单 ---------- */
+
+    .book-context-menu {
+
+        width:
+            calc(100vw - 32px);
+
+        max-width: 320px;
+    }
+
+
+    /* ---------- 底部 ---------- */
+
+    .bottom-nav {
+
+        height: 70px;
+
+        padding:
+            4px 7px;
+    }
+
+
+    .bottom-nav button {
+
+        height: 60px;
+
+        font-size: 12px;
+    }
+
+}
+
+
+/* ==================================================
+   极小屏幕
+================================================== */
+
+@media (max-width: 360px) {
+
+    .container {
+
+        padding-left: 8px;
+
+        padding-right: 8px;
+    }
+
+
+    .book-grid.grid-view {
+
+        gap: 7px;
+    }
+
+
+    .grid-view .book-info {
+
+        padding:
+            8px 6px 9px;
+    }
+
+
+    .grid-view .book-title {
+
+        font-size: 12px;
+    }
+
+
+    .grid-view .book-menu-button {
+
+        width: 26px;
+
+        height: 26px;
+
+        top: 5px;
+
+        right: 5px;
+
+        font-size: 16px;
+    }
+
+}
