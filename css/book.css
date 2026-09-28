@@ -4,6 +4,7 @@
 
 * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -49,13 +50,21 @@ body {
 
     padding: 0 12px;
 
-    background: #111111;
+    /* 赤 */
+    background: #d92d2d;
 
     color: white;
 
     z-index: 10000;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.18);
 }
 
+
+/* ======================================================
+   顶部按钮
+====================================================== */
 
 .top-button {
 
@@ -67,20 +76,35 @@ body {
 
     border-radius: 9px;
 
-    background: #333333;
+    /* 深赤 */
+
+    background: #b71c1c;
 
     color: white;
 
     font-size: 15px;
 
+    font-weight: 600;
+
     cursor: pointer;
+
+    transition:
+        transform 0.1s ease,
+        background 0.1s ease;
 }
 
 
 .top-button:active {
+
     transform: scale(0.96);
+
+    background: #991515;
 }
 
+
+/* ======================================================
+   页面标题
+====================================================== */
 
 .page-title {
 
@@ -94,7 +118,11 @@ body {
 
     font-weight: bold;
 
+    color: white;
+
     white-space: nowrap;
+
+    pointer-events: none;
 }
 
 
@@ -117,6 +145,8 @@ body {
     background: #f5f5f5;
 
     isolation: isolate;
+
+    -webkit-overflow-scrolling: touch;
 }
 
 
@@ -187,9 +217,11 @@ body {
     align-items: center;
     justify-content: center;
 
-    background: #ff4d4d;
+    /* 赤色书名 */
 
-    border: 3px solid #d90000;
+    background: #d92d2d;
+
+    border: 3px solid #a91414;
 
     border-radius: 14px;
 
@@ -219,6 +251,7 @@ body {
 
 
 .book-title:active {
+
     cursor: grabbing;
 }
 
@@ -282,6 +315,11 @@ body {
 
     box-shadow:
         0 3px 8px rgba(0, 0, 0, 0.12);
+
+    transition:
+        background 0.12s ease,
+        border-color 0.12s ease,
+        transform 0.12s ease;
 }
 
 
@@ -290,6 +328,7 @@ body {
 ====================================================== */
 
 .node.preface {
+
     border-color: #222;
 }
 
@@ -299,6 +338,7 @@ body {
 ====================================================== */
 
 .node.volume {
+
     border-color: #222;
 }
 
@@ -308,6 +348,7 @@ body {
 ====================================================== */
 
 .node.part {
+
     border-color: #222;
 }
 
@@ -317,7 +358,23 @@ body {
 ====================================================== */
 
 .node.chapter {
+
     border-color: #222;
+}
+
+
+/* ======================================================
+   节点选中
+====================================================== */
+
+.node.selected {
+
+    background: #ffd84d;
+
+    border-color: #e0ad00;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
 
@@ -341,7 +398,7 @@ body {
 
     border-radius: 50%;
 
-    background: #111;
+    background: #d92d2d;
 
     color: white;
 
@@ -350,6 +407,21 @@ body {
     line-height: 24px;
 
     cursor: pointer;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    z-index: 10;
+}
+
+
+.node-delete:active {
+
+    transform: scale(0.9);
+
+    background: #a91414;
 }
 
 
@@ -377,13 +449,21 @@ body {
     border-radius: 14px;
 
     z-index: 20000;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.22);
 }
 
 
 .action-bar.show {
+
     display: flex;
 }
 
+
+/* ======================================================
+   操作按钮
+====================================================== */
 
 .action-bar button {
 
@@ -395,16 +475,104 @@ body {
 
     border-radius: 9px;
 
-    background: #eeeeee;
+    /* 青 */
 
-    color: #111;
+    background: #16b8d4;
+
+    color: white;
 
     font-size: 15px;
 
+    font-weight: 600;
+
     cursor: pointer;
+
+    transition:
+        transform 0.1s ease,
+        background 0.1s ease;
 }
 
 
 .action-bar button:active {
+
     transform: scale(0.95);
+
+    background: #0e9db7;
+}
+
+
+/* ======================================================
+   手机适配
+====================================================== */
+
+@media (max-width: 600px) {
+
+    .top-bar {
+
+        height: 56px;
+
+        padding: 0 10px;
+    }
+
+
+    .top-button {
+
+        height: 38px;
+
+        padding: 0 12px;
+
+        font-size: 14px;
+    }
+
+
+    .page-title {
+
+        font-size: 17px;
+    }
+
+
+    .canvas {
+
+        top: 56px;
+    }
+
+
+    .book-title {
+
+        min-width: 180px;
+
+        max-width: 300px;
+
+        font-size: 22px;
+    }
+
+
+    .node {
+
+        min-width: 140px;
+
+        max-width: 220px;
+
+        font-size: 16px;
+    }
+
+
+    .action-bar {
+
+        bottom: 14px;
+
+        gap: 6px;
+
+        padding: 7px;
+    }
+
+
+    .action-bar button {
+
+        height: 40px;
+
+        padding: 0 11px;
+
+        font-size: 14px;
+    }
 }
