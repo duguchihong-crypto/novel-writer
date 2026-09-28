@@ -1,19 +1,13 @@
-const backButton = document.getElementById("backButton");
+document.addEventListener("DOMContentLoaded", function () {
 
-if (backButton) {
+    const backButton = document.getElementById("backButton");
 
-    backButton.addEventListener("click", () => {
+    if (!backButton) {
+        return;
+    }
 
-        if (document.referrer) {
+    backButton.onclick = function () {
+        window.location.replace("./index.html");
+    };
 
-            history.back();
-
-        } else {
-
-            window.location.href = "./index.html";
-
-        }
-
-    });
-
-}
+});
