@@ -14,7 +14,7 @@
 
     <link
         rel="stylesheet"
-        href="css/book.css?v=2"
+        href="./css/book.css?v=9999"
     >
 
 </head>
@@ -26,7 +26,10 @@
          顶部固定栏
     ================================================== -->
 
-    <header class="top-bar">
+    <header
+        id="topBar"
+        class="top-bar"
+    >
 
         <button
             id="backButton"
@@ -65,13 +68,17 @@
         class="canvas"
     >
 
+        <!-- 连接线 -->
+
         <svg
             id="connections"
             class="connections"
         ></svg>
 
 
-        <!-- 全书内部的书名 -->
+        <!-- ==================================================
+             全书内部书名
+        ================================================== -->
 
         <div
             id="bookTitle"
@@ -81,7 +88,9 @@
         </div>
 
 
-        <!-- 全书节点 -->
+        <!-- ==================================================
+             全书节点
+        ================================================== -->
 
         <div
             id="tree"
@@ -89,7 +98,9 @@
         ></div>
 
 
-        <!-- 操作栏 -->
+        <!-- ==================================================
+             操作栏
+        ================================================== -->
 
         <div
             id="actionBar"
@@ -103,6 +114,7 @@
                 ＋序
             </button>
 
+
             <button
                 type="button"
                 data-action="volume"
@@ -110,12 +122,14 @@
                 ＋卷
             </button>
 
+
             <button
                 type="button"
                 data-action="part"
             >
                 ＋篇
             </button>
+
 
             <button
                 type="button"
@@ -129,7 +143,7 @@
     </main>
 
 
-    <script src="js/book/main.js"></script>
+    <script src="./js/book/main.js"></script>
 
 </body>
 
