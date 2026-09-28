@@ -1,103 +1,61 @@
 // ==================================================
 // tree.js
-// 全书树状结构系统
+// 全书树状结构
 //
 // 规则：
-// 1. 书名是根节点
-// 2. 纵向：上 → 下
-// 3. 横向：右 → 左
-// 4. 第一项永远在最右边
-// 5. 新建第二项后，第二项出现在第一项左边
-// 6. 一个节点最多两个直接子节点
-// 7. 连接线：父节点中央 → 子节点中央
+// 上 → 下
+// 右 → 左
+// 第一项在最右边
+// 每个节点最多两个子节点
+// 连接线：父节点中心 → 子节点中心
 // ==================================================
 
+const tree = document.getElementById("tree");
+const svg = document.getElementById("connections");
+const workspace = document.getElementById("workspace");
+const actionBar = document.getElementById("actionBar");
 
 // ==================================================
-// DOM
+// 参数
 // ==================================================
 
-const treeWorkspace =
-    document.getElementById("workspace");
-
-const treeContainer =
-    document.getElementById("tree");
-
-const connectionSvg =
-    document.getElementById("connections");
-
-const treeBookTitle =
-    document.getElementById("bookTitle");
-
-const treeActionBar =
-    document.getElementById("actionBar");
-
-
-// ==================================================
-// 布局参数
-// ==================================================
-
-const TREE_CONFIG = {
-
+const CONFIG = {
     nodeWidth: 150,
-
     nodeHeight: 50,
 
-    horizontalGap: 90,
+    horizontalGap: 80,
+    verticalGap: 140,
 
-    verticalGap: 130,
-
-    padding: 300,
-
-    lineWidth: 2
-
+    padding: 300
 };
 
 
 // ==================================================
-// 节点数据
+// 数据
 // ==================================================
 
-const treeNodes = new Map();
+const nodes = new Map();
 
-
-// ==================================================
-// 根节点
-// ==================================================
-
-const treeRoot = {
-
-    id: "book",
-
+const root = {
+    id: "book-root",
     type: "book",
-
     title: "新书",
-
     parentId: null,
-
     children: []
-
 };
 
-
-treeNodes.set(
-    treeRoot.id,
-    treeRoot
-);
+nodes.set(root.id, root);
 
 
-// ==================================================
 // 当前选择
-// ==================================================
-
-let treeSelectedNodeId = null;
+let selectedNodeId = null;
 
 
 // ==================================================
 // ID
 // ==================================================
 
-function createTreeId() {
+function createId() {
 
     return (
         "node-" +
@@ -105,9 +63,8 @@ function createTreeId() {
         "-" +
         Math.random()
             .toString(36)
-            .slice(2, 9)
+            .substring(2, 9)
     );
-
 }
 
 
@@ -115,21 +72,19 @@ function createTreeId() {
 // 获取节点
 // ==================================================
 
-function getTreeNode(id) {
-
-    return treeNodes.get(id) || null;
-
+function getNode(id) {
+    return nodes.get(id);
 }
 
 
 // ==================================================
-// 获取子节点
+// 获取孩子
 // ==================================================
 
-function getTreeChildren(node) {
+function getChildren(node) {
 
     return node.children
-        .map(id => getTreeNode(id))
+        .map(id => nodes.get(id))
         .filter(Boolean);
 
 }
@@ -139,80 +94,35 @@ function getTreeChildren(node) {
 // 获取父节点
 // ==================================================
 
-function getTreeParent(node) {
+function getParent(node) {
 
-    if (!node || node.parentId === null) {
-
+    if (!node.parentId) {
         return null;
-
     }
 
-
-    return getTreeNode(
-        node.parentId
-    );
-
+    return nodes.get(node.parentId) || null;
 }
 
 
 // ==================================================
-// 获取层级
+// 获取下一层类型
 // ==================================================
 
-function getTreeLevel(node) {
+function getChildType(node) {
 
-    let level = 0;
-
-    let current = node;
-
-
-    while (
-        current &&
-        current.parentId !== null
-    ) {
-
-        current =
-            getTreeParent(current);
-
-        level++;
-
-    }
-
-
-    return level;
-
-}
-
-
-// ==================================================
-// 类型
-// ==================================================
-
-function getTreeChildType(parent) {
-
-    if (parent.type === "book") {
-
+    if (node.type === "book") {
         return "volume";
-
     }
 
-
-    if (parent.type === "volume") {
-
+    if (node.type === "volume") {
         return "part";
-
     }
 
-
-    if (parent.type === "part") {
-
+    if (node.type === "part") {
         return "chapter";
-
     }
-
 
     return null;
-
 }
 
 
@@ -220,12 +130,9 @@ function getTreeChildType(parent) {
 // 类型名称
 // ==================================================
 
-function getTreeTypeName(type) {
+function getTypeName(type) {
 
     switch (type) {
-
-        case "preface":
-            return "序章";
 
         case "volume":
             return "卷";
@@ -245,65 +152,36 @@ function getTreeTypeName(type) {
 
 
 // ==================================================
+// 获取编号
+// ==================================================
+
+function getNumber(parent) {
+
+    /*
+     * children 的排列方式：
+     *
+     * [第二, 第一]
+     *
+     * 所以数组最后一个才是第一。
+     */
+
+    return parent.children.length + 1;
+}
+
+
+// ==================================================
 // 创建节点
 // ==================================================
 
-function createTreeNode(
-    parent,
-    type
-) {
+function createNode(parent, type) {
 
-    // ----------------------------------------------
-    // 序章只能有一个
-    // ----------------------------------------------
-
-    if (type === "preface") {
-
-        const exists =
-            getTreeChildren(parent)
-                .some(
-                    child =>
-                        child.type === "preface"
-                );
-
-
-        if (exists) {
-
-            return null;
-
-        }
-
-    }
-
-
-    // ----------------------------------------------
-    // 普通节点最多两个
-    // ----------------------------------------------
-
-    if (
-        type !== "preface" &&
-        parent.children.length >= 2
-    ) {
-
+    // 一个节点最多两个孩子
+    if (parent.children.length >= 2) {
         return null;
-
     }
 
 
-    // ----------------------------------------------
-    // 编号
-    //
-    // 注意：
-    // children 数组从左到右保存：
-    //
-    // 第二、第一
-    //
-    // 所以新建节点时必须放到最前面。
-    // ----------------------------------------------
-
-    const number =
-        parent.children.length + 1;
-
+    const number = getNumber(parent);
 
     let title;
 
@@ -315,14 +193,14 @@ function createTreeNode(
     } else {
 
         title =
-            `第${number}${getTreeTypeName(type)}`;
+            `第${number}${getTypeName(type)}`;
 
     }
 
 
     const node = {
 
-        id: createTreeId(),
+        id: createId(),
 
         type: type,
 
@@ -335,15 +213,13 @@ function createTreeNode(
     };
 
 
-    treeNodes.set(
+    nodes.set(
         node.id,
         node
     );
 
 
     /*
-     * 核心规则：
-     *
      * 新节点放最前面。
      *
      * 第一次：
@@ -354,9 +230,9 @@ function createTreeNode(
      *
      * [第二卷, 第一卷]
      *
-     * 所以视觉上：
+     * 因此视觉上：
      *
-     * 第二卷     第一卷
+     * 第二卷       第一卷
      */
 
     parent.children.unshift(
@@ -365,252 +241,18 @@ function createTreeNode(
 
 
     return node;
-
-}
-
-
-// ==================================================
-// 创建指定类型
-// ==================================================
-
-function addTreeNode(type) {
-
-    let parent;
-
-
-    // ----------------------------------------------
-    // 有选择节点
-    // ----------------------------------------------
-
-    if (treeSelectedNodeId) {
-
-        parent =
-            getTreeNode(
-                treeSelectedNodeId
-            );
-
-    }
-
-
-    // ----------------------------------------------
-    // 没选择
-    // ----------------------------------------------
-
-    if (!parent) {
-
-        parent = treeRoot;
-
-    }
-
-
-    // ----------------------------------------------
-    // 序章
-    // ----------------------------------------------
-
-    if (type === "preface") {
-
-        if (parent.type !== "book") {
-
-            return;
-
-        }
-
-
-        const node =
-            createTreeNode(
-                parent,
-                "preface"
-            );
-
-
-        if (!node) {
-
-            return;
-
-        }
-
-
-        renderTree();
-
-
-        return;
-
-    }
-
-
-    // ----------------------------------------------
-    // 确定合法子类型
-    // ----------------------------------------------
-
-    const childType =
-        getTreeChildType(parent);
-
-
-    if (!childType) {
-
-        return;
-
-    }
-
-
-    // ----------------------------------------------
-    // 防止跨级创建
-    // ----------------------------------------------
-
-    if (type !== childType) {
-
-        return;
-
-    }
-
-
-    // ----------------------------------------------
-    // 创建
-    // ----------------------------------------------
-
-    const node =
-        createTreeNode(
-            parent,
-            type
-        );
-
-
-    if (!node) {
-
-        return;
-
-    }
-
-
-    renderTree();
-
-}
-
-
-// ==================================================
-// 删除节点
-// ==================================================
-
-function deleteTreeNode(id) {
-
-    const node =
-        getTreeNode(id);
-
-
-    if (!node) {
-
-        return;
-
-    }
-
-
-    // 不能删除书名
-
-    if (node.type === "book") {
-
-        return;
-
-    }
-
-
-    const parent =
-        getTreeParent(node);
-
-
-    if (parent) {
-
-        parent.children =
-            parent.children.filter(
-                childId =>
-                    childId !== node.id
-            );
-
-    }
-
-
-    // ----------------------------------------------
-    // 递归删除全部子节点
-    // ----------------------------------------------
-
-    function removeChildren(current) {
-
-        current.children.forEach(
-            childId => {
-
-                const child =
-                    getTreeNode(
-                        childId
-                    );
-
-
-                if (child) {
-
-                    removeChildren(
-                        child
-                    );
-
-                }
-
-            }
-        );
-
-
-        treeNodes.delete(
-            current.id
-        );
-
-    }
-
-
-    removeChildren(node);
-
-
-    if (
-        treeSelectedNodeId === id
-    ) {
-
-        treeSelectedNodeId = null;
-
-    }
-
-
-    renderTree();
-
 }
 
 
 // ==================================================
 // 重新编号
 // ==================================================
-//
-// 删除后：
-//
-// 第二卷
-// 第一卷
-//
-// 如果删除第一卷：
-//
-// 第二卷
-//
-// 此时第二卷应该重新成为第一卷。
-// ==================================================
 
-function renumberChildren(parent) {
+function renumber(parent) {
 
     const children =
-        getTreeChildren(parent);
+        getChildren(parent);
 
-
-    /*
-     * children 顺序：
-     *
-     * [第二, 第一]
-     *
-     * 实际编号应该根据从右到左的位置计算。
-     *
-     * 最右边 = 第一
-     * 左边 = 第二
-     */
 
     const count =
         children.length;
@@ -619,14 +261,9 @@ function renumberChildren(parent) {
     children.forEach(
         (child, index) => {
 
-            if (
-                child.type === "preface"
-            ) {
-
+            if (child.type === "preface") {
                 child.title = "序章";
-
                 return;
-
             }
 
 
@@ -635,7 +272,7 @@ function renumberChildren(parent) {
 
 
             child.title =
-                `第${number}${getTreeTypeName(child.type)}`;
+                `第${number}${getTypeName(child.type)}`;
 
         }
     );
@@ -643,63 +280,190 @@ function renumberChildren(parent) {
 
     children.forEach(
         child => {
-
-            renumberChildren(
-                child
-            );
-
+            renumber(child);
         }
     );
-
 }
 
 
 // ==================================================
-// 计算树布局
+// 添加
 // ==================================================
 
-function calculateTreeLayout() {
+function addNode(type) {
 
-    const positions =
-        new Map();
+    let parent =
+        selectedNodeId
+            ? getNode(selectedNodeId)
+            : root;
 
+
+    if (!parent) {
+        parent = root;
+    }
+
+
+    // 序章
+    if (type === "preface") {
+
+        if (parent.type !== "book") {
+            return;
+        }
+
+
+        const exists =
+            getChildren(parent)
+                .some(
+                    child =>
+                        child.type === "preface"
+                );
+
+
+        if (exists) {
+            return;
+        }
+
+
+        createNode(
+            parent,
+            "preface"
+        );
+
+
+        render();
+
+        return;
+    }
+
+
+    const childType =
+        getChildType(parent);
+
+
+    if (!childType) {
+        return;
+    }
+
+
+    if (type !== childType) {
+        return;
+    }
+
+
+    if (parent.children.length >= 2) {
+        return;
+    }
+
+
+    createNode(
+        parent,
+        type
+    );
+
+
+    render();
+}
+
+
+// ==================================================
+// 删除
+// ==================================================
+
+function deleteNode(id) {
+
+    const node =
+        getNode(id);
+
+
+    if (!node) {
+        return;
+    }
+
+
+    // 书名不能删除
+    if (node.type === "book") {
+        return;
+    }
+
+
+    const parent =
+        getParent(node);
+
+
+    if (parent) {
+
+        parent.children =
+            parent.children.filter(
+                childId =>
+                    childId !== id
+            );
+
+    }
+
+
+    function remove(nodeToRemove) {
+
+        nodeToRemove.children.forEach(
+            childId => {
+
+                const child =
+                    getNode(childId);
+
+                if (child) {
+                    remove(child);
+                }
+
+            }
+        );
+
+
+        nodes.delete(
+            nodeToRemove.id
+        );
+
+    }
+
+
+    remove(node);
+
+
+    selectedNodeId = null;
+
+
+    render();
+}
+
+
+// ==================================================
+// 布局
+// ==================================================
+
+function calculateLayout() {
+
+    const positions = new Map();
 
     let cursorX = 0;
 
 
-    // ----------------------------------------------
-    // 递归布局
-    // ----------------------------------------------
-
-    function layoutNode(
-        node,
-        depth
-    ) {
+    function layout(node, depth) {
 
         const children =
-            getTreeChildren(node);
+            getChildren(node);
 
 
         // ------------------------------------------
-        // 叶节点
+        // 没有孩子
         // ------------------------------------------
 
-        if (
-            children.length === 0
-        ) {
+        if (children.length === 0) {
 
             const x =
                 cursorX;
 
 
-            cursorX +=
-                TREE_CONFIG.nodeWidth +
-                TREE_CONFIG.horizontalGap;
-
-
             const y =
                 depth *
-                TREE_CONFIG.verticalGap;
+                CONFIG.verticalGap;
 
 
             positions.set(
@@ -711,60 +475,51 @@ function calculateTreeLayout() {
             );
 
 
-            return x;
+            cursorX +=
+                CONFIG.nodeWidth +
+                CONFIG.horizontalGap;
 
+
+            return x;
         }
 
 
         // ------------------------------------------
-        // 子节点
+        // 有孩子
         // ------------------------------------------
 
-        const childPositions =
-            [];
+        const childX = [];
 
 
         children.forEach(
             child => {
 
-                const childX =
-                    layoutNode(
+                childX.push(
+                    layout(
                         child,
                         depth + 1
-                    );
-
-
-                childPositions.push(
-                    childX
+                    )
                 );
 
             }
         );
 
 
-        // ------------------------------------------
-        // 父节点位于子节点整体中央
-        // ------------------------------------------
-
-        const minX =
-            Math.min(
-                ...childPositions
-            );
+        const min =
+            Math.min(...childX);
 
 
-        const maxX =
-            Math.max(
-                ...childPositions
-            );
+        const max =
+            Math.max(...childX);
 
 
         const x =
-            (minX + maxX) / 2;
+            (min + max) / 2;
 
 
         const y =
             depth *
-            TREE_CONFIG.verticalGap;
+            CONFIG.verticalGap;
 
 
         positions.set(
@@ -777,31 +532,17 @@ function calculateTreeLayout() {
 
 
         return x;
-
     }
 
 
-    layoutNode(
-        treeRoot,
-        0
-    );
+    layout(root, 0);
 
 
-    return positions;
+    // ------------------------------------------
+    // 整体向右移动
+    // ------------------------------------------
 
-}
-
-
-// ==================================================
-// 调整 X
-// ==================================================
-
-function normalizeTreePositions(
-    positions
-) {
-
-    let minX =
-        Infinity;
+    let minX = Infinity;
 
 
     positions.forEach(
@@ -817,42 +558,31 @@ function normalizeTreePositions(
     );
 
 
-    if (
-        !Number.isFinite(minX)
-    ) {
-
-        return;
-
-    }
-
-
     const offset =
-        TREE_CONFIG.padding -
+        CONFIG.padding -
         minX;
 
 
     positions.forEach(
         position => {
 
-            position.x +=
-                offset;
+            position.x += offset;
 
         }
     );
 
+
+    return positions;
 }
 
 
 // ==================================================
-// 设置画布尺寸
+// 设置尺寸
 // ==================================================
 
-function resizeTreeCanvas(
-    positions
-) {
+function resizeCanvas(positions) {
 
     let maxX = 0;
-
     let maxY = 0;
 
 
@@ -878,41 +608,48 @@ function resizeTreeCanvas(
 
     const width =
         maxX +
-        TREE_CONFIG.padding +
-        TREE_CONFIG.nodeWidth;
+        CONFIG.padding +
+        CONFIG.nodeWidth;
 
 
     const height =
         maxY +
-        TREE_CONFIG.padding +
-        TREE_CONFIG.nodeHeight;
+        CONFIG.padding +
+        CONFIG.nodeHeight;
 
 
-    treeContainer.style.width =
+    tree.style.width =
         `${width}px`;
 
 
-    treeContainer.style.height =
+    tree.style.height =
         `${height}px`;
 
 
-    connectionSvg.setAttribute(
+    svg.style.width =
+        `${width}px`;
+
+
+    svg.style.height =
+        `${height}px`;
+
+
+    svg.setAttribute(
         "width",
         width
     );
 
 
-    connectionSvg.setAttribute(
+    svg.setAttribute(
         "height",
         height
     );
 
 
-    connectionSvg.setAttribute(
+    svg.setAttribute(
         "viewBox",
         `0 0 ${width} ${height}`
     );
-
 }
 
 
@@ -920,7 +657,7 @@ function resizeTreeCanvas(
 // 创建节点 DOM
 // ==================================================
 
-function createTreeElement(
+function createNodeElement(
     node,
     position
 ) {
@@ -930,7 +667,7 @@ function createTreeElement(
 
 
     element.className =
-        "book-node";
+        "tree-node";
 
 
     element.dataset.id =
@@ -945,25 +682,25 @@ function createTreeElement(
         node.title;
 
 
-    element.style.width =
-        `${TREE_CONFIG.nodeWidth}px`;
-
-
-    element.style.height =
-        `${TREE_CONFIG.nodeHeight}px`;
-
-
     element.style.left =
-        `${position.x - TREE_CONFIG.nodeWidth / 2}px`;
+        `${position.x - CONFIG.nodeWidth / 2}px`;
 
 
     element.style.top =
-        `${position.y - TREE_CONFIG.nodeHeight / 2}px`;
+        `${position.y - CONFIG.nodeHeight / 2}px`;
 
 
-    // ----------------------------------------------
-    // 点击
-    // ----------------------------------------------
+    element.style.width =
+        `${CONFIG.nodeWidth}px`;
+
+
+    element.style.height =
+        `${CONFIG.nodeHeight}px`;
+
+
+    // ------------------------------------------
+    // 选择
+    // ------------------------------------------
 
     element.addEventListener(
         "click",
@@ -972,17 +709,36 @@ function createTreeElement(
             event.stopPropagation();
 
 
-            selectTreeNode(
-                node.id
+            selectedNodeId =
+                node.id;
+
+
+            document
+                .querySelectorAll(
+                    ".tree-node"
+                )
+                .forEach(
+                    item => {
+
+                        item.classList.remove(
+                            "selected"
+                        );
+
+                    }
+                );
+
+
+            element.classList.add(
+                "selected"
             );
 
         }
     );
 
 
-    // ----------------------------------------------
+    // ------------------------------------------
     // 右键删除
-    // ----------------------------------------------
+    // ------------------------------------------
 
     element.addEventListener(
         "contextmenu",
@@ -993,139 +749,26 @@ function createTreeElement(
             event.stopPropagation();
 
 
-            if (
-                node.type !== "book"
-            ) {
-
-                deleteTreeNode(
-                    node.id
-                );
-
-            }
+            deleteNode(
+                node.id
+            );
 
         }
     );
 
 
-    if (
-        treeSelectedNodeId === node.id
-    ) {
-
-        element.classList.add(
-            "selected"
-        );
-
-    }
-
-
     return element;
-
 }
 
 
 // ==================================================
-// 选择节点
+// 创建连接线
 // ==================================================
 
-function selectTreeNode(id) {
-
-    treeSelectedNodeId =
-        id;
-
-
-    document
-        .querySelectorAll(
-            ".book-node"
-        )
-        .forEach(
-            element => {
-
-                element.classList.remove(
-                    "selected"
-                );
-
-            }
-        );
-
-
-    const element =
-        document.querySelector(
-            `.book-node[data-id="${id}"]`
-        );
-
-
-    if (element) {
-
-        element.classList.add(
-            "selected"
-        );
-
-    }
-
-}
-
-
-// ==================================================
-// 清除选择
-// ==================================================
-
-function clearTreeSelection() {
-
-    treeSelectedNodeId =
-        null;
-
-
-    document
-        .querySelectorAll(
-            ".book-node"
-        )
-        .forEach(
-            element => {
-
-                element.classList.remove(
-                    "selected"
-                );
-
-            }
-        );
-
-}
-
-
-// ==================================================
-// 创建 SVG 连接线
-// ==================================================
-
-function createTreeConnection(
+function drawLine(
     parentPosition,
     childPosition
 ) {
-
-    /*
-     * ==================================================
-     * 最重要的规则
-     * ==================================================
-     *
-     * x1 / y1：
-     *
-     * 父节点的【正中央】
-     *
-     *
-     * x2 / y2：
-     *
-     * 子节点的【正中央】
-     *
-     *
-     * 所以：
-     *
-     * 中央 ●
-     *      │
-     *      │
-     *      ● 中央
-     *
-     * ==================================================
-     */
-
 
     const line =
         document.createElementNS(
@@ -1134,61 +777,70 @@ function createTreeConnection(
         );
 
 
+    /*
+     * ==================================================
+     * 核心：
+     *
+     * 父节点中心
+     *       ●
+     *       │
+     *       │
+     *       ●
+     * 子节点中心
+     *
+     * x1 / y1 = 父节点中心
+     * x2 / y2 = 子节点中心
+     * ==================================================
+     */
+
+
     line.setAttribute(
         "x1",
-        parentPosition.x
+        String(parentPosition.x)
     );
 
 
     line.setAttribute(
         "y1",
-        parentPosition.y
+        String(parentPosition.y)
     );
 
 
     line.setAttribute(
         "x2",
-        childPosition.x
+        String(childPosition.x)
     );
 
 
     line.setAttribute(
         "y2",
-        childPosition.y
+        String(childPosition.y)
     );
 
 
     line.classList.add(
-        "tree-connection"
+        "tree-line"
     );
 
 
-    line.setAttribute(
-        "vector-effect",
-        "non-scaling-stroke"
-    );
-
-
-    connectionSvg.appendChild(
+    svg.appendChild(
         line
     );
-
 }
 
 
 // ==================================================
-// 绘制全部连接线
+// 绘制所有线
 // ==================================================
 
-function renderTreeConnections(
+function drawConnections(
     positions
 ) {
 
-    connectionSvg.innerHTML =
-        "";
+    svg.innerHTML = "";
 
 
-    treeNodes.forEach(
+    nodes.forEach(
         parent => {
 
             const parentPosition =
@@ -1198,45 +850,35 @@ function renderTreeConnections(
 
 
             if (!parentPosition) {
-
                 return;
-
             }
 
 
-            const children =
-                getTreeChildren(
-                    parent
-                );
+            getChildren(parent)
+                .forEach(
+                    child => {
+
+                        const childPosition =
+                            positions.get(
+                                child.id
+                            );
 
 
-            children.forEach(
-                child => {
+                        if (!childPosition) {
+                            return;
+                        }
 
-                    const childPosition =
-                        positions.get(
-                            child.id
+
+                        drawLine(
+                            parentPosition,
+                            childPosition
                         );
 
-
-                    if (!childPosition) {
-
-                        return;
-
                     }
-
-
-                    createTreeConnection(
-                        parentPosition,
-                        childPosition
-                    );
-
-                }
-            );
+                );
 
         }
     );
-
 }
 
 
@@ -1244,60 +886,42 @@ function renderTreeConnections(
 // 渲染
 // ==================================================
 
-function renderTree() {
+function render() {
 
-    // ----------------------------------------------
-    // 删除旧 DOM
-    // ----------------------------------------------
-
-    treeContainer.innerHTML =
-        "";
-
-
-    connectionSvg.innerHTML =
-        "";
-
-
-    // ----------------------------------------------
     // 重新编号
-    // ----------------------------------------------
-
-    renumberChildren(
-        treeRoot
-    );
+    renumber(root);
 
 
-    // ----------------------------------------------
-    // 计算布局
-    // ----------------------------------------------
+    // 清空
+    tree.innerHTML = "";
+    svg.innerHTML = "";
 
+
+    // 计算位置
     const positions =
-        calculateTreeLayout();
+        calculateLayout();
 
 
-    // ----------------------------------------------
-    // 整体向右移动
-    // ----------------------------------------------
-
-    normalizeTreePositions(
-        positions
-    );
-
-
-    // ----------------------------------------------
     // 设置尺寸
-    // ----------------------------------------------
-
-    resizeTreeCanvas(
+    resizeCanvas(
         positions
     );
 
 
-    // ----------------------------------------------
-    // 创建节点
-    // ----------------------------------------------
+    // ------------------------------------------
+    // 先画线
+    // ------------------------------------------
 
-    treeNodes.forEach(
+    drawConnections(
+        positions
+    );
+
+
+    // ------------------------------------------
+    // 再画节点
+    // ------------------------------------------
+
+    nodes.forEach(
         node => {
 
             const position =
@@ -1307,35 +931,35 @@ function renderTree() {
 
 
             if (!position) {
-
                 return;
-
             }
 
 
             const element =
-                createTreeElement(
+                createNodeElement(
                     node,
                     position
                 );
 
 
-            treeContainer.appendChild(
+            if (
+                selectedNodeId ===
+                node.id
+            ) {
+
+                element.classList.add(
+                    "selected"
+                );
+
+            }
+
+
+            tree.appendChild(
                 element
             );
 
         }
     );
-
-
-    // ----------------------------------------------
-    // 最后画线
-    // ----------------------------------------------
-
-    renderTreeConnections(
-        positions
-    );
-
 }
 
 
@@ -1343,9 +967,9 @@ function renderTree() {
 // 操作栏
 // ==================================================
 
-if (treeActionBar) {
+if (actionBar) {
 
-    treeActionBar
+    actionBar
         .querySelectorAll(
             "button[data-action]"
         )
@@ -1359,12 +983,8 @@ if (treeActionBar) {
                         event.stopPropagation();
 
 
-                        const type =
-                            button.dataset.action;
-
-
-                        addTreeNode(
-                            type
+                        addNode(
+                            button.dataset.action
                         );
 
                     }
@@ -1380,94 +1000,59 @@ if (treeActionBar) {
 // 点击空白
 // ==================================================
 
-if (treeWorkspace) {
+workspace.addEventListener(
+    "click",
+    function(event) {
 
-    treeWorkspace.addEventListener(
-        "click",
-        function(event) {
+        if (
+            event.target === workspace ||
+            event.target === tree
+        ) {
 
-            if (
-                event.target ===
-                    treeWorkspace ||
-                event.target ===
-                    treeContainer
-            ) {
-
-                clearTreeSelection();
-
-            }
-
-        }
-    );
-
-}
+            selectedNodeId = null;
 
 
-// ==================================================
-// 书名
-// ==================================================
+            document
+                .querySelectorAll(
+                    ".tree-node"
+                )
+                .forEach(
+                    node => {
 
-if (treeBookTitle) {
+                        node.classList.remove(
+                            "selected"
+                        );
 
-    treeBookTitle.textContent =
-        treeRoot.title;
-
-
-    treeBookTitle.addEventListener(
-        "click",
-        function(event) {
-
-            event.stopPropagation();
-
-
-            selectTreeNode(
-                treeRoot.id
-            );
+                    }
+                );
 
         }
-    );
 
-}
+    }
+);
 
 
 // ==================================================
 // 初始化
 // ==================================================
 
-renderTree();
+render();
 
 
 // ==================================================
 // 对外接口
 // ==================================================
-//
-// 以后其他 JS 如果需要调用：
-//
-// addTreeNode("volume");
-// addTreeNode("part");
-// addTreeNode("chapter");
-// addTreeNode("preface");
-//
-// deleteTreeNode(id);
-//
-// renderTree();
-//
-// ==================================================
 
 window.TreeSystem = {
 
-    root: treeRoot,
+    add: addNode,
 
-    nodes: treeNodes,
+    delete: deleteNode,
 
-    add: addTreeNode,
+    render: render,
 
-    delete: deleteTreeNode,
+    root: root,
 
-    render: renderTree,
-
-    select: selectTreeNode,
-
-    clearSelection: clearTreeSelection
+    nodes: nodes
 
 };
