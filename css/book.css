@@ -21,7 +21,6 @@ body {
     background: #f5f5f5;
 }
 
-
 /* ======================================================
    顶部固定栏
 ====================================================== */
@@ -48,7 +47,6 @@ body {
     box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.20);
 }
-
 
 /* ======================================================
    顶部按钮
@@ -78,7 +76,6 @@ body {
     background: #991515;
 }
 
-
 /* ======================================================
    页面标题
 ====================================================== */
@@ -98,7 +95,6 @@ body {
 
     pointer-events: none;
 }
-
 
 /* ======================================================
    画布
@@ -121,7 +117,6 @@ body {
     -webkit-overflow-scrolling: touch;
 }
 
-
 /* ======================================================
    工作区
 ====================================================== */
@@ -134,7 +129,6 @@ body {
 
     flex-shrink: 0;
 }
-
 
 /* ======================================================
    SVG 连接线
@@ -156,9 +150,9 @@ body {
     z-index: 1;
 }
 
-
 /* ======================================================
    全书书名
+   只能点击，不能拖动
 ====================================================== */
 
 .book-title {
@@ -211,7 +205,6 @@ body {
     cursor: pointer;
 }
 
-
 /* ======================================================
    树
 ====================================================== */
@@ -229,7 +222,6 @@ body {
 
     pointer-events: none;
 }
-
 
 /* ======================================================
    普通节点
@@ -269,7 +261,6 @@ body {
         0 3px 8px rgba(0, 0, 0, 0.12);
 }
 
-
 /* ======================================================
    节点类型
 ====================================================== */
@@ -280,7 +271,6 @@ body {
 .node.chapter {
     border-color: #222222;
 }
-
 
 /* ======================================================
    选中节点
@@ -294,7 +284,6 @@ body {
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.16);
 }
-
 
 /* ======================================================
    删除按钮
@@ -330,7 +319,6 @@ body {
     -webkit-appearance: none;
 }
 
-
 /* ======================================================
    底部固定操作栏
 ====================================================== */
@@ -348,15 +336,15 @@ body {
     align-items: center;
     justify-content: center;
 
-    gap: 6px;
+    gap: 12px;
 
-    padding: 8px;
+    padding: 12px;
 
     background: #ffffff;
 
     border: 1px solid #dddddd;
 
-    border-radius: 16px 16px 0 0;
+    border-radius: 18px 18px 0 0;
 
     z-index: 20000;
 
@@ -368,9 +356,8 @@ body {
     max-width: calc(100vw - 10px);
 
     padding-bottom:
-        calc(8px + env(safe-area-inset-bottom));
+        calc(12px + env(safe-area-inset-bottom));
 }
-
 
 /* ======================================================
    显示
@@ -380,25 +367,22 @@ body {
     display: flex;
 }
 
-
 /* ======================================================
    操作按钮
 ====================================================== */
 
 .action-bar button {
-    height: 48px;
+    height: 70px;
 
-    width: 78px;
-    min-width: 78px;
-    max-width: 78px;
+    min-width: 110px;
 
-    padding: 0;
+    padding: 0 22px;
 
     border: 2px solid;
 
-    border-radius: 11px;
+    border-radius: 15px;
 
-    font-size: 17px;
+    font-size: 22px;
 
     font-weight: 600;
 
@@ -413,7 +397,6 @@ body {
         transform 0.1s;
 }
 
-
 /* ======================================================
    ＋序
 ====================================================== */
@@ -425,7 +408,6 @@ body {
 
     color: #087f78;
 }
-
 
 /* ======================================================
    ＋章
@@ -439,7 +421,6 @@ body {
     color: #222222;
 }
 
-
 /* ======================================================
    ＋篇
 ====================================================== */
@@ -451,7 +432,6 @@ body {
 
     color: #555555;
 }
-
 
 /* ======================================================
    ＋卷
@@ -465,7 +445,6 @@ body {
     color: #9a7800;
 }
 
-
 /* ======================================================
    点击效果
 ====================================================== */
@@ -473,7 +452,6 @@ body {
 .action-bar button:active {
     transform: scale(0.94);
 }
-
 
 /* ======================================================
    手机
@@ -486,7 +464,6 @@ body {
         padding: 0 10px;
     }
 
-
     .top-button {
         height: 38px;
         padding: 0 12px;
@@ -494,22 +471,18 @@ body {
         font-size: 14px;
     }
 
-
     .page-title {
         font-size: 17px;
     }
-
 
     .canvas {
         top: 56px;
     }
 
-
     .workspace {
         width: 3000px;
         height: 3000px;
     }
-
 
     .book-title {
         min-width: 180px;
@@ -518,14 +491,12 @@ body {
         font-size: 22px;
     }
 
-
     .node {
         min-width: 140px;
         max-width: 220px;
 
         font-size: 16px;
     }
-
 
     /* ================================================
        手机底部操作栏
@@ -535,37 +506,29 @@ body {
         left: 50%;
         bottom: 0;
 
-        gap: 6px;
+        gap: 12px;
 
-        width: auto;
-        max-width: calc(100vw - 10px);
-
-        padding: 8px;
+        padding: 12px;
 
         padding-bottom:
-            calc(8px + env(safe-area-inset-bottom));
+            calc(12px + env(safe-area-inset-bottom));
     }
 
-
     /* ================================================
-       手机底部操作按钮
+       手机底部超大按钮
     ================================================ */
 
     .action-bar button {
-        flex: none !important;
+        width: 110px !important;
+        min-width: 110px !important;
 
-        width: 78px !important;
-        min-width: 78px !important;
-        max-width: 78px !important;
+        height: 70px !important;
 
-        height: 48px !important;
-        min-height: 48px !important;
-        max-height: 48px !important;
+        padding: 0 22px !important;
 
-        padding: 0 !important;
+        font-size: 22px !important;
 
-        font-size: 17px !important;
-
-        border-radius: 11px !important;
+        border-radius: 15px !important;
     }
 }
+你改全部
