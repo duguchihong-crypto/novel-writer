@@ -355,27 +355,27 @@ body {
     align-items: center;
     justify-content: center;
 
-    gap: 6px;
+    gap: 4px;
 
-    padding: 8px;
+    padding: 5px;
 
     background: #ffffff;
 
     border: 1px solid #dddddd;
 
-    border-radius: 16px 16px 0 0;
+    border-radius: 12px 12px 0 0;
 
     z-index: 20000;
 
     box-shadow:
-        0 -4px 14px rgba(0, 0, 0, 0.18);
+        0 -3px 10px rgba(0, 0, 0, 0.15);
 
     white-space: nowrap;
 
     max-width: calc(100vw - 10px);
 
     padding-bottom:
-        calc(8px + env(safe-area-inset-bottom));
+        calc(5px + env(safe-area-inset-bottom));
 }
 
 
@@ -389,31 +389,28 @@ body {
 
 
 /* ======================================================
-   ★★★★★
    操作按钮
-   四个按钮固定为 78 × 48
 ====================================================== */
 
 .action-bar button {
     flex: none;
 
-    width: 78px;
-    min-width: 78px;
-    max-width: 78px;
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
 
-    height: 48px;
-    min-height: 48px;
-    max-height: 48px;
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
 
     padding: 0;
-
     margin: 0;
 
     border: 2px solid;
 
-    border-radius: 11px;
+    border-radius: 9px;
 
-    font-size: 17px;
+    font-size: 16px;
 
     font-weight: 600;
 
@@ -554,69 +551,9 @@ body {
         left: 50%;
         bottom: 0;
 
-        gap: 6px;
-
-        padding: 8px;
-
-        padding-bottom:
-            calc(8px + env(safe-area-inset-bottom));
-    }
-
-
-    /* ================================================
-       ★ 手机底部按钮
-       强制固定 78 × 48
-    ================================================ */
-
-    .action-bar button {
-        flex: none !important;
-
-        width: 78px !important;
-        min-width: 78px !important;
-        max-width: 78px !important;
-
-        height: 48px !important;
-        min-height: 48px !important;
-        max-height: 48px !important;
-
-        padding: 0 !important;
-
-        margin: 0 !important;
-
-        font-size: 17px !important;
-
-        border-radius: 11px !important;
-    }
-}
-
-
-/* ======================================================
-   超小屏幕
-====================================================== */
-
-@media (max-width: 360px) {
-
-    .action-bar {
         gap: 4px;
 
-        max-width: calc(100vw - 6px);
+        padding: 5px;
 
-        padding-left: 5px;
-        padding-right: 5px;
-    }
-
-
-    .action-bar button {
-        width: 70px !important;
-        min-width: 70px !important;
-        max-width: 70px !important;
-
-        height: 44px !important;
-        min-height: 44px !important;
-        max-height: 44px !important;
-
-        font-size: 16px !important;
-
-        border-radius: 10px !important;
-    }
-}
+        padding-bottom:
+            calc(5px + env(safe-area-inset
