@@ -6,14 +6,22 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
     }
 
-    requestAnimationFrame(function () {
+    function centerView() {
+
+        const centerX = 1500;
+        const centerY = 1500;
 
         canvas.scrollLeft =
-            (canvas.scrollWidth - canvas.clientWidth) / 2;
+            centerX - canvas.clientWidth / 2;
 
         canvas.scrollTop =
-            (canvas.scrollHeight - canvas.clientHeight) / 2;
+            centerY - canvas.clientHeight / 2;
 
-    });
+    }
+
+    centerView();
+
+    setTimeout(centerView, 50);
+    setTimeout(centerView, 200);
 
 });
