@@ -24,7 +24,6 @@ html {
 }
 
 body {
-
     font-family:
         -apple-system,
         BlinkMacSystemFont,
@@ -51,7 +50,6 @@ body {
 ================================================== */
 
 .top-bar {
-
     position: fixed;
 
     top: 0;
@@ -67,7 +65,6 @@ body {
     display: flex;
 
     align-items: center;
-
     justify-content: center;
 
     z-index: 1000;
@@ -79,7 +76,6 @@ body {
 ================================================== */
 
 .page-title {
-
     position: absolute;
 
     left: 50%;
@@ -107,7 +103,6 @@ body {
 ================================================== */
 
 .back-button {
-
     position: absolute;
 
     left: 16px;
@@ -133,7 +128,6 @@ body {
 }
 
 .back-button:active {
-
     opacity: 0.5;
 }
 
@@ -143,7 +137,6 @@ body {
 ================================================== */
 
 .layout-toggle {
-
     position: absolute;
 
     right: 16px;
@@ -181,14 +174,12 @@ body {
 }
 
 .layout-toggle:hover {
-
     background: #f6f6f6;
 
     border-color: #d7d7d7;
 }
 
 .layout-toggle:active {
-
     transform:
         translateY(-50%)
         scale(0.97);
@@ -196,11 +187,10 @@ body {
 
 
 /* ==================================================
-   3000 × 3000 主坐标画布
+   主画布
 ================================================== */
 
 .tree-canvas {
-
     position: fixed;
 
     top: 56px;
@@ -217,14 +207,6 @@ body {
 
     -webkit-overflow-scrolling: touch;
 
-    /*
-       普通画布允许滚动。
-
-       书名自己使用 touch-action:none，
-       所以拖动书名时不会被浏览器当成
-       普通滚动画布。
-    */
-
     touch-action: pan-x pan-y;
 
     overscroll-behavior: contain;
@@ -238,7 +220,6 @@ body {
 ================================================== */
 
 #tree {
-
     position: absolute;
 
     left: 0;
@@ -264,7 +245,6 @@ body {
 ================================================== */
 
 .connections {
-
     position: absolute;
 
     left: 0;
@@ -285,7 +265,6 @@ body {
 
 .connections line,
 .connections path {
-
     fill: none;
 
     stroke: #999;
@@ -301,43 +280,40 @@ body {
 
 
 /* ==================================================
-   书名
-==================================================
+   ★★★★★
+   小说书名节点
+   ★★★★★
 
-   ★★★ 非常重要 ★★★
+   这是 book.html 里面真正的“书名”。
 
-   这里故意不写：
+   不能隐藏。
+   不能被树覆盖。
+   不能被 SVG 覆盖。
 
-       left: 0;
-       top: 0;
+   JS 负责：
+   left
+   top
+   拖动
+   保存位置
 
-   因为书名的位置由 JS 控制。
-
-   第一次打开：
-       JS → 3000 × 3000 中心
-
-   用户拖动：
-       JS → 新位置
-
-   保存后重新打开：
-       JS → 恢复保存位置
-
-   同时禁止 transform，
-   避免中心计算重复。
+   CSS 负责：
+   显示
+   尺寸
+   外观
+   层级
 ================================================== */
 
+#bookTitle,
 .book-title {
-
     position: absolute;
 
-    /*
-       不设置 left / top。
+    display: flex !important;
 
-       必须让 JS 判断：
-       当前是否存在真实位置。
-    */
+    visibility: visible !important;
 
-    z-index: 20;
+    opacity: 1 !important;
+
+    z-index: 200 !important;
 
     min-width: 180px;
 
@@ -347,8 +323,6 @@ body {
 
     padding:
         12px 26px;
-
-    display: flex;
 
     align-items: center;
 
@@ -378,14 +352,9 @@ body {
     box-shadow:
         0 2px 8px rgba(0, 0, 0, 0.05);
 
-    /*
-       JS 使用 left/top 直接定位。
-       不允许 transform 改变几何中心。
-    */
+    transform: none !important;
 
-    transform: none;
-
-    margin: 0;
+    margin: 0 !important;
 
     cursor: grab;
 
@@ -395,10 +364,6 @@ body {
 
     -webkit-touch-callout: none;
 
-    /*
-       书名拖动由 JS 接管。
-    */
-
     touch-action: none;
 
     -webkit-tap-highlight-color: transparent;
@@ -407,13 +372,29 @@ body {
         box-shadow 0.12s ease;
 }
 
-.book-title:active {
 
-    cursor: grabbing;
+/* ==================================================
+   防止任何隐藏状态
+================================================== */
+
+#bookTitle[hidden],
+.book-title[hidden] {
+    display: flex !important;
 }
 
-.book-title.selected {
+#bookTitle:empty,
+.book-title:empty {
+    min-width: 180px;
+    min-height: 58px;
+}
 
+
+/* ==================================================
+   书名被选择
+================================================== */
+
+#bookTitle.selected,
+.book-title.selected {
     box-shadow:
         0 0 0 2px rgba(146, 43, 43, 0.12),
         0 3px 12px rgba(0, 0, 0, 0.07);
@@ -425,7 +406,6 @@ body {
 ================================================== */
 
 .tree-node {
-
     position: absolute;
 
     z-index: 10;
@@ -443,7 +423,6 @@ body {
 ================================================== */
 
 .node-box {
-
     position: relative;
 
     width: 155px;
@@ -490,7 +469,6 @@ body {
 }
 
 .node-box:active {
-
     transform:
         scale(0.98);
 }
@@ -501,7 +479,6 @@ body {
 ================================================== */
 
 .node-title {
-
     width: 100%;
 
     text-align: center;
@@ -519,7 +496,6 @@ body {
 ================================================== */
 
 .tree-node.selected .node-box {
-
     box-shadow:
         0 0 0 2px rgba(0, 0, 0, 0.08),
         0 3px 10px rgba(0, 0, 0, 0.07);
@@ -534,7 +510,6 @@ body {
 ================================================== */
 
 .node-preface {
-
     background: #eef9f8;
 
     border:
@@ -549,7 +524,6 @@ body {
 ================================================== */
 
 .node-volume {
-
     background: #fffbea;
 
     border:
@@ -564,7 +538,6 @@ body {
 ================================================== */
 
 .node-part {
-
     background: #fafafa;
 
     border:
@@ -579,7 +552,6 @@ body {
 ================================================== */
 
 .node-chapter {
-
     background: #f3f3f3;
 
     border:
@@ -594,7 +566,6 @@ body {
 ================================================== */
 
 .node-actions {
-
     position: absolute;
 
     left: calc(100% + 10px);
@@ -616,7 +587,6 @@ body {
 }
 
 .tree-node.selected .node-actions {
-
     display: flex;
 }
 
@@ -627,7 +597,6 @@ body {
 
 .node-action-button,
 .node-action-delete {
-
     height: 32px;
 
     padding:
@@ -656,7 +625,6 @@ body {
 
 .node-action-button:active,
 .node-action-delete:active {
-
     background: #f4f4f4;
 
     transform:
@@ -664,7 +632,6 @@ body {
 }
 
 .node-action-delete {
-
     color: #888;
 }
 
@@ -674,7 +641,6 @@ body {
 ================================================== */
 
 .line-control {
-
     position: absolute;
 
     width: 26px;
@@ -723,7 +689,6 @@ body {
 }
 
 .line-control:active {
-
     background: #f5f5f5;
 
     transform:
@@ -736,7 +701,6 @@ body {
 ================================================== */
 
 .tree-empty {
-
     position: absolute;
 
     left: 1500px;
@@ -765,7 +729,6 @@ body {
 ================================================== */
 
 .book-actions {
-
     position: fixed;
 
     left: 0;
@@ -807,7 +770,6 @@ body {
 ================================================== */
 
 .book-actions button {
-
     height: 42px;
 
     min-width: 66px;
@@ -833,7 +795,6 @@ body {
 }
 
 .book-actions button:active {
-
     transform:
         scale(0.96);
 }
@@ -844,7 +805,6 @@ body {
 ================================================== */
 
 .book-actions button.preface {
-
     background: #f3fbfa !important;
 
     border:
@@ -859,7 +819,6 @@ body {
 ================================================== */
 
 .book-actions button.chapter {
-
     background: #f7f7f7 !important;
 
     border:
@@ -874,7 +833,6 @@ body {
 ================================================== */
 
 .book-actions button.part {
-
     background: #ffffff !important;
 
     border:
@@ -889,7 +847,6 @@ body {
 ================================================== */
 
 .book-actions button.volume {
-
     background: #fffdf3 !important;
 
     border:
@@ -904,7 +861,6 @@ body {
 ================================================== */
 
 .book-actions button.default {
-
     background: #ffffff !important;
 
     border:
@@ -919,7 +875,6 @@ body {
 ================================================== */
 
 .book-actions button.danger {
-
     background: #fff5f5 !important;
 
     border:
@@ -934,7 +889,6 @@ body {
 ================================================== */
 
 .book-actions button.preface:disabled {
-
     opacity: 0.45;
 
     cursor: default;
@@ -948,7 +902,6 @@ body {
 @media (max-width: 600px) {
 
     .layout-toggle {
-
         right: 12px;
 
         height: 34px;
@@ -962,8 +915,8 @@ body {
     }
 
 
+    #bookTitle,
     .book-title {
-
         min-width: 155px;
 
         max-width: 250px;
@@ -978,13 +931,11 @@ body {
 
 
     .tree-node {
-
         width: 135px;
     }
 
 
     .node-box {
-
         width: 135px;
 
         min-height: 46px;
@@ -997,7 +948,6 @@ body {
 
 
     .node-actions {
-
         left: calc(100% + 7px);
 
         gap: 4px;
@@ -1006,7 +956,6 @@ body {
 
     .node-action-button,
     .node-action-delete {
-
         height: 30px;
 
         padding:
@@ -1017,7 +966,6 @@ body {
 
 
     .node-action-delete {
-
         width: 30px;
 
         padding: 0;
@@ -1025,7 +973,6 @@ body {
 
 
     .line-control {
-
         width: 26px;
         height: 26px;
 
@@ -1034,7 +981,6 @@ body {
 
 
     .book-actions {
-
         gap: 5px;
 
         padding-left: 7px;
@@ -1043,7 +989,6 @@ body {
 
 
     .book-actions button {
-
         flex: 1;
 
         min-width: 0;
@@ -1056,7 +1001,6 @@ body {
 
 
     .tree-empty {
-
         width: 250px;
 
         font-size: 13px;
@@ -1071,7 +1015,6 @@ body {
 @media (max-width: 380px) {
 
     .back-button {
-
         left: 10px;
 
         font-size: 15px;
@@ -1079,13 +1022,11 @@ body {
 
 
     .page-title {
-
         font-size: 17px;
     }
 
 
     .layout-toggle {
-
         right: 9px;
 
         padding:
@@ -1095,8 +1036,8 @@ body {
     }
 
 
+    #bookTitle,
     .book-title {
-
         min-width: 145px;
 
         max-width: 220px;
@@ -1106,7 +1047,6 @@ body {
 
 
     .book-actions {
-
         gap: 4px;
 
         padding-left: 5px;
@@ -1115,7 +1055,6 @@ body {
 
 
     .book-actions button {
-
         font-size: 13px;
     }
 }
