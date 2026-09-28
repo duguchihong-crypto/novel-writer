@@ -83,6 +83,7 @@ body {
     cursor: pointer;
 
     appearance: none;
+
     -webkit-appearance: none;
 }
 
@@ -368,6 +369,7 @@ body {
     justify-content: center;
 
     appearance: none;
+
     -webkit-appearance: none;
 }
 
@@ -379,11 +381,6 @@ body {
 .action-bar {
 
     position: absolute;
-
-    left: 1500px;
-    top: 1545px;
-
-    transform: translateX(-50%);
 
     display: none;
 
@@ -519,10 +516,6 @@ body {
 
 
     .action-bar {
-
-        left: 1500px;
-
-        top: 1545px;
 
         gap: 6px;
 
