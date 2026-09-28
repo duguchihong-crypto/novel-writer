@@ -1,59 +1,186 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    const bookTitle = document.getElementById("bookTitle");
-    const actionBar = document.getElementById("actionBar");
-    const workspace = document.getElementById("workspace");
+    const bookTitle =
+        document.getElementById("bookTitle");
 
-    if (!bookTitle || !actionBar || !workspace) {
+    const actionBar =
+        document.getElementById("actionBar");
+
+    const workspace =
+        document.getElementById("workspace");
+
+
+    if (
+        !bookTitle ||
+        !actionBar ||
+        !workspace
+    ) {
         return;
     }
 
 
-    function showActions() {
+    /* ==================================================
+       让操作栏永远位于书名正下方
+    ================================================== */
 
-        actionBar.classList.add("show");
+    function updateActionBarPosition() {
 
-        actionBar.style.left = "1500px";
-        actionBar.style.top = "1575px";
+        const titleLeft =
+            bookTitle.offsetLeft;
 
+        const titleTop =
+            bookTitle.offsetTop;
+
+        const titleHeight =
+            bookTitle.offsetHeight;
+
+
+        actionBar.style.left =
+            titleLeft + "px";
+
+
+        actionBar.style.top =
+            (
+                titleTop +
+                titleHeight / 2 +
+                18
+            ) + "px";
     }
 
 
-    function hideActions() {
+    /* ==================================================
+       初始化位置
+    ================================================== */
 
-        actionBar.classList.remove("show");
-
-    }
+    updateActionBarPosition();
 
 
-    bookTitle.addEventListener("click", function (event) {
+    /* ==================================================
+       点击书名
+    ================================================== */
 
-        event.stopPropagation();
+    bookTitle.addEventListener(
+        "click",
+        function (event) {
 
-        if (actionBar.classList.contains("show")) {
+            event.stopPropagation();
 
-            hideActions();
+            updateActionBarPosition();
 
-        } else {
-
-            showActions();
+            actionBar.classList.toggle("show");
 
         }
+    );
 
-    });
+
+    /* ==================================================
+       点击操作栏
+    ================================================== */
+
+    actionBar.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+        }
+    );
 
 
-    workspace.addEventListener("click", function (event) {
+    /* ==================================================
+       点击空白区域
+    ================================================== */
+
+    document.addEventListener(
+        "click",
+        function () {
+
+            actionBar.classList.remove("show");
+
+        }
+    );
+
+
+    /* ==================================================
+       窗口变化
+    ================================================== */
+
+    window.addEventListener(
+        "resize",
+        function () {
+
+            updateActionBarPosition();
+
+        }
+    );
+
+
+    /* ==================================================
+       监听书名移动
+       如果 main.js 拖动书名，
+       操作栏也跟着移动
+    ================================================== */
+
+    let lastLeft =
+        bookTitle.offsetLeft;
+
+    let lastTop =
+        bookTitle.offsetTop;
+
+    let lastWidth =
+        bookTitle.offsetWidth;
+
+    let lastHeight =
+        bookTitle.offsetHeight;
+
+
+    function watchBookTitle() {
+
+        const currentLeft =
+            bookTitle.offsetLeft;
+
+        const currentTop =
+            bookTitle.offsetTop;
+
+        const currentWidth =
+            bookTitle.offsetWidth;
+
+        const currentHeight =
+            bookTitle.offsetHeight;
+
 
         if (
-            event.target !== bookTitle &&
-            !actionBar.contains(event.target)
+            currentLeft !== lastLeft ||
+            currentTop !== lastTop ||
+            currentWidth !== lastWidth ||
+            currentHeight !== lastHeight
         ) {
 
-            hideActions();
+            lastLeft =
+                currentLeft;
 
+            lastTop =
+                currentTop;
+
+            lastWidth =
+                currentWidth;
+
+            lastHeight =
+                currentHeight;
+
+
+            updateActionBarPosition();
         }
 
-    });
+
+        requestAnimationFrame(
+            watchBookTitle
+        );
+    }
+
+
+    requestAnimationFrame(
+        watchBookTitle
+    );
 
 });
