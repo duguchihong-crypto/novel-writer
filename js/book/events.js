@@ -6,7 +6,7 @@
 // ==================================================
 // 获取指针位置
 //
-// 返回的是：
+// 返回：
 // 3000 × 3000 画布坐标
 //
 // 不是浏览器屏幕坐标。
@@ -31,7 +31,6 @@ function getPointerPosition(event) {
 
 
     let clientX = 0;
-
     let clientY = 0;
 
 
@@ -78,10 +77,14 @@ function getPointerPosition(event) {
     else {
 
         clientX =
-            event.clientX || 0;
+            Number.isFinite(event.clientX)
+                ? event.clientX
+                : 0;
 
         clientY =
-            event.clientY || 0;
+            Number.isFinite(event.clientY)
+                ? event.clientY
+                : 0;
 
     }
 
@@ -905,13 +908,11 @@ function clearSelection() {
 // ==================================================
 // 开始拖动书名
 //
-// 非常重要：
-//
 // dragStartX / dragStartY
-// = 鼠标/手指按下时的“画布坐标”
+// = 指针按下时的画布坐标
 //
 // dragOriginalX / dragOriginalY
-// = 书名按下时的“左上角坐标”
+// = 书名按下时的左上角坐标
 //
 // 两者不能混在一起。
 // ==================================================
@@ -954,15 +955,13 @@ function startBookDrag(event) {
 
 
     // ------------------------------------------
-    // 如果 DOM 没有位置
-    // 从保存的位置读取
+    // DOM 没有位置
+    // 从状态读取
     // ------------------------------------------
 
     if (
-        !Number.isFinite(
-            currentX
-        ) &&
-        hasSavedBookPosition()
+        !Number.isFinite(currentX) &&
+        Number.isFinite(Number(bookPosition.x))
     ) {
 
         currentX =
@@ -974,10 +973,8 @@ function startBookDrag(event) {
 
 
     if (
-        !Number.isFinite(
-            currentY
-        ) &&
-        hasSavedBookPosition()
+        !Number.isFinite(currentY) &&
+        Number.isFinite(Number(bookPosition.y))
     ) {
 
         currentY =
@@ -1003,36 +1000,41 @@ function startBookDrag(event) {
         BOOK_MIN_HEIGHT;
 
 
+    const canvasSize =
+        typeof BOOK_CANVAS_SIZE ===
+        "number"
+            ? BOOK_CANVAS_SIZE
+            : 3000;
+
+
     if (
-        !Number.isFinite(
-            currentX
-        )
+        !Number.isFinite(currentX)
     ) {
 
         currentX =
-            1500 -
-            bookWidth / 2;
+            (
+                canvasSize -
+                bookWidth
+            ) / 2;
 
     }
 
 
     if (
-        !Number.isFinite(
-            currentY
-        )
+        !Number.isFinite(currentY)
     ) {
 
         currentY =
-            1500 -
-            bookHeight / 2;
+            (
+                canvasSize -
+                bookHeight
+            ) / 2;
 
     }
 
 
     // ------------------------------------------
     // 指针开始位置
-    //
-    // 这里一定保存 pointer。
     // ------------------------------------------
 
     dragStartX =
@@ -1045,8 +1047,6 @@ function startBookDrag(event) {
 
     // ------------------------------------------
     // 书名开始位置
-    //
-    // 这里保存 book。
     // ------------------------------------------
 
     dragOriginalX =
@@ -1166,9 +1166,6 @@ function moveBookDrag(event) {
 
     // ------------------------------------------
     // 指针移动距离
-    //
-    // 注意：
-    // dragStartX/Y 是指针起点。
     // ------------------------------------------
 
     const dx =
@@ -1210,12 +1207,19 @@ function moveBookDrag(event) {
 
 
     // ------------------------------------------
-    // 3000 × 3000 画布
+    // 画布尺寸
     // ------------------------------------------
+
+    const canvasSize =
+        typeof BOOK_CANVAS_SIZE ===
+        "number"
+            ? BOOK_CANVAS_SIZE
+            : 3000;
+
 
     const canvasWidth =
         Math.max(
-            3000,
+            canvasSize,
             canvas.scrollWidth,
             canvas.clientWidth
         );
@@ -1223,7 +1227,7 @@ function moveBookDrag(event) {
 
     const canvasHeight =
         Math.max(
-            3000,
+            canvasSize,
             canvas.scrollHeight,
             canvas.clientHeight
         );
@@ -1302,8 +1306,9 @@ function moveBookDrag(event) {
     // ------------------------------------------
     // 更新树
     //
-    // 书名移动后，
-    // 树跟着书名重新计算。
+    // 不调用 renderTree()
+    //
+    // 所以不会强制滚动回中心。
     // ------------------------------------------
 
     updateTreePositionFromBook();
@@ -1378,11 +1383,18 @@ function updateTreePositionFromBook() {
         );
 
 
+    const canvasSize =
+        typeof BOOK_CANVAS_SIZE ===
+        "number"
+            ? BOOK_CANVAS_SIZE
+            : 3000;
+
+
     if (tree) {
 
         tree.style.width =
             Math.max(
-                3000,
+                canvasSize,
                 newLayout.width,
                 canvas.clientWidth
             ) + "px";
@@ -1390,7 +1402,7 @@ function updateTreePositionFromBook() {
 
         tree.style.height =
             Math.max(
-                3000,
+                canvasSize,
                 newLayout.height,
                 canvas.clientHeight
             ) + "px";
@@ -1451,7 +1463,7 @@ function updateTreePositionFromBook() {
 
         const width =
             Math.max(
-                3000,
+                canvasSize,
                 newLayout.width,
                 canvas.clientWidth
             );
@@ -1459,7 +1471,7 @@ function updateTreePositionFromBook() {
 
         const height =
             Math.max(
-                3000,
+                canvasSize,
                 newLayout.height,
                 canvas.clientHeight
             );
@@ -1779,8 +1791,6 @@ function handleCanvasClick(event) {
 
     // ------------------------------------------
     // 刚刚拖动过书名
-    //
-    // 防止拖动结束后又触发一次“空白点击”。
     // ------------------------------------------
 
     if (bookWasDragged) {
