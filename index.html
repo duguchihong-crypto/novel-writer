@@ -23,7 +23,12 @@
 <body>
 
 
+<!-- ==================================================
+     顶部栏
+================================================== -->
+
 <header class="top-bar">
+
 
     <div class="logo">
         我的书架
@@ -31,6 +36,9 @@
 
 
     <div class="top-actions">
+
+
+        <!-- 完成排序 -->
 
         <button
             id="finishSortButton"
@@ -41,6 +49,8 @@
         </button>
 
 
+        <!-- 新建 -->
+
         <button
             id="createButton"
             class="create-button"
@@ -50,6 +60,8 @@
         </button>
 
 
+        <!-- 设置 -->
+
         <button
             id="settingsButton"
             class="settings-button"
@@ -58,20 +70,24 @@
             ⚙ 设置
         </button>
 
+
     </div>
 
 </header>
 
 
 
-<!-- ============================== -->
-<!-- 新建菜单 -->
-<!-- ============================== -->
+<!-- ==================================================
+     新建菜单
+================================================== -->
 
 <div
     id="createMenu"
     class="menu create-menu"
 >
+
+
+    <!-- 新建书籍 -->
 
     <button
         id="createBookButton"
@@ -81,25 +97,21 @@
     </button>
 
 
-    <button
-        id="createCollectionButton"
-        type="button"
-    >
-        📁 新建分组
-    </button>
-
 </div>
 
 
 
-<!-- ============================== -->
-<!-- 设置菜单 -->
-<!-- ============================== -->
+<!-- ==================================================
+     设置菜单
+================================================== -->
 
 <div
     id="settingsMenu"
     class="menu settings-menu"
 >
+
+
+    <!-- 排序 -->
 
     <button
         id="sortBooksButton"
@@ -109,6 +121,8 @@
     </button>
 
 
+    <!-- 网格 -->
+
     <button
         id="gridButton"
         type="button"
@@ -117,6 +131,8 @@
     </button>
 
 
+    <!-- 列表 -->
+
     <button
         id="listButton"
         type="button"
@@ -124,20 +140,21 @@
         ☰ 列表
     </button>
 
+
 </div>
 
 
 
-<!-- ============================== -->
-<!-- 主内容 -->
-<!-- ============================== -->
+<!-- ==================================================
+     主内容
+================================================== -->
 
 <main class="container">
 
 
-    <!-- ============================== -->
-    <!-- 排序提示 -->
-    <!-- ============================== -->
+    <!-- ==================================================
+         排序提示
+    ================================================== -->
 
     <div
         id="sortHint"
@@ -148,25 +165,15 @@
 
 
 
-    <!-- ============================== -->
-    <!-- 分组 -->
-    <!-- ============================== -->
-
-    <div
-        id="groupContainer"
-        class="group-container"
-    ></div>
-
-
-
-    <!-- ============================== -->
-    <!-- 空书架 -->
-    <!-- ============================== -->
+    <!-- ==================================================
+         空书架
+    ================================================== -->
 
     <div
         id="emptyShelf"
         class="empty-shelf"
     >
+
 
         <div class="empty-icon">
             📚
@@ -182,13 +189,14 @@
             点击「＋ 新建」开始创作
         </div>
 
+
     </div>
 
 
 
-    <!-- ============================== -->
-    <!-- 书籍 -->
-    <!-- ============================== -->
+    <!-- ==================================================
+         书籍
+    ================================================== -->
 
     <div
         id="bookGrid"
@@ -200,106 +208,9 @@
 
 
 
-<!-- ============================== -->
-<!-- 新建分组弹窗 -->
-<!-- ============================== -->
-
-<div
-    id="createGroupOverlay"
-    class="modal-overlay"
->
-
-    <div
-        id="createGroupModal"
-        class="group-modal"
-    >
-
-
-        <!-- ============================== -->
-        <!-- 弹窗标题 -->
-        <!-- ============================== -->
-
-        <div class="group-modal-header">
-
-            <div class="group-modal-title">
-                新建分组
-            </div>
-
-
-            <button
-                id="closeCreateGroupButton"
-                class="modal-close-button"
-                type="button"
-            >
-                ×
-            </button>
-
-        </div>
-
-
-
-        <!-- ============================== -->
-        <!-- 输入区域 -->
-        <!-- ============================== -->
-
-        <div class="group-modal-body">
-
-            <label
-                class="group-name-label"
-                for="groupNameInput"
-            >
-                分组名称
-            </label>
-
-
-            <input
-                id="groupNameInput"
-                class="group-name-input"
-                type="text"
-                maxlength="30"
-                placeholder="例如：连载中"
-                autocomplete="off"
-            >
-
-        </div>
-
-
-
-        <!-- ============================== -->
-        <!-- 按钮 -->
-        <!-- ============================== -->
-
-        <div class="group-modal-footer">
-
-            <button
-                id="cancelCreateGroupButton"
-                class="modal-cancel-button"
-                type="button"
-            >
-                取消
-            </button>
-
-
-            <button
-                id="confirmCreateGroupButton"
-                class="modal-confirm-button"
-                type="button"
-            >
-                创建
-            </button>
-
-        </div>
-
-
-    </div>
-
-</div>
-
-
-
-<!-- ============================== -->
-<!-- 长按遮罩 -->
-<!-- ============================== -->
+<!-- ==================================================
+     长按遮罩
+================================================== -->
 
 <div
     id="bookMenuOverlay"
@@ -308,15 +219,17 @@
 
 
 
-<!-- ============================== -->
-<!-- 长按菜单 -->
-<!-- ============================== -->
+<!-- ==================================================
+     长按菜单
+================================================== -->
 
 <div
     id="bookContextMenu"
     class="book-context-menu"
 >
 
+
+    <!-- 当前小说名称 -->
 
     <div
         id="contextMenuTitle"
@@ -326,6 +239,8 @@
     </div>
 
 
+
+    <!-- 编辑 -->
 
     <button
         id="contextEdit"
@@ -345,6 +260,8 @@
 
 
 
+    <!-- 书架排序 -->
+
     <button
         id="contextSort"
         class="context-menu-button"
@@ -363,33 +280,13 @@
 
 
 
-    <button
-        id="contextGroup"
-        class="context-menu-button"
-        type="button"
-    >
-
-        <span class="context-menu-icon">
-            📁
-        </span>
-
-        <span>
-            移至分组
-        </span>
-
-    </button>
-
-
+    <!-- 删除 -->
 
     <button
         id="contextDelete"
         class="context-menu-button delete-action"
         type="button"
     >
-
-        <span class="context-menu-icon">
-            🗑️
-        </span>
 
         <span class="context-menu-icon">
             🗑️
@@ -406,12 +303,14 @@
 
 
 
-<!-- ============================== -->
-<!-- 底部导航 -->
-<!-- ============================== -->
+<!-- ==================================================
+     底部导航
+================================================== -->
 
 <nav class="bottom-nav">
 
+
+    <!-- 书架 -->
 
     <button
         id="shelfNav"
@@ -422,6 +321,8 @@
     </button>
 
 
+    <!-- 工具 -->
+
     <button
         id="toolsNav"
         type="button"
@@ -429,6 +330,8 @@
         🧰 工具
     </button>
 
+
+    <!-- 我的 -->
 
     <button
         id="meNav"
@@ -442,9 +345,9 @@
 
 
 
-<!-- ============================== -->
-<!-- 原有书架系统 -->
-<!-- ============================== -->
+<!-- ==================================================
+     书架系统
+================================================== -->
 
 <script
     src="js/shelf/shelf-state.js?v=6"
@@ -463,31 +366,6 @@
 
 <script
     src="js/shelf/shelf-events.js?v=6"
-></script>
-
-
-
-<!-- ============================== -->
-<!-- 新建分组系统 -->
-<!-- ============================== -->
-
-<script
-    src="js/group/group-state.js?v=1"
-></script>
-
-
-<script
-    src="js/group/group-storage.js?v=1"
-></script>
-
-
-<script
-    src="js/group/group-render.js?v=1"
-></script>
-
-
-<script
-    src="js/group/group-events.js?v=1"
 ></script>
 
 
