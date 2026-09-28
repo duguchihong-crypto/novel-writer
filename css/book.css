@@ -349,9 +349,9 @@ body {
     align-items: center;
     justify-content: center;
 
-    gap: 12px;
+    gap: 10px;
 
-    padding: 12px;
+    padding: 10px;
 
     background: #ffffff;
 
@@ -366,10 +366,10 @@ body {
 
     white-space: nowrap;
 
-    max-width: calc(100vw - 10px);
+    max-width: calc(100vw - 8px);
 
     padding-bottom:
-        calc(12px + env(safe-area-inset-bottom));
+        calc(10px + env(safe-area-inset-bottom));
 }
 
 
@@ -387,17 +387,17 @@ body {
 ====================================================== */
 
 .action-bar button {
-    height: 70px;
+    height: 64px;
 
-    min-width: 110px;
+    min-width: 95px;
 
-    padding: 0 22px;
+    padding: 0 16px;
 
     border: 2px solid;
 
-    border-radius: 15px;
+    border-radius: 14px;
 
-    font-size: 22px;
+    font-size: 20px;
 
     font-weight: 600;
 
@@ -534,29 +534,34 @@ body {
         left: 50%;
         bottom: 0;
 
-        gap: 12px;
+        gap: 8px;
 
-        padding: 12px;
+        width: calc(100vw - 8px);
+        max-width: calc(100vw - 8px);
+
+        padding: 8px;
 
         padding-bottom:
-            calc(12px + env(safe-area-inset-bottom));
+            calc(8px + env(safe-area-inset-bottom));
     }
 
 
     /* ================================================
-       手机底部超大按钮
+       手机底部操作按钮
     ================================================ */
 
     .action-bar button {
-        width: 110px !important;
-        min-width: 110px !important;
+        flex: 1;
 
-        height: 70px !important;
+        width: 25% !important;
+        min-width: 0 !important;
 
-        padding: 0 22px !important;
+        height: 64px !important;
 
-        font-size: 22px !important;
+        padding: 0 !important;
 
-        border-radius: 15px !important;
+        font-size: 20px !important;
+
+        border-radius: 14px !important;
     }
 }
