@@ -76,6 +76,8 @@ body {
 
     appearance: none;
     -webkit-appearance: none;
+
+    touch-action: manipulation;
 }
 
 .top-button:active {
@@ -126,6 +128,12 @@ body {
     isolation: isolate;
 
     -webkit-overflow-scrolling: touch;
+
+    /*
+       不限制横向/纵向滚动
+       tree.js 会负责把视角移动到书名
+    */
+    scroll-behavior: smooth;
 }
 
 
@@ -146,6 +154,8 @@ body {
     padding: 0;
 
     flex-shrink: 0;
+
+    overflow: visible;
 }
 
 
@@ -162,6 +172,9 @@ body {
     width: 3000px !important;
     height: 3000px !important;
 
+    min-width: 3000px !important;
+    min-height: 3000px !important;
+
     display: block !important;
 
     margin: 0 !important;
@@ -172,19 +185,25 @@ body {
     pointer-events: none !important;
 
     z-index: 1 !important;
+
+    /*
+       防止 SVG 自己产生奇怪的布局
+    */
+    max-width: none !important;
+    max-height: none !important;
 }
 
 
 /* ======================================================
-   新树系统连接线
+   树系统连接线
 ====================================================== */
 
 .tree-line {
+    fill: none;
+
     stroke: #222222;
 
-    stroke-width: 4;
-
-    fill: none;
+    stroke-width: 4px;
 
     stroke-linecap: round;
 
@@ -200,8 +219,6 @@ body {
 
 /* ======================================================
    原来的书名
-   新 tree.js 会生成新的书名节点
-   所以这里隐藏旧节点
 ====================================================== */
 
 #bookTitle {
@@ -222,8 +239,13 @@ body {
     width: 3000px !important;
     height: 3000px !important;
 
+    min-width: 3000px !important;
+    min-height: 3000px !important;
+
     margin: 0 !important;
     padding: 0 !important;
+
+    overflow: visible !important;
 
     z-index: 2 !important;
 
@@ -232,7 +254,7 @@ body {
 
 
 /* ======================================================
-   新树节点
+   所有树节点
 ====================================================== */
 
 .tree-node {
@@ -278,7 +300,6 @@ body {
     overflow-wrap: anywhere;
 
     user-select: none;
-
     -webkit-user-select: none;
 
     pointer-events: auto;
@@ -295,7 +316,7 @@ body {
 
 
 /* ======================================================
-   节点：书名
+   书名节点
 ====================================================== */
 
 .tree-node.node-book {
@@ -327,7 +348,7 @@ body {
 
 
 /* ======================================================
-   节点：序
+   序
 ====================================================== */
 
 .tree-node.node-preface {
@@ -340,7 +361,7 @@ body {
 
 
 /* ======================================================
-   节点：卷
+   卷
 ====================================================== */
 
 .tree-node.node-volume {
@@ -353,7 +374,7 @@ body {
 
 
 /* ======================================================
-   节点：篇
+   篇
 ====================================================== */
 
 .tree-node.node-part {
@@ -366,7 +387,7 @@ body {
 
 
 /* ======================================================
-   节点：章
+   章
 ====================================================== */
 
 .tree-node.node-chapter {
@@ -379,7 +400,7 @@ body {
 
 
 /* ======================================================
-   节点选中
+   选中节点
 ====================================================== */
 
 .tree-node.selected {
@@ -392,11 +413,13 @@ body {
     box-shadow:
         0 0 0 3px rgba(224, 173, 0, 0.28),
         0 4px 12px rgba(0, 0, 0, 0.16);
+
+    z-index: 20;
 }
 
 
 /* ======================================================
-   书名节点选中
+   书名选中
 ====================================================== */
 
 .tree-node.node-book.selected {
@@ -409,6 +432,8 @@ body {
     box-shadow:
         0 0 0 3px rgba(169, 0, 0, 0.25),
         0 4px 12px rgba(0, 0, 0, 0.18);
+
+    z-index: 20;
 }
 
 
@@ -429,7 +454,6 @@ body {
     min-height: 24px;
 
     padding: 0;
-
     margin: 0;
 
     border: none;
@@ -457,12 +481,10 @@ body {
     pointer-events: auto;
 
     z-index: 50;
+
+    touch-action: manipulation;
 }
 
-
-/* ======================================================
-   删除按钮点击
-====================================================== */
 
 .node-delete:active {
     transform: scale(0.90);
@@ -508,7 +530,8 @@ body {
 
     white-space: nowrap;
 
-    max-width: calc(100vw - 10px);
+    max-width:
+        calc(100vw - 10px);
 }
 
 
@@ -537,7 +560,6 @@ body {
     max-height: 42px;
 
     padding: 0;
-
     margin: 0;
 
     border: 2px solid;
@@ -654,6 +676,11 @@ body {
 
     .canvas {
         top: 56px;
+
+        /*
+           保证 iPhone 上可以正常横向、纵向移动
+        */
+        overflow: auto;
     }
 
 
@@ -663,6 +690,24 @@ body {
 
         min-width: 3000px;
         min-height: 3000px;
+    }
+
+
+    .connections {
+        width: 3000px !important;
+        height: 3000px !important;
+
+        min-width: 3000px !important;
+        min-height: 3000px !important;
+    }
+
+
+    .tree {
+        width: 3000px !important;
+        height: 3000px !important;
+
+        min-width: 3000px !important;
+        min-height: 3000px !important;
     }
 
 
