@@ -4,9 +4,7 @@
 
 * {
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
 }
-
 
 html,
 body {
@@ -30,7 +28,8 @@ body {
 
 
 /* ======================================================
-   顶部栏
+   顶部固定栏
+   返回 ←    全书    右侧按钮
 ====================================================== */
 
 .top-bar {
@@ -50,7 +49,10 @@ body {
 
     padding: 0 12px;
 
-    /* 赤 */
+    /* =========================
+       顶部主色：赤
+    ========================= */
+
     background: #d92d2d;
 
     color: white;
@@ -64,6 +66,7 @@ body {
 
 /* ======================================================
    顶部按钮
+   返回 / 设置 / 布局等
 ====================================================== */
 
 .top-button {
@@ -76,7 +79,7 @@ body {
 
     border-radius: 9px;
 
-    /* 深赤 */
+    /* 比顶部栏稍深的赤 */
 
     background: #b71c1c;
 
@@ -103,7 +106,7 @@ body {
 
 
 /* ======================================================
-   页面标题
+   「全书」
 ====================================================== */
 
 .page-title {
@@ -217,11 +220,9 @@ body {
     align-items: center;
     justify-content: center;
 
-    /* 赤色书名 */
+    background: #ff4d4d;
 
-    background: #d92d2d;
-
-    border: 3px solid #a91414;
+    border: 3px solid #d90000;
 
     border-radius: 14px;
 
@@ -315,11 +316,6 @@ body {
 
     box-shadow:
         0 3px 8px rgba(0, 0, 0, 0.12);
-
-    transition:
-        background 0.12s ease,
-        border-color 0.12s ease,
-        transform 0.12s ease;
 }
 
 
@@ -328,7 +324,6 @@ body {
 ====================================================== */
 
 .node.preface {
-
     border-color: #222;
 }
 
@@ -338,7 +333,6 @@ body {
 ====================================================== */
 
 .node.volume {
-
     border-color: #222;
 }
 
@@ -348,7 +342,6 @@ body {
 ====================================================== */
 
 .node.part {
-
     border-color: #222;
 }
 
@@ -358,28 +351,12 @@ body {
 ====================================================== */
 
 .node.chapter {
-
     border-color: #222;
 }
 
 
 /* ======================================================
-   节点选中
-====================================================== */
-
-.node.selected {
-
-    background: #ffd84d;
-
-    border-color: #e0ad00;
-
-    box-shadow:
-        0 4px 12px rgba(0, 0, 0, 0.18);
-}
-
-
-/* ======================================================
-   删除按钮
+   节点删除按钮
 ====================================================== */
 
 .node-delete {
@@ -398,7 +375,7 @@ body {
 
     border-radius: 50%;
 
-    background: #d92d2d;
+    background: #111;
 
     color: white;
 
@@ -407,21 +384,6 @@ body {
     line-height: 24px;
 
     cursor: pointer;
-
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    z-index: 10;
-}
-
-
-.node-delete:active {
-
-    transform: scale(0.9);
-
-    background: #a91414;
 }
 
 
@@ -449,9 +411,6 @@ body {
     border-radius: 14px;
 
     z-index: 20000;
-
-    box-shadow:
-        0 4px 14px rgba(0, 0, 0, 0.22);
 }
 
 
@@ -462,7 +421,7 @@ body {
 
 
 /* ======================================================
-   操作按钮
+   操作栏按钮
 ====================================================== */
 
 .action-bar button {
@@ -475,29 +434,19 @@ body {
 
     border-radius: 9px;
 
-    /* 青 */
+    background: #eeeeee;
 
-    background: #16b8d4;
-
-    color: white;
+    color: #111;
 
     font-size: 15px;
 
-    font-weight: 600;
-
     cursor: pointer;
-
-    transition:
-        transform 0.1s ease,
-        background 0.1s ease;
 }
 
 
 .action-bar button:active {
 
     transform: scale(0.95);
-
-    background: #0e9db7;
 }
 
 
@@ -514,7 +463,6 @@ body {
         padding: 0 10px;
     }
 
-
     .top-button {
 
         height: 38px;
@@ -524,28 +472,22 @@ body {
         font-size: 14px;
     }
 
-
     .page-title {
 
         font-size: 17px;
     }
-
 
     .canvas {
 
         top: 56px;
     }
 
-
     .book-title {
-
-        min-width: 180px;
 
         max-width: 300px;
 
         font-size: 22px;
     }
-
 
     .node {
 
@@ -556,7 +498,6 @@ body {
         font-size: 16px;
     }
 
-
     .action-bar {
 
         bottom: 14px;
@@ -565,7 +506,6 @@ body {
 
         padding: 7px;
     }
-
 
     .action-bar button {
 
