@@ -349,15 +349,15 @@ body {
     align-items: center;
     justify-content: center;
 
-    gap: 10px;
+    gap: 12px;
 
-    padding: 10px;
+    padding: 12px;
 
     background: #ffffff;
 
     border: 1px solid #dddddd;
 
-    border-radius: 16px 16px 0 0;
+    border-radius: 18px 18px 0 0;
 
     z-index: 20000;
 
@@ -366,10 +366,10 @@ body {
 
     white-space: nowrap;
 
-    max-width: calc(100vw - 20px);
+    max-width: calc(100vw - 10px);
 
     padding-bottom:
-        calc(10px + env(safe-area-inset-bottom));
+        calc(12px + env(safe-area-inset-bottom));
 }
 
 
@@ -387,17 +387,17 @@ body {
 ====================================================== */
 
 .action-bar button {
-    height: 60px;
+    height: 70px;
 
-    min-width: 90px;
+    min-width: 110px;
 
-    padding: 0 20px;
+    padding: 0 22px;
 
     border: 2px solid;
 
-    border-radius: 14px;
+    border-radius: 15px;
 
-    font-size: 20px;
+    font-size: 22px;
 
     font-weight: 600;
 
@@ -415,7 +415,6 @@ body {
 
 /* ======================================================
    ＋序
-   浅青色框 + 深青色字
 ====================================================== */
 
 .action-preface {
@@ -429,7 +428,6 @@ body {
 
 /* ======================================================
    ＋章
-   浅黑色框 + 深黑色字
 ====================================================== */
 
 .action-chapter {
@@ -443,7 +441,6 @@ body {
 
 /* ======================================================
    ＋篇
-   浅白色框 + 深白色字
 ====================================================== */
 
 .action-part {
@@ -457,7 +454,6 @@ body {
 
 /* ======================================================
    ＋卷
-   浅黄色框 + 深黄色字
 ====================================================== */
 
 .action-volume {
@@ -538,12 +534,12 @@ body {
         left: 50%;
         bottom: 0;
 
-        gap: 10px;
+        gap: 12px;
 
-        padding: 10px;
+        padding: 12px;
 
         padding-bottom:
-            calc(10px + env(safe-area-inset-bottom));
+            calc(12px + env(safe-area-inset-bottom));
     }
 
 
@@ -552,14 +548,15 @@ body {
     ================================================ */
 
     .action-bar button {
-        min-width: 90px;
+        width: 110px !important;
+        min-width: 110px !important;
 
-        height: 60px;
+        height: 70px !important;
 
-        padding: 0 20px;
+        padding: 0 22px !important;
 
-        font-size: 20px;
+        font-size: 22px !important;
 
-        border-radius: 14px;
+        border-radius: 15px !important;
     }
 }
