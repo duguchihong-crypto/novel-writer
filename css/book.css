@@ -76,10 +76,7 @@ body {
 
     appearance: none;
     -webkit-appearance: none;
-
-    touch-action: manipulation;
 }
-
 
 .top-button:active {
     transform: scale(0.96);
@@ -129,8 +126,6 @@ body {
     isolation: isolate;
 
     -webkit-overflow-scrolling: touch;
-
-    scroll-behavior: smooth;
 }
 
 
@@ -151,8 +146,6 @@ body {
     padding: 0;
 
     flex-shrink: 0;
-
-    overflow: visible;
 }
 
 
@@ -169,9 +162,6 @@ body {
     width: 3000px !important;
     height: 3000px !important;
 
-    min-width: 3000px !important;
-    min-height: 3000px !important;
-
     display: block !important;
 
     margin: 0 !important;
@@ -182,22 +172,19 @@ body {
     pointer-events: none !important;
 
     z-index: 1 !important;
-
-    max-width: none !important;
-    max-height: none !important;
 }
 
 
 /* ======================================================
-   连接线
+   新树系统连接线
 ====================================================== */
 
 .tree-line {
-    fill: none;
-
     stroke: #222222;
 
-    stroke-width: 4px;
+    stroke-width: 4;
+
+    fill: none;
 
     stroke-linecap: round;
 
@@ -212,8 +199,9 @@ body {
 
 
 /* ======================================================
-   旧版 HTML 书名
-   保留隐藏，避免与树中的书名重复
+   原来的书名
+   新 tree.js 会生成新的书名节点
+   所以这里隐藏旧节点
 ====================================================== */
 
 #bookTitle {
@@ -234,13 +222,8 @@ body {
     width: 3000px !important;
     height: 3000px !important;
 
-    min-width: 3000px !important;
-    min-height: 3000px !important;
-
     margin: 0 !important;
     padding: 0 !important;
-
-    overflow: visible !important;
 
     z-index: 2 !important;
 
@@ -249,7 +232,7 @@ body {
 
 
 /* ======================================================
-   普通节点
+   新树节点
 ====================================================== */
 
 .tree-node {
@@ -295,6 +278,7 @@ body {
     overflow-wrap: anywhere;
 
     user-select: none;
+
     -webkit-user-select: none;
 
     pointer-events: auto;
@@ -311,52 +295,39 @@ body {
 
 
 /* ======================================================
-   书名
+   节点：书名
 ====================================================== */
 
 .tree-node.node-book {
-    width: 180px !important;
+    width: 180px;
 
-    min-width: 180px !important;
-    max-width: 180px !important;
+    min-width: 180px;
+    max-width: 180px;
 
-    height: 58px !important;
+    height: 58px;
 
-    min-height: 58px !important;
-    max-height: 58px !important;
+    min-height: 58px;
+    max-height: 58px;
 
-    padding: 6px 10px;
+    background: #ff4d4d;
 
-    display: flex;
-
-    align-items: center;
-    justify-content: center;
-
-    background: #ff4d4d !important;
-
-    border: 3px solid #d90000 !important;
+    border: 3px solid #d90000;
 
     border-radius: 14px;
 
-    color: #ffffff !important;
+    color: #ffffff;
 
     font-size: 22px;
 
     font-weight: bold;
 
-    line-height: 1.2;
-
-    text-align: center;
-
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.18);
-
-    z-index: 10;
 }
 
 
 /* ======================================================
-   序
+   节点：序
 ====================================================== */
 
 .tree-node.node-preface {
@@ -369,7 +340,7 @@ body {
 
 
 /* ======================================================
-   卷
+   节点：卷
 ====================================================== */
 
 .tree-node.node-volume {
@@ -382,7 +353,7 @@ body {
 
 
 /* ======================================================
-   篇
+   节点：篇
 ====================================================== */
 
 .tree-node.node-part {
@@ -395,7 +366,7 @@ body {
 
 
 /* ======================================================
-   章
+   节点：章
 ====================================================== */
 
 .tree-node.node-chapter {
@@ -408,105 +379,36 @@ body {
 
 
 /* ======================================================
-   选中
-   只增加外框
-   不改变节点原本颜色
+   节点选中
 ====================================================== */
 
 .tree-node.selected {
-    box-shadow:
-        0 0 0 3px rgba(224, 173, 0, 0.45),
-        0 4px 12px rgba(0, 0, 0, 0.16);
+    background: #ffd84d;
 
-    z-index: 20;
-}
-
-
-/* ======================================================
-   书名选中
-   仍然保持红色
-====================================================== */
-
-.tree-node.node-book.selected {
-    background: #ff4d4d !important;
-
-    border-color: #d90000 !important;
-
-    color: #ffffff !important;
-
-    box-shadow:
-        0 0 0 3px rgba(224, 173, 0, 0.45),
-        0 4px 12px rgba(0, 0, 0, 0.18);
-
-    z-index: 20;
-}
-
-
-/* ======================================================
-   序选中
-====================================================== */
-
-.tree-node.node-preface.selected {
-    background: #d9f7f5;
-
-    border-color: #9adbd7;
-
-    color: #087f78;
-
-    box-shadow:
-        0 0 0 3px rgba(224, 173, 0, 0.45),
-        0 4px 12px rgba(0, 0, 0, 0.16);
-}
-
-
-/* ======================================================
-   卷选中
-====================================================== */
-
-.tree-node.node-volume.selected {
-    background: #fff4c7;
-
-    border-color: #e5ca63;
-
-    color: #9a7800;
-
-    box-shadow:
-        0 0 0 3px rgba(224, 173, 0, 0.45),
-        0 4px 12px rgba(0, 0, 0, 0.16);
-}
-
-
-/* ======================================================
-   篇选中
-====================================================== */
-
-.tree-node.node-part.selected {
-    background: #ffffff;
-
-    border-color: #d6d6d6;
-
-    color: #555555;
-
-    box-shadow:
-        0 0 0 3px rgba(224, 173, 0, 0.45),
-        0 4px 12px rgba(0, 0, 0, 0.16);
-}
-
-
-/* ======================================================
-   章选中
-====================================================== */
-
-.tree-node.node-chapter.selected {
-    background: #eeeeee;
-
-    border-color: #bdbdbd;
+    border-color: #e0ad00;
 
     color: #222222;
 
     box-shadow:
-        0 0 0 3px rgba(224, 173, 0, 0.45),
+        0 0 0 3px rgba(224, 173, 0, 0.28),
         0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+
+/* ======================================================
+   书名节点选中
+====================================================== */
+
+.tree-node.node-book.selected {
+    background: #ff4d4d;
+
+    border-color: #a90000;
+
+    color: #ffffff;
+
+    box-shadow:
+        0 0 0 3px rgba(169, 0, 0, 0.25),
+        0 4px 12px rgba(0, 0, 0, 0.18);
 }
 
 
@@ -527,6 +429,7 @@ body {
     min-height: 24px;
 
     padding: 0;
+
     margin: 0;
 
     border: none;
@@ -554,10 +457,12 @@ body {
     pointer-events: auto;
 
     z-index: 50;
-
-    touch-action: manipulation;
 }
 
+
+/* ======================================================
+   删除按钮点击
+====================================================== */
 
 .node-delete:active {
     transform: scale(0.90);
@@ -567,7 +472,7 @@ body {
 
 
 /* ======================================================
-   底部操作栏
+   底部固定操作栏
 ====================================================== */
 
 .action-bar {
@@ -603,8 +508,7 @@ body {
 
     white-space: nowrap;
 
-    max-width:
-        calc(100vw - 10px);
+    max-width: calc(100vw - 10px);
 }
 
 
@@ -633,6 +537,7 @@ body {
     max-height: 42px;
 
     padding: 0;
+
     margin: 0;
 
     border: 2px solid;
@@ -749,8 +654,6 @@ body {
 
     .canvas {
         top: 56px;
-
-        overflow: auto;
     }
 
 
@@ -760,24 +663,6 @@ body {
 
         min-width: 3000px;
         min-height: 3000px;
-    }
-
-
-    .connections {
-        width: 3000px !important;
-        height: 3000px !important;
-
-        min-width: 3000px !important;
-        min-height: 3000px !important;
-    }
-
-
-    .tree {
-        width: 3000px !important;
-        height: 3000px !important;
-
-        min-width: 3000px !important;
-        min-height: 3000px !important;
     }
 
 
@@ -797,23 +682,23 @@ body {
 
 
     .tree-node.node-book {
-        width: 180px !important;
+        width: 180px;
 
-        min-width: 180px !important;
-        max-width: 180px !important;
+        min-width: 180px;
+        max-width: 180px;
 
-        height: 58px !important;
+        height: 58px;
 
-        min-height: 58px !important;
-        max-height: 58px !important;
+        min-height: 58px;
+        max-height: 58px;
 
         font-size: 22px;
     }
 
 
-    /* ==================================================
+    /* ================================================
        手机底部操作栏
-    ================================================== */
+    ================================================ */
 
     .action-bar {
         left: 50%;
@@ -835,6 +720,10 @@ body {
     }
 
 
+    /* ================================================
+       手机底部按钮
+    ================================================ */
+
     .action-bar button {
         flex: none !important;
 
@@ -854,7 +743,6 @@ body {
 
         border-radius: 9px !important;
     }
-
 }
 
 
@@ -890,5 +778,4 @@ body {
 
         border-radius: 8px !important;
     }
-
 }
