@@ -14,7 +14,7 @@
 
     <link
         rel="stylesheet"
-        href="css/shelf.css"
+        href="css/shelf.css?v=8"
     >
 
 </head>
@@ -77,9 +77,6 @@
     class="menu create-menu"
 >
 
-
-    <!-- 新建书籍 -->
-
     <button
         id="createBookButton"
         type="button"
@@ -88,15 +85,12 @@
     </button>
 
 
-    <!-- 新建分组 -->
-
     <button
         id="createCollectionButton"
         type="button"
     >
         📁 新建分组
     </button>
-
 
 </div>
 
@@ -110,7 +104,6 @@
     id="settingsMenu"
     class="menu settings-menu"
 >
-
 
     <button
         id="sortBooksButton"
@@ -135,7 +128,6 @@
         ☰ 列表
     </button>
 
-
 </div>
 
 
@@ -146,8 +138,6 @@
 
 <main class="container">
 
-
-    <!-- 排序提示 -->
 
     <div
         id="sortHint"
@@ -183,11 +173,15 @@
 
 
 
-    <!-- 书籍 -->
+    <!-- ==================================================
+         书籍网格
+
+         默认使用三列网格
+    ================================================== -->
 
     <div
         id="bookGrid"
-        class="book-grid"
+        class="book-grid grid-view"
     ></div>
 
 
@@ -294,7 +288,6 @@
 
 <nav class="bottom-nav">
 
-
     <button
         id="shelfNav"
         class="active"
@@ -319,32 +312,31 @@
         👤 我的
     </button>
 
-
 </nav>
 
 
 
 <!-- ==================================================
-     原有书架系统
+     书架系统
 ================================================== -->
 
 <script
-    src="js/shelf/shelf-state.js?v=6"
+    src="js/shelf/shelf-state.js?v=8"
 ></script>
 
 
 <script
-    src="js/shelf/shelf-storage.js?v=6"
+    src="js/shelf/shelf-storage.js?v=8"
 ></script>
 
 
 <script
-    src="js/shelf/shelf-render.js?v=6"
+    src="js/shelf/shelf-render.js?v=8"
 ></script>
 
 
 <script
-    src="js/shelf/shelf-events.js?v=6"
+    src="js/shelf/shelf-events.js?v=8"
 ></script>
 
 
@@ -352,49 +344,45 @@
 <!-- ==================================================
      新建分组
      
-     暂未开发。
-     
-     点击后只显示提示，
-     不创建任何数据。
+     当前仅显示入口。
+     功能尚未开发，不创建任何数据。
 ================================================== -->
 
 <script>
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-            const createCollectionButton =
-                document.getElementById(
-                    "createCollectionButton"
-                );
-
-
-            if (
-                !createCollectionButton
-            ) {
-
-                return;
-
-            }
-
-
-            createCollectionButton.addEventListener(
-                "click",
-                function () {
-
-                    alert(
-                        "分组功能正在开发中"
-                    );
-
-                }
+        const createCollectionButton =
+            document.getElementById(
+                "createCollectionButton"
             );
 
+
+        if (!createCollectionButton) {
+            return;
         }
-    );
+
+
+        createCollectionButton.addEventListener(
+            "click",
+            function (event) {
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                alert(
+                    "分组功能正在开发中"
+                );
+
+            }
+        );
+
+    }
+);
 
 </script>
-
 
 
 </body>
