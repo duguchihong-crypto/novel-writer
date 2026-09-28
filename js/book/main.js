@@ -43,67 +43,71 @@ if (bookTitle) {
 
 
 /* ======================================================
-   点击书名
+   操作栏位置
 ====================================================== */
 
-if (bookTitle && actionBar) {
+function updateActionBarPosition() {
 
-    bookTitle.addEventListener(
-        "click",
-        function (event) {
-
-            event.stopPropagation();
-
-            actionBar.classList.toggle("show");
-
-        }
-    );
-
-}
-
-
-/* ======================================================
-   点击操作栏
-   防止点击按钮时操作栏关闭
-====================================================== */
-
-if (actionBar) {
-
-    actionBar.addEventListener(
-        "click",
-        function (event) {
-
-            event.stopPropagation();
-
-        }
-    );
-
-}
-
-
-/* ======================================================
-   点击空白区域
-====================================================== */
-
-document.addEventListener(
-    "click",
-    function () {
-
-        if (actionBar) {
-
-            actionBar.classList.remove("show");
-
-        }
-
+    if (
+        !bookTitle ||
+        !actionBar
+    ) {
+        return;
     }
-);
+
+
+    const titleLeft =
+        bookTitle.offsetLeft;
+
+
+    const titleTop =
+        bookTitle.offsetTop;
+
+
+    const titleHeight =
+        bookTitle.offsetHeight;
+
+
+    actionBar.style.left =
+        titleLeft + "px";
+
+
+    actionBar.style.top =
+        (
+            titleTop +
+            titleHeight / 2 +
+            25
+        ) + "px";
+
+}
 
 
 /* ======================================================
-   书名拖动
+   显示 / 隐藏操作栏
+====================================================== */
+
+function toggleActionBar() {
+
+    if (!actionBar) {
+        return;
+    }
+
+
+    updateActionBarPosition();
+
+
+    actionBar.classList.toggle("show");
+
+}
+
+
+/* ======================================================
+   书名：点击 + 拖动
 ====================================================== */
 
 if (bookTitle) {
+
+    let pointerDown = false;
 
     let dragging = false;
 
@@ -114,15 +118,17 @@ if (bookTitle) {
     let startTop = 0;
 
 
+    /* ==================================================
+       按下
+    ================================================== */
+
     bookTitle.addEventListener(
         "pointerdown",
         function (event) {
 
-            dragging = true;
+            pointerDown = true;
 
-            bookTitle.setPointerCapture(
-                event.pointerId
-            );
+            dragging = false;
 
 
             startX =
@@ -143,17 +149,23 @@ if (bookTitle) {
                 "grabbing";
 
 
-            event.preventDefault();
+            bookTitle.setPointerCapture(
+                event.pointerId
+            );
 
         }
     );
 
 
+    /* ==================================================
+       移动
+    ================================================== */
+
     bookTitle.addEventListener(
         "pointermove",
         function (event) {
 
-            if (!dragging) {
+            if (!pointerDown) {
                 return;
             }
 
@@ -161,19 +173,45 @@ if (bookTitle) {
             const moveX =
                 event.clientX - startX;
 
+
             const moveY =
                 event.clientY - startY;
 
 
+            const distance =
+                Math.sqrt(
+                    moveX * moveX +
+                    moveY * moveY
+                );
+
+
+            /* ==========================================
+               移动超过 6px 才算拖动
+            ========================================== */
+
+            if (distance > 6) {
+
+                dragging = true;
+
+            }
+
+
+            if (!dragging) {
+                return;
+            }
+
+
             bookTitle.style.left =
                 (
-                    startLeft + moveX
+                    startLeft +
+                    moveX
                 ) + "px";
 
 
             bookTitle.style.top =
                 (
-                    startTop + moveY
+                    startTop +
+                    moveY
                 ) + "px";
 
 
@@ -183,23 +221,65 @@ if (bookTitle) {
     );
 
 
+    /* ==================================================
+       抬起
+    ================================================== */
+
     bookTitle.addEventListener(
         "pointerup",
-        function () {
+        function (event) {
 
-            dragging = false;
+            if (!pointerDown) {
+                return;
+            }
+
+
+            pointerDown = false;
+
 
             bookTitle.style.cursor =
                 "grab";
 
+
+            /* ==========================================
+               没有发生拖动
+               → 这是一次点击
+            ========================================== */
+
+            if (!dragging) {
+
+                toggleActionBar();
+
+            }
+
+
+            dragging = false;
+
+
+            try {
+
+                bookTitle.releasePointerCapture(
+                    event.pointerId
+                );
+
+            } catch (error) {
+
+            }
+
         }
     );
 
+
+    /* ==================================================
+       取消
+    ================================================== */
 
     bookTitle.addEventListener(
         "pointercancel",
         function () {
 
+            pointerDown = false;
+
             dragging = false;
 
             bookTitle.style.cursor =
@@ -212,50 +292,66 @@ if (bookTitle) {
 
 
 /* ======================================================
-   操作栏跟随书名
+   操作栏点击
 ====================================================== */
 
-function updateActionBarPosition() {
+if (actionBar) {
 
-    if (
-        !bookTitle ||
-        !actionBar
-    ) {
-        return;
-    }
+    actionBar.addEventListener(
+        "pointerdown",
+        function (event) {
 
+            event.stopPropagation();
 
-    const left =
-        bookTitle.offsetLeft;
+        }
+    );
 
 
-    const top =
-        bookTitle.offsetTop;
+    actionBar.addEventListener(
+        "click",
+        function (event) {
 
+            event.stopPropagation();
 
-    const height =
-        bookTitle.offsetHeight;
-
-
-    actionBar.style.left =
-        left + "px";
-
-
-    actionBar.style.top =
-        (
-            top +
-            height / 2 +
-            25
-        ) + "px";
+        }
+    );
 
 }
 
 
 /* ======================================================
-   初始位置
+   点击空白区域
 ====================================================== */
 
-updateActionBarPosition();
+document.addEventListener(
+    "click",
+    function (event) {
+
+        if (!actionBar) {
+            return;
+        }
+
+
+        if (
+            event.target === bookTitle ||
+            bookTitle.contains(event.target)
+        ) {
+            return;
+        }
+
+
+        if (
+            event.target === actionBar ||
+            actionBar.contains(event.target)
+        ) {
+            return;
+        }
+
+
+        actionBar.classList.remove("show");
+
+    }
+);
 
 
 /* ======================================================
@@ -289,7 +385,10 @@ if (actionBar) {
 
             button.addEventListener(
                 "click",
-                function () {
+                function (event) {
+
+                    event.stopPropagation();
+
 
                     const action =
                         button.dataset.action;
@@ -324,9 +423,9 @@ function addRootNode(type) {
     }
 
 
-    /* ==============================================
+    /* ==================================================
        序只能有一个
-    ============================================== */
+    ================================================== */
 
     if (type === "preface") {
 
@@ -373,7 +472,9 @@ function addRootNode(type) {
     };
 
 
-    currentBook.nodes.push(node);
+    currentBook.nodes.push(
+        node
+    );
 
 
     saveBooks();
@@ -482,6 +583,7 @@ function toChineseNumber(number) {
                 number / 10
             );
 
+
         const ones =
             number % 10;
 
@@ -522,7 +624,10 @@ function saveBooks() {
 
 function renderNodes() {
 
-    if (!tree || !currentBook) {
+    if (
+        !tree ||
+        !currentBook
+    ) {
         return;
     }
 
@@ -579,7 +684,9 @@ function renderNodes() {
 
 
 /* ======================================================
-   初始渲染
+   初始化
 ====================================================== */
+
+updateActionBarPosition();
 
 renderNodes();
