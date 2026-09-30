@@ -4,19 +4,6 @@
 
 
 /* ======================================================
-   布局参数
-====================================================== */
-
-const TREE_CENTER_X = 1500;
-
-const TREE_START_Y = 1650;
-
-const TREE_SAME_LEVEL_GAP = 240;
-
-const TREE_LEVEL_GAP = 180;
-
-
-/* ======================================================
    新增根节点
 ====================================================== */
 
@@ -42,8 +29,11 @@ function addRootNode(type) {
 
         const exists =
             currentBook.nodes.some(
-                node =>
-                    node.type === "preface"
+                function (node) {
+
+                    return node.type === "preface";
+
+                }
             );
 
 
@@ -78,10 +68,10 @@ function addRootNode(type) {
             ),
 
         x:
-            TREE_CENTER_X,
+            1500,
 
         y:
-            TREE_START_Y
+            1650
 
     };
 
@@ -96,10 +86,17 @@ function addRootNode(type) {
 
 
     /* ==================================================
-       重新计算纵向布局
+       重新计算布局
     ================================================== */
 
-    updateVerticalLayout();
+    if (
+        typeof updateVerticalLayout ===
+        "function"
+    ) {
+
+        updateVerticalLayout();
+
+    }
 
 
     /* ==================================================
@@ -113,173 +110,14 @@ function addRootNode(type) {
        重新渲染
     ================================================== */
 
-    renderNodes();
-
-}
-
-
-/* ======================================================
-   更新纵向布局
-====================================================== */
-
-function updateVerticalLayout() {
-
     if (
-        !currentBook ||
-        !Array.isArray(currentBook.nodes)
+        typeof renderNodes ===
+        "function"
     ) {
-        return;
+
+        renderNodes();
+
     }
-
-
-    const nodes =
-        currentBook.nodes;
-
-
-    /* ==================================================
-       根节点
-       
-       同级从右往左：
-
-       第一卷
-       第二卷
-       第三卷
-
-       显示：
-
-       第三卷  第二卷  第一卷
-    ================================================== */
-
-    const rootNodes =
-        nodes.filter(
-            node =>
-                node.parentId === null ||
-                node.parentId === undefined
-        );
-
-
-    const rootStartX =
-        TREE_CENTER_X +
-        (
-            (rootNodes.length - 1) *
-            TREE_SAME_LEVEL_GAP
-        ) / 2;
-
-
-    rootNodes.forEach(
-        function (
-            node,
-            index
-        ) {
-
-            node.x =
-                rootStartX -
-                index *
-                TREE_SAME_LEVEL_GAP;
-
-            node.y =
-                TREE_START_Y;
-
-        }
-    );
-
-
-    /* ==================================================
-       处理子节点
-    ================================================== */
-
-    rootNodes.forEach(
-        function (rootNode) {
-
-            layoutChildren(
-                rootNode,
-                1
-            );
-
-        }
-    );
-
-}
-
-
-/* ======================================================
-   子节点布局
-====================================================== */
-
-function layoutChildren(
-    parentNode,
-    level
-) {
-
-    if (
-        !currentBook ||
-        !Array.isArray(currentBook.nodes) ||
-        !parentNode
-    ) {
-        return;
-    }
-
-
-    const children =
-        currentBook.nodes.filter(
-            node =>
-                String(node.parentId) ===
-                String(parentNode.id)
-        );
-
-
-    if (
-        children.length === 0
-    ) {
-        return;
-    }
-
-
-    /* ==================================================
-       同级节点从右往左
-    ================================================== */
-
-    const startX =
-        parentNode.x +
-        (
-            (children.length - 1) *
-            TREE_SAME_LEVEL_GAP
-        ) / 2;
-
-
-    children.forEach(
-        function (
-            child,
-            index
-        ) {
-
-            child.x =
-                startX -
-                index *
-                TREE_SAME_LEVEL_GAP;
-
-            child.y =
-                parentNode.y +
-                TREE_LEVEL_GAP;
-
-        }
-    );
-
-
-    /* ==================================================
-       继续向下处理
-    ================================================== */
-
-    children.forEach(
-        function (child) {
-
-            layoutChildren(
-                child,
-                level + 1
-            );
-
-        }
-    );
 
 }
 
@@ -295,8 +133,11 @@ function getNodeTitle(
 
     const count =
         nodes.filter(
-            node =>
-                node.type === type
+            function (node) {
+
+                return node.type === type;
+
+            }
         ).length + 1;
 
 
@@ -346,6 +187,7 @@ function getNodeTitle(
 function toChineseNumber(number) {
 
     const numbers = [
+
         "零",
         "一",
         "二",
@@ -357,6 +199,7 @@ function toChineseNumber(number) {
         "八",
         "九",
         "十"
+
     ];
 
 
@@ -386,13 +229,15 @@ function toChineseNumber(number) {
             number % 10;
 
 
-        return numbers[tens] +
+        return (
+            numbers[tens] +
             "十" +
             (
                 ones === 0
                     ? ""
                     : numbers[ones]
-            );
+            )
+        );
 
     }
 
