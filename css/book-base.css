@@ -1,10 +1,13 @@
 * {
     box-sizing: border-box;
+
     -webkit-tap-highlight-color: transparent;
 }
 
+
 html,
 body {
+
     margin: 0;
     padding: 0;
 
@@ -29,6 +32,7 @@ body {
 ====================================================== */
 
 .top-bar {
+
     position: fixed;
 
     top: 0;
@@ -38,12 +42,14 @@ body {
     height: 56px;
 
     display: flex;
+
     align-items: center;
     justify-content: space-between;
 
     padding: 0 12px;
 
     background: #d92d2d;
+
     color: #ffffff;
 
     z-index: 99999;
@@ -58,26 +64,33 @@ body {
 ====================================================== */
 
 .top-button {
+
     height: 38px;
 
     padding: 0 14px;
 
     border: none;
+
     border-radius: 9px;
 
     background: #b71c1c;
+
     color: #ffffff;
 
     font-size: 15px;
+
     font-weight: 600;
 
     cursor: pointer;
 
     appearance: none;
+
     -webkit-appearance: none;
 }
 
+
 .top-button:active {
+
     transform: scale(0.96);
 
     background: #991515;
@@ -89,15 +102,18 @@ body {
 ====================================================== */
 
 .page-title {
+
     position: absolute;
 
     left: 50%;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(-50%);
 
     color: #ffffff;
 
     font-size: 17px;
+
     font-weight: bold;
 
     white-space: nowrap;
@@ -111,11 +127,19 @@ body {
 ====================================================== */
 
 .canvas {
+
     position: fixed;
 
+    /*
+     * 仍然从顶部栏下面开始显示
+     */
+
     top: 56px;
+
     left: 0;
+
     right: 0;
+
     bottom: 0;
 
     overflow: auto;
@@ -133,9 +157,11 @@ body {
 ====================================================== */
 
 .workspace {
+
     position: relative;
 
     width: 3000px;
+
     height: 3000px;
 
     flex-shrink: 0;
