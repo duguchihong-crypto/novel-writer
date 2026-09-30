@@ -1,1 +1,228 @@
+/* ======================================================
+   底部固定操作栏
+====================================================== */
 
+.action-bar {
+    position: fixed;
+
+    left: 50%;
+    bottom: 0;
+
+    transform: translateX(-50%);
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 9px;
+
+    background: #ffffff;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 15px 15px 0 0;
+
+    z-index: 20000;
+
+    box-shadow:
+        0 -3px 10px rgba(0, 0, 0, 0.15);
+
+    white-space: nowrap;
+
+    max-width: calc(100vw - 10px);
+
+    padding-bottom:
+        calc(9px + env(safe-area-inset-bottom));
+}
+
+
+/* ======================================================
+   显示
+====================================================== */
+
+.action-bar.show {
+    display: flex;
+}
+
+
+/* ======================================================
+   操作按钮
+====================================================== */
+
+.action-bar button {
+    flex: none;
+
+    width: 70px;
+    min-width: 70px;
+    max-width: 70px;
+
+    height: 42px;
+    min-height: 42px;
+    max-height: 42px;
+
+    padding: 0;
+    margin: 0;
+
+    border: 2px solid;
+
+    border-radius: 9px;
+
+    font-size: 16px;
+
+    font-weight: 600;
+
+    line-height: 1;
+
+    cursor: pointer;
+
+    appearance: none;
+    -webkit-appearance: none;
+
+    white-space: nowrap;
+
+    transition:
+        transform 0.1s;
+}
+
+
+/* ======================================================
+   ＋序
+====================================================== */
+
+.action-preface {
+    background: #d9f7f5;
+
+    border-color: #9adbd7;
+
+    color: #087f78;
+}
+
+
+/* ======================================================
+   ＋章
+====================================================== */
+
+.action-chapter {
+    background: #eeeeee;
+
+    border-color: #bdbdbd;
+
+    color: #222222;
+}
+
+
+/* ======================================================
+   ＋篇
+====================================================== */
+
+.action-part {
+    background: #ffffff;
+
+    border-color: #d6d6d6;
+
+    color: #555555;
+}
+
+
+/* ======================================================
+   ＋卷
+====================================================== */
+
+.action-volume {
+    background: #fff4c7;
+
+    border-color: #e5ca63;
+
+    color: #9a7800;
+}
+
+
+/* ======================================================
+   点击效果
+====================================================== */
+
+.action-bar button:active {
+    transform: scale(0.94);
+}
+
+
+/* ======================================================
+   手机
+====================================================== */
+
+@media (max-width: 600px) {
+
+    .action-bar {
+        left: 50%;
+        bottom: 0;
+
+        gap: 6px;
+
+        padding: 9px;
+
+        padding-bottom:
+            calc(9px + env(safe-area-inset-bottom));
+
+        border-radius: 15px 15px 0 0;
+
+        max-width: calc(100vw - 10px);
+    }
+
+
+    .action-bar button {
+        flex: none !important;
+
+        width: 70px !important;
+        min-width: 70px !important;
+        max-width: 70px !important;
+
+        height: 42px !important;
+        min-height: 42px !important;
+        max-height: 42px !important;
+
+        padding: 0 !important;
+
+        margin: 0 !important;
+
+        font-size: 16px !important;
+
+        border-radius: 9px !important;
+    }
+}
+
+
+/* ======================================================
+   超小屏幕
+====================================================== */
+
+@media (max-width: 360px) {
+
+    .action-bar {
+        gap: 5px;
+
+        padding: 7px;
+
+        padding-bottom:
+            calc(7px + env(safe-area-inset-bottom));
+
+        max-width: calc(100vw - 6px);
+    }
+
+
+    .action-bar button {
+        width: 64px !important;
+        min-width: 64px !important;
+        max-width: 64px !important;
+
+        height: 40px !important;
+        min-height: 40px !important;
+        max-height: 40px !important;
+
+        font-size: 15px !important;
+
+        border-radius: 8px !important;
+    }
+}
