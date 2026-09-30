@@ -15,7 +15,7 @@ const workspace =
 
 
 /* ======================================================
-   清除全部连接线
+   清除连接线
 ====================================================== */
 
 function clearConnections() {
@@ -30,7 +30,7 @@ function clearConnections() {
 
 
 /* ======================================================
-   获取元素中心位置
+   获取元素中心
 ====================================================== */
 
 function getElementCenter(element) {
@@ -43,14 +43,10 @@ function getElementCenter(element) {
         window.getComputedStyle(element);
 
     const x =
-        parseFloat(
-            style.left
-        );
+        parseFloat(style.left);
 
     const y =
-        parseFloat(
-            style.top
-        );
+        parseFloat(style.top);
 
     if (
         Number.isNaN(x) ||
@@ -68,7 +64,7 @@ function getElementCenter(element) {
 
 
 /* ======================================================
-   创建一条连接线
+   创建连接线
 ====================================================== */
 
 function createConnectionLine(
@@ -84,6 +80,7 @@ function createConnectionLine(
         return;
     }
 
+
     const start =
         getElementCenter(
             startElement
@@ -94,18 +91,22 @@ function createConnectionLine(
             endElement
         );
 
-    if (
-        !start ||
-        !end
-    ) {
+
+    if (!start || !end) {
         return;
     }
+
+
+    /* ==================================================
+       创建连接线
+    ================================================== */
 
     const line =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line"
         );
+
 
     line.setAttribute(
         "x1",
@@ -127,6 +128,7 @@ function createConnectionLine(
         end.y
     );
 
+
     line.setAttribute(
         "stroke",
         "#888888"
@@ -142,13 +144,174 @@ function createConnectionLine(
         "round"
     );
 
-    line.setAttribute(
-        "fill",
-        "none"
-    );
 
     connections.appendChild(
         line
+    );
+
+
+    /* ==================================================
+       计算连接线中点
+    ================================================== */
+
+    const middleX =
+        (
+            start.x +
+            end.x
+        ) / 2;
+
+    const middleY =
+        (
+            start.y +
+            end.y
+        ) / 2;
+
+
+    /* ==================================================
+       创建 + 的背景圆
+    ================================================== */
+
+    const circle =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "circle"
+        );
+
+    circle.setAttribute(
+        "cx",
+        middleX
+    );
+
+    circle.setAttribute(
+        "cy",
+        middleY
+    );
+
+    circle.setAttribute(
+        "r",
+        "11"
+    );
+
+    circle.setAttribute(
+        "fill",
+        "#ffffff"
+    );
+
+    circle.setAttribute(
+        "stroke",
+        "#888888"
+    );
+
+    circle.setAttribute(
+        "stroke-width",
+        "2"
+    );
+
+
+    connections.appendChild(
+        circle
+    );
+
+
+    /* ==================================================
+       创建 + 横线
+    ================================================== */
+
+    const horizontal =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+        );
+
+    horizontal.setAttribute(
+        "x1",
+        middleX - 6
+    );
+
+    horizontal.setAttribute(
+        "y1",
+        middleY
+    );
+
+    horizontal.setAttribute(
+        "x2",
+        middleX + 6
+    );
+
+    horizontal.setAttribute(
+        "y2",
+        middleY
+    );
+
+    horizontal.setAttribute(
+        "stroke",
+        "#222222"
+    );
+
+    horizontal.setAttribute(
+        "stroke-width",
+        "2"
+    );
+
+    horizontal.setAttribute(
+        "stroke-linecap",
+        "round"
+    );
+
+
+    connections.appendChild(
+        horizontal
+    );
+
+
+    /* ==================================================
+       创建 + 竖线
+    ================================================== */
+
+    const vertical =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+        );
+
+    vertical.setAttribute(
+        "x1",
+        middleX
+    );
+
+    vertical.setAttribute(
+        "y1",
+        middleY - 6
+    );
+
+    vertical.setAttribute(
+        "x2",
+        middleX
+    );
+
+    vertical.setAttribute(
+        "y2",
+        middleY + 6
+    );
+
+    vertical.setAttribute(
+        "stroke",
+        "#222222"
+    );
+
+    vertical.setAttribute(
+        "stroke-width",
+        "2"
+    );
+
+    vertical.setAttribute(
+        "stroke-linecap",
+        "round"
+    );
+
+
+    connections.appendChild(
+        vertical
     );
 
 }
@@ -168,7 +331,9 @@ function renderConnections() {
         return;
     }
 
+
     clearConnections();
+
 
     connections.setAttribute(
         "width",
@@ -185,14 +350,17 @@ function renderConnections() {
         "0 0 3000 3000"
     );
 
+
     const bookElement =
         document.getElementById(
             "bookTitle"
         );
 
+
     if (!bookElement) {
         return;
     }
+
 
     const nodes =
         Array.isArray(
@@ -200,6 +368,7 @@ function renderConnections() {
         )
             ? currentBook.nodes
             : [];
+
 
     nodes.forEach(
         function (node) {
@@ -211,6 +380,7 @@ function renderConnections() {
                 return;
             }
 
+
             const nodeElement =
                 document.querySelector(
                     '.node[data-id="' +
@@ -218,9 +388,11 @@ function renderConnections() {
                     '"]'
                 );
 
+
             if (!nodeElement) {
                 return;
             }
+
 
             createConnectionLine(
                 bookElement,
