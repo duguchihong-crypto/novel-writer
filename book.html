@@ -12,6 +12,7 @@
 
     <title>全书</title>
 
+
     <link
         rel="stylesheet"
         href="./css/book-base.css?v=50002"
@@ -39,7 +40,9 @@
 
 </head>
 
+
 <body>
+
 
     <header
         id="topBar"
@@ -153,53 +156,198 @@
     </main>
 
 
-    <!-- 数据 -->
+    <!-- ==================================================
+         数据
+    ================================================== -->
 
     <script
         src="./js/book/book-data.js?v=50002"
     ></script>
 
 
-    <!-- 储存 -->
+    <!-- ==================================================
+         储存
+    ================================================== -->
 
     <script
         src="./js/book/book-storage.js?v=50002"
     ></script>
 
 
-    <!-- 树结构 -->
+    <!-- ==================================================
+         树结构
+    ================================================== -->
 
     <script
         src="./js/book/book-tree.js?v=50003"
     ></script>
 
 
-    <!-- 节点 -->
+    <!-- ==================================================
+         节点
+    ================================================== -->
 
     <script
         src="./js/book/book-node.js?v=50002"
     ></script>
 
 
-    <!-- 连接线 -->
+    <!-- ==================================================
+         连接线
+    ================================================== -->
 
     <script
         src="./js/book/book-line.js?v=50002"
     ></script>
 
 
-    <!-- 布局 -->
+    <!-- ==================================================
+         布局
+    ================================================== -->
 
     <script
         src="./js/book/book-layout.js?v=50003"
     ></script>
 
 
-    <!-- 页面主逻辑 -->
+    <!-- ==================================================
+         页面主逻辑
+    ================================================== -->
 
     <script
         src="./js/book/book-main.js?v=50004"
     ></script>
+
+
+    <!-- ==================================================
+         进入全书时，让书名处于可视区域正中央
+    ================================================== -->
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            function () {
+
+                const canvas =
+                    document.getElementById("canvas");
+
+                const bookTitle =
+                    document.getElementById("bookTitle");
+
+
+                if (
+                    !canvas ||
+                    !bookTitle
+                ) {
+
+                    return;
+
+                }
+
+
+                function centerBookTitle() {
+
+                    /*
+                     * 书名在 workspace 中的实际位置
+                     */
+
+                    const titleLeft =
+                        bookTitle.offsetLeft;
+
+                    const titleTop =
+                        bookTitle.offsetTop;
+
+
+                    const titleWidth =
+                        bookTitle.offsetWidth;
+
+                    const titleHeight =
+                        bookTitle.offsetHeight;
+
+
+                    /*
+                     * 横向：
+                     * 让书名中心 = canvas 中心
+                     */
+
+                    const targetScrollLeft =
+                        titleLeft +
+                        titleWidth / 2 -
+                        canvas.clientWidth / 2;
+
+
+                    /*
+                     * 纵向：
+                     * 让书名中心 = canvas 中心
+                     */
+
+                    const targetScrollTop =
+                        titleTop +
+                        titleHeight / 2 -
+                        canvas.clientHeight / 2;
+
+
+                    canvas.scrollLeft =
+                        Math.max(
+                            0,
+                            targetScrollLeft
+                        );
+
+
+                    canvas.scrollTop =
+                        Math.max(
+                            0,
+                            targetScrollTop
+                        );
+
+                }
+
+
+                /*
+                 * 等页面完成第一次布局后执行
+                 */
+
+                requestAnimationFrame(
+                    function () {
+
+                        centerBookTitle();
+
+
+                        /*
+                         * 再执行一次，
+                         * 防止字体、尺寸等造成偏移
+                         */
+
+                        requestAnimationFrame(
+                            function () {
+
+                                centerBookTitle();
+
+                            }
+                        );
+
+                    }
+                );
+
+
+                /*
+                 * 最后校正一次
+                 */
+
+                setTimeout(
+                    function () {
+
+                        centerBookTitle();
+
+                    },
+                    300
+                );
+
+            }
+        );
+
+    </script>
 
 
 </body>
