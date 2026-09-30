@@ -71,6 +71,68 @@ function getElementCenter(element) {
 
 
 /* ======================================================
+   创建 SVG 线
+====================================================== */
+
+function createLine(
+    x1,
+    y1,
+    x2,
+    y2
+) {
+
+    const line =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+        );
+
+    line.setAttribute(
+        "x1",
+        x1
+    );
+
+    line.setAttribute(
+        "y1",
+        y1
+    );
+
+    line.setAttribute(
+        "x2",
+        x2
+    );
+
+    line.setAttribute(
+        "y2",
+        y2
+    );
+
+    line.setAttribute(
+        "stroke",
+        "#888888"
+    );
+
+    line.setAttribute(
+        "stroke-width",
+        "3"
+    );
+
+    line.setAttribute(
+        "stroke-linecap",
+        "round"
+    );
+
+    line.style.pointerEvents =
+        "none";
+
+    connections.appendChild(
+        line
+    );
+
+}
+
+
+/* ======================================================
    创建连接线
 ====================================================== */
 
@@ -119,7 +181,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       当前展开状态
+       当前状态
     ================================================== */
 
     const isExpanded =
@@ -127,7 +189,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       计算连接线中点
+       中点
     ================================================== */
 
     const middleX =
@@ -144,7 +206,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       计算实际连接线终点
+       连接线
        
        展开：
        书名 → 节点
@@ -153,82 +215,29 @@ function createConnectionLine(
        书名 → +
     ================================================== */
 
-    let lineEndX =
-        end.x;
+    if (isExpanded) {
 
-    let lineEndY =
-        end.y;
+        createLine(
+            start.x,
+            start.y,
+            end.x,
+            end.y
+        );
 
+    } else {
 
-    if (!isExpanded) {
-
-        lineEndX =
-            middleX;
-
-        lineEndY =
-            middleY;
+        createLine(
+            start.x,
+            start.y,
+            middleX,
+            middleY
+        );
 
     }
 
 
     /* ==================================================
-       创建连接线
-    ================================================== */
-
-    const line =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line"
-        );
-
-
-    line.setAttribute(
-        "x1",
-        start.x
-    );
-
-    line.setAttribute(
-        "y1",
-        start.y
-    );
-
-    line.setAttribute(
-        "x2",
-        lineEndX
-    );
-
-    line.setAttribute(
-        "y2",
-        lineEndY
-    );
-
-
-    line.setAttribute(
-        "stroke",
-        "#888888"
-    );
-
-    line.setAttribute(
-        "stroke-width",
-        "3"
-    );
-
-    line.setAttribute(
-        "stroke-linecap",
-        "round"
-    );
-
-    line.style.pointerEvents =
-        "none";
-
-
-    connections.appendChild(
-        line
-    );
-
-
-    /* ==================================================
-       创建点击区域
+       点击区域
     ================================================== */
 
     const hitArea =
@@ -297,7 +306,7 @@ function createConnectionLine(
 
 
             /*
-             * 控制节点
+             * 找到节点
              */
 
             const nodeElement =
@@ -307,6 +316,10 @@ function createConnectionLine(
                     '"]'
                 );
 
+
+            /*
+             * 显示 / 隐藏
+             */
 
             if (nodeElement) {
 
@@ -448,10 +461,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       ＋的竖线
-       
-       收起 = +
-       展开 = -
+       ＋竖线
     ================================================== */
 
     if (!isExpanded) {
@@ -589,7 +599,7 @@ function renderConnections() {
 
 
             /* ==================================================
-               第一次出现时默认展开
+               第一次出现默认展开
             ================================================== */
 
             if (
