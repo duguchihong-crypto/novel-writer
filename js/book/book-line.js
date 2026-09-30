@@ -71,6 +71,54 @@ function getElementCenter(element) {
 
 
 /* ======================================================
+   设置节点显示状态
+====================================================== */
+
+function updateNodeVisibility(nodeId) {
+
+    const nodeElement =
+        document.querySelector(
+            '.node[data-id="' +
+            nodeId +
+            '"]'
+        );
+
+    if (!nodeElement) {
+        return;
+    }
+
+    const isExpanded =
+        connectionStates[nodeId] === true;
+
+
+    /*
+     * 展开：
+     * 显示节点
+     */
+
+    if (isExpanded) {
+
+        nodeElement.style.display =
+            "flex";
+
+    }
+
+    /*
+     * 收起：
+     * 隐藏节点
+     */
+
+    else {
+
+        nodeElement.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* ======================================================
    创建连接线
 ====================================================== */
 
@@ -178,6 +226,19 @@ function createConnectionLine(
 
 
     /* ==================================================
+       当前状态
+    ================================================== */
+
+    const nodeId =
+        String(
+            endElement.dataset.id
+        );
+
+    const isExpanded =
+        connectionStates[nodeId] === true;
+
+
+    /* ==================================================
        创建点击区域
     ================================================== */
 
@@ -238,26 +299,26 @@ function createConnectionLine(
             event.stopPropagation();
 
 
-            const nodeId =
-                String(
-                    endElement.dataset.id
-                );
+            /*
+             * 切换状态
+             */
+
+            connectionStates[nodeId] =
+                !isExpanded;
 
 
-            if (
-                connectionStates[nodeId] === true
-            ) {
+            /*
+             * 更新节点显示
+             */
 
-                connectionStates[nodeId] =
-                    false;
+            updateNodeVisibility(
+                nodeId
+            );
 
-            } else {
 
-                connectionStates[nodeId] =
-                    true;
-
-            }
-
+            /*
+             * 重新绘制连接线
+             */
 
             refreshConnections();
 
@@ -319,19 +380,6 @@ function createConnectionLine(
     connections.appendChild(
         circle
     );
-
-
-    /* ==================================================
-       当前状态
-    ================================================== */
-
-    const nodeId =
-        String(
-            endElement.dataset.id
-        );
-
-    const isExpanded =
-        connectionStates[nodeId] === true;
 
 
     /* ==================================================
@@ -528,6 +576,37 @@ function renderConnections() {
                 return;
             }
 
+
+            /*
+             * 确保节点状态与
+             * connectionStates 一致
+             */
+
+            if (
+                connectionStates[
+                    String(node.id)
+                ] === undefined
+            ) {
+
+                connectionStates[
+                    String(node.id)
+                ] = true;
+
+            }
+
+
+            /*
+             * 重新应用显示状态
+             */
+
+            updateNodeVisibility(
+                String(node.id)
+            );
+
+
+            /*
+             * 连接线始终保留
+             */
 
             createConnectionLine(
                 bookElement,
