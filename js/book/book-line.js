@@ -10,7 +10,6 @@
 const connections =
     document.getElementById("connections");
 
-
 const workspace =
     document.getElementById("workspace");
 
@@ -41,9 +40,7 @@ function getElementCenter(element) {
     }
 
     const style =
-        window.getComputedStyle(
-            element
-        );
+        window.getComputedStyle(element);
 
     const x =
         parseFloat(
@@ -59,17 +56,12 @@ function getElementCenter(element) {
         Number.isNaN(x) ||
         Number.isNaN(y)
     ) {
-
         return null;
-
     }
 
     return {
-
         x: x,
-
         y: y
-
     };
 
 }
@@ -89,9 +81,7 @@ function createConnectionLine(
         !startElement ||
         !endElement
     ) {
-
         return;
-
     }
 
     const start =
@@ -108,9 +98,7 @@ function createConnectionLine(
         !start ||
         !end
     ) {
-
         return;
-
     }
 
     const line =
@@ -177,9 +165,7 @@ function renderConnections() {
         !workspace ||
         !currentBook
     ) {
-
         return;
-
     }
 
     clearConnections();
@@ -199,15 +185,6 @@ function renderConnections() {
         "0 0 3000 3000"
     );
 
-
-    const nodes =
-        Array.isArray(
-            currentBook.nodes
-        )
-            ? currentBook.nodes
-            : [];
-
-
     const bookElement =
         document.getElementById(
             "bookTitle"
@@ -217,10 +194,12 @@ function renderConnections() {
         return;
     }
 
-
-    /* ==============================================
-       书名 → 根节点
-    ============================================== */
+    const nodes =
+        Array.isArray(
+            currentBook.nodes
+        )
+            ? currentBook.nodes
+            : [];
 
     nodes.forEach(
         function (node) {
@@ -229,9 +208,7 @@ function renderConnections() {
                 node.parentId !== null &&
                 node.parentId !== undefined
             ) {
-
                 return;
-
             }
 
             const nodeElement =
@@ -257,7 +234,7 @@ function renderConnections() {
 
 
 /* ======================================================
-   节点渲染完成后重新绘制
+   刷新连接线
 ====================================================== */
 
 function refreshConnections() {
@@ -271,3 +248,16 @@ function refreshConnections() {
     );
 
 }
+
+
+/* ======================================================
+   页面加载完成后绘制
+====================================================== */
+
+requestAnimationFrame(
+    function () {
+
+        refreshConnections();
+
+    }
+);
