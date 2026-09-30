@@ -127,6 +127,51 @@ function createConnectionLine(
 
 
     /* ==================================================
+       计算连接线中点
+    ================================================== */
+
+    const middleX =
+        (
+            start.x +
+            end.x
+        ) / 2;
+
+    const middleY =
+        (
+            start.y +
+            end.y
+        ) / 2;
+
+
+    /* ==================================================
+       计算实际连接线终点
+       
+       展开：
+       书名 → 节点
+
+       收起：
+       书名 → +
+    ================================================== */
+
+    let lineEndX =
+        end.x;
+
+    let lineEndY =
+        end.y;
+
+
+    if (!isExpanded) {
+
+        lineEndX =
+            middleX;
+
+        lineEndY =
+            middleY;
+
+    }
+
+
+    /* ==================================================
        创建连接线
     ================================================== */
 
@@ -149,13 +194,14 @@ function createConnectionLine(
 
     line.setAttribute(
         "x2",
-        end.x
+        lineEndX
     );
 
     line.setAttribute(
         "y2",
-        end.y
+        lineEndY
     );
+
 
     line.setAttribute(
         "stroke",
@@ -182,24 +228,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       计算中点
-    ================================================== */
-
-    const middleX =
-        (
-            start.x +
-            end.x
-        ) / 2;
-
-    const middleY =
-        (
-            start.y +
-            end.y
-        ) / 2;
-
-
-    /* ==================================================
-       点击区域
+       创建点击区域
     ================================================== */
 
     const hitArea =
@@ -268,7 +297,7 @@ function createConnectionLine(
 
 
             /*
-             * 直接控制节点
+             * 控制节点
              */
 
             const nodeElement =
@@ -419,10 +448,10 @@ function createConnectionLine(
 
 
     /* ==================================================
-       竖线
+       ＋的竖线
        
-       展开 = -
        收起 = +
+       展开 = -
     ================================================== */
 
     if (!isExpanded) {
@@ -559,9 +588,9 @@ function renderConnections() {
             }
 
 
-            /*
-             * 第一次出现时默认展开
-             */
+            /* ==================================================
+               第一次出现时默认展开
+            ================================================== */
 
             if (
                 connectionStates[
@@ -575,16 +604,6 @@ function renderConnections() {
 
             }
 
-
-            /*
-             * 注意：
-             *
-             * 即使节点被隐藏，
-             * 这里仍然使用它原来的
-             * left / top 坐标。
-             *
-             * 因此 + / - 永远存在。
-             */
 
             createConnectionLine(
                 bookElement,
