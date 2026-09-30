@@ -97,7 +97,6 @@
             <div
                 id="bookTitle"
                 class="book-title"
-                onclick="document.getElementById('actionBar').classList.toggle('show');"
             >
                 新书
             </div>
@@ -226,7 +225,7 @@
     <script>
 
         /* ==================================================
-           禁止浏览器恢复之前的滚动位置
+           禁止恢复上一次滚动位置
         ================================================== */
 
         if (
@@ -240,110 +239,39 @@
 
 
         /* ==================================================
-           将书名中心对准整个手机屏幕中心
+           将书名滚动到可视区域中央
         ================================================== */
 
         function centerBookOnEnter() {
 
-            const canvas =
-                document.getElementById("canvas");
-
             const bookTitle =
-                document.getElementById("bookTitle");
+                document.getElementById(
+                    "bookTitle"
+                );
 
 
-            if (
-                !canvas ||
-                !bookTitle
-            ) {
+            if (!bookTitle) {
 
                 return;
 
             }
 
 
-            /* ==================================================
-               书名中心
+            bookTitle.scrollIntoView({
 
-               bookTitle 的 left/top
-               本身就是中心坐标，
-               因为 CSS 使用了：
+                behavior: "auto",
 
-               transform:
-               translate(-50%, -50%);
-            ================================================== */
+                block: "center",
 
-            const titleCenterX =
-                bookTitle.offsetLeft;
+                inline: "center"
 
-            const titleCenterY =
-                bookTitle.offsetTop;
-
-
-            /* ==================================================
-               canvas 在整个手机屏幕中的位置
-            ================================================== */
-
-            const canvasRect =
-                canvas.getBoundingClientRect();
-
-
-            /* ==================================================
-               整个手机屏幕中心
-            ================================================== */
-
-            const screenCenterX =
-                window.innerWidth / 2;
-
-            const screenCenterY =
-                window.innerHeight / 2;
-
-
-            /* ==================================================
-               将屏幕中心转换成 canvas 内部坐标
-
-               canvas 的顶部目前是 56px，
-               所以不能直接使用
-               canvas.clientHeight / 2。
-            ================================================== */
-
-            const canvasCenterX =
-                screenCenterX -
-                canvasRect.left;
-
-            const canvasCenterY =
-                screenCenterY -
-                canvasRect.top;
-
-
-            /* ==================================================
-               最终滚动位置
-            ================================================== */
-
-            const targetScrollLeft =
-                titleCenterX -
-                canvasCenterX;
-
-            const targetScrollTop =
-                titleCenterY -
-                canvasCenterY;
-
-
-            /* ==================================================
-               设置滚动位置
-            ================================================== */
-
-            canvas.scrollLeft =
-                targetScrollLeft;
-
-            canvas.scrollTop =
-                targetScrollTop;
+            });
 
         }
 
 
         /* ==================================================
-           页面完全加载
+           页面加载完成
         ================================================== */
 
         window.addEventListener(
@@ -357,21 +285,24 @@
 
 
         /* ==================================================
-           页面恢复
+           Safari 页面恢复
         ================================================== */
 
         window.addEventListener(
             "pageshow",
             function () {
 
-                centerBookOnEnter();
+                setTimeout(
+                    centerBookOnEnter,
+                    50
+                );
 
             }
         );
 
 
         /* ==================================================
-           iPhone Safari 最后校正
+           最后校正
         ================================================== */
 
         window.addEventListener(
@@ -380,13 +311,7 @@
 
                 setTimeout(
                     centerBookOnEnter,
-                    100
-                );
-
-
-                setTimeout(
-                    centerBookOnEnter,
-                    500
+                    300
                 );
 
             }
