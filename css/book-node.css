@@ -1,1 +1,154 @@
+/* ======================================================
+   全书书名
+   只能点击，不能拖动
+====================================================== */
 
+.book-title {
+    position: absolute;
+
+    left: 1500px;
+    top: 1500px;
+
+    transform: translate(-50%, -50%);
+
+    min-width: 180px;
+    max-width: 320px;
+    min-height: 58px;
+
+    padding: 12px 26px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ff4d4d;
+
+    border: 3px solid #d90000;
+    border-radius: 14px;
+
+    color: #ffffff;
+
+    font-size: 24px;
+    font-weight: bold;
+
+    line-height: 1.4;
+
+    text-align: center;
+
+    word-break: break-word;
+
+    user-select: none;
+
+    cursor: pointer;
+
+    touch-action: manipulation;
+
+    z-index: 100;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.18);
+}
+
+.book-title:active {
+    cursor: pointer;
+}
+
+
+/* ======================================================
+   普通节点
+====================================================== */
+
+.node {
+    position: absolute;
+
+    min-width: 150px;
+    max-width: 240px;
+    min-height: 50px;
+
+    padding: 10px 16px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #ffffff;
+
+    border: 2px solid #222222;
+    border-radius: 12px;
+
+    color: #111111;
+
+    font-size: 17px;
+
+    line-height: 1.4;
+
+    text-align: center;
+
+    user-select: none;
+
+    pointer-events: auto;
+
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.12);
+}
+
+
+/* ======================================================
+   节点类型
+====================================================== */
+
+.node.preface,
+.node.volume,
+.node.part,
+.node.chapter {
+    border-color: #222222;
+}
+
+
+/* ======================================================
+   选中节点
+====================================================== */
+
+.node.selected {
+    background: #ffd84d;
+
+    border-color: #e0ad00;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+
+/* ======================================================
+   删除按钮
+====================================================== */
+
+.node-delete {
+    position: absolute;
+
+    top: -9px;
+    right: -9px;
+
+    width: 24px;
+    height: 24px;
+
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #111111;
+    color: #ffffff;
+
+    font-size: 14px;
+    line-height: 24px;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    appearance: none;
+    -webkit-appearance: none;
+}
