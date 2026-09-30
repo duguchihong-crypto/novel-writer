@@ -90,18 +90,11 @@ function toggleActionBar() {
 
 if (bookTitle) {
 
-    bookTitle.addEventListener(
-        "click",
-        function (event) {
+    bookTitle.onclick = function () {
 
-            event.preventDefault();
+        toggleActionBar();
 
-            event.stopPropagation();
-
-            toggleActionBar();
-
-        }
-    );
+    };
 
 }
 
@@ -112,14 +105,11 @@ if (bookTitle) {
 
 if (actionBar) {
 
-    actionBar.addEventListener(
-        "click",
-        function (event) {
+    actionBar.onclick = function (event) {
 
-            event.stopPropagation();
+        event.stopPropagation();
 
-        }
-    );
+    };
 
 
     /* ==================================================
@@ -139,47 +129,38 @@ if (actionBar) {
     actionButtons.forEach(
         function (button) {
 
-            button.addEventListener(
-                "click",
-                function (event) {
+            button.onclick = function (event) {
 
-                    event.preventDefault();
+                event.preventDefault();
 
-                    event.stopPropagation();
+                event.stopPropagation();
 
 
-                    const action =
-                        button.dataset.action;
+                const action =
+                    button.dataset.action;
 
 
-                    /* ==================================
-                       新增节点
+                /* ======================================
+                   新增节点
+                ====================================== */
 
-                       注意：
-                       addRootNode()
-                       由 book-tree.js 负责
-                    ================================== */
+                if (
+                    typeof addRootNode ===
+                    "function"
+                ) {
 
-                    if (
-                        typeof addRootNode ===
-                        "function"
-                    ) {
-
-                        addRootNode(
-                            action
-                        );
-
-                    }
-
-
-                    /* ==================================
-                       关闭操作栏
-                    ================================== */
-
-                    hideActionBar();
+                    addRootNode(action);
 
                 }
-            );
+
+
+                /* ======================================
+                   关闭操作栏
+                ====================================== */
+
+                hideActionBar();
+
+            };
 
         }
     );
@@ -191,51 +172,48 @@ if (actionBar) {
    点击空白区域
 ====================================================== */
 
-document.addEventListener(
-    "click",
-    function (event) {
+document.onclick = function (event) {
 
-        if (!actionBar) {
-            return;
-        }
+    if (!actionBar) {
+        return;
+    }
 
 
-        /* ==============================================
-           点击书名
-        ============================================== */
+    /* ==============================================
+       点击书名
+    ============================================== */
 
-        if (
-            event.target === bookTitle ||
-            bookTitle?.contains(event.target)
-        ) {
+    if (
+        event.target === bookTitle ||
+        bookTitle?.contains(event.target)
+    ) {
 
-            return;
-
-        }
-
-
-        /* ==============================================
-           点击操作栏
-        ============================================== */
-
-        if (
-            event.target === actionBar ||
-            actionBar.contains(event.target)
-        ) {
-
-            return;
-
-        }
-
-
-        /* ==============================================
-           其他区域
-        ============================================== */
-
-        hideActionBar();
+        return;
 
     }
-);
+
+
+    /* ==============================================
+       点击操作栏
+    ============================================== */
+
+    if (
+        event.target === actionBar ||
+        actionBar.contains(event.target)
+    ) {
+
+        return;
+
+    }
+
+
+    /* ==============================================
+       点击其他区域
+    ============================================== */
+
+    hideActionBar();
+
+};
 
 
 /* ======================================================
