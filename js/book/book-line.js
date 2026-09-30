@@ -44,12 +44,14 @@ function getElementCenter(element) {
     return {
 
         x:
-            element.offsetLeft +
-            element.offsetWidth / 2,
+            parseFloat(
+                element.style.left
+            ),
 
         y:
-            element.offsetTop +
-            element.offsetHeight / 2
+            parseFloat(
+                element.style.top
+            )
 
     };
 
@@ -90,7 +92,11 @@ function createConnectionLine(
 
     if (
         !start ||
-        !end
+        !end ||
+        Number.isNaN(start.x) ||
+        Number.isNaN(start.y) ||
+        Number.isNaN(end.x) ||
+        Number.isNaN(end.y)
     ) {
 
         return;
@@ -141,7 +147,7 @@ function createConnectionLine(
 
     line.setAttribute(
         "stroke-width",
-        "2"
+        "3"
     );
 
 
@@ -166,7 +172,8 @@ function renderConnections() {
 
     if (
         !connections ||
-        !workspace
+        !workspace ||
+        !currentBook
     ) {
 
         return;
@@ -175,11 +182,6 @@ function renderConnections() {
 
 
     clearConnections();
-
-
-    if (!currentBook) {
-        return;
-    }
 
 
     const nodes =
@@ -191,7 +193,7 @@ function renderConnections() {
 
 
     /* ==================================================
-       书名元素
+       书名
     ================================================== */
 
     const bookElement =
@@ -206,7 +208,7 @@ function renderConnections() {
 
 
     /* ==================================================
-       每个根节点连接到书名
+       根节点 → 书名
     ================================================== */
 
     nodes.forEach(
@@ -232,7 +234,6 @@ function renderConnections() {
 
             if (!nodeElement) {
                 return;
-
             }
 
 
@@ -248,7 +249,7 @@ function renderConnections() {
 
 
 /* ======================================================
-   节点渲染完成后重新绘制连接线
+   刷新连接线
 ====================================================== */
 
 function refreshConnections() {
