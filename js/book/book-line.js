@@ -48,8 +48,7 @@ function getSVGPointFromScreen(
     point.y = screenY;
 
     const matrix =
-        connections
-            .getScreenCTM();
+        connections.getScreenCTM();
 
     if (!matrix) {
         return null;
@@ -87,29 +86,17 @@ function getElementCenter(element) {
 
 
 /* ======================================================
-   获取元素边缘连接点
+   获取元素边界
 ====================================================== */
 
-function getElementBoundaryPoint(
-    element,
-    target
-) {
+function getElementBounds(element) {
 
-    if (
-        !element ||
-        !target
-    ) {
+    if (!element) {
         return null;
     }
 
-
     const rect =
         element.getBoundingClientRect();
-
-
-    /* ==================================================
-       先把元素四个边界转换成 SVG 坐标
-    ================================================== */
 
     const topLeft =
         getSVGPointFromScreen(
@@ -123,7 +110,6 @@ function getElementBoundaryPoint(
             rect.bottom
         );
 
-
     if (
         !topLeft ||
         !bottomRight
@@ -131,115 +117,27 @@ function getElementBoundaryPoint(
         return null;
     }
 
-
-    const left =
-        topLeft.x;
-
-    const right =
-        bottomRight.x;
-
-    const top =
-        topLeft.y;
-
-    const bottom =
-        bottomRight.y;
-
-
-    /* ==================================================
-       中心
-    ================================================== */
-
-    const centerX =
-        (
-            left +
-            right
-        ) / 2;
-
-    const centerY =
-        (
-            top +
-            bottom
-        ) / 2;
-
-
-    /* ==================================================
-       中心 → 目标
-    ================================================== */
-
-    const dx =
-        target.x -
-        centerX;
-
-    const dy =
-        target.y -
-        centerY;
-
-
-    if (
-        dx === 0 &&
-        dy === 0
-    ) {
-
-        return {
-
-            x: centerX,
-            y: centerY
-
-        };
-
-    }
-
-
-    /* ==================================================
-       半宽 / 半高
-    ================================================== */
-
-    const halfWidth =
-        (
-            right -
-            left
-        ) / 2;
-
-    const halfHeight =
-        (
-            bottom -
-            top
-        ) / 2;
-
-
-    /* ==================================================
-       矩形边缘比例
-    ================================================== */
-
-    const scaleX =
-        dx === 0
-            ? Infinity
-            : halfWidth /
-              Math.abs(dx);
-
-    const scaleY =
-        dy === 0
-            ? Infinity
-            : halfHeight /
-              Math.abs(dy);
-
-
-    const scale =
-        Math.min(
-            scaleX,
-            scaleY
-        );
-
-
     return {
 
-        x:
-            centerX +
-            dx * scale,
+        left: topLeft.x,
 
-        y:
-            centerY +
-            dy * scale
+        right: bottomRight.x,
+
+        top: topLeft.y,
+
+        bottom: bottomRight.y,
+
+        centerX:
+            (
+                topLeft.x +
+                bottomRight.x
+            ) / 2,
+
+        centerY:
+            (
+                topLeft.y +
+                bottomRight.y
+            ) / 2
 
     };
 
@@ -261,13 +159,11 @@ function createLine(
         return;
     }
 
-
     const line =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line"
         );
-
 
     line.setAttribute(
         "x1",
@@ -289,7 +185,6 @@ function createLine(
         y2
     );
 
-
     line.setAttribute(
         "stroke",
         "#888888"
@@ -305,10 +200,8 @@ function createLine(
         "round"
     );
 
-
     line.style.pointerEvents =
         "none";
-
 
     connections.appendChild(
         line
@@ -318,205 +211,19 @@ function createLine(
 
 
 /* ======================================================
-   创建连接线
+   创建展开 / 收起按钮
 ====================================================== */
 
-function createConnectionLine(
-    startElement,
-    endElement
+function createToggleButton(
+    nodeId,
+    x,
+    y,
+    isExpanded
 ) {
 
-    if (
-        !connections ||
-        !startElement ||
-        !endElement
-    ) {
+    if (!connections) {
         return;
     }
-
-
-    const nodeId =
-        String(
-            endElement.dataset.id
-        );
-
-
-    /* ==================================================
-       当前状态
-    ================================================== */
-
-    const isExpanded =
-        connectionStates[nodeId] !== false;
-
-
-    /* ==================================================
-       展开状态
-    ================================================== */
-
-    if (isExpanded) {
-
-        const start =
-            getElementCenter(
-                startElement
-            );
-
-        const end =
-            getElementCenter(
-                endElement
-            );
-
-
-        if (
-            !start ||
-            !end
-        ) {
-            return;
-        }
-
-
-        /* ==================================================
-           中点
-        ================================================== */
-
-        const middleX =
-            (
-                start.x +
-                end.x
-            ) / 2;
-
-        const middleY =
-            (
-                start.y +
-                end.y
-            ) / 2;
-
-
-        /* ==================================================
-           起点
-        ================================================== */
-
-        const startPoint =
-            getElementBoundaryPoint(
-                startElement,
-                end
-            );
-
-
-        /* ==================================================
-           终点
-        ================================================== */
-
-        const endPoint =
-            getElementBoundaryPoint(
-                endElement,
-                start
-            );
-
-
-        if (
-            !startPoint ||
-            !endPoint
-        ) {
-            return;
-        }
-
-
-        /* ==================================================
-           保存
-        ================================================== */
-
-        connectionPositions[nodeId] = {
-
-            startX:
-                startPoint.x,
-
-            startY:
-                startPoint.y,
-
-            middleX:
-                middleX,
-
-            middleY:
-                middleY,
-
-            endX:
-                endPoint.x,
-
-            endY:
-                endPoint.y
-
-        };
-
-
-        const position =
-            connectionPositions[nodeId];
-
-
-        /* ==================================================
-           完整连接线
-        ================================================== */
-
-        createLine(
-
-            position.startX,
-            position.startY,
-
-            position.endX,
-            position.endY
-
-        );
-
-    }
-
-
-    /* ==================================================
-       收起状态
-    ================================================== */
-
-    else {
-
-        const position =
-            connectionPositions[nodeId];
-
-
-        if (!position) {
-            return;
-        }
-
-
-        /* ==================================================
-           只画：
-
-           书名 → +
-
-           不再读取隐藏节点。
-        ================================================== */
-
-        createLine(
-
-            position.startX,
-            position.startY,
-
-            position.middleX,
-            position.middleY
-
-        );
-
-    }
-
-
-    /* ==================================================
-       获取固定位置
-    ================================================== */
-
-    const position =
-        connectionPositions[nodeId];
-
-
-    if (!position) {
-        return;
-    }
-
 
     /* ==================================================
        点击区域
@@ -528,15 +235,14 @@ function createConnectionLine(
             "circle"
         );
 
-
     hitArea.setAttribute(
         "cx",
-        position.middleX
+        x
     );
 
     hitArea.setAttribute(
         "cy",
-        position.middleY
+        y
     );
 
     hitArea.setAttribute(
@@ -559,7 +265,6 @@ function createConnectionLine(
         "all"
     );
 
-
     hitArea.style.pointerEvents =
         "all";
 
@@ -568,7 +273,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       点击 + / -
+       点击
     ================================================== */
 
     hitArea.addEventListener(
@@ -580,17 +285,9 @@ function createConnectionLine(
             event.stopPropagation();
 
 
-            /* ==========================================
-               切换状态
-            ========================================== */
-
             connectionStates[nodeId] =
                 !isExpanded;
 
-
-            /* ==========================================
-               找到节点
-            ========================================== */
 
             const nodeElement =
                 document.querySelector(
@@ -599,10 +296,6 @@ function createConnectionLine(
                     '"]'
                 );
 
-
-            /* ==========================================
-               显示 / 隐藏
-            ========================================== */
 
             if (nodeElement) {
 
@@ -622,10 +315,6 @@ function createConnectionLine(
 
             }
 
-
-            /* ==========================================
-               重新绘制
-            ========================================== */
 
             refreshConnections();
 
@@ -648,15 +337,14 @@ function createConnectionLine(
             "circle"
         );
 
-
     circle.setAttribute(
         "cx",
-        position.middleX
+        x
     );
 
     circle.setAttribute(
         "cy",
-        position.middleY
+        y
     );
 
     circle.setAttribute(
@@ -679,10 +367,8 @@ function createConnectionLine(
         "2"
     );
 
-
     circle.style.pointerEvents =
         "none";
-
 
     connections.appendChild(
         circle
@@ -691,6 +377,8 @@ function createConnectionLine(
 
     /* ==================================================
        横线
+       +
+       -
     ================================================== */
 
     const horizontal =
@@ -699,27 +387,25 @@ function createConnectionLine(
             "line"
         );
 
-
     horizontal.setAttribute(
         "x1",
-        position.middleX - 6
+        x - 6
     );
 
     horizontal.setAttribute(
         "y1",
-        position.middleY
+        y
     );
 
     horizontal.setAttribute(
         "x2",
-        position.middleX + 6
+        x + 6
     );
 
     horizontal.setAttribute(
         "y2",
-        position.middleY
+        y
     );
-
 
     horizontal.setAttribute(
         "stroke",
@@ -736,10 +422,8 @@ function createConnectionLine(
         "round"
     );
 
-
     horizontal.style.pointerEvents =
         "none";
-
 
     connections.appendChild(
         horizontal
@@ -747,13 +431,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       收起状态：
-
-       + 
-
-       展开状态：
-
-       -
+       收起状态显示 +
     ================================================== */
 
     if (!isExpanded) {
@@ -764,27 +442,25 @@ function createConnectionLine(
                 "line"
             );
 
-
         vertical.setAttribute(
             "x1",
-            position.middleX
+            x
         );
 
         vertical.setAttribute(
             "y1",
-            position.middleY - 6
+            y - 6
         );
 
         vertical.setAttribute(
             "x2",
-            position.middleX
+            x
         );
 
         vertical.setAttribute(
             "y2",
-            position.middleY + 6
+            y + 6
         );
-
 
         vertical.setAttribute(
             "stroke",
@@ -801,16 +477,464 @@ function createConnectionLine(
             "round"
         );
 
-
         vertical.style.pointerEvents =
             "none";
-
 
         connections.appendChild(
             vertical
         );
 
     }
+
+}
+
+
+/* ======================================================
+   获取节点
+====================================================== */
+
+function getNodeElement(nodeId) {
+
+    return document.querySelector(
+        '.node[data-id="' +
+        nodeId +
+        '"]'
+    );
+
+}
+
+
+/* ======================================================
+   获取子节点
+====================================================== */
+
+function getChildren(parentId) {
+
+    if (
+        !currentBook ||
+        !Array.isArray(currentBook.nodes)
+    ) {
+        return [];
+    }
+
+    return currentBook.nodes.filter(
+        function (node) {
+
+            return String(node.parentId) ===
+                String(parentId);
+
+        }
+    );
+
+}
+
+
+/* ======================================================
+   绘制一个父节点的树状分支
+====================================================== */
+
+function renderBranch(
+    parentElement,
+    children
+) {
+
+    if (
+        !parentElement ||
+        !children ||
+        children.length === 0
+    ) {
+        return;
+    }
+
+
+    /* ==================================================
+       父节点位置
+    ================================================== */
+
+    const parentBounds =
+        getElementBounds(
+            parentElement
+        );
+
+    if (!parentBounds) {
+        return;
+    }
+
+
+    /* ==================================================
+       获取所有子节点位置
+    ================================================== */
+
+    const childData = [];
+
+
+    children.forEach(
+        function (child) {
+
+            const nodeId =
+                String(child.id);
+
+            const element =
+                getNodeElement(
+                    nodeId
+                );
+
+
+            /* ==========================================
+               第一次默认展开
+            ========================================== */
+
+            if (
+                connectionStates[nodeId] ===
+                undefined
+            ) {
+
+                connectionStates[nodeId] =
+                    true;
+
+            }
+
+
+            const isExpanded =
+                connectionStates[nodeId];
+
+
+            const bounds =
+                element
+                    ? getElementBounds(
+                        element
+                    )
+                    : null;
+
+
+            /* ==========================================
+               可见节点
+            ========================================== */
+
+            if (bounds) {
+
+                childData.push({
+
+                    node: child,
+
+                    element: element,
+
+                    bounds: bounds,
+
+                    visible: true,
+
+                    expanded: isExpanded
+
+                });
+
+                return;
+
+            }
+
+
+            /* ==========================================
+               隐藏节点
+
+               使用之前保存的位置
+            ========================================== */
+
+            const saved =
+                connectionPositions[
+                    nodeId
+                ];
+
+
+            if (saved) {
+
+                childData.push({
+
+                    node: child,
+
+                    element: null,
+
+                    bounds: {
+
+                        left:
+                            saved.endX,
+
+                        right:
+                            saved.endX,
+
+                        top:
+                            saved.endY,
+
+                        bottom:
+                            saved.endY,
+
+                        centerX:
+                            saved.endX,
+
+                        centerY:
+                            saved.endY
+
+                    },
+
+                    visible: false,
+
+                    expanded: false
+
+                });
+
+            }
+
+        }
+    );
+
+
+    if (childData.length === 0) {
+        return;
+    }
+
+
+    /* ==================================================
+       子节点横向位置
+    ================================================== */
+
+    const childXs =
+        childData.map(
+            function (item) {
+
+                return item.bounds.centerX;
+
+            }
+        );
+
+
+    const minX =
+        Math.min.apply(
+            null,
+            childXs
+        );
+
+    const maxX =
+        Math.max.apply(
+            null,
+            childXs
+        );
+
+
+    /* ==================================================
+       分支横线高度
+
+       父节点下面留出空间
+    ================================================== */
+
+    const branchY =
+        parentBounds.bottom + 70;
+
+
+    /* ==================================================
+       父节点 → 横向分支中心
+    ================================================== */
+
+    const centerX =
+        (
+            minX +
+            maxX
+        ) / 2;
+
+
+    createLine(
+
+        parentBounds.centerX,
+
+        parentBounds.bottom,
+
+        parentBounds.centerX,
+
+        branchY
+
+    );
+
+
+    /* ==================================================
+       横向分支线
+    ================================================== */
+
+    if (childData.length > 1) {
+
+        createLine(
+
+            minX,
+
+            branchY,
+
+            maxX,
+
+            branchY
+
+        );
+
+    }
+
+
+    /* ==================================================
+       每个子节点的竖线
+    ================================================== */
+
+    childData.forEach(
+        function (item) {
+
+            const node =
+                item.node;
+
+            const nodeId =
+                String(node.id);
+
+            const bounds =
+                item.bounds;
+
+            const childX =
+                bounds.centerX;
+
+
+            /* ==========================================
+               横线 → 子节点
+            ========================================== */
+
+            const childTop =
+                item.visible
+                    ? bounds.top
+                    : branchY;
+
+
+            if (
+                Math.abs(
+                    childX -
+                    centerX
+                ) < 0.5 &&
+                childData.length === 1
+            ) {
+
+                /* ======================================
+                   只有一个子节点
+
+                   直接连接
+                ====================================== */
+
+                createLine(
+
+                    parentBounds.centerX,
+
+                    parentBounds.bottom,
+
+                    childX,
+
+                    childTop
+
+                );
+
+            } else {
+
+                createLine(
+
+                    childX,
+
+                    branchY,
+
+                    childX,
+
+                    childTop
+
+                );
+
+            }
+
+
+            /* ==========================================
+               保存连接位置
+            ========================================== */
+
+            const toggleY =
+                branchY +
+                (
+                    childTop -
+                    branchY
+                ) / 2;
+
+
+            connectionPositions[nodeId] = {
+
+                startX:
+                    parentBounds.centerX,
+
+                startY:
+                    parentBounds.bottom,
+
+                middleX:
+                    childX,
+
+                middleY:
+                    toggleY,
+
+                endX:
+                    childX,
+
+                endY:
+                    childTop
+
+            };
+
+
+            /* ==========================================
+               显示 +/- 
+            ========================================== */
+
+            createToggleButton(
+
+                nodeId,
+
+                childX,
+
+                toggleY,
+
+                item.expanded
+
+            );
+
+        }
+    );
+
+
+    /* ==================================================
+       递归绘制子节点
+    ================================================== */
+
+    childData.forEach(
+        function (item) {
+
+            if (!item.visible) {
+                return;
+            }
+
+            const childrenOfChild =
+                getChildren(
+                    item.node.id
+                );
+
+
+            if (
+                childrenOfChild.length === 0
+            ) {
+                return;
+            }
+
+
+            renderBranch(
+
+                item.element,
+
+                childrenOfChild
+
+            );
+
+        }
+    );
 
 }
 
@@ -868,6 +992,10 @@ function renderConnections() {
     );
 
 
+    /* ==================================================
+       书名
+    ================================================== */
+
     const bookElement =
         document.getElementById(
             "bookTitle"
@@ -879,68 +1007,40 @@ function renderConnections() {
     }
 
 
-    const nodes =
-        Array.isArray(
-            currentBook.nodes
-        )
-            ? currentBook.nodes
-            : [];
+    /* ==================================================
+       根节点
+    ================================================== */
 
+    const rootNodes =
+        currentBook.nodes.filter(
+            function (node) {
 
-    nodes.forEach(
-        function (node) {
-
-            /* ==========================================
-               目前只处理根节点
-            ========================================== */
-
-            if (
-                node.parentId !== null &&
-                node.parentId !== undefined
-            ) {
-                return;
-            }
-
-
-            const nodeElement =
-                document.querySelector(
-                    '.node[data-id="' +
-                    node.id +
-                    '"]'
+                return (
+                    node.parentId === null ||
+                    node.parentId === undefined
                 );
 
-
-            if (!nodeElement) {
-                return;
             }
+        );
 
 
-            /* ==========================================
-               第一次默认展开
-            ========================================== */
-
-            if (
-                connectionStates[
-                    String(node.id)
-                ] === undefined
-            ) {
-
-                connectionStates[
-                    String(node.id)
-                ] = true;
-
-            }
+    if (rootNodes.length === 0) {
+        return;
+    }
 
 
-            createConnectionLine(
+    /* ==================================================
+       书名 → 根节点
 
-                bookElement,
+       使用统一树状分支
+    ================================================== */
 
-                nodeElement
+    renderBranch(
 
-            );
+        bookElement,
 
-        }
+        rootNodes
+
     );
 
 }
