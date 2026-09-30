@@ -220,128 +220,153 @@
 
 
     <!-- ==================================================
-         进入全书时，让书名处于可视区域正中央
+         进入全书时定位
     ================================================== -->
 
     <script>
 
-        document.addEventListener(
-            "DOMContentLoaded",
+        /*
+         * 不让浏览器恢复上一次的滚动位置
+         */
+
+        if (
+            "scrollRestoration" in history
+        ) {
+
+            history.scrollRestoration =
+                "manual";
+
+        }
+
+
+        /* ==================================================
+           将书名放到 canvas 正中央
+        ================================================== */
+
+        function centerBookOnEnter() {
+
+            const canvas =
+                document.getElementById("canvas");
+
+            const bookTitle =
+                document.getElementById("bookTitle");
+
+
+            if (
+                !canvas ||
+                !bookTitle
+            ) {
+
+                return;
+
+            }
+
+
+            /*
+             * 取得书名在 workspace 中的位置
+             */
+
+            const titleLeft =
+                bookTitle.offsetLeft;
+
+            const titleTop =
+                bookTitle.offsetTop;
+
+
+            const titleWidth =
+                bookTitle.offsetWidth;
+
+            const titleHeight =
+                bookTitle.offsetHeight;
+
+
+            /*
+             * 书名中心
+             */
+
+            const titleCenterX =
+                titleLeft +
+                titleWidth / 2;
+
+            const titleCenterY =
+                titleTop +
+                titleHeight / 2;
+
+
+            /*
+             * canvas 可视区域中心
+             */
+
+            const viewCenterX =
+                canvas.clientWidth / 2;
+
+            const viewCenterY =
+                canvas.clientHeight / 2;
+
+
+            /*
+             * 计算最终滚动位置
+             */
+
+            const scrollLeft =
+                titleCenterX -
+                viewCenterX;
+
+            const scrollTop =
+                titleCenterY -
+                viewCenterY;
+
+
+            /*
+             * 直接设置
+             */
+
+            canvas.scrollLeft =
+                scrollLeft;
+
+            canvas.scrollTop =
+                scrollTop;
+
+        }
+
+
+        /* ==================================================
+           页面完全加载
+        ================================================== */
+
+        window.addEventListener(
+            "load",
             function () {
 
-                const canvas =
-                    document.getElementById("canvas");
-
-                const bookTitle =
-                    document.getElementById("bookTitle");
+                centerBookOnEnter();
 
 
-                if (
-                    !canvas ||
-                    !bookTitle
-                ) {
-
-                    return;
-
-                }
-
-
-                function centerBookTitle() {
-
-                    /*
-                     * 书名在 workspace 中的实际位置
-                     */
-
-                    const titleLeft =
-                        bookTitle.offsetLeft;
-
-                    const titleTop =
-                        bookTitle.offsetTop;
-
-
-                    const titleWidth =
-                        bookTitle.offsetWidth;
-
-                    const titleHeight =
-                        bookTitle.offsetHeight;
-
-
-                    /*
-                     * 横向：
-                     * 让书名中心 = canvas 中心
-                     */
-
-                    const targetScrollLeft =
-                        titleLeft +
-                        titleWidth / 2 -
-                        canvas.clientWidth / 2;
-
-
-                    /*
-                     * 纵向：
-                     * 让书名中心 = canvas 中心
-                     */
-
-                    const targetScrollTop =
-                        titleTop +
-                        titleHeight / 2 -
-                        canvas.clientHeight / 2;
-
-
-                    canvas.scrollLeft =
-                        Math.max(
-                            0,
-                            targetScrollLeft
-                        );
-
-
-                    canvas.scrollTop =
-                        Math.max(
-                            0,
-                            targetScrollTop
-                        );
-
-                }
-
-
-                /*
-                 * 等页面完成第一次布局后执行
-                 */
-
-                requestAnimationFrame(
-                    function () {
-
-                        centerBookTitle();
-
-
-                        /*
-                         * 再执行一次，
-                         * 防止字体、尺寸等造成偏移
-                         */
-
-                        requestAnimationFrame(
-                            function () {
-
-                                centerBookTitle();
-
-                            }
-                        );
-
-                    }
+                setTimeout(
+                    centerBookOnEnter,
+                    100
                 );
 
 
-                /*
-                 * 最后校正一次
-                 */
+                setTimeout(
+                    centerBookOnEnter,
+                    500
+                );
+
+            }
+        );
+
+
+        /* ==================================================
+           Safari 返回页面
+        ================================================== */
+
+        window.addEventListener(
+            "pageshow",
+            function () {
 
                 setTimeout(
-                    function () {
-
-                        centerBookTitle();
-
-                    },
-                    300
+                    centerBookOnEnter,
+                    50
                 );
 
             }
