@@ -40,18 +40,35 @@ function getElementCenter(element) {
         return null;
     }
 
+    const style =
+        window.getComputedStyle(
+            element
+        );
+
+    const x =
+        parseFloat(
+            style.left
+        );
+
+    const y =
+        parseFloat(
+            style.top
+        );
+
+    if (
+        Number.isNaN(x) ||
+        Number.isNaN(y)
+    ) {
+
+        return null;
+
+    }
 
     return {
 
-        x:
-            parseFloat(
-                element.style.left
-            ),
+        x: x,
 
-        y:
-            parseFloat(
-                element.style.top
-            )
+        y: y
 
     };
 
@@ -77,36 +94,24 @@ function createConnectionLine(
 
     }
 
-
     const start =
         getElementCenter(
             startElement
         );
-
 
     const end =
         getElementCenter(
             endElement
         );
 
-
     if (
         !start ||
-        !end ||
-        Number.isNaN(start.x) ||
-        Number.isNaN(start.y) ||
-        Number.isNaN(end.x) ||
-        Number.isNaN(end.y)
+        !end
     ) {
 
         return;
 
     }
-
-
-    /* ==================================================
-       创建 SVG 线
-    ================================================== */
 
     const line =
         document.createElementNS(
@@ -114,58 +119,45 @@ function createConnectionLine(
             "line"
         );
 
-
     line.setAttribute(
         "x1",
         start.x
     );
-
 
     line.setAttribute(
         "y1",
         start.y
     );
 
-
     line.setAttribute(
         "x2",
         end.x
     );
-
 
     line.setAttribute(
         "y2",
         end.y
     );
 
-
-    /* ==================================================
-       线条样式
-    ================================================== */
-
     line.setAttribute(
         "stroke",
         "#888888"
     );
-
 
     line.setAttribute(
         "stroke-width",
         "3"
     );
 
-
     line.setAttribute(
         "stroke-linecap",
         "round"
     );
 
-
     line.setAttribute(
         "fill",
         "none"
     );
-
 
     connections.appendChild(
         line
@@ -190,39 +182,23 @@ function renderConnections() {
 
     }
 
-
-    /* ==================================================
-       清除旧线
-    ================================================== */
-
     clearConnections();
-
-
-    /* ==================================================
-       确保 SVG 覆盖整个工作区
-    ================================================== */
 
     connections.setAttribute(
         "width",
         "3000"
     );
 
-
     connections.setAttribute(
         "height",
         "3000"
     );
-
 
     connections.setAttribute(
         "viewBox",
         "0 0 3000 3000"
     );
 
-
-    /* ==================================================
-       获取节点数据
-    ================================================== */
 
     const nodes =
         Array.isArray(
@@ -232,31 +208,22 @@ function renderConnections() {
             : [];
 
 
-    /* ==================================================
-       获取书名
-    ================================================== */
-
     const bookElement =
         document.getElementById(
             "bookTitle"
         );
-
 
     if (!bookElement) {
         return;
     }
 
 
-    /* ==================================================
-       根节点连接到书名
-    ================================================== */
+    /* ==============================================
+       书名 → 根节点
+    ============================================== */
 
     nodes.forEach(
         function (node) {
-
-            /* ==========================================
-               只处理根节点
-            ========================================== */
 
             if (
                 node.parentId !== null &&
@@ -267,11 +234,6 @@ function renderConnections() {
 
             }
 
-
-            /* ==========================================
-               找到对应的节点元素
-            ========================================== */
-
             const nodeElement =
                 document.querySelector(
                     '.node[data-id="' +
@@ -279,16 +241,9 @@ function renderConnections() {
                     '"]'
                 );
 
-
             if (!nodeElement) {
                 return;
-
             }
-
-
-            /* ==========================================
-               创建连接
-            ========================================== */
 
             createConnectionLine(
                 bookElement,
