@@ -21,12 +21,12 @@
     align-items: center;
     justify-content: center;
 
-    background: #ff4d4d;
+    background: #ff4d4d !important;
 
-    border: 3px solid #d90000;
+    border: 3px solid #d90000 !important;
     border-radius: 14px;
 
-    color: #d90000;
+    color: #d90000 !important;
 
     font-size: 24px;
     font-weight: bold;
