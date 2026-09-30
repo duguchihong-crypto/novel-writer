@@ -15,6 +15,13 @@ const workspace =
 
 
 /* ======================================================
+   连接线展开状态
+====================================================== */
+
+const connectionStates = {};
+
+
+/* ======================================================
    清除连接线
 ====================================================== */
 
@@ -168,6 +175,73 @@ function createConnectionLine(
 
 
     /* ==================================================
+       创建可点击区域
+    ================================================== */
+
+    const hitArea =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "circle"
+        );
+
+
+    hitArea.setAttribute(
+        "cx",
+        middleX
+    );
+
+    hitArea.setAttribute(
+        "cy",
+        middleY
+    );
+
+    hitArea.setAttribute(
+        "r",
+        "18"
+    );
+
+    hitArea.setAttribute(
+        "fill",
+        "transparent"
+    );
+
+    hitArea.setAttribute(
+        "pointer-events",
+        "all"
+    );
+
+    hitArea.style.cursor =
+        "pointer";
+
+
+    /* ==================================================
+       点击 +
+    ================================================== */
+
+    hitArea.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            const nodeId =
+                endElement.dataset.id;
+
+            connectionStates[nodeId] =
+                !connectionStates[nodeId];
+
+            refreshConnections();
+
+        }
+    );
+
+
+    connections.appendChild(
+        hitArea
+    );
+
+
+    /* ==================================================
        创建 + 的背景圆
     ================================================== */
 
@@ -176,6 +250,7 @@ function createConnectionLine(
             "http://www.w3.org/2000/svg",
             "circle"
         );
+
 
     circle.setAttribute(
         "cx",
@@ -207,6 +282,9 @@ function createConnectionLine(
         "2"
     );
 
+    circle.style.pointerEvents =
+        "none";
+
 
     connections.appendChild(
         circle
@@ -214,7 +292,17 @@ function createConnectionLine(
 
 
     /* ==================================================
-       创建 + 横线
+       当前显示 + 还是 -
+    ================================================== */
+
+    const isExpanded =
+        connectionStates[
+            endElement.dataset.id
+        ] === true;
+
+
+    /* ==================================================
+       创建横线
     ================================================== */
 
     const horizontal =
@@ -222,6 +310,7 @@ function createConnectionLine(
             "http://www.w3.org/2000/svg",
             "line"
         );
+
 
     horizontal.setAttribute(
         "x1",
@@ -258,6 +347,9 @@ function createConnectionLine(
         "round"
     );
 
+    horizontal.style.pointerEvents =
+        "none";
+
 
     connections.appendChild(
         horizontal
@@ -265,54 +357,64 @@ function createConnectionLine(
 
 
     /* ==================================================
-       创建 + 竖线
+       创建竖线
+       + = 显示
+       - = 隐藏
     ================================================== */
 
-    const vertical =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line"
+    if (!isExpanded) {
+
+        const vertical =
+            document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
+
+
+        vertical.setAttribute(
+            "x1",
+            middleX
         );
 
-    vertical.setAttribute(
-        "x1",
-        middleX
-    );
+        vertical.setAttribute(
+            "y1",
+            middleY - 6
+        );
 
-    vertical.setAttribute(
-        "y1",
-        middleY - 6
-    );
+        vertical.setAttribute(
+            "x2",
+            middleX
+        );
 
-    vertical.setAttribute(
-        "x2",
-        middleX
-    );
+        vertical.setAttribute(
+            "y2",
+            middleY + 6
+        );
 
-    vertical.setAttribute(
-        "y2",
-        middleY + 6
-    );
+        vertical.setAttribute(
+            "stroke",
+            "#222222"
+        );
 
-    vertical.setAttribute(
-        "stroke",
-        "#222222"
-    );
+        vertical.setAttribute(
+            "stroke-width",
+            "2"
+        );
 
-    vertical.setAttribute(
-        "stroke-width",
-        "2"
-    );
+        vertical.setAttribute(
+            "stroke-linecap",
+            "round"
+        );
 
-    vertical.setAttribute(
-        "stroke-linecap",
-        "round"
-    );
+        vertical.style.pointerEvents =
+            "none";
 
 
-    connections.appendChild(
-        vertical
-    );
+        connections.appendChild(
+            vertical
+        );
+
+    }
 
 }
 
