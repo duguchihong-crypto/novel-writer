@@ -94,18 +94,15 @@ function createConnectionLine(
 
     }
 
-
     const start =
         getElementCenter(
             startElement
         );
 
-
     const end =
         getElementCenter(
             endElement
         );
-
 
     if (
         !start ||
@@ -116,17 +113,11 @@ function createConnectionLine(
 
     }
 
-
-    /* ==================================================
-       创建连接线
-    ================================================== */
-
     const line =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line"
         );
-
 
     line.setAttribute(
         "x1",
@@ -148,7 +139,6 @@ function createConnectionLine(
         end.y
     );
 
-
     line.setAttribute(
         "stroke",
         "#888888"
@@ -169,212 +159,8 @@ function createConnectionLine(
         "none"
     );
 
-
     connections.appendChild(
         line
-    );
-
-
-    /* ==================================================
-       计算连接线中点
-    ================================================== */
-
-    const middleX =
-        (
-            start.x +
-            end.x
-        ) / 2;
-
-
-    const middleY =
-        (
-            start.y +
-            end.y
-        ) / 2;
-
-
-    /* ==================================================
-       创建 ＋
-    ================================================== */
-
-    const plusGroup =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "g"
-        );
-
-
-    plusGroup.setAttribute(
-        "transform",
-        "translate(" +
-        middleX +
-        " " +
-        middleY +
-        ")"
-    );
-
-
-    plusGroup.setAttribute(
-        "pointer-events",
-        "none"
-    );
-
-
-    /* ==================================================
-       ＋ 背景
-    ================================================== */
-
-    const plusCircle =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "circle"
-        );
-
-
-    plusCircle.setAttribute(
-        "cx",
-        "0"
-    );
-
-    plusCircle.setAttribute(
-        "cy",
-        "0"
-    );
-
-    plusCircle.setAttribute(
-        "r",
-        "12"
-    );
-
-    plusCircle.setAttribute(
-        "fill",
-        "#ffffff"
-    );
-
-    plusCircle.setAttribute(
-        "stroke",
-        "#888888"
-    );
-
-    plusCircle.setAttribute(
-        "stroke-width",
-        "2"
-    );
-
-
-    plusGroup.appendChild(
-        plusCircle
-    );
-
-
-    /* ==================================================
-       ＋ 横线
-    ================================================== */
-
-    const horizontal =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line"
-        );
-
-
-    horizontal.setAttribute(
-        "x1",
-        "-6"
-    );
-
-    horizontal.setAttribute(
-        "y1",
-        "0"
-    );
-
-    horizontal.setAttribute(
-        "x2",
-        "6"
-    );
-
-    horizontal.setAttribute(
-        "y2",
-        "0"
-    );
-
-
-    horizontal.setAttribute(
-        "stroke",
-        "#333333"
-    );
-
-    horizontal.setAttribute(
-        "stroke-width",
-        "2"
-    );
-
-    horizontal.setAttribute(
-        "stroke-linecap",
-        "round"
-    );
-
-
-    plusGroup.appendChild(
-        horizontal
-    );
-
-
-    /* ==================================================
-       ＋ 竖线
-    ================================================== */
-
-    const vertical =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line"
-        );
-
-
-    vertical.setAttribute(
-        "x1",
-        "0"
-    );
-
-    vertical.setAttribute(
-        "y1",
-        "-6"
-    );
-
-    vertical.setAttribute(
-        "x2",
-        "0"
-    );
-
-    vertical.setAttribute(
-        "y2",
-        "6"
-    );
-
-
-    vertical.setAttribute(
-        "stroke",
-        "#333333"
-    );
-
-    vertical.setAttribute(
-        "stroke-width",
-        "2"
-    );
-
-    vertical.setAttribute(
-        "stroke-linecap",
-        "round"
-    );
-
-
-    plusGroup.appendChild(
-        vertical
-    );
-
-
-    connections.appendChild(
-        plusGroup
     );
 
 }
@@ -396,21 +182,17 @@ function renderConnections() {
 
     }
 
-
     clearConnections();
-
 
     connections.setAttribute(
         "width",
         "3000"
     );
 
-
     connections.setAttribute(
         "height",
         "3000"
     );
-
 
     connections.setAttribute(
         "viewBox",
@@ -430,7 +212,6 @@ function renderConnections() {
         document.getElementById(
             "bookTitle"
         );
-
 
     if (!bookElement) {
         return;
@@ -453,7 +234,6 @@ function renderConnections() {
 
             }
 
-
             const nodeElement =
                 document.querySelector(
                     '.node[data-id="' +
@@ -461,11 +241,9 @@ function renderConnections() {
                     '"]'
                 );
 
-
             if (!nodeElement) {
                 return;
             }
-
 
             createConnectionLine(
                 bookElement,
