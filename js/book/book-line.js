@@ -151,6 +151,9 @@ function createConnectionLine(
         "round"
     );
 
+    line.style.pointerEvents =
+        "none";
+
 
     connections.appendChild(
         line
@@ -175,7 +178,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       创建可点击区域
+       创建点击区域
     ================================================== */
 
     const hitArea =
@@ -197,7 +200,7 @@ function createConnectionLine(
 
     hitArea.setAttribute(
         "r",
-        "18"
+        "20"
     );
 
     hitArea.setAttribute(
@@ -206,29 +209,55 @@ function createConnectionLine(
     );
 
     hitArea.setAttribute(
+        "stroke",
+        "transparent"
+    );
+
+    hitArea.setAttribute(
         "pointer-events",
         "all"
     );
+
+    hitArea.style.pointerEvents =
+        "all";
 
     hitArea.style.cursor =
         "pointer";
 
 
     /* ==================================================
-       点击 +
+       点击展开按钮
     ================================================== */
 
     hitArea.addEventListener(
         "click",
         function (event) {
 
+            event.preventDefault();
+
             event.stopPropagation();
 
-            const nodeId =
-                endElement.dataset.id;
 
-            connectionStates[nodeId] =
-                !connectionStates[nodeId];
+            const nodeId =
+                String(
+                    endElement.dataset.id
+                );
+
+
+            if (
+                connectionStates[nodeId] === true
+            ) {
+
+                connectionStates[nodeId] =
+                    false;
+
+            } else {
+
+                connectionStates[nodeId] =
+                    true;
+
+            }
+
 
             refreshConnections();
 
@@ -242,7 +271,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       创建 + 的背景圆
+       创建背景圆
     ================================================== */
 
     const circle =
@@ -282,6 +311,7 @@ function createConnectionLine(
         "2"
     );
 
+
     circle.style.pointerEvents =
         "none";
 
@@ -292,13 +322,16 @@ function createConnectionLine(
 
 
     /* ==================================================
-       当前显示 + 还是 -
+       当前状态
     ================================================== */
 
-    const isExpanded =
-        connectionStates[
+    const nodeId =
+        String(
             endElement.dataset.id
-        ] === true;
+        );
+
+    const isExpanded =
+        connectionStates[nodeId] === true;
 
 
     /* ==================================================
@@ -347,6 +380,7 @@ function createConnectionLine(
         "round"
     );
 
+
     horizontal.style.pointerEvents =
         "none";
 
@@ -357,9 +391,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       创建竖线
-       + = 显示
-       - = 隐藏
+       ＋的竖线
     ================================================== */
 
     if (!isExpanded) {
@@ -405,6 +437,7 @@ function createConnectionLine(
             "stroke-linecap",
             "round"
         );
+
 
         vertical.style.pointerEvents =
             "none";
