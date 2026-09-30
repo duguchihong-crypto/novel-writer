@@ -71,54 +71,6 @@ function getElementCenter(element) {
 
 
 /* ======================================================
-   设置节点显示状态
-====================================================== */
-
-function updateNodeVisibility(nodeId) {
-
-    const nodeElement =
-        document.querySelector(
-            '.node[data-id="' +
-            nodeId +
-            '"]'
-        );
-
-    if (!nodeElement) {
-        return;
-    }
-
-    const isExpanded =
-        connectionStates[nodeId] === true;
-
-
-    /*
-     * 展开：
-     * 显示节点
-     */
-
-    if (isExpanded) {
-
-        nodeElement.style.display =
-            "flex";
-
-    }
-
-    /*
-     * 收起：
-     * 隐藏节点
-     */
-
-    else {
-
-        nodeElement.style.display =
-            "none";
-
-    }
-
-}
-
-
-/* ======================================================
    创建连接线
 ====================================================== */
 
@@ -136,6 +88,10 @@ function createConnectionLine(
     }
 
 
+    /* ==================================================
+       获取位置
+    ================================================== */
+
     const start =
         getElementCenter(
             startElement
@@ -150,6 +106,24 @@ function createConnectionLine(
     if (!start || !end) {
         return;
     }
+
+
+    /* ==================================================
+       节点 ID
+    ================================================== */
+
+    const nodeId =
+        String(
+            endElement.dataset.id
+        );
+
+
+    /* ==================================================
+       当前展开状态
+    ================================================== */
+
+    const isExpanded =
+        connectionStates[nodeId] !== false;
 
 
     /* ==================================================
@@ -183,7 +157,6 @@ function createConnectionLine(
         end.y
     );
 
-
     line.setAttribute(
         "stroke",
         "#888888"
@@ -209,7 +182,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       计算连接线中点
+       计算中点
     ================================================== */
 
     const middleX =
@@ -226,20 +199,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       当前状态
-    ================================================== */
-
-    const nodeId =
-        String(
-            endElement.dataset.id
-        );
-
-    const isExpanded =
-        connectionStates[nodeId] === true;
-
-
-    /* ==================================================
-       创建点击区域
+       点击区域
     ================================================== */
 
     const hitArea =
@@ -261,7 +221,7 @@ function createConnectionLine(
 
     hitArea.setAttribute(
         "r",
-        "20"
+        "22"
     );
 
     hitArea.setAttribute(
@@ -287,7 +247,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       点击展开按钮
+       点击 + / -
     ================================================== */
 
     hitArea.addEventListener(
@@ -308,16 +268,38 @@ function createConnectionLine(
 
 
             /*
-             * 更新节点显示
+             * 直接控制节点
              */
 
-            updateNodeVisibility(
-                nodeId
-            );
+            const nodeElement =
+                document.querySelector(
+                    '.node[data-id="' +
+                    nodeId +
+                    '"]'
+                );
+
+
+            if (nodeElement) {
+
+                if (
+                    connectionStates[nodeId]
+                ) {
+
+                    nodeElement.style.display =
+                        "flex";
+
+                } else {
+
+                    nodeElement.style.display =
+                        "none";
+
+                }
+
+            }
 
 
             /*
-             * 重新绘制连接线
+             * 重新绘制
              */
 
             refreshConnections();
@@ -332,7 +314,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       创建背景圆
+       背景圆
     ================================================== */
 
     const circle =
@@ -372,7 +354,6 @@ function createConnectionLine(
         "2"
     );
 
-
     circle.style.pointerEvents =
         "none";
 
@@ -383,7 +364,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       创建横线
+       横线
     ================================================== */
 
     const horizontal =
@@ -428,7 +409,6 @@ function createConnectionLine(
         "round"
     );
 
-
     horizontal.style.pointerEvents =
         "none";
 
@@ -439,7 +419,10 @@ function createConnectionLine(
 
 
     /* ==================================================
-       ＋的竖线
+       竖线
+       
+       展开 = -
+       收起 = +
     ================================================== */
 
     if (!isExpanded) {
@@ -485,7 +468,6 @@ function createConnectionLine(
             "stroke-linecap",
             "round"
         );
-
 
         vertical.style.pointerEvents =
             "none";
@@ -578,8 +560,7 @@ function renderConnections() {
 
 
             /*
-             * 确保节点状态与
-             * connectionStates 一致
+             * 第一次出现时默认展开
              */
 
             if (
@@ -596,16 +577,13 @@ function renderConnections() {
 
 
             /*
-             * 重新应用显示状态
-             */
-
-            updateNodeVisibility(
-                String(node.id)
-            );
-
-
-            /*
-             * 连接线始终保留
+             * 注意：
+             *
+             * 即使节点被隐藏，
+             * 这里仍然使用它原来的
+             * left / top 坐标。
+             *
+             * 因此 + / - 永远存在。
              */
 
             createConnectionLine(
