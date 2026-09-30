@@ -1,272 +1,266 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
+ /* ======================================================
+    全书连接线模块
+ ====================================================== */
 
-<head>
 
-    <meta charset="UTF-8">
+/* ======================================================
+   基础元素
+====================================================== */
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+const connections =
+    document.getElementById("connections");
 
-    <title>全书</title>
+const workspace =
+    document.getElementById("workspace");
 
 
-    <!-- ==================================================
-         全书基础样式
-    ================================================== -->
+/* ======================================================
+   清除连接线
+====================================================== */
 
-    <link
-        rel="stylesheet"
-        href="./css/book-base.css?v=40002"
-    >
+function clearConnections() {
 
+    if (!connections) {
+        return;
+    }
 
-    <!-- ==================================================
-         书名、节点样式
-    ================================================== -->
+    connections.innerHTML = "";
 
-    <link
-        rel="stylesheet"
-        href="./css/book-node.css?v=40002"
-    >
+}
 
 
-    <!-- ==================================================
-         连接线样式
-    ================================================== -->
+/* ======================================================
+   获取元素中心
+====================================================== */
 
-    <link
-        rel="stylesheet"
-        href="./css/book-line.css?v=40002"
-    >
+function getElementCenter(element) {
 
+    if (!element) {
+        return null;
+    }
 
-    <!-- ==================================================
-         布局样式
-    ================================================== -->
+    const style =
+        window.getComputedStyle(element);
 
-    <link
-        rel="stylesheet"
-        href="./css/book-layout.css?v=40002"
-    >
+    const x =
+        parseFloat(style.left);
 
+    const y =
+        parseFloat(style.top);
 
-    <!-- ==================================================
-         底部操作栏样式
-    ================================================== -->
+    if (
+        Number.isNaN(x) ||
+        Number.isNaN(y)
+    ) {
+        return null;
+    }
 
-    <link
-        rel="stylesheet"
-        href="./css/book-action.css?v=40002"
-    >
+    return {
+        x: x,
+        y: y
+    };
 
-</head>
+}
 
 
-<body>
+/* ======================================================
+   创建连接线
+====================================================== */
 
-    <!-- ==================================================
-         顶部栏
-    ================================================== -->
+function createConnectionLine(
+    startElement,
+    endElement
+) {
 
-    <header
-        id="topBar"
-        class="top-bar"
-    >
+    if (
+        !connections ||
+        !startElement ||
+        !endElement
+    ) {
+        return;
+    }
 
-        <button
-            id="backButton"
-            class="top-button"
-            type="button"
-            onclick="window.location.href='./index.html';"
-        >
-            ← 返回
-        </button>
 
+    const start =
+        getElementCenter(
+            startElement
+        );
 
-        <div
-            id="pageTitle"
-            class="page-title"
-        >
-            全书
-        </div>
+    const end =
+        getElementCenter(
+            endElement
+        );
 
 
-        <button
-            id="layoutButton"
-            class="top-button"
-            type="button"
-        >
-            ↕ 纵向
-        </button>
+    if (!start || !end) {
+        return;
+    }
 
-    </header>
 
+    const line =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+        );
 
-    <!-- ==================================================
-         画布
-    ================================================== -->
 
-    <main
-        id="canvas"
-        class="canvas"
-    >
+    line.setAttribute(
+        "x1",
+        start.x
+    );
 
-        <div
-            id="workspace"
-            class="workspace"
-        >
+    line.setAttribute(
+        "y1",
+        start.y
+    );
 
-            <!-- ==================================================
-                 连接线
-            ================================================== -->
+    line.setAttribute(
+        "x2",
+        end.x
+    );
 
-            <svg
-                id="connections"
-                class="connections"
-            ></svg>
+    line.setAttribute(
+        "y2",
+        end.y
+    );
 
 
-            <!-- ==================================================
-                 全书书名
-            ================================================== -->
+    line.setAttribute(
+        "stroke",
+        "#222222"
+    );
 
-            <div
-                id="bookTitle"
-                class="book-title"
-            >
-                新书
-            </div>
+    line.setAttribute(
+        "stroke-width",
+        "4"
+    );
 
+    line.setAttribute(
+        "stroke-linecap",
+        "round"
+    );
 
-            <!-- ==================================================
-                 底部固定操作栏
 
-                 顺序：
-                 序 → 章 → 篇 → 卷
-            ================================================== -->
+    connections.appendChild(
+        line
+    );
 
-            <div
-                id="actionBar"
-                class="action-bar"
-            >
+}
 
-                <button
-                    type="button"
-                    class="action-preface"
-                    data-action="preface"
-                >
-                    ＋序
-                </button>
 
+/* ======================================================
+   绘制全部连接线
+====================================================== */
 
-                <button
-                    type="button"
-                    class="action-chapter"
-                    data-action="chapter"
-                >
-                    ＋章
-                </button>
+function renderConnections() {
 
+    if (
+        !connections ||
+        !workspace ||
+        !currentBook
+    ) {
+        return;
+    }
 
-                <button
-                    type="button"
-                    class="action-part"
-                    data-action="part"
-                >
-                    ＋篇
-                </button>
 
+    clearConnections();
 
-                <button
-                    type="button"
-                    class="action-volume"
-                    data-action="volume"
-                >
-                    ＋卷
-                </button>
 
-            </div>
+    connections.setAttribute(
+        "width",
+        "3000"
+    );
 
+    connections.setAttribute(
+        "height",
+        "3000"
+    );
 
-            <!-- ==================================================
-                 树
-            ================================================== -->
+    connections.setAttribute(
+        "viewBox",
+        "0 0 3000 3000"
+    );
 
-            <div
-                id="tree"
-                class="tree"
-            ></div>
 
-        </div>
+    const bookElement =
+        document.getElementById(
+            "bookTitle"
+        );
 
-    </main>
 
+    if (!bookElement) {
+        return;
+    }
 
-    <!-- ==================================================
-         全书数据
-    ================================================== -->
 
-    <script
-        src="./js/book/book-data.js?v=40002"
-    ></script>
+    const nodes =
+        Array.isArray(
+            currentBook.nodes
+        )
+            ? currentBook.nodes
+            : [];
 
 
-    <!-- ==================================================
-         全书存储
-    ================================================== -->
+    nodes.forEach(
+        function (node) {
 
-    <script
-        src="./js/book/book-storage.js?v=40002"
-    ></script>
+            if (
+                node.parentId !== null &&
+                node.parentId !== undefined
+            ) {
+                return;
+            }
 
 
-    <!-- ==================================================
-         全书树结构
-    ================================================== -->
+            const nodeElement =
+                document.querySelector(
+                    '.node[data-id="' +
+                    node.id +
+                    '"]'
+                );
 
-    <script
-        src="./js/book/book-tree.js?v=40002"
-    ></script>
 
+            if (!nodeElement) {
+                return;
+            }
 
-    <!-- ==================================================
-         全书节点
-    ================================================== -->
 
-    <script
-        src="./js/book/book-node.js?v=40002"
-    ></script>
+            createConnectionLine(
+                bookElement,
+                nodeElement
+            );
 
+        }
+    );
 
-    <!-- ==================================================
-         全书连接线
-    ================================================== -->
+}
 
-    <script
-        src="./js/book/book-line.js?v=40002"
-    ></script>
 
+/* ======================================================
+   刷新连接线
+====================================================== */
 
-    <!-- ==================================================
-         全书主程序
-    ================================================== -->
+function refreshConnections() {
 
-    <script
-        src="./js/book/book-main.js?v=40002"
-    ></script>
+    requestAnimationFrame(
+        function () {
 
+            renderConnections();
 
-    <!-- ==================================================
-         全书布局
-    ================================================== -->
+        }
+    );
 
-    <script
-        src="./js/book/book-layout.js?v=40002"
-    ></script>
+}
 
-</body>
 
-</html>
+/* ======================================================
+   页面加载完成后绘制
+====================================================== */
+
+requestAnimationFrame(
+    function () {
+
+        refreshConnections();
+
+    }
+);
