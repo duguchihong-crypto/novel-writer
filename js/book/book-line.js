@@ -1,188 +1,44 @@
 /* ======================================================
-   全书连接线模块
-====================================================== */
-
-
-/* ======================================================
-   基础元素
+   全书连接线测试
 ====================================================== */
 
 const connections =
     document.getElementById("connections");
 
-
 const workspace =
     document.getElementById("workspace");
 
 
-/* ======================================================
-   清除全部连接线
-====================================================== */
-
-function clearConnections() {
+function refreshConnections() {
 
     if (!connections) {
+
+        alert("❌ 找不到 connections");
+
         return;
+
+    }
+
+    if (!workspace) {
+
+        alert("❌ 找不到 workspace");
+
+        return;
+
+    }
+
+    const bookElement =
+        document.getElementById("bookTitle");
+
+    if (!bookElement) {
+
+        alert("❌ 找不到 bookTitle");
+
+        return;
+
     }
 
     connections.innerHTML = "";
-
-}
-
-
-/* ======================================================
-   获取元素中心位置
-====================================================== */
-
-function getElementCenter(element) {
-
-    if (!element) {
-        return null;
-    }
-
-    const style =
-        window.getComputedStyle(
-            element
-        );
-
-    const x =
-        parseFloat(
-            style.left
-        );
-
-    const y =
-        parseFloat(
-            style.top
-        );
-
-    if (
-        Number.isNaN(x) ||
-        Number.isNaN(y)
-    ) {
-
-        return null;
-
-    }
-
-    return {
-
-        x: x,
-
-        y: y
-
-    };
-
-}
-
-
-/* ======================================================
-   创建一条连接线
-====================================================== */
-
-function createConnectionLine(
-    startElement,
-    endElement
-) {
-
-    if (
-        !connections ||
-        !startElement ||
-        !endElement
-    ) {
-
-        return;
-
-    }
-
-    const start =
-        getElementCenter(
-            startElement
-        );
-
-    const end =
-        getElementCenter(
-            endElement
-        );
-
-    if (
-        !start ||
-        !end
-    ) {
-
-        return;
-
-    }
-
-    const line =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line"
-        );
-
-    line.setAttribute(
-        "x1",
-        start.x
-    );
-
-    line.setAttribute(
-        "y1",
-        start.y
-    );
-
-    line.setAttribute(
-        "x2",
-        end.x
-    );
-
-    line.setAttribute(
-        "y2",
-        end.y
-    );
-
-    line.setAttribute(
-        "stroke",
-        "#888888"
-    );
-
-    line.setAttribute(
-        "stroke-width",
-        "3"
-    );
-
-    line.setAttribute(
-        "stroke-linecap",
-        "round"
-    );
-
-    line.setAttribute(
-        "fill",
-        "none"
-    );
-
-    connections.appendChild(
-        line
-    );
-
-}
-
-
-/* ======================================================
-   绘制全部连接线
-====================================================== */
-
-function renderConnections() {
-
-    if (
-        !connections ||
-        !workspace ||
-        !currentBook
-    ) {
-
-        return;
-
-    }
-
-    clearConnections();
 
     connections.setAttribute(
         "width",
@@ -200,74 +56,51 @@ function renderConnections() {
     );
 
 
-    const nodes =
-        Array.isArray(
-            currentBook.nodes
-        )
-            ? currentBook.nodes
-            : [];
+    /* ==================================================
+       直接画一条固定测试线
+       1500,1500 → 1500,1650
+    ================================================== */
 
-
-    const bookElement =
-        document.getElementById(
-            "bookTitle"
+    const line =
+        document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
         );
 
-    if (!bookElement) {
-        return;
-    }
-
-
-    /* ==============================================
-       书名 → 根节点
-    ============================================== */
-
-    nodes.forEach(
-        function (node) {
-
-            if (
-                node.parentId !== null &&
-                node.parentId !== undefined
-            ) {
-
-                return;
-
-            }
-
-            const nodeElement =
-                document.querySelector(
-                    '.node[data-id="' +
-                    node.id +
-                    '"]'
-                );
-
-            if (!nodeElement) {
-                return;
-            }
-
-            createConnectionLine(
-                bookElement,
-                nodeElement
-            );
-
-        }
+    line.setAttribute(
+        "x1",
+        "1500"
     );
 
-}
-
-
-/* ======================================================
-   节点渲染完成后重新绘制
-====================================================== */
-
-function refreshConnections() {
-
-    requestAnimationFrame(
-        function () {
-
-            renderConnections();
-
-        }
+    line.setAttribute(
+        "y1",
+        "1500"
     );
+
+    line.setAttribute(
+        "x2",
+        "1500"
+    );
+
+    line.setAttribute(
+        "y2",
+        "1650"
+    );
+
+    line.setAttribute(
+        "stroke",
+        "red"
+    );
+
+    line.setAttribute(
+        "stroke-width",
+        "8"
+    );
+
+    connections.appendChild(
+        line
+    );
+
+    alert("✅ 测试线已经创建");
 
 }
