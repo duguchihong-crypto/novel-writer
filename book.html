@@ -1,6 +1,6 @@
-/* ======================================================
-   全书连接线模块
-====================================================== */
+ /* ======================================================
+    全书连接线模块
+ ====================================================== */
 
 
 /* ======================================================
@@ -97,10 +97,6 @@ function createConnectionLine(
     }
 
 
-    /* ==================================================
-       创建连接线
-    ================================================== */
-
     const line =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
@@ -131,12 +127,12 @@ function createConnectionLine(
 
     line.setAttribute(
         "stroke",
-        "#888888"
+        "#222222"
     );
 
     line.setAttribute(
         "stroke-width",
-        "3"
+        "4"
     );
 
     line.setAttribute(
@@ -147,171 +143,6 @@ function createConnectionLine(
 
     connections.appendChild(
         line
-    );
-
-
-    /* ==================================================
-       计算连接线中点
-    ================================================== */
-
-    const middleX =
-        (
-            start.x +
-            end.x
-        ) / 2;
-
-    const middleY =
-        (
-            start.y +
-            end.y
-        ) / 2;
-
-
-    /* ==================================================
-       创建 + 的背景圆
-    ================================================== */
-
-    const circle =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "circle"
-        );
-
-    circle.setAttribute(
-        "cx",
-        middleX
-    );
-
-    circle.setAttribute(
-        "cy",
-        middleY
-    );
-
-    circle.setAttribute(
-        "r",
-        "11"
-    );
-
-    circle.setAttribute(
-        "fill",
-        "#ffffff"
-    );
-
-    circle.setAttribute(
-        "stroke",
-        "#888888"
-    );
-
-    circle.setAttribute(
-        "stroke-width",
-        "2"
-    );
-
-
-    connections.appendChild(
-        circle
-    );
-
-
-    /* ==================================================
-       创建 + 横线
-    ================================================== */
-
-    const horizontal =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line"
-        );
-
-    horizontal.setAttribute(
-        "x1",
-        middleX - 6
-    );
-
-    horizontal.setAttribute(
-        "y1",
-        middleY
-    );
-
-    horizontal.setAttribute(
-        "x2",
-        middleX + 6
-    );
-
-    horizontal.setAttribute(
-        "y2",
-        middleY
-    );
-
-    horizontal.setAttribute(
-        "stroke",
-        "#222222"
-    );
-
-    horizontal.setAttribute(
-        "stroke-width",
-        "2"
-    );
-
-    horizontal.setAttribute(
-        "stroke-linecap",
-        "round"
-    );
-
-
-    connections.appendChild(
-        horizontal
-    );
-
-
-    /* ==================================================
-       创建 + 竖线
-    ================================================== */
-
-    const vertical =
-        document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "line"
-        );
-
-    vertical.setAttribute(
-        "x1",
-        middleX
-    );
-
-    vertical.setAttribute(
-        "y1",
-        middleY - 6
-    );
-
-    vertical.setAttribute(
-        "x2",
-        middleX
-    );
-
-    vertical.setAttribute(
-        "y2",
-        middleY + 6
-    );
-
-    vertical.setAttribute(
-        "stroke",
-        "#222222"
-    );
-
-    vertical.setAttribute(
-        "stroke-width",
-        "2"
-    );
-
-    vertical.setAttribute(
-        "stroke-linecap",
-        "round"
-    );
-
-
-    connections.appendChild(
-        vertical
     );
 
 }
