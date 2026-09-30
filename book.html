@@ -225,9 +225,9 @@
 
     <script>
 
-        /*
-         * 不让浏览器恢复上一次的滚动位置
-         */
+        /* ==================================================
+           禁止浏览器恢复之前的滚动位置
+        ================================================== */
 
         if (
             "scrollRestoration" in history
@@ -240,7 +240,7 @@
 
 
         /* ==================================================
-           将书名放到 canvas 正中央
+           将书名中心对准整个手机屏幕中心
         ================================================== */
 
         function centerBookOnEnter() {
@@ -262,70 +262,82 @@
             }
 
 
-            /*
-             * 取得书名在 workspace 中的位置
-             */
+            /* ==================================================
+               书名中心
 
-            const titleLeft =
+               bookTitle 的 left/top
+               本身就是中心坐标，
+               因为 CSS 使用了：
+
+               transform:
+               translate(-50%, -50%);
+            ================================================== */
+
+            const titleCenterX =
                 bookTitle.offsetLeft;
 
-            const titleTop =
+            const titleCenterY =
                 bookTitle.offsetTop;
 
 
-            const titleWidth =
-                bookTitle.offsetWidth;
+            /* ==================================================
+               canvas 在整个手机屏幕中的位置
+            ================================================== */
 
-            const titleHeight =
-                bookTitle.offsetHeight;
-
-
-            /*
-             * 书名中心
-             */
-
-            const titleCenterX =
-                titleLeft +
-                titleWidth / 2;
-
-            const titleCenterY =
-                titleTop +
-                titleHeight / 2;
+            const canvasRect =
+                canvas.getBoundingClientRect();
 
 
-            /*
-             * canvas 可视区域中心
-             */
+            /* ==================================================
+               整个手机屏幕中心
+            ================================================== */
 
-            const viewCenterX =
-                canvas.clientWidth / 2;
+            const screenCenterX =
+                window.innerWidth / 2;
 
-            const viewCenterY =
-                canvas.clientHeight / 2;
+            const screenCenterY =
+                window.innerHeight / 2;
 
 
-            /*
-             * 计算最终滚动位置
-             */
+            /* ==================================================
+               将屏幕中心转换成 canvas 内部坐标
 
-            const scrollLeft =
+               canvas 的顶部目前是 56px，
+               所以不能直接使用
+               canvas.clientHeight / 2。
+            ================================================== */
+
+            const canvasCenterX =
+                screenCenterX -
+                canvasRect.left;
+
+            const canvasCenterY =
+                screenCenterY -
+                canvasRect.top;
+
+
+            /* ==================================================
+               最终滚动位置
+            ================================================== */
+
+            const targetScrollLeft =
                 titleCenterX -
-                viewCenterX;
+                canvasCenterX;
 
-            const scrollTop =
+            const targetScrollTop =
                 titleCenterY -
-                viewCenterY;
+                canvasCenterY;
 
 
-            /*
-             * 直接设置
-             */
+            /* ==================================================
+               设置滚动位置
+            ================================================== */
 
             canvas.scrollLeft =
-                scrollLeft;
+                targetScrollLeft;
 
             canvas.scrollTop =
-                scrollTop;
+                targetScrollTop;
 
         }
 
@@ -340,6 +352,31 @@
 
                 centerBookOnEnter();
 
+            }
+        );
+
+
+        /* ==================================================
+           页面恢复
+        ================================================== */
+
+        window.addEventListener(
+            "pageshow",
+            function () {
+
+                centerBookOnEnter();
+
+            }
+        );
+
+
+        /* ==================================================
+           iPhone Safari 最后校正
+        ================================================== */
+
+        window.addEventListener(
+            "load",
+            function () {
 
                 setTimeout(
                     centerBookOnEnter,
@@ -350,23 +387,6 @@
                 setTimeout(
                     centerBookOnEnter,
                     500
-                );
-
-            }
-        );
-
-
-        /* ==================================================
-           Safari 返回页面
-        ================================================== */
-
-        window.addEventListener(
-            "pageshow",
-            function () {
-
-                setTimeout(
-                    centerBookOnEnter,
-                    50
                 );
 
             }
