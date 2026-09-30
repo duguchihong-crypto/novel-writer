@@ -1,1 +1,38 @@
+/* ======================================================
+   SVG 连接线
+====================================================== */
 
+.connections {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 3000px;
+    height: 3000px;
+
+    overflow: visible;
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+
+/* ======================================================
+   树
+====================================================== */
+
+.tree {
+    position: absolute;
+
+    left: 0;
+    top: 0;
+
+    width: 3000px;
+    height: 3000px;
+
+    z-index: 5;
+
+    pointer-events: none;
+}
