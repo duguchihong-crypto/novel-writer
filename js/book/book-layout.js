@@ -183,85 +183,101 @@ function layoutChildren(parentNode) {
 
 
 /* ======================================================
-   进入全书时，将书名放在屏幕正中央
+   进入全书时自动定位书名
+====================================================== */
+
+function centerBookTitle() {
+
+    const canvas =
+        document.getElementById("canvas");
+
+    const bookTitle =
+        document.getElementById("bookTitle");
+
+
+    if (
+        !canvas ||
+        !bookTitle
+    ) {
+
+        return;
+
+    }
+
+
+    /* ==================================================
+       获取书名和画布的实际屏幕位置
+    ================================================== */
+
+    const titleRect =
+        bookTitle.getBoundingClientRect();
+
+    const canvasRect =
+        canvas.getBoundingClientRect();
+
+
+    /* ==================================================
+       计算书名实际中心
+    ================================================== */
+
+    const titleCenterX =
+        titleRect.left +
+        titleRect.width / 2;
+
+    const titleCenterY =
+        titleRect.top +
+        titleRect.height / 2;
+
+
+    /* ==================================================
+       计算 canvas 可视区域中心
+    ================================================== */
+
+    const canvasCenterX =
+        canvasRect.left +
+        canvasRect.width / 2;
+
+    const canvasCenterY =
+        canvasRect.top +
+        canvasRect.height / 2;
+
+
+    /* ==================================================
+       计算需要移动的距离
+    ================================================== */
+
+    const moveX =
+        titleCenterX -
+        canvasCenterX;
+
+    const moveY =
+        titleCenterY -
+        canvasCenterY;
+
+
+    /* ==================================================
+       调整滚动位置
+    ================================================== */
+
+    canvas.scrollLeft +=
+        moveX;
+
+    canvas.scrollTop +=
+        moveY;
+
+}
+
+
+/* ======================================================
+   页面加载完成
 ====================================================== */
 
 document.addEventListener(
     "DOMContentLoaded",
     function () {
 
-        const canvas =
-            document.getElementById("canvas");
-
-        const bookTitle =
-            document.getElementById("bookTitle");
-
-
-        if (
-            !canvas ||
-            !bookTitle
-        ) {
-
-            return;
-
-        }
-
-
         /* ==================================================
-           将书名实际中心对准屏幕中心
-        ================================================== */
-
-        function centerBookTitle() {
-
-            const titleRect =
-                bookTitle.getBoundingClientRect();
-
-            const canvasRect =
-                canvas.getBoundingClientRect();
-
-
-            const titleCenterX =
-                titleRect.left +
-                titleRect.width / 2;
-
-
-            const titleCenterY =
-                titleRect.top +
-                titleRect.height / 2;
-
-
-            const canvasCenterX =
-                canvasRect.left +
-                canvasRect.width / 2;
-
-
-            const canvasCenterY =
-                canvasRect.top +
-                canvasRect.height / 2;
-
-
-            const moveX =
-                titleCenterX -
-                canvasCenterX;
-
-
-            const moveY =
-                titleCenterY -
-                canvasCenterY;
-
-
-            canvas.scrollLeft +=
-                moveX;
-
-
-            canvas.scrollTop +=
-                moveY;
-
-        }
-
-
-        /* ==================================================
-           第一次定位
+           等待页面第一次绘制
         ================================================== */
 
         requestAnimationFrame(
@@ -269,23 +285,26 @@ document.addEventListener(
 
                 centerBookTitle();
 
+
+                /* ==================================================
+                   等待节点、字体等完成布局
+                ================================================== */
+
+                requestAnimationFrame(
+                    function () {
+
+                        centerBookTitle();
+
+                    }
+                );
+
             }
         );
 
 
         /* ==================================================
-           页面稳定后再次定位
+           最后再校正一次
         ================================================== */
-
-        setTimeout(
-            function () {
-
-                centerBookTitle();
-
-            },
-            100
-        );
-
 
         setTimeout(
             function () {
