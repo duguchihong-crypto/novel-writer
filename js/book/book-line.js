@@ -71,6 +71,94 @@ function getElementCenter(element) {
 
 
 /* ======================================================
+   获取元素边缘连接点
+
+   根据两个中心点的方向，
+   自动计算线应该连接到矩形边缘的位置。
+
+   不再连接到节点中心。
+====================================================== */
+
+function getElementBoundaryPoint(
+    element,
+    center,
+    target
+) {
+
+    if (!element || !center || !target) {
+        return center;
+    }
+
+
+    const width =
+        element.offsetWidth;
+
+    const height =
+        element.offsetHeight;
+
+
+    if (
+        width <= 0 ||
+        height <= 0
+    ) {
+        return center;
+    }
+
+
+    const dx =
+        target.x - center.x;
+
+    const dy =
+        target.y - center.y;
+
+
+    if (
+        dx === 0 &&
+        dy === 0
+    ) {
+        return center;
+    }
+
+
+    const halfWidth =
+        width / 2;
+
+    const halfHeight =
+        height / 2;
+
+
+    const scaleX =
+        dx === 0
+            ? Infinity
+            : halfWidth / Math.abs(dx);
+
+    const scaleY =
+        dy === 0
+            ? Infinity
+            : halfHeight / Math.abs(dy);
+
+
+    const scale =
+        Math.min(
+            scaleX,
+            scaleY
+        );
+
+
+    return {
+        x:
+            center.x +
+            dx * scale,
+
+        y:
+            center.y +
+            dy * scale
+    };
+
+}
+
+
+/* ======================================================
    创建 SVG 线
 ====================================================== */
 
@@ -151,7 +239,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       获取位置
+       获取中心位置
     ================================================== */
 
     const start =
@@ -190,6 +278,10 @@ function createConnectionLine(
 
     /* ==================================================
        中点
+
+       注意：
+       中点仍然按照两个节点中心计算。
+       这样 + / − 的位置不会改变。
     ================================================== */
 
     const middleX =
@@ -206,29 +298,60 @@ function createConnectionLine(
 
 
     /* ==================================================
-       连接线
-       
-       展开：
-       书名 → 节点
+       展开状态
 
-       收起：
-       书名 → +
+       书名边缘 → 节点边缘
     ================================================== */
 
     if (isExpanded) {
 
+        const startPoint =
+            getElementBoundaryPoint(
+                startElement,
+                start,
+                end
+            );
+
+        const endPoint =
+            getElementBoundaryPoint(
+                endElement,
+                end,
+                start
+            );
+
+
         createLine(
-            start.x,
-            start.y,
-            end.x,
-            end.y
+            startPoint.x,
+            startPoint.y,
+            endPoint.x,
+            endPoint.y
         );
 
-    } else {
+    }
+
+
+    /* ==================================================
+       收起状态
+
+       书名边缘 → +
+    ================================================== */
+
+    else {
+
+        const startPoint =
+            getElementBoundaryPoint(
+                startElement,
+                start,
+                {
+                    x: middleX,
+                    y: middleY
+                }
+            );
+
 
         createLine(
-            start.x,
-            start.y,
+            startPoint.x,
+            startPoint.y,
             middleX,
             middleY
         );
@@ -297,17 +420,13 @@ function createConnectionLine(
             event.stopPropagation();
 
 
-            /*
-             * 切换状态
-             */
-
             connectionStates[nodeId] =
                 !isExpanded;
 
 
-            /*
-             * 找到节点
-             */
+            /* ==========================================
+               找到节点
+            ========================================== */
 
             const nodeElement =
                 document.querySelector(
@@ -317,9 +436,9 @@ function createConnectionLine(
                 );
 
 
-            /*
-             * 显示 / 隐藏
-             */
+            /* ==========================================
+               显示 / 隐藏
+            ========================================== */
 
             if (nodeElement) {
 
@@ -340,9 +459,9 @@ function createConnectionLine(
             }
 
 
-            /*
-             * 重新绘制
-             */
+            /* ==========================================
+               重新绘制
+            ========================================== */
 
             refreshConnections();
 
