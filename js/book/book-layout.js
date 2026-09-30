@@ -1,4 +1,4 @@
- /* ======================================================
+/* ======================================================
    全书布局
 ====================================================== */
 
@@ -38,7 +38,6 @@ function updateVerticalLayout() {
 
     /* ==================================================
        找出根节点
-       parentId 为空的节点就是根节点
     ================================================== */
 
     const rootNodes =
@@ -57,11 +56,9 @@ function updateVerticalLayout() {
     /* ==================================================
        根节点排列
        
-       创建顺序：
-       第一卷 → 第二卷 → 第三卷
-
-       显示位置：
-       第三卷 ← 第二卷 ← 第一卷
+       第一卷 → 最右
+       第二卷 → 中间
+       第三卷 → 最左
     ================================================== */
 
     const rootStartX =
@@ -88,7 +85,7 @@ function updateVerticalLayout() {
 
 
     /* ==================================================
-       排列每一个节点的子节点
+       排列子节点
     ================================================== */
 
     rootNodes.forEach(
@@ -141,7 +138,7 @@ function layoutChildren(parentNode) {
 
 
     /* ==================================================
-       子节点组以父节点为中心
+       子节点以父节点为中心
     ================================================== */
 
     const startX =
@@ -169,7 +166,7 @@ function layoutChildren(parentNode) {
 
 
     /* ==================================================
-       继续向下排列
+       继续排列下一层
     ================================================== */
 
     children.forEach(
@@ -186,7 +183,7 @@ function layoutChildren(parentNode) {
 
 
 /* ======================================================
-   自动居中
+   进入全书时，将书名放在屏幕正中央
 ====================================================== */
 
 document.addEventListener(
@@ -196,64 +193,81 @@ document.addEventListener(
         const canvas =
             document.getElementById("canvas");
 
-        const workspace =
-            document.getElementById("workspace");
 
-
-        if (
-            !canvas ||
-            !workspace
-        ) {
+        if (!canvas) {
 
             return;
 
         }
 
 
-        function centerView() {
+        function centerBookTitle() {
 
-            const x =
-                (
-                    workspace.scrollWidth -
-                    canvas.clientWidth
-                ) / 2;
+            /*
+             * 书名中心坐标：
+             *
+             * X = 1500
+             * Y = 1500
+             */
+
+            const centerX =
+                TREE_CENTER_X;
+
+            const centerY =
+                1500;
 
 
-            const y =
-                (
-                    workspace.scrollHeight -
-                    canvas.clientHeight
-                ) / 2;
-
+            /*
+             * 让屏幕中心
+             * 对准书名中心
+             */
 
             canvas.scrollLeft =
-                x;
+                centerX -
+                canvas.clientWidth / 2;
 
 
             canvas.scrollTop =
-                y;
+                centerY -
+                canvas.clientHeight / 2;
 
         }
 
 
+        /* ==================================================
+           第一次定位
+        ================================================== */
+
         requestAnimationFrame(
             function () {
 
-                centerView();
-
-
-                setTimeout(
-                    centerView,
-                    100
-                );
-
-
-                setTimeout(
-                    centerView,
-                    300
-                );
+                centerBookTitle();
 
             }
+        );
+
+
+        /* ==================================================
+           页面完全稳定后再次定位
+        ================================================== */
+
+        setTimeout(
+            function () {
+
+                centerBookTitle();
+
+            },
+            100
+        );
+
+
+        setTimeout(
+            function () {
+
+                centerBookTitle();
+
+            },
+            300
         );
 
     }
