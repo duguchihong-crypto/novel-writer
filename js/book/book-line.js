@@ -37,34 +37,38 @@ function clearConnections() {
 
 
 /* ======================================================
-   获取元素中心
+   获取元素实际中心
 ====================================================== */
 
 function getElementCenter(element) {
 
-    if (!element) {
-        return null;
-    }
-
-    const style =
-        window.getComputedStyle(element);
-
-    const x =
-        parseFloat(style.left);
-
-    const y =
-        parseFloat(style.top);
-
     if (
-        Number.isNaN(x) ||
-        Number.isNaN(y)
+        !element ||
+        !workspace
     ) {
         return null;
     }
 
+
+    const elementRect =
+        element.getBoundingClientRect();
+
+    const workspaceRect =
+        workspace.getBoundingClientRect();
+
+
     return {
-        x: x,
-        y: y
+
+        x:
+            elementRect.left -
+            workspaceRect.left +
+            elementRect.width / 2,
+
+        y:
+            elementRect.top -
+            workspaceRect.top +
+            elementRect.height / 2
+
     };
 
 }
@@ -73,69 +77,130 @@ function getElementCenter(element) {
 /* ======================================================
    获取元素边缘连接点
 
-   根据两个中心点的方向，
-   自动计算线应该连接到矩形边缘的位置。
+   这里直接读取元素实际显示出来的矩形边界。
 
-   不再连接到节点中心。
+   不使用 offsetWidth / offsetHeight
+   不使用 CSS left / top
+
+   因为节点使用了：
+
+   transform:
+   translate(-50%, -50%);
+
+   所以必须按照实际渲染位置计算。
 ====================================================== */
 
 function getElementBoundaryPoint(
     element,
-    center,
     target
 ) {
 
-    if (!element || !center || !target) {
-        return center;
-    }
-
-
-    const width =
-        element.offsetWidth;
-
-    const height =
-        element.offsetHeight;
-
-
     if (
-        width <= 0 ||
-        height <= 0
+        !element ||
+        !workspace ||
+        !target
     ) {
-        return center;
+        return null;
     }
 
+
+    const elementRect =
+        element.getBoundingClientRect();
+
+    const workspaceRect =
+        workspace.getBoundingClientRect();
+
+
+    /* ==================================================
+       节点实际边界
+    ================================================== */
+
+    const left =
+        elementRect.left -
+        workspaceRect.left;
+
+    const right =
+        elementRect.right -
+        workspaceRect.left;
+
+    const top =
+        elementRect.top -
+        workspaceRect.top;
+
+    const bottom =
+        elementRect.bottom -
+        workspaceRect.top;
+
+
+    /* ==================================================
+       节点实际中心
+    ================================================== */
+
+    const centerX =
+        (
+            left +
+            right
+        ) / 2;
+
+    const centerY =
+        (
+            top +
+            bottom
+        ) / 2;
+
+
+    /* ==================================================
+       中心 → 目标方向
+    ================================================== */
 
     const dx =
-        target.x - center.x;
+        target.x -
+        centerX;
 
     const dy =
-        target.y - center.y;
+        target.y -
+        centerY;
 
 
     if (
         dx === 0 &&
         dy === 0
     ) {
-        return center;
+        return {
+            x: centerX,
+            y: centerY
+        };
     }
 
 
+    /* ==================================================
+       计算与矩形边缘的交点
+    ================================================== */
+
     const halfWidth =
-        width / 2;
+        (
+            right -
+            left
+        ) / 2;
 
     const halfHeight =
-        height / 2;
+        (
+            bottom -
+            top
+        ) / 2;
 
 
     const scaleX =
         dx === 0
             ? Infinity
-            : halfWidth / Math.abs(dx);
+            : halfWidth /
+              Math.abs(dx);
 
     const scaleY =
         dy === 0
             ? Infinity
-            : halfHeight / Math.abs(dy);
+            : halfHeight /
+              Math.abs(dy);
 
 
     const scale =
@@ -146,13 +211,15 @@ function getElementBoundaryPoint(
 
 
     return {
+
         x:
-            center.x +
+            centerX +
             dx * scale,
 
         y:
-            center.y +
+            centerY +
             dy * scale
+
     };
 
 }
@@ -175,6 +242,7 @@ function createLine(
             "line"
         );
 
+
     line.setAttribute(
         "x1",
         x1
@@ -195,6 +263,7 @@ function createLine(
         y2
     );
 
+
     line.setAttribute(
         "stroke",
         "#888888"
@@ -210,8 +279,10 @@ function createLine(
         "round"
     );
 
+
     line.style.pointerEvents =
         "none";
+
 
     connections.appendChild(
         line
@@ -231,6 +302,7 @@ function createConnectionLine(
 
     if (
         !connections ||
+        !workspace ||
         !startElement ||
         !endElement
     ) {
@@ -239,7 +311,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       获取中心位置
+       获取实际中心
     ================================================== */
 
     const start =
@@ -253,7 +325,10 @@ function createConnectionLine(
         );
 
 
-    if (!start || !end) {
+    if (
+        !start ||
+        !end
+    ) {
         return;
     }
 
@@ -269,7 +344,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       当前状态
+       当前展开状态
     ================================================== */
 
     const isExpanded =
@@ -279,9 +354,7 @@ function createConnectionLine(
     /* ==================================================
        中点
 
-       注意：
-       中点仍然按照两个节点中心计算。
-       这样 + / − 的位置不会改变。
+       使用实际中心计算。
     ================================================== */
 
     const middleX =
@@ -300,7 +373,11 @@ function createConnectionLine(
     /* ==================================================
        展开状态
 
-       书名边缘 → 节点边缘
+       书名边缘
+          ↓
+       节点边缘
+
+       绝不会进入节点内部。
     ================================================== */
 
     if (isExpanded) {
@@ -308,24 +385,29 @@ function createConnectionLine(
         const startPoint =
             getElementBoundaryPoint(
                 startElement,
-                start,
                 end
             );
 
         const endPoint =
             getElementBoundaryPoint(
                 endElement,
-                end,
                 start
             );
 
 
-        createLine(
-            startPoint.x,
-            startPoint.y,
-            endPoint.x,
-            endPoint.y
-        );
+        if (
+            startPoint &&
+            endPoint
+        ) {
+
+            createLine(
+                startPoint.x,
+                startPoint.y,
+                endPoint.x,
+                endPoint.y
+            );
+
+        }
 
     }
 
@@ -333,7 +415,9 @@ function createConnectionLine(
     /* ==================================================
        收起状态
 
-       书名边缘 → +
+       书名边缘
+          ↓
+          +
     ================================================== */
 
     else {
@@ -341,7 +425,6 @@ function createConnectionLine(
         const startPoint =
             getElementBoundaryPoint(
                 startElement,
-                start,
                 {
                     x: middleX,
                     y: middleY
@@ -349,12 +432,16 @@ function createConnectionLine(
             );
 
 
-        createLine(
-            startPoint.x,
-            startPoint.y,
-            middleX,
-            middleY
-        );
+        if (startPoint) {
+
+            createLine(
+                startPoint.x,
+                startPoint.y,
+                middleX,
+                middleY
+            );
+
+        }
 
     }
 
@@ -399,6 +486,7 @@ function createConnectionLine(
         "pointer-events",
         "all"
     );
+
 
     hitArea.style.pointerEvents =
         "all";
@@ -515,6 +603,7 @@ function createConnectionLine(
         "2"
     );
 
+
     circle.style.pointerEvents =
         "none";
 
@@ -555,6 +644,7 @@ function createConnectionLine(
         middleY
     );
 
+
     horizontal.setAttribute(
         "stroke",
         "#222222"
@@ -569,6 +659,7 @@ function createConnectionLine(
         "stroke-linecap",
         "round"
     );
+
 
     horizontal.style.pointerEvents =
         "none";
@@ -612,6 +703,7 @@ function createConnectionLine(
             middleY + 6
         );
 
+
         vertical.setAttribute(
             "stroke",
             "#222222"
@@ -626,6 +718,7 @@ function createConnectionLine(
             "stroke-linecap",
             "round"
         );
+
 
         vertical.style.pointerEvents =
             "none";
