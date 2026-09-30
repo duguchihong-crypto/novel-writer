@@ -12,6 +12,13 @@ const nodeTree =
 
 
 /* ======================================================
+   当前选中的节点
+====================================================== */
+
+let selectedNodeId = null;
+
+
+/* ======================================================
    渲染全部节点
 ====================================================== */
 
@@ -114,6 +121,36 @@ function createNodeElement(node) {
 
 
     /* ==================================================
+       当前节点是否已经被选中
+    ================================================== */
+
+    if (
+        String(selectedNodeId) ===
+        String(node.id)
+    ) {
+
+        element.classList.add("selected");
+
+    }
+
+
+    /* ==================================================
+       节点点击
+    ================================================== */
+
+    element.addEventListener(
+        "click",
+        function (event) {
+
+            event.stopPropagation();
+
+            selectNode(node.id);
+
+        }
+    );
+
+
+    /* ==================================================
        加入树
     ================================================== */
 
@@ -123,5 +160,73 @@ function createNodeElement(node) {
 
 
     return element;
+
+}
+
+
+/* ======================================================
+   选择节点
+====================================================== */
+
+function selectNode(nodeId) {
+
+    selectedNodeId =
+        nodeId;
+
+
+    updateNodeSelection();
+
+}
+
+
+/* ======================================================
+   更新节点选择状态
+====================================================== */
+
+function updateNodeSelection() {
+
+    if (!nodeTree) {
+        return;
+    }
+
+
+    const nodeElements =
+        nodeTree.querySelectorAll(
+            ".node"
+        );
+
+
+    nodeElements.forEach(
+        function (element) {
+
+            const isSelected =
+                String(
+                    element.dataset.id
+                ) ===
+                String(selectedNodeId);
+
+
+            element.classList.toggle(
+                "selected",
+                isSelected
+            );
+
+        }
+    );
+
+}
+
+
+/* ======================================================
+   清除节点选择
+====================================================== */
+
+function clearNodeSelection() {
+
+    selectedNodeId =
+        null;
+
+
+    updateNodeSelection();
 
 }
