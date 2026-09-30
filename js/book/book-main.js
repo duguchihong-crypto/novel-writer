@@ -4,22 +4,6 @@
 
 
 /* ======================================================
-   读取书籍
-====================================================== */
-
-const books = JSON.parse(
-    localStorage.getItem("novelBooks") || "[]"
-);
-
-const currentBookId =
-    localStorage.getItem("currentBookId");
-
-const currentBook = books.find(
-    book => String(book.id) === String(currentBookId)
-);
-
-
-/* ======================================================
    基础元素
 ====================================================== */
 
