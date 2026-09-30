@@ -55,7 +55,7 @@ function updateVerticalLayout() {
 
     /* ==================================================
        根节点排列
-       
+
        第一卷 → 最右
        第二卷 → 中间
        第三卷 → 最左
@@ -193,43 +193,69 @@ document.addEventListener(
         const canvas =
             document.getElementById("canvas");
 
+        const bookTitle =
+            document.getElementById("bookTitle");
 
-        if (!canvas) {
+
+        if (
+            !canvas ||
+            !bookTitle
+        ) {
 
             return;
 
         }
 
 
+        /* ==================================================
+           将书名实际中心对准屏幕中心
+        ================================================== */
+
         function centerBookTitle() {
 
-            /*
-             * 书名中心坐标：
-             *
-             * X = 1500
-             * Y = 1500
-             */
+            const titleRect =
+                bookTitle.getBoundingClientRect();
 
-            const centerX =
-                TREE_CENTER_X;
-
-            const centerY =
-                1500;
+            const canvasRect =
+                canvas.getBoundingClientRect();
 
 
-            /*
-             * 让屏幕中心
-             * 对准书名中心
-             */
-
-            canvas.scrollLeft =
-                centerX -
-                canvas.clientWidth / 2;
+            const titleCenterX =
+                titleRect.left +
+                titleRect.width / 2;
 
 
-            canvas.scrollTop =
-                centerY -
-                canvas.clientHeight / 2;
+            const titleCenterY =
+                titleRect.top +
+                titleRect.height / 2;
+
+
+            const canvasCenterX =
+                canvasRect.left +
+                canvasRect.width / 2;
+
+
+            const canvasCenterY =
+                canvasRect.top +
+                canvasRect.height / 2;
+
+
+            const moveX =
+                titleCenterX -
+                canvasCenterX;
+
+
+            const moveY =
+                titleCenterY -
+                canvasCenterY;
+
+
+            canvas.scrollLeft +=
+                moveX;
+
+
+            canvas.scrollTop +=
+                moveY;
 
         }
 
@@ -248,7 +274,7 @@ document.addEventListener(
 
 
         /* ==================================================
-           页面完全稳定后再次定位
+           页面稳定后再次定位
         ================================================== */
 
         setTimeout(
