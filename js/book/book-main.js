@@ -122,11 +122,19 @@ if (actionBar) {
     );
 
 
+    /* ==================================================
+       获取操作按钮
+    ================================================== */
+
     const actionButtons =
         actionBar.querySelectorAll(
             "button[data-action]"
         );
 
+
+    /* ==================================================
+       绑定操作按钮
+    ================================================== */
 
     actionButtons.forEach(
         function (button) {
@@ -144,8 +152,29 @@ if (actionBar) {
                         button.dataset.action;
 
 
-                    addRootNode(action);
+                    /* ==================================
+                       新增节点
 
+                       注意：
+                       addRootNode()
+                       由 book-tree.js 负责
+                    ================================== */
+
+                    if (
+                        typeof addRootNode ===
+                        "function"
+                    ) {
+
+                        addRootNode(
+                            action
+                        );
+
+                    }
+
+
+                    /* ==================================
+                       关闭操作栏
+                    ================================== */
 
                     hideActionBar();
 
@@ -171,6 +200,10 @@ document.addEventListener(
         }
 
 
+        /* ==============================================
+           点击书名
+        ============================================== */
+
         if (
             event.target === bookTitle ||
             bookTitle?.contains(event.target)
@@ -180,6 +213,10 @@ document.addEventListener(
 
         }
 
+
+        /* ==============================================
+           点击操作栏
+        ============================================== */
 
         if (
             event.target === actionBar ||
@@ -191,6 +228,10 @@ document.addEventListener(
         }
 
 
+        /* ==============================================
+           其他区域
+        ============================================== */
+
         hideActionBar();
 
     }
@@ -198,248 +239,14 @@ document.addEventListener(
 
 
 /* ======================================================
-   新增根节点
+   初始化
 ====================================================== */
 
-function addRootNode(type) {
-
-    if (!currentBook) {
-        return;
-    }
-
-
-    /* ==================================================
-       检查节点数组
-    ================================================== */
-
-    if (
-        !Array.isArray(
-            currentBook.nodes
-        )
-    ) {
-
-        currentBook.nodes = [];
-
-    }
-
-
-    /* ==================================================
-       序只能有一个
-    ================================================== */
-
-    if (type === "preface") {
-
-        const exists =
-            currentBook.nodes.some(
-                function (node) {
-
-                    return node.type === "preface";
-
-                }
-            );
-
-
-        if (exists) {
-
-            return;
-
-        }
-
-    }
-
-
-    /* ==================================================
-       创建节点
-    ================================================== */
-
-    const node = {
-
-        id:
-            Date.now().toString(),
-
-        type:
-            type,
-
-        parentId:
-            null,
-
-        title:
-            getNodeTitle(
-                type,
-                currentBook.nodes
-            ),
-
-        x:
-            1500,
-
-        y:
-            1650
-
-    };
-
-
-    /* ==================================================
-       加入节点
-    ================================================== */
-
-    currentBook.nodes.push(
-        node
-    );
-
-
-    /* ==================================================
-       重新计算纵向布局
-    ================================================== */
-
-    if (
-        typeof updateVerticalLayout ===
-        "function"
-    ) {
-
-        updateVerticalLayout();
-
-    }
-
-
-    /* ==================================================
-       保存
-    ================================================== */
-
-    saveBooks();
-
-
-    /* ==================================================
-       刷新节点
-    ================================================== */
+if (
+    typeof renderNodes ===
+    "function"
+) {
 
     renderNodes();
 
 }
-
-
-/* ======================================================
-   生成节点名称
-====================================================== */
-
-function getNodeTitle(
-    type,
-    nodes
-) {
-
-    const count =
-        nodes.filter(
-            function (node) {
-
-                return node.type === type;
-
-            }
-        ).length + 1;
-
-
-    if (type === "preface") {
-
-        return "序章";
-
-    }
-
-
-    if (type === "volume") {
-
-        return "第" +
-            toChineseNumber(count) +
-            "卷";
-
-    }
-
-
-    if (type === "part") {
-
-        return "第" +
-            toChineseNumber(count) +
-            "篇";
-
-    }
-
-
-    if (type === "chapter") {
-
-        return "第" +
-            toChineseNumber(count) +
-            "章";
-
-    }
-
-
-    return "新节点";
-
-}
-
-
-/* ======================================================
-   中文数字
-====================================================== */
-
-function toChineseNumber(number) {
-
-    const numbers = [
-        "零",
-        "一",
-        "二",
-        "三",
-        "四",
-        "五",
-        "六",
-        "七",
-        "八",
-        "九",
-        "十"
-    ];
-
-
-    if (number <= 10) {
-
-        return numbers[number];
-
-    }
-
-
-    if (number < 20) {
-
-        return "十" +
-            numbers[number - 10];
-
-    }
-
-
-    if (number < 100) {
-
-        const tens =
-            Math.floor(
-                number / 10
-            );
-
-        const ones =
-            number % 10;
-
-
-        return numbers[tens] +
-            "十" +
-            (
-                ones === 0
-                    ? ""
-                    : numbers[ones]
-            );
-
-    }
-
-
-    return String(number);
-
-}
-
-
-/* ======================================================
-   初始化
-====================================================== */
-
-renderNodes();
