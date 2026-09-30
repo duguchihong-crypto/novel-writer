@@ -23,90 +23,71 @@ const connectionStates = {};
 
 /* ======================================================
    连接线固定位置
-
-   每一条连接线都会保存：
-
-   startX / startY
-   书名或父节点的连接起点
-
-   middleX / middleY
-   + / - 的位置
-
-   endX / endY
-   子节点连接终点
-
-   收起以后完全使用这里保存的位置。
-
-   不再根据隐藏节点重新计算。
 ====================================================== */
 
 const connectionPositions = {};
 
 
 /* ======================================================
-   清除连接线
+   SVG 坐标转换
 ====================================================== */
 
-function clearConnections() {
+function getSVGPointFromScreen(
+    screenX,
+    screenY
+) {
 
     if (!connections) {
-        return;
+        return null;
     }
 
-    connections.innerHTML = "";
+    const point =
+        connections.createSVGPoint();
 
+    point.x = screenX;
+    point.y = screenY;
+
+    const matrix =
+        connections
+            .getScreenCTM();
+
+    if (!matrix) {
+        return null;
+    }
+
+    return point.matrixTransform(
+        matrix.inverse()
+    );
 }
 
 
 /* ======================================================
-   获取元素实际中心
+   获取元素中心
 ====================================================== */
 
 function getElementCenter(element) {
 
-    if (
-        !element ||
-        !workspace
-    ) {
+    if (!element) {
         return null;
     }
 
-
-    const elementRect =
+    const rect =
         element.getBoundingClientRect();
 
-    const workspaceRect =
-        workspace.getBoundingClientRect();
+    return getSVGPointFromScreen(
 
+        rect.left +
+        rect.width / 2,
 
-    return {
+        rect.top +
+        rect.height / 2
 
-        x:
-            elementRect.left -
-            workspaceRect.left +
-            elementRect.width / 2,
-
-        y:
-            elementRect.top -
-            workspaceRect.top +
-            elementRect.height / 2
-
-    };
-
+    );
 }
 
 
 /* ======================================================
    获取元素边缘连接点
-
-   直接读取元素实际显示出来的矩形边界。
-
-   节点使用：
-
-   transform:
-   translate(-50%, -50%);
-
-   所以必须使用实际渲染后的矩形。
 ====================================================== */
 
 function getElementBoundaryPoint(
@@ -116,43 +97,56 @@ function getElementBoundaryPoint(
 
     if (
         !element ||
-        !workspace ||
         !target
     ) {
         return null;
     }
 
 
-    const elementRect =
+    const rect =
         element.getBoundingClientRect();
 
-    const workspaceRect =
-        workspace.getBoundingClientRect();
-
 
     /* ==================================================
-       实际边界
+       先把元素四个边界转换成 SVG 坐标
     ================================================== */
 
+    const topLeft =
+        getSVGPointFromScreen(
+            rect.left,
+            rect.top
+        );
+
+    const bottomRight =
+        getSVGPointFromScreen(
+            rect.right,
+            rect.bottom
+        );
+
+
+    if (
+        !topLeft ||
+        !bottomRight
+    ) {
+        return null;
+    }
+
+
     const left =
-        elementRect.left -
-        workspaceRect.left;
+        topLeft.x;
 
     const right =
-        elementRect.right -
-        workspaceRect.left;
+        bottomRight.x;
 
     const top =
-        elementRect.top -
-        workspaceRect.top;
+        topLeft.y;
 
     const bottom =
-        elementRect.bottom -
-        workspaceRect.top;
+        bottomRight.y;
 
 
     /* ==================================================
-       实际中心
+       中心
     ================================================== */
 
     const centerX =
@@ -189,7 +183,6 @@ function getElementBoundaryPoint(
         return {
 
             x: centerX,
-
             y: centerY
 
         };
@@ -198,7 +191,7 @@ function getElementBoundaryPoint(
 
 
     /* ==================================================
-       矩形半宽 / 半高
+       半宽 / 半高
     ================================================== */
 
     const halfWidth =
@@ -215,7 +208,7 @@ function getElementBoundaryPoint(
 
 
     /* ==================================================
-       计算边缘交点
+       矩形边缘比例
     ================================================== */
 
     const scaleX =
@@ -263,6 +256,11 @@ function createLine(
     x2,
     y2
 ) {
+
+    if (!connections) {
+        return;
+    }
+
 
     const line =
         document.createElementNS(
@@ -330,17 +328,12 @@ function createConnectionLine(
 
     if (
         !connections ||
-        !workspace ||
         !startElement ||
         !endElement
     ) {
         return;
     }
 
-
-    /* ==================================================
-       节点 ID
-    ================================================== */
 
     const nodeId =
         String(
@@ -357,35 +350,15 @@ function createConnectionLine(
 
 
     /* ==================================================
-       获取书名中心
-    ================================================== */
-
-    const start =
-        getElementCenter(
-            startElement
-        );
-
-
-    if (!start) {
-        return;
-    }
-
-
-    /* ==================================================
-       保存的连接位置
-    ================================================== */
-
-    let position =
-        connectionPositions[nodeId];
-
-
-    /* ==================================================
        展开状态
-       
-       只有这里允许重新计算。
     ================================================== */
 
     if (isExpanded) {
+
+        const start =
+            getElementCenter(
+                startElement
+            );
 
         const end =
             getElementCenter(
@@ -393,13 +366,16 @@ function createConnectionLine(
             );
 
 
-        if (!end) {
+        if (
+            !start ||
+            !end
+        ) {
             return;
         }
 
 
         /* ==================================================
-           计算中点
+           中点
         ================================================== */
 
         const middleX =
@@ -416,7 +392,7 @@ function createConnectionLine(
 
 
         /* ==================================================
-           计算书名边缘
+           起点
         ================================================== */
 
         const startPoint =
@@ -427,7 +403,7 @@ function createConnectionLine(
 
 
         /* ==================================================
-           计算节点边缘
+           终点
         ================================================== */
 
         const endPoint =
@@ -446,16 +422,10 @@ function createConnectionLine(
 
 
         /* ==================================================
-           完整保存
-
-           起点
-           中点
-           终点
-
-           后面收起时全部使用这里的数据。
+           保存
         ================================================== */
 
-        position = {
+        connectionPositions[nodeId] = {
 
             startX:
                 startPoint.x,
@@ -478,22 +448,20 @@ function createConnectionLine(
         };
 
 
-        connectionPositions[nodeId] =
-            position;
+        const position =
+            connectionPositions[nodeId];
 
 
         /* ==================================================
-           绘制完整连接线
+           完整连接线
         ================================================== */
 
         createLine(
 
             position.startX,
-
             position.startY,
 
             position.endX,
-
             position.endY
 
         );
@@ -503,37 +471,33 @@ function createConnectionLine(
 
     /* ==================================================
        收起状态
-       
-       完全禁止重新计算位置。
-       
-       直接使用展开时保存的数据。
     ================================================== */
 
     else {
 
+        const position =
+            connectionPositions[nodeId];
+
+
         if (!position) {
-
             return;
-
         }
 
 
         /* ==================================================
-           只绘制：
+           只画：
 
-           书名边缘 → +
+           书名 → +
 
-           不碰隐藏节点。
+           不再读取隐藏节点。
         ================================================== */
 
         createLine(
 
             position.startX,
-
             position.startY,
 
             position.middleX,
-
             position.middleY
 
         );
@@ -542,8 +506,12 @@ function createConnectionLine(
 
 
     /* ==================================================
-       没有位置就停止
+       获取固定位置
     ================================================== */
+
+    const position =
+        connectionPositions[nodeId];
+
 
     if (!position) {
         return;
@@ -551,7 +519,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       + / - 点击区域
+       点击区域
     ================================================== */
 
     const hitArea =
@@ -613,11 +581,7 @@ function createConnectionLine(
 
 
             /* ==========================================
-               当前是展开状态
-               
-               此时 position 已经保存。
-               
-               直接切换状态即可。
+               切换状态
             ========================================== */
 
             connectionStates[nodeId] =
@@ -661,8 +625,6 @@ function createConnectionLine(
 
             /* ==========================================
                重新绘制
-               
-               收起状态不会重新计算位置。
             ========================================== */
 
             refreshConnections();
@@ -785,9 +747,13 @@ function createConnectionLine(
 
 
     /* ==================================================
-       收起状态显示 +
+       收起状态：
 
-       展开状态显示 -
+       + 
+
+       展开状态：
+
+       -
     ================================================== */
 
     if (!isExpanded) {
@@ -850,6 +816,21 @@ function createConnectionLine(
 
 
 /* ======================================================
+   清除连接线
+====================================================== */
+
+function clearConnections() {
+
+    if (!connections) {
+        return;
+    }
+
+    connections.innerHTML = "";
+
+}
+
+
+/* ======================================================
    绘制全部连接线
 ====================================================== */
 
@@ -866,6 +847,10 @@ function renderConnections() {
 
     clearConnections();
 
+
+    /* ==================================================
+       SVG 尺寸
+    ================================================== */
 
     connections.setAttribute(
         "width",
@@ -906,7 +891,7 @@ function renderConnections() {
         function (node) {
 
             /* ==========================================
-               现在只处理根节点
+               目前只处理根节点
             ========================================== */
 
             if (
@@ -931,7 +916,7 @@ function renderConnections() {
 
 
             /* ==========================================
-               第一次出现默认展开
+               第一次默认展开
             ========================================== */
 
             if (
@@ -948,8 +933,11 @@ function renderConnections() {
 
 
             createConnectionLine(
+
                 bookElement,
+
                 nodeElement
+
             );
 
         }
@@ -976,7 +964,7 @@ function refreshConnections() {
 
 
 /* ======================================================
-   页面加载完成后绘制
+   页面加载
 ====================================================== */
 
 requestAnimationFrame(
