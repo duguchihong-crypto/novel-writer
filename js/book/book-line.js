@@ -22,12 +22,22 @@ const connectionStates = {};
 
 
 /* ======================================================
-   连接线中点位置
+   连接线固定位置
 
-   记录每条连接线自己的 + / - 位置。
+   每一条连接线都会保存：
 
-   这样节点隐藏以后，
-   + / - 不会因为隐藏节点而跳走。
+   startX / startY
+   书名或父节点的连接起点
+
+   middleX / middleY
+   + / - 的位置
+
+   endX / endY
+   子节点连接终点
+
+   收起以后完全使用这里保存的位置。
+
+   不再根据隐藏节点重新计算。
 ====================================================== */
 
 const connectionPositions = {};
@@ -96,7 +106,7 @@ function getElementCenter(element) {
    transform:
    translate(-50%, -50%);
 
-   所以使用实际渲染后的矩形计算。
+   所以必须使用实际渲染后的矩形。
 ====================================================== */
 
 function getElementBoundaryPoint(
@@ -121,7 +131,7 @@ function getElementBoundaryPoint(
 
 
     /* ==================================================
-       节点实际边界
+       实际边界
     ================================================== */
 
     const left =
@@ -142,7 +152,7 @@ function getElementBoundaryPoint(
 
 
     /* ==================================================
-       节点实际中心
+       实际中心
     ================================================== */
 
     const centerX =
@@ -159,7 +169,7 @@ function getElementBoundaryPoint(
 
 
     /* ==================================================
-       中心 → 目标方向
+       中心 → 目标
     ================================================== */
 
     const dx =
@@ -175,15 +185,20 @@ function getElementBoundaryPoint(
         dx === 0 &&
         dy === 0
     ) {
+
         return {
+
             x: centerX,
+
             y: centerY
+
         };
+
     }
 
 
     /* ==================================================
-       计算与矩形边缘的交点
+       矩形半宽 / 半高
     ================================================== */
 
     const halfWidth =
@@ -198,6 +213,10 @@ function getElementBoundaryPoint(
             top
         ) / 2;
 
+
+    /* ==================================================
+       计算边缘交点
+    ================================================== */
 
     const scaleX =
         dx === 0
@@ -330,7 +349,7 @@ function createConnectionLine(
 
 
     /* ==================================================
-       当前展开状态
+       当前状态
     ================================================== */
 
     const isExpanded =
@@ -353,132 +372,63 @@ function createConnectionLine(
 
 
     /* ==================================================
-       获取节点中心
-
-       只有节点显示时才重新读取。
-
-       如果节点已经隐藏，
-       使用之前保存的连接线中点。
+       保存的连接位置
     ================================================== */
 
-    let end = null;
-
-    if (isExpanded) {
-
-        end =
-            getElementCenter(
-                endElement
-            );
-
-    }
-
-
-    /* ==================================================
-       计算连接线中点
-    ================================================== */
-
-    let middleX;
-    let middleY;
+    let position =
+        connectionPositions[nodeId];
 
 
     /* ==================================================
        展开状态
-
-       节点存在，所以根据当前实际位置计算。
-
-       同时保存中点。
+       
+       只有这里允许重新计算。
     ================================================== */
 
-    if (
-        isExpanded &&
-        end
-    ) {
+    if (isExpanded) {
 
-        middleX =
+        const end =
+            getElementCenter(
+                endElement
+            );
+
+
+        if (!end) {
+            return;
+        }
+
+
+        /* ==================================================
+           计算中点
+        ================================================== */
+
+        const middleX =
             (
                 start.x +
                 end.x
             ) / 2;
 
-        middleY =
+        const middleY =
             (
                 start.y +
                 end.y
             ) / 2;
 
 
-        connectionPositions[nodeId] = {
-
-            x: middleX,
-            y: middleY
-
-        };
-
-    }
-
-
-    /* ==================================================
-       收起状态
-
-       不再读取隐藏节点的位置。
-
-       直接使用之前保存的中点。
-    ================================================== */
-
-    else {
-
-        const savedPosition =
-            connectionPositions[nodeId];
-
-
-        if (savedPosition) {
-
-            middleX =
-                savedPosition.x;
-
-            middleY =
-                savedPosition.y;
-
-        }
-
-        else {
-
-            /*
-             * 理论上只有第一次就处于隐藏状态
-             * 才会进入这里。
-             *
-             * 为了防止异常，
-             * 使用书名中心作为备用位置。
-             */
-
-            middleX =
-                start.x;
-
-            middleY =
-                start.y;
-
-        }
-
-    }
-
-
-    /* ==================================================
-       展开状态
-
-       书名边缘
-          ↓
-       节点边缘
-
-       连接线不会进入节点内部。
-    ================================================== */
-
-    if (isExpanded && end) {
+        /* ==================================================
+           计算书名边缘
+        ================================================== */
 
         const startPoint =
             getElementBoundaryPoint(
                 startElement,
                 end
             );
+
+
+        /* ==================================================
+           计算节点边缘
+        ================================================== */
 
         const endPoint =
             getElementBoundaryPoint(
@@ -488,60 +438,120 @@ function createConnectionLine(
 
 
         if (
-            startPoint &&
-            endPoint
+            !startPoint ||
+            !endPoint
         ) {
-
-            createLine(
-                startPoint.x,
-                startPoint.y,
-                endPoint.x,
-                endPoint.y
-            );
-
+            return;
         }
+
+
+        /* ==================================================
+           完整保存
+
+           起点
+           中点
+           终点
+
+           后面收起时全部使用这里的数据。
+        ================================================== */
+
+        position = {
+
+            startX:
+                startPoint.x,
+
+            startY:
+                startPoint.y,
+
+            middleX:
+                middleX,
+
+            middleY:
+                middleY,
+
+            endX:
+                endPoint.x,
+
+            endY:
+                endPoint.y
+
+        };
+
+
+        connectionPositions[nodeId] =
+            position;
+
+
+        /* ==================================================
+           绘制完整连接线
+        ================================================== */
+
+        createLine(
+
+            position.startX,
+
+            position.startY,
+
+            position.endX,
+
+            position.endY
+
+        );
 
     }
 
 
     /* ==================================================
        收起状态
-
-       书名边缘
-          ↓
-          +
        
-       + 的位置使用保存的中点。
+       完全禁止重新计算位置。
+       
+       直接使用展开时保存的数据。
     ================================================== */
 
     else {
 
-        const startPoint =
-            getElementBoundaryPoint(
-                startElement,
-                {
-                    x: middleX,
-                    y: middleY
-                }
-            );
+        if (!position) {
 
-
-        if (startPoint) {
-
-            createLine(
-                startPoint.x,
-                startPoint.y,
-                middleX,
-                middleY
-            );
+            return;
 
         }
+
+
+        /* ==================================================
+           只绘制：
+
+           书名边缘 → +
+
+           不碰隐藏节点。
+        ================================================== */
+
+        createLine(
+
+            position.startX,
+
+            position.startY,
+
+            position.middleX,
+
+            position.middleY
+
+        );
 
     }
 
 
     /* ==================================================
-       点击区域
+       没有位置就停止
+    ================================================== */
+
+    if (!position) {
+        return;
+    }
+
+
+    /* ==================================================
+       + / - 点击区域
     ================================================== */
 
     const hitArea =
@@ -553,12 +563,12 @@ function createConnectionLine(
 
     hitArea.setAttribute(
         "cx",
-        middleX
+        position.middleX
     );
 
     hitArea.setAttribute(
         "cy",
-        middleY
+        position.middleY
     );
 
     hitArea.setAttribute(
@@ -603,7 +613,11 @@ function createConnectionLine(
 
 
             /* ==========================================
-               切换状态
+               当前是展开状态
+               
+               此时 position 已经保存。
+               
+               直接切换状态即可。
             ========================================== */
 
             connectionStates[nodeId] =
@@ -647,6 +661,8 @@ function createConnectionLine(
 
             /* ==========================================
                重新绘制
+               
+               收起状态不会重新计算位置。
             ========================================== */
 
             refreshConnections();
@@ -673,12 +689,12 @@ function createConnectionLine(
 
     circle.setAttribute(
         "cx",
-        middleX
+        position.middleX
     );
 
     circle.setAttribute(
         "cy",
-        middleY
+        position.middleY
     );
 
     circle.setAttribute(
@@ -724,22 +740,22 @@ function createConnectionLine(
 
     horizontal.setAttribute(
         "x1",
-        middleX - 6
+        position.middleX - 6
     );
 
     horizontal.setAttribute(
         "y1",
-        middleY
+        position.middleY
     );
 
     horizontal.setAttribute(
         "x2",
-        middleX + 6
+        position.middleX + 6
     );
 
     horizontal.setAttribute(
         "y2",
-        middleY
+        position.middleY
     );
 
 
@@ -769,7 +785,9 @@ function createConnectionLine(
 
 
     /* ==================================================
-       ＋竖线
+       收起状态显示 +
+
+       展开状态显示 -
     ================================================== */
 
     if (!isExpanded) {
@@ -783,22 +801,22 @@ function createConnectionLine(
 
         vertical.setAttribute(
             "x1",
-            middleX
+            position.middleX
         );
 
         vertical.setAttribute(
             "y1",
-            middleY - 6
+            position.middleY - 6
         );
 
         vertical.setAttribute(
             "x2",
-            middleX
+            position.middleX
         );
 
         vertical.setAttribute(
             "y2",
-            middleY + 6
+            position.middleY + 6
         );
 
 
@@ -887,6 +905,10 @@ function renderConnections() {
     nodes.forEach(
         function (node) {
 
+            /* ==========================================
+               现在只处理根节点
+            ========================================== */
+
             if (
                 node.parentId !== null &&
                 node.parentId !== undefined
@@ -908,9 +930,9 @@ function renderConnections() {
             }
 
 
-            /* ==================================================
+            /* ==========================================
                第一次出现默认展开
-            ================================================== */
+            ========================================== */
 
             if (
                 connectionStates[
