@@ -92,63 +92,64 @@
 /* ======================================================
    序
    浅青色背景
-   深青色边框 + 深青色文字
+   深青色边框
+   深青色文字
 ====================================================== */
 
 .node.preface {
-    background: #d9f7f7;
+    background: #d9f7f7 !important;
 
-    border-color: #008b8b;
+    border: 2px solid #008b8b !important;
 
-    color: #006666;
+    color: #006666 !important;
 }
 
 
 /* ======================================================
    章
    浅黑色背景
-   深黑色边框 + 深黑色文字
+   深黑色边框
+   深黑色文字
 ====================================================== */
 
 .node.chapter {
-    background: #eeeeee;
+    background: #eeeeee !important;
 
-    border-color: #222222;
+    border: 2px solid #222222 !important;
 
-    color: #111111;
+    color: #111111 !important;
 }
 
 
 /* ======================================================
    篇
    浅白色背景
-   深白色边框 + 深白色文字
-
-   由于纯白背景 + 纯白边框不可见，
-   所以这里使用非常浅的灰白色作为视觉上的“浅白”。
+   深白色边框
+   深白色文字
 ====================================================== */
 
 .node.part {
-    background: #fafafa;
+    background: #fafafa !important;
 
-    border-color: #dddddd;
+    border: 2px solid #dddddd !important;
 
-    color: #bbbbbb;
+    color: #999999 !important;
 }
 
 
 /* ======================================================
    卷
    浅黄色背景
-   深黄色边框 + 深黄色文字
+   深黄色边框
+   深黄色文字
 ====================================================== */
 
 .node.volume {
-    background: #fff4bf;
+    background: #fff4bf !important;
 
-    border-color: #d4a900;
+    border: 2px solid #d4a900 !important;
 
-    color: #a07800;
+    color: #a07800 !important;
 }
 
 
@@ -157,12 +158,6 @@
 ====================================================== */
 
 .node.selected {
-    background: #ffd84d;
-
-    border-color: #e0ad00;
-
-    color: #222222;
-
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.16);
 }
