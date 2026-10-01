@@ -907,26 +907,73 @@ function deleteBook(bookId) {
     }
 
 
+    /* ==================================================
+       从书架数据中删除
+    ================================================== */
+
     books.splice(
         index,
         1
     );
 
 
+    /* ==================================================
+       保存最新数据
+    ================================================== */
+
     if (
         typeof saveBooks ===
         "function"
     ) {
 
-        if (!saveBooks()) {
-
-            return;
-        }
+        saveBooks();
     }
 
 
-    clearLongPress();
+    /* ==================================================
+       如果删除的是当前打开的书
+    ================================================== */
 
+    const currentBookId =
+        localStorage.getItem(
+            "currentBookId"
+        );
+
+
+    if (
+        String(currentBookId) ===
+        String(bookId)
+    ) {
+
+        localStorage.removeItem(
+            "currentBookId"
+        );
+    }
+
+
+    /* ==================================================
+       清除菜单 / 长按状态
+    ================================================== */
+
+    closeBookContextMenu();
+
+
+    if (
+        typeof clearLongPress ===
+        "function"
+    ) {
+
+        clearLongPress();
+
+    } else {
+
+        cancelLongPress();
+    }
+
+
+    /* ==================================================
+       立即重新渲染书架
+    ================================================== */
 
     if (
         typeof renderBooks ===
@@ -937,7 +984,33 @@ function deleteBook(bookId) {
     }
 
 
+    /* ==================================================
+       保持当前显示模式
+    ================================================== */
+
+    if (
+        typeof applyShelfViewMode ===
+        "function"
+    ) {
+
+        applyShelfViewMode();
+    }
+
+
     applyViewClass();
+
+
+    /* ==================================================
+       排序状态重新整理
+    ================================================== */
+
+    if (
+        typeof renderSortingMode ===
+        "function"
+    ) {
+
+        renderSortingMode();
+    }
 }
 
 
