@@ -73,7 +73,6 @@ function initShelf() {
 
     bindShelfEvents();
 
-
     if (
         typeof loadBooks ===
         "function"
@@ -82,7 +81,6 @@ function initShelf() {
         loadBooks();
     }
 
-
     if (
         typeof loadShelfViewMode ===
         "function"
@@ -90,7 +88,6 @@ function initShelf() {
 
         loadShelfViewMode();
     }
-
 
     if (
         typeof shelfViewMode ===
@@ -102,7 +99,6 @@ function initShelf() {
             "grid";
     }
 
-
     if (
         typeof renderBooks ===
         "function"
@@ -111,7 +107,6 @@ function initShelf() {
         renderBooks();
     }
 
-
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -119,7 +114,6 @@ function initShelf() {
 
         applyShelfViewMode();
     }
-
 
     applyViewClass();
 
@@ -138,12 +132,10 @@ function applyViewClass() {
         return;
     }
 
-
     bookGrid.classList.remove(
         "grid-view",
         "list-view"
     );
-
 
     if (
         shelfViewMode === "list"
@@ -180,7 +172,6 @@ function bindShelfEvents() {
         );
     }
 
-
     if (settingsButton) {
 
         settingsButton.addEventListener(
@@ -188,7 +179,6 @@ function bindShelfEvents() {
             handleSettingsButtonClick
         );
     }
-
 
     if (finishSortButton) {
 
@@ -198,7 +188,6 @@ function bindShelfEvents() {
         );
     }
 
-
     if (createBookButton) {
 
         createBookButton.addEventListener(
@@ -206,7 +195,6 @@ function bindShelfEvents() {
             handleCreateBookClick
         );
     }
-
 
     if (createCollectionButton) {
 
@@ -216,7 +204,6 @@ function bindShelfEvents() {
         );
     }
 
-
     if (sortBooksButton) {
 
         sortBooksButton.addEventListener(
@@ -225,7 +212,6 @@ function bindShelfEvents() {
         );
     }
 
-
     if (gridButton) {
 
         gridButton.addEventListener(
@@ -233,7 +219,6 @@ function bindShelfEvents() {
             setGridView
         );
     }
-
 
     if (listButton) {
 
@@ -255,36 +240,30 @@ function bindShelfEvents() {
             handleBookGridClick
         );
 
-
         bookGrid.addEventListener(
             "pointerdown",
             handlePointerDown
         );
-
 
         bookGrid.addEventListener(
             "pointermove",
             handlePointerMove
         );
 
-
         bookGrid.addEventListener(
             "pointerup",
             handlePointerUp
         );
-
 
         bookGrid.addEventListener(
             "pointercancel",
             cancelLongPress
         );
 
-
         bookGrid.addEventListener(
             "pointerleave",
             handlePointerLeave
         );
-
 
         bookGrid.addEventListener(
             "contextmenu",
@@ -305,7 +284,6 @@ function bindShelfEvents() {
         );
     }
 
-
     if (contextSort) {
 
         contextSort.addEventListener(
@@ -314,7 +292,6 @@ function bindShelfEvents() {
         );
     }
 
-
     if (contextGroup) {
 
         contextGroup.addEventListener(
@@ -322,7 +299,6 @@ function bindShelfEvents() {
             contextMoveBook
         );
     }
-
 
     if (contextDelete) {
 
@@ -358,7 +334,6 @@ function bindShelfEvents() {
         );
     }
 
-
     if (toolsNav) {
 
         toolsNav.addEventListener(
@@ -366,7 +341,6 @@ function bindShelfEvents() {
             goTools
         );
     }
-
 
     if (meNav) {
 
@@ -397,24 +371,20 @@ function handleCreateButtonClick(event) {
     event.preventDefault();
     event.stopPropagation();
 
-
     const createMenu =
         document.getElementById(
             "createMenu"
         );
-
 
     const settingsMenu =
         document.getElementById(
             "settingsMenu"
         );
 
-
     if (!createMenu) {
 
         return;
     }
-
 
     if (settingsMenu) {
 
@@ -422,7 +392,6 @@ function handleCreateButtonClick(event) {
             "show"
         );
     }
-
 
     createMenu.classList.toggle(
         "show"
@@ -439,24 +408,20 @@ function handleSettingsButtonClick(event) {
     event.preventDefault();
     event.stopPropagation();
 
-
     const settingsMenu =
         document.getElementById(
             "settingsMenu"
         );
-
 
     const createMenu =
         document.getElementById(
             "createMenu"
         );
 
-
     if (!settingsMenu) {
 
         return;
     }
-
 
     if (createMenu) {
 
@@ -464,7 +429,6 @@ function handleSettingsButtonClick(event) {
             "show"
         );
     }
-
 
     settingsMenu.classList.toggle(
         "show"
@@ -483,36 +447,30 @@ function handleDocumentClick(event) {
             "createMenu"
         );
 
-
     const settingsMenu =
         document.getElementById(
             "settingsMenu"
         );
-
 
     const clickedCreateButton =
         event.target.closest(
             "#createButton"
         );
 
-
     const clickedCreateMenu =
         event.target.closest(
             "#createMenu"
         );
-
 
     const clickedSettingsButton =
         event.target.closest(
             "#settingsButton"
         );
 
-
     const clickedSettingsMenu =
         event.target.closest(
             "#settingsMenu"
         );
-
 
     if (
         createMenu &&
@@ -524,7 +482,6 @@ function handleDocumentClick(event) {
             "show"
         );
     }
-
 
     if (
         settingsMenu &&
@@ -548,9 +505,7 @@ function handleCreateBookClick(event) {
     event.preventDefault();
     event.stopPropagation();
 
-
     closeAllMenus();
-
 
     window.location.href =
         "create-book.html";
@@ -566,9 +521,7 @@ function handleCreateCollectionClick(event) {
     event.preventDefault();
     event.stopPropagation();
 
-
     closeAllMenus();
-
 
     alert(
         "分组功能正在开发中。"
@@ -588,10 +541,8 @@ function setGridView(event) {
         event.stopPropagation();
     }
 
-
     shelfViewMode =
         "grid";
-
 
     if (
         typeof saveShelfViewMode ===
@@ -603,7 +554,6 @@ function setGridView(event) {
         );
     }
 
-
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -612,9 +562,7 @@ function setGridView(event) {
         applyShelfViewMode();
     }
 
-
     applyViewClass();
-
 
     closeAllMenus();
 }
@@ -632,10 +580,8 @@ function setListView(event) {
         event.stopPropagation();
     }
 
-
     shelfViewMode =
         "list";
-
 
     if (
         typeof saveShelfViewMode ===
@@ -647,7 +593,6 @@ function setListView(event) {
         );
     }
 
-
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -656,9 +601,7 @@ function setListView(event) {
         applyShelfViewMode();
     }
 
-
     applyViewClass();
-
 
     closeAllMenus();
 }
@@ -679,33 +622,27 @@ function handleBookGridClick(event) {
             ".book-menu-button"
         );
 
-
     if (menuButton) {
 
         event.preventDefault();
         event.stopPropagation();
 
-
         cancelLongPress();
-
 
         const card =
             menuButton.closest(
                 ".book-card"
             );
 
-
         if (!card) {
 
             return;
         }
 
-
         showBookContextMenu(
             card.dataset.bookId,
             card
         );
-
 
         return;
     }
@@ -743,20 +680,16 @@ function handleBookGridClick(event) {
             ".book-card"
         );
 
-
     if (!card) {
 
         return;
     }
 
-
     const bookId =
         card.dataset.bookId;
 
-
     const book =
         getBookById(bookId);
-
 
     if (!book) {
 
@@ -806,23 +739,19 @@ function openBook(bookId) {
     const book =
         getBookById(bookId);
 
-
     if (!book) {
 
         return;
     }
-
 
     localStorage.setItem(
         "currentBookId",
         String(bookId)
     );
 
-
     localStorage.removeItem(
         "currentChapterId"
     );
-
 
     window.location.href =
         "book.html";
@@ -838,23 +767,19 @@ function openEditBook(bookId) {
     const book =
         getBookById(bookId);
 
-
     if (!book) {
 
         return;
     }
-
 
     localStorage.setItem(
         "currentBookId",
         String(bookId)
     );
 
-
     localStorage.removeItem(
         "currentChapterId"
     );
-
 
     window.location.href =
         "edit-book.html";
@@ -869,7 +794,6 @@ function deleteBook(bookId) {
 
     const book =
         getBookById(bookId);
-
 
     if (!book) {
 
@@ -908,7 +832,7 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       从书架数据中删除
+       1. 从内存中的 books 删除
     ================================================== */
 
     books.splice(
@@ -918,20 +842,17 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       保存最新数据
+       2. 立即写入 localStorage
     ================================================== */
 
-    if (
-        typeof saveBooks ===
-        "function"
-    ) {
-
-        saveBooks();
-    }
+    localStorage.setItem(
+        "novelBooks",
+        JSON.stringify(books)
+    );
 
 
     /* ==================================================
-       如果删除的是当前打开的书
+       3. 删除当前书籍记录
     ================================================== */
 
     const currentBookId =
@@ -952,27 +873,21 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       清除菜单 / 长按状态
+       4. 关闭菜单
     ================================================== */
 
     closeBookContextMenu();
 
 
-    if (
-        typeof clearLongPress ===
-        "function"
-    ) {
+    /* ==================================================
+       5. 清除长按状态
+    ================================================== */
 
-        clearLongPress();
-
-    } else {
-
-        cancelLongPress();
-    }
+    cancelLongPress();
 
 
     /* ==================================================
-       立即重新渲染书架
+       6. 立即重新渲染书架
     ================================================== */
 
     if (
@@ -985,7 +900,7 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       保持当前显示模式
+       7. 重新应用当前视图
     ================================================== */
 
     if (
@@ -1001,7 +916,7 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       排序状态重新整理
+       8. 刷新排序状态
     ================================================== */
 
     if (
@@ -1025,14 +940,12 @@ function handlePointerDown(event) {
         return;
     }
 
-
     if (
         event.isPrimary === false
     ) {
 
         return;
     }
-
 
     if (
         event.pointerType === "mouse" &&
@@ -1042,18 +955,15 @@ function handlePointerDown(event) {
         return;
     }
 
-
     const card =
         event.target.closest(
             ".book-card"
         );
 
-
     if (!card) {
 
         return;
     }
-
 
     if (
         event.target.closest(
@@ -1064,30 +974,23 @@ function handlePointerDown(event) {
         return;
     }
 
-
     cancelLongPress();
-
 
     pressedCard =
         card;
 
-
     pressStartX =
         event.clientX;
-
 
     pressStartY =
         event.clientY;
 
-
     longPressTriggered =
         false;
-
 
     card.classList.add(
         "long-pressing"
     );
-
 
     longPressTimer =
         setTimeout(
@@ -1098,29 +1001,23 @@ function handlePointerDown(event) {
                     return;
                 }
 
-
                 const bookId =
                     pressedCard.dataset.bookId;
-
 
                 longPressBookId =
                     bookId;
 
-
                 longPressTriggered =
                     true;
-
 
                 pressedCard.classList.remove(
                     "long-pressing"
                 );
 
-
                 showBookContextMenu(
                     bookId,
                     pressedCard
                 );
-
 
                 longPressTimer =
                     null;
@@ -1145,20 +1042,17 @@ function handlePointerMove(event) {
         return;
     }
 
-
     const distanceX =
         Math.abs(
             event.clientX -
             pressStartX
         );
 
-
     const distanceY =
         Math.abs(
             event.clientY -
             pressStartY
         );
-
 
     if (
         distanceX >
@@ -1184,11 +1078,9 @@ function handlePointerUp() {
             longPressTimer
         );
 
-
         longPressTimer =
             null;
     }
-
 
     if (pressedCard) {
 
@@ -1196,7 +1088,6 @@ function handlePointerUp() {
             "long-pressing"
         );
     }
-
 
     pressedCard =
         null;
@@ -1230,11 +1121,9 @@ function cancelLongPress() {
             longPressTimer
         );
 
-
         longPressTimer =
             null;
     }
-
 
     if (pressedCard) {
 
@@ -1242,7 +1131,6 @@ function cancelLongPress() {
             "long-pressing"
         );
     }
-
 
     pressedCard =
         null;
@@ -1271,16 +1159,13 @@ function showBookContextMenu(
     const book =
         getBookById(bookId);
 
-
     if (!book) {
 
         return;
     }
 
-
     longPressBookId =
         bookId;
-
 
     if (contextMenuTitle) {
 
@@ -1289,14 +1174,12 @@ function showBookContextMenu(
             "未命名小说";
     }
 
-
     if (bookMenuOverlay) {
 
         bookMenuOverlay.classList.add(
             "show"
         );
     }
-
 
     if (bookContextMenu) {
 
@@ -1305,10 +1188,8 @@ function showBookContextMenu(
         );
     }
 
-
     document.body.style.overflow =
         "hidden";
-
 
     if (card) {
 
@@ -1332,7 +1213,6 @@ function closeBookContextMenu() {
         );
     }
 
-
     if (bookContextMenu) {
 
         bookContextMenu.classList.remove(
@@ -1340,14 +1220,11 @@ function closeBookContextMenu() {
         );
     }
 
-
     document.body.style.overflow =
         "";
 
-
     longPressBookId =
         null;
-
 
     document
         .querySelectorAll(
@@ -1373,15 +1250,12 @@ function contextEditBook() {
     const bookId =
         longPressBookId;
 
-
     closeBookContextMenu();
-
 
     if (!bookId) {
 
         return;
     }
-
 
     openEditBook(bookId);
 }
@@ -1394,7 +1268,6 @@ function contextEditBook() {
 function contextSortBook() {
 
     closeBookContextMenu();
-
 
     startSorting();
 }
@@ -1409,15 +1282,12 @@ function contextMoveBook() {
     const bookId =
         longPressBookId;
 
-
     closeBookContextMenu();
-
 
     if (!bookId) {
 
         return;
     }
-
 
     moveBookToGroup(bookId);
 }
@@ -1432,15 +1302,12 @@ function contextDeleteBook() {
     const bookId =
         longPressBookId;
 
-
     closeBookContextMenu();
-
 
     if (!bookId) {
 
         return;
     }
-
 
     deleteBook(bookId);
 }
@@ -1457,12 +1324,10 @@ function closeAllMenus() {
             "createMenu"
         );
 
-
     const settingsMenu =
         document.getElementById(
             "settingsMenu"
         );
-
 
     if (createMenu) {
 
@@ -1470,7 +1335,6 @@ function closeAllMenus() {
             "show"
         );
     }
-
 
     if (settingsMenu) {
 
@@ -1491,24 +1355,19 @@ function startSorting() {
 
     closeBookContextMenu();
 
-
     if (isSorting) {
 
         return;
     }
 
-
     isSorting =
         true;
-
 
     draggingCard =
         null;
 
-
     isDraggingBook =
         false;
-
 
     if (bookGrid) {
 
@@ -1517,11 +1376,9 @@ function startSorting() {
         );
     }
 
-
     document.body.classList.add(
         "sorting"
     );
-
 
     if (
         typeof renderSortingMode ===
@@ -1530,7 +1387,6 @@ function startSorting() {
 
         renderSortingMode();
     }
-
 
     enableBookDragging();
 }
@@ -1547,12 +1403,10 @@ function enableBookDragging() {
         return;
     }
 
-
     const cards =
         bookGrid.querySelectorAll(
             ".book-card"
         );
-
 
     cards.forEach(
         function(card) {
@@ -1562,24 +1416,20 @@ function enableBookDragging() {
                 "true"
             );
 
-
             card.addEventListener(
                 "dragstart",
                 handleDragStart
             );
-
 
             card.addEventListener(
                 "dragover",
                 handleDragOver
             );
 
-
             card.addEventListener(
                 "drop",
                 handleDrop
             );
-
 
             card.addEventListener(
                 "dragend",
@@ -1601,25 +1451,20 @@ function handleDragStart(event) {
         return;
     }
 
-
     draggingCard =
         event.currentTarget;
 
-
     isDraggingBook =
         true;
-
 
     draggingCard.classList.add(
         "dragging"
     );
 
-
     if (event.dataTransfer) {
 
         event.dataTransfer.effectAllowed =
             "move";
-
 
         event.dataTransfer.setData(
             "text/plain",
@@ -1643,13 +1488,10 @@ function handleDragOver(event) {
         return;
     }
 
-
     event.preventDefault();
-
 
     const target =
         event.currentTarget;
-
 
     if (
         !target ||
@@ -1659,10 +1501,8 @@ function handleDragOver(event) {
         return;
     }
 
-
     const rect =
         target.getBoundingClientRect();
-
 
     if (
         bookGrid.classList.contains(
@@ -1673,7 +1513,6 @@ function handleDragOver(event) {
         const middleY =
             rect.top +
             rect.height / 2;
-
 
         if (
             event.clientY <
@@ -1699,21 +1538,17 @@ function handleDragOver(event) {
             rect.left +
             rect.width / 2;
 
-
         const middleY =
             rect.top +
             rect.height / 2;
-
 
         const offsetX =
             event.clientX -
             middleX;
 
-
         const offsetY =
             event.clientY -
             middleY;
-
 
         if (
             Math.abs(offsetX) >
@@ -1760,7 +1595,6 @@ function handleDragOver(event) {
         }
     }
 
-
     document
         .querySelectorAll(
             ".book-card.drag-over"
@@ -1773,7 +1607,6 @@ function handleDragOver(event) {
                 );
             }
         );
-
 
     target.classList.add(
         "drag-over"
@@ -1788,7 +1621,6 @@ function handleDragOver(event) {
 function handleDrop(event) {
 
     event.preventDefault();
-
 
     updateBookOrder();
 }
@@ -1807,7 +1639,6 @@ function handleDragEnd() {
         );
     }
 
-
     document
         .querySelectorAll(
             ".book-card.drag-over"
@@ -1821,13 +1652,10 @@ function handleDragEnd() {
             }
         );
 
-
     updateBookOrder();
-
 
     draggingCard =
         null;
-
 
     isDraggingBook =
         false;
@@ -1845,12 +1673,10 @@ function updateBookOrder() {
         return;
     }
 
-
     if (!Array.isArray(books)) {
 
         return;
     }
-
 
     const cards =
         Array.from(
@@ -1859,9 +1685,7 @@ function updateBookOrder() {
             )
         );
 
-
     const newBooks = [];
-
 
     cards.forEach(
         function(card) {
@@ -1869,10 +1693,8 @@ function updateBookOrder() {
             const bookId =
                 card.dataset.bookId;
 
-
             const book =
                 getBookById(bookId);
-
 
             if (book) {
 
@@ -1882,7 +1704,6 @@ function updateBookOrder() {
             }
         }
     );
-
 
     if (
         newBooks.length ===
@@ -1906,9 +1727,7 @@ function finishSorting() {
         return;
     }
 
-
     updateBookOrder();
-
 
     if (
         typeof saveBooks ===
@@ -1918,23 +1737,18 @@ function finishSorting() {
         saveBooks();
     }
 
-
     isSorting =
         false;
-
 
     draggingCard =
         null;
 
-
     isDraggingBook =
         false;
-
 
     document.body.classList.remove(
         "sorting"
     );
-
 
     if (bookGrid) {
 
@@ -1942,7 +1756,6 @@ function finishSorting() {
             "sorting"
         );
     }
-
 
     document
         .querySelectorAll(
@@ -1955,23 +1768,19 @@ function finishSorting() {
                     "draggable"
                 );
 
-
                 card.classList.remove(
                     "dragging"
                 );
 
-
                 card.classList.remove(
                     "drag-over"
                 );
-
 
                 card.classList.remove(
                     "long-pressed"
                 );
             }
         );
-
 
     if (
         typeof renderBooks ===
@@ -1981,7 +1790,6 @@ function finishSorting() {
         renderBooks();
     }
 
-
     if (
         typeof applyShelfViewMode ===
         "function"
@@ -1989,7 +1797,6 @@ function finishSorting() {
 
         applyShelfViewMode();
     }
-
 
     applyViewClass();
 
@@ -2006,12 +1813,10 @@ function moveBookToGroup(bookId) {
     const book =
         getBookById(bookId);
 
-
     if (!book) {
 
         return;
     }
-
 
     alert(
         "准备将《" +
