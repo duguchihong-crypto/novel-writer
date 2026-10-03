@@ -112,7 +112,6 @@
             id="layoutButton"
             class="top-button"
             type="button"
-            onclick="window.toggleLayoutDirection();"
         >
             ↕ 纵向
         </button>
@@ -268,7 +267,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-layout.js?v=60001"
+        src="./js/book/book-layout.js?v=70001"
     ></script>
 
 
@@ -282,7 +281,7 @@
 
 
     <!-- ==================================================
-         进入全书时定位
+         全书页面控制
     ================================================== -->
 
     <script>
@@ -299,6 +298,16 @@
                 "manual";
 
         }
+
+
+        /* ==================================================
+           获取布局按钮
+        ================================================== */
+
+        const layoutButton =
+            document.getElementById(
+                "layoutButton"
+            );
 
 
         /* ==================================================
@@ -344,7 +353,55 @@
 
                 }
 
+                return;
+
             }
+
+
+            button.textContent =
+                "↕ 纵向";
+
+        }
+
+
+        /* ==================================================
+           布局按钮点击事件
+        ================================================== */
+
+        if (layoutButton) {
+
+            layoutButton.addEventListener(
+                "click",
+                function () {
+
+                    /* ======================================
+                       优先调用布局模块
+                    ====================================== */
+
+                    if (
+                        typeof toggleLayoutDirection ===
+                        "function"
+                    ) {
+
+                        toggleLayoutDirection();
+
+                        updateLayoutButtonText();
+
+                        return;
+
+                    }
+
+
+                    /* ======================================
+                       如果布局函数没有加载
+                    ====================================== */
+
+                    console.error(
+                        "全书：toggleLayoutDirection 未加载"
+                    );
+
+                }
+            );
 
         }
 
