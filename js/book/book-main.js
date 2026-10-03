@@ -25,7 +25,22 @@ const layoutButton =
 ====================================================== */
 
 let currentLayout =
-    localStorage.getItem("bookLayout") || "vertical";
+    localStorage.getItem("bookLayout") ||
+    "vertical";
+
+
+/* ======================================================
+   防止异常布局值
+====================================================== */
+
+if (
+    currentLayout !== "vertical" &&
+    currentLayout !== "horizontal"
+) {
+
+    currentLayout = "vertical";
+
+}
 
 
 /* ======================================================
@@ -50,7 +65,10 @@ function updateLayoutButton() {
         return;
     }
 
-    if (currentLayout === "horizontal") {
+
+    if (
+        currentLayout === "horizontal"
+    ) {
 
         layoutButton.textContent =
             "→ 横向";
@@ -61,6 +79,69 @@ function updateLayoutButton() {
             "↕ 纵向";
 
     }
+
+}
+
+
+/* ======================================================
+   执行当前布局
+====================================================== */
+
+function applyCurrentLayout() {
+
+    /* ==================================================
+       纵向
+    ================================================== */
+
+    if (
+        currentLayout === "vertical"
+    ) {
+
+        if (
+            typeof updateVerticalLayout ===
+            "function"
+        ) {
+
+            updateVerticalLayout();
+
+        }
+
+    }
+
+
+    /* ==================================================
+       横向
+    ================================================== */
+
+    else {
+
+        if (
+            typeof updateHorizontalLayout ===
+            "function"
+        ) {
+
+            updateHorizontalLayout();
+
+        }
+
+    }
+
+
+    /* ==================================================
+       保存布局
+    ================================================== */
+
+    localStorage.setItem(
+        "bookLayout",
+        currentLayout
+    );
+
+
+    /* ==================================================
+       更新按钮
+    ================================================== */
+
+    updateLayoutButton();
 
 }
 
@@ -87,44 +168,10 @@ function toggleLayout() {
 
 
     /* ==================================================
-       保存布局状态
+       执行布局
     ================================================== */
 
-    localStorage.setItem(
-        "bookLayout",
-        currentLayout
-    );
-
-
-    /* ==================================================
-       重新布局
-    ================================================== */
-
-    if (
-        currentLayout === "vertical"
-    ) {
-
-        if (
-            typeof updateVerticalLayout ===
-            "function"
-        ) {
-
-            updateVerticalLayout();
-
-        }
-
-    } else {
-
-        if (
-            typeof updateHorizontalLayout ===
-            "function"
-        ) {
-
-            updateHorizontalLayout();
-
-        }
-
-    }
+    applyCurrentLayout();
 
 
     /* ==================================================
@@ -142,7 +189,7 @@ function toggleLayout() {
 
 
     /* ==================================================
-       更新连接线
+       刷新连接线
     ================================================== */
 
     if (
@@ -154,23 +201,17 @@ function toggleLayout() {
 
     }
 
-
-    /* ==================================================
-       更新按钮
-    ================================================== */
-
-    updateLayoutButton();
-
 }
 
 
 /* ======================================================
-   绑定布局按钮
+   布局按钮点击
 ====================================================== */
 
 if (layoutButton) {
 
-    layoutButton.onclick =
+    layoutButton.addEventListener(
+        "click",
         function (event) {
 
             event.preventDefault();
@@ -179,7 +220,8 @@ if (layoutButton) {
 
             toggleLayout();
 
-        };
+        }
+    );
 
 }
 
@@ -194,7 +236,9 @@ function showActionBar() {
         return;
     }
 
-    actionBar.classList.add("show");
+    actionBar.classList.add(
+        "show"
+    );
 
 }
 
@@ -209,7 +253,9 @@ function hideActionBar() {
         return;
     }
 
-    actionBar.classList.remove("show");
+    actionBar.classList.remove(
+        "show"
+    );
 
 }
 
@@ -224,8 +270,11 @@ function toggleActionBar() {
         return;
     }
 
+
     if (
-        actionBar.classList.contains("show")
+        actionBar.classList.contains(
+            "show"
+        )
     ) {
 
         hideActionBar();
@@ -245,26 +294,36 @@ function toggleActionBar() {
 
 if (bookTitle) {
 
-    bookTitle.onclick = function () {
+    bookTitle.addEventListener(
+        "click",
+        function (event) {
 
-        toggleActionBar();
+            event.preventDefault();
 
-    };
+            event.stopPropagation();
+
+            toggleActionBar();
+
+        }
+    );
 
 }
 
 
 /* ======================================================
-   操作栏点击
+   操作栏
 ====================================================== */
 
 if (actionBar) {
 
-    actionBar.onclick = function (event) {
+    actionBar.addEventListener(
+        "click",
+        function (event) {
 
-        event.stopPropagation();
+            event.stopPropagation();
 
-    };
+        }
+    );
 
 
     /* ==================================================
@@ -284,38 +343,43 @@ if (actionBar) {
     actionButtons.forEach(
         function (button) {
 
-            button.onclick = function (event) {
+            button.addEventListener(
+                "click",
+                function (event) {
 
-                event.preventDefault();
+                    event.preventDefault();
 
-                event.stopPropagation();
-
-
-                const action =
-                    button.dataset.action;
+                    event.stopPropagation();
 
 
-                /* ======================================
-                   新增节点
-                ====================================== */
+                    const action =
+                        button.dataset.action;
 
-                if (
-                    typeof addRootNode ===
-                    "function"
-                ) {
 
-                    addRootNode(action);
+                    /* ==================================
+                       新增节点
+                    ================================== */
+
+                    if (
+                        typeof addRootNode ===
+                        "function"
+                    ) {
+
+                        addRootNode(
+                            action
+                        );
+
+                    }
+
+
+                    /* ==================================
+                       关闭操作栏
+                    ================================== */
+
+                    hideActionBar();
 
                 }
-
-
-                /* ======================================
-                   关闭操作栏
-                ====================================== */
-
-                hideActionBar();
-
-            };
+            );
 
         }
     );
@@ -324,65 +388,74 @@ if (actionBar) {
 
 
 /* ======================================================
-   点击空白区域
+   点击页面其他位置
 ====================================================== */
 
-document.onclick = function (event) {
+document.addEventListener(
+    "click",
+    function (event) {
 
-    if (!actionBar) {
-        return;
+        if (!actionBar) {
+            return;
+        }
+
+
+        /* ==============================================
+           书名
+        ============================================== */
+
+        if (
+            event.target === bookTitle ||
+            bookTitle?.contains(
+                event.target
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        /* ==============================================
+           操作栏
+        ============================================== */
+
+        if (
+            event.target === actionBar ||
+            actionBar.contains(
+                event.target
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        /* ==============================================
+           布局按钮
+        ============================================== */
+
+        if (
+            event.target === layoutButton ||
+            layoutButton?.contains(
+                event.target
+            )
+        ) {
+
+            return;
+
+        }
+
+
+        /* ==============================================
+           其他区域
+        ============================================== */
+
+        hideActionBar();
+
     }
-
-
-    /* ==============================================
-       点击书名
-    ============================================== */
-
-    if (
-        event.target === bookTitle ||
-        bookTitle?.contains(event.target)
-    ) {
-
-        return;
-
-    }
-
-
-    /* ==============================================
-       点击操作栏
-    ============================================== */
-
-    if (
-        event.target === actionBar ||
-        actionBar.contains(event.target)
-    ) {
-
-        return;
-
-    }
-
-
-    /* ==============================================
-       点击布局按钮
-    ============================================== */
-
-    if (
-        event.target === layoutButton ||
-        layoutButton?.contains(event.target)
-    ) {
-
-        return;
-
-    }
-
-
-    /* ==============================================
-       点击其他区域
-    ============================================== */
-
-    hideActionBar();
-
-};
+);
 
 
 /* ======================================================
@@ -396,35 +469,11 @@ updateLayoutButton();
    初始化布局
 ====================================================== */
 
-if (
-    currentLayout === "vertical"
-) {
-
-    if (
-        typeof updateVerticalLayout ===
-        "function"
-    ) {
-
-        updateVerticalLayout();
-
-    }
-
-} else {
-
-    if (
-        typeof updateHorizontalLayout ===
-        "function"
-    ) {
-
-        updateHorizontalLayout();
-
-    }
-
-}
+applyCurrentLayout();
 
 
 /* ======================================================
-   初始化
+   初始化节点
 ====================================================== */
 
 if (
@@ -433,5 +482,19 @@ if (
 ) {
 
     renderNodes();
+
+}
+
+
+/* ======================================================
+   初始化连接线
+====================================================== */
+
+if (
+    typeof refreshConnections ===
+    "function"
+) {
+
+    refreshConnections();
 
 }
