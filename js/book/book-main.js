@@ -27,6 +27,7 @@ const layoutButton =
 let currentLayout =
     localStorage.getItem("bookLayout");
 
+
 if (
     currentLayout !== "vertical" &&
     currentLayout !== "horizontal"
@@ -39,7 +40,7 @@ if (
 
 
 /* ======================================================
-   更新布局按钮
+   更新布局按钮文字
 ====================================================== */
 
 function updateLayoutButton() {
@@ -47,6 +48,7 @@ function updateLayoutButton() {
     if (!layoutButton) {
         return;
     }
+
 
     if (
         currentLayout === "horizontal"
@@ -66,7 +68,7 @@ function updateLayoutButton() {
 
 
 /* ======================================================
-   执行纵向布局
+   纵向布局
 ====================================================== */
 
 function runVerticalLayout() {
@@ -76,9 +78,14 @@ function runVerticalLayout() {
         "function"
     ) {
 
+        console.warn(
+            "updateVerticalLayout 不存在"
+        );
+
         return;
 
     }
+
 
     try {
 
@@ -97,7 +104,7 @@ function runVerticalLayout() {
 
 
 /* ======================================================
-   执行横向布局
+   横向布局
 ====================================================== */
 
 function runHorizontalLayout() {
@@ -107,9 +114,14 @@ function runHorizontalLayout() {
         "function"
     ) {
 
+        console.warn(
+            "updateHorizontalLayout 不存在"
+        );
+
         return;
 
     }
+
 
     try {
 
@@ -128,14 +140,78 @@ function runHorizontalLayout() {
 
 
 /* ======================================================
-   应用当前布局
+   重新绘制节点
+====================================================== */
+
+function redrawNodes() {
+
+    if (
+        typeof renderNodes !==
+        "function"
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        renderNodes();
+
+    } catch (error) {
+
+        console.error(
+            "节点重新绘制错误：",
+            error
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   刷新连接线
+====================================================== */
+
+function redrawConnections() {
+
+    if (
+        typeof refreshConnections !==
+        "function"
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        refreshConnections();
+
+    } catch (error) {
+
+        console.error(
+            "连接线刷新错误：",
+            error
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   执行当前布局
 ====================================================== */
 
 function applyCurrentLayout() {
 
 
     /* ==================================================
-       先保存
+       保存当前方向
     ================================================== */
 
     localStorage.setItem(
@@ -156,14 +232,14 @@ function applyCurrentLayout() {
     ================================================== */
 
     if (
-        currentLayout === "vertical"
+        currentLayout === "horizontal"
     ) {
 
-        runVerticalLayout();
+        runHorizontalLayout();
 
     } else {
 
-        runHorizontalLayout();
+        runVerticalLayout();
 
     }
 
@@ -172,50 +248,14 @@ function applyCurrentLayout() {
        重新绘制节点
     ================================================== */
 
-    if (
-        typeof renderNodes ===
-        "function"
-    ) {
-
-        try {
-
-            renderNodes();
-
-        } catch (error) {
-
-            console.error(
-                "节点渲染错误：",
-                error
-            );
-
-        }
-
-    }
+    redrawNodes();
 
 
     /* ==================================================
        刷新连接线
     ================================================== */
 
-    if (
-        typeof refreshConnections ===
-        "function"
-    ) {
-
-        try {
-
-            refreshConnections();
-
-        } catch (error) {
-
-            console.error(
-                "连接线刷新错误：",
-                error
-            );
-
-        }
-
-    }
+    redrawConnections();
 
 }
 
@@ -247,13 +287,6 @@ function toggleLayout() {
 
 
     /* ==================================================
-       立即更新按钮
-    ================================================== */
-
-    updateLayoutButton();
-
-
-    /* ==================================================
        保存
     ================================================== */
 
@@ -264,18 +297,25 @@ function toggleLayout() {
 
 
     /* ==================================================
+       立即改变按钮文字
+    ================================================== */
+
+    updateLayoutButton();
+
+
+    /* ==================================================
        执行布局
     ================================================== */
 
     if (
-        currentLayout === "vertical"
+        currentLayout === "horizontal"
     ) {
 
-        runVerticalLayout();
+        runHorizontalLayout();
 
     } else {
 
-        runHorizontalLayout();
+        runVerticalLayout();
 
     }
 
@@ -284,56 +324,20 @@ function toggleLayout() {
        重新绘制节点
     ================================================== */
 
-    if (
-        typeof renderNodes ===
-        "function"
-    ) {
-
-        try {
-
-            renderNodes();
-
-        } catch (error) {
-
-            console.error(
-                "节点重新绘制错误：",
-                error
-            );
-
-        }
-
-    }
+    redrawNodes();
 
 
     /* ==================================================
        刷新连接线
     ================================================== */
 
-    if (
-        typeof refreshConnections ===
-        "function"
-    ) {
-
-        try {
-
-            refreshConnections();
-
-        } catch (error) {
-
-            console.error(
-                "连接线重新绘制错误：",
-                error
-            );
-
-        }
-
-    }
+    redrawConnections();
 
 }
 
 
 /* ======================================================
-   暴露布局函数
+   暴露到 window
 ====================================================== */
 
 window.toggleLayout =
@@ -349,6 +353,7 @@ function updateBookTitle() {
     if (!bookTitle) {
         return;
     }
+
 
     if (
         typeof currentBook !==
@@ -380,6 +385,7 @@ function showActionBar() {
         return;
     }
 
+
     actionBar.classList.add(
         "show"
     );
@@ -397,6 +403,7 @@ function hideActionBar() {
         return;
     }
 
+
     actionBar.classList.remove(
         "show"
     );
@@ -413,6 +420,7 @@ function toggleActionBar() {
     if (!actionBar) {
         return;
     }
+
 
     if (
         actionBar.classList.contains(
@@ -604,7 +612,8 @@ document.addEventListener(
 
 if (layoutButton) {
 
-    layoutButton.onclick =
+    layoutButton.addEventListener(
+        "click",
         function (event) {
 
             event.preventDefault();
@@ -613,7 +622,8 @@ if (layoutButton) {
 
             toggleLayout();
 
-        };
+        }
+    );
 
 }
 
