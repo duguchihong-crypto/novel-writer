@@ -793,11 +793,12 @@ function openEditBook(bookId) {
 function deleteBook(bookId) {
 
     /* ==================================================
-       1. 找到书籍
+       1. 查找书籍
     ================================================== */
 
     const book =
         getBookById(bookId);
+
 
     if (!book) {
 
@@ -834,11 +835,12 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       4. 获取书籍位置
+       4. 获取位置
     ================================================== */
 
     const index =
         getBookIndex(bookId);
+
 
     if (index === -1) {
 
@@ -847,7 +849,15 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       5. 从内存删除
+       5. 保存被删除的书
+    ================================================== */
+
+    const deletedBook =
+        books[index];
+
+
+    /* ==================================================
+       6. 从内存删除
     ================================================== */
 
     books.splice(
@@ -857,33 +867,53 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       6. 保存到 localStorage
+       7. 保存书架
     ================================================== */
 
-    try {
+    let saved = false;
 
-        localStorage.setItem(
-            "novelBooks",
-            JSON.stringify(books)
-        );
 
-    } catch (error) {
+    if (
+        typeof saveBooks ===
+        "function"
+    ) {
 
-        /* 保存失败则恢复 */
+        saved =
+            saveBooks();
+
+    } else {
+
+        try {
+
+            localStorage.setItem(
+                "novelBooks",
+                JSON.stringify(books)
+            );
+
+            saved = true;
+
+        } catch (error) {
+
+            console.error(
+                "删除书籍保存失败：",
+                error
+            );
+
+            saved = false;
+        }
+    }
+
+
+    /* ==================================================
+       8. 保存失败
+    ================================================== */
+
+    if (!saved) {
 
         books.splice(
             index,
             0,
-            book
-        );
-
-        console.error(
-            "删除书籍保存失败：",
-            error
-        );
-
-        alert(
-            "删除失败，请稍后重试。"
+            deletedBook
         );
 
         return;
@@ -891,7 +921,7 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       7. 删除当前书籍记录
+       9. 清除当前书籍
     ================================================== */
 
     const currentBookId =
@@ -912,51 +942,6 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       8. 直接找到页面上的书卡
-    ================================================== */
-
-    let deletedCard =
-        null;
-
-
-    if (bookGrid) {
-
-        const cards =
-            bookGrid.querySelectorAll(
-                ".book-card"
-            );
-
-
-        cards.forEach(
-            function(card) {
-
-                if (
-                    String(
-                        card.dataset.bookId
-                    ) ===
-                    String(bookId)
-                ) {
-
-                    deletedCard =
-                        card;
-                }
-
-            }
-        );
-    }
-
-
-    /* ==================================================
-       9. 立即从页面删除书卡
-    ================================================== */
-
-    if (deletedCard) {
-
-        deletedCard.remove();
-    }
-
-
-    /* ==================================================
        10. 关闭书籍菜单
     ================================================== */
 
@@ -971,29 +956,7 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       12. 如果没有书籍了
-    ================================================== */
-
-    if (
-        Array.isArray(books) &&
-        books.length === 0
-    ) {
-
-        const emptyShelf =
-            document.getElementById(
-                "emptyShelf"
-            );
-
-        if (emptyShelf) {
-
-            emptyShelf.style.display =
-                "block";
-        }
-    }
-
-
-    /* ==================================================
-       13. 清除选中状态
+       12. 清除选中状态
     ================================================== */
 
     if (
@@ -1001,32 +964,61 @@ function deleteBook(bookId) {
         "undefined"
     ) {
 
-        if (
-            String(selectedBookId) ===
-            String(bookId)
-        ) {
-
-            selectedBookId =
-                null;
-        }
+        selectedBookId =
+            null;
     }
 
 
     /* ==================================================
-       14. 如果删除的是最后一本
+       13. 重新渲染整个书架
     ================================================== */
 
     if (
-        Array.isArray(books) &&
-        books.length === 0
+        typeof renderBooks ===
+        "function"
     ) {
 
-        if (bookGrid) {
-
-            bookGrid.innerHTML =
-                "";
-        }
+        renderBooks();
     }
+
+
+    /* ==================================================
+       14. 重新应用显示模式
+    ================================================== */
+
+    if (
+        typeof applyShelfViewMode ===
+        "function"
+    ) {
+
+        applyShelfViewMode();
+    }
+
+
+    /* ==================================================
+       15. 重新应用网格 / 列表
+    ================================================== */
+
+    applyViewClass();
+
+
+    /* ==================================================
+       16. 重新应用排序状态
+    ================================================== */
+
+    if (
+        typeof renderSortingMode ===
+        "function"
+    ) {
+
+        renderSortingMode();
+    }
+
+
+    console.log(
+        "书籍已删除：",
+        bookId
+    );
 }
 
 
@@ -1403,10 +1395,21 @@ function contextDeleteBook() {
     const bookId =
         longPressBookId;
 
+
     if (!bookId) {
 
         return;
     }
+
+
+    /*
+     * 注意：
+     * 这里不能先调用
+     * closeBookContextMenu()
+     *
+     * 因为关闭菜单会把
+     * longPressBookId 清空。
+     */
 
     deleteBook(bookId);
 }
