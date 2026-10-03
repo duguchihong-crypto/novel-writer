@@ -106,14 +106,13 @@
 
         <!-- ==================================================
              布局切换
-             直接调用布局切换函数
         ================================================== -->
 
         <button
             id="layoutButton"
             class="top-button"
             type="button"
-            onclick="window.toggleLayout();"
+            onclick="window.toggleLayoutDirection();"
         >
             ↕ 纵向
         </button>
@@ -303,6 +302,54 @@
 
 
         /* ==================================================
+           更新布局按钮文字
+        ================================================== */
+
+        function updateLayoutButtonText() {
+
+            const button =
+                document.getElementById(
+                    "layoutButton"
+                );
+
+
+            if (!button) {
+
+                return;
+
+            }
+
+
+            if (
+                typeof getLayoutDirection ===
+                "function"
+            ) {
+
+                const direction =
+                    getLayoutDirection();
+
+
+                if (
+                    direction ===
+                    "horizontal"
+                ) {
+
+                    button.textContent =
+                        "↔ 横向";
+
+                } else {
+
+                    button.textContent =
+                        "↕ 纵向";
+
+                }
+
+            }
+
+        }
+
+
+        /* ==================================================
            将书名滚动到可视区域中央
         ================================================== */
 
@@ -342,6 +389,8 @@
             "load",
             function () {
 
+                updateLayoutButtonText();
+
                 centerBookOnEnter();
 
             }
@@ -357,7 +406,13 @@
             function () {
 
                 setTimeout(
-                    centerBookOnEnter,
+                    function () {
+
+                        updateLayoutButtonText();
+
+                        centerBookOnEnter();
+
+                    },
                     50
                 );
 
@@ -374,7 +429,13 @@
             function () {
 
                 setTimeout(
-                    centerBookOnEnter,
+                    function () {
+
+                        updateLayoutButtonText();
+
+                        centerBookOnEnter();
+
+                    },
                     300
                 );
 
