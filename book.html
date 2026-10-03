@@ -19,7 +19,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-base.css?v=50003"
+        href="./css/book-base.css?v=50004"
     >
 
 
@@ -29,7 +29,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-node.css?v=50005"
+        href="./css/book-node.css?v=50006"
     >
 
 
@@ -39,7 +39,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-line.css?v=50003"
+        href="./css/book-line.css?v=50004"
     >
 
 
@@ -49,7 +49,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-layout.css?v=50004"
+        href="./css/book-layout.css?v=50005"
     >
 
 
@@ -59,7 +59,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-action.css?v=50003"
+        href="./css/book-action.css?v=50004"
     >
 
 </head>
@@ -77,7 +77,10 @@
         class="top-bar"
     >
 
-        <!-- 返回 -->
+
+        <!-- ==================================================
+             返回
+        ================================================== -->
 
         <button
             id="backButton"
@@ -89,7 +92,9 @@
         </button>
 
 
-        <!-- 页面标题 -->
+        <!-- ==================================================
+             页面标题
+        ================================================== -->
 
         <div
             id="pageTitle"
@@ -99,12 +104,19 @@
         </div>
 
 
-        <!-- 布局切换 -->
+        <!-- ==================================================
+             布局切换
+        ================================================== -->
 
         <button
             id="layoutButton"
             class="top-button"
             type="button"
+            onclick="
+                if (typeof toggleLayout === 'function') {
+                    toggleLayout();
+                }
+            "
         >
             ↕ 纵向
         </button>
@@ -157,6 +169,7 @@
                 id="actionBar"
                 class="action-bar"
             >
+
 
                 <button
                     type="button"
@@ -215,7 +228,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-data.js?v=50003"
+        src="./js/book/book-data.js?v=50004"
     ></script>
 
 
@@ -224,7 +237,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-storage.js?v=50003"
+        src="./js/book/book-storage.js?v=50004"
     ></script>
 
 
@@ -233,7 +246,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-tree.js?v=50004"
+        src="./js/book/book-tree.js?v=50005"
     ></script>
 
 
@@ -242,7 +255,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-node.js?v=50003"
+        src="./js/book/book-node.js?v=50004"
     ></script>
 
 
@@ -251,7 +264,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-line.js?v=50003"
+        src="./js/book/book-line.js?v=50004"
     ></script>
 
 
@@ -260,7 +273,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-layout.js?v=50004"
+        src="./js/book/book-layout.js?v=50005"
     ></script>
 
 
@@ -269,7 +282,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-main.js?v=50005"
+        src="./js/book/book-main.js?v=50006"
     ></script>
 
 
