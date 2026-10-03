@@ -49,7 +49,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-layout.css?v=60001"
+        href="./css/book-layout.css?v=70001"
     >
 
 
@@ -301,112 +301,6 @@
 
 
         /* ==================================================
-           获取布局按钮
-        ================================================== */
-
-        const layoutButton =
-            document.getElementById(
-                "layoutButton"
-            );
-
-
-        /* ==================================================
-           更新布局按钮文字
-        ================================================== */
-
-        function updateLayoutButtonText() {
-
-            const button =
-                document.getElementById(
-                    "layoutButton"
-                );
-
-
-            if (!button) {
-
-                return;
-
-            }
-
-
-            if (
-                typeof getLayoutDirection ===
-                "function"
-            ) {
-
-                const direction =
-                    getLayoutDirection();
-
-
-                if (
-                    direction ===
-                    "horizontal"
-                ) {
-
-                    button.textContent =
-                        "↔ 横向";
-
-                } else {
-
-                    button.textContent =
-                        "↕ 纵向";
-
-                }
-
-                return;
-
-            }
-
-
-            button.textContent =
-                "↕ 纵向";
-
-        }
-
-
-        /* ==================================================
-           布局按钮点击事件
-        ================================================== */
-
-        if (layoutButton) {
-
-            layoutButton.addEventListener(
-                "click",
-                function () {
-
-                    /* ======================================
-                       优先调用布局模块
-                    ====================================== */
-
-                    if (
-                        typeof toggleLayoutDirection ===
-                        "function"
-                    ) {
-
-                        toggleLayoutDirection();
-
-                        updateLayoutButtonText();
-
-                        return;
-
-                    }
-
-
-                    /* ======================================
-                       如果布局函数没有加载
-                    ====================================== */
-
-                    console.error(
-                        "全书：toggleLayoutDirection 未加载"
-                    );
-
-                }
-            );
-
-        }
-
-
-        /* ==================================================
            将书名滚动到可视区域中央
         ================================================== */
 
@@ -446,8 +340,6 @@
             "load",
             function () {
 
-                updateLayoutButtonText();
-
                 centerBookOnEnter();
 
             }
@@ -464,8 +356,6 @@
 
                 setTimeout(
                     function () {
-
-                        updateLayoutButtonText();
 
                         centerBookOnEnter();
 
@@ -487,8 +377,6 @@
 
                 setTimeout(
                     function () {
-
-                        updateLayoutButtonText();
 
                         centerBookOnEnter();
 
