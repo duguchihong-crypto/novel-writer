@@ -25,32 +25,15 @@ const layoutButton =
 ====================================================== */
 
 let currentLayout =
-    localStorage.getItem("bookLayout") ||
-    "vertical";
-
-
-/* ======================================================
-   防止异常布局值
-====================================================== */
+    localStorage.getItem("bookLayout");
 
 if (
     currentLayout !== "vertical" &&
     currentLayout !== "horizontal"
 ) {
 
-    currentLayout = "vertical";
-
-}
-
-
-/* ======================================================
-   显示书名
-====================================================== */
-
-if (bookTitle) {
-
-    bookTitle.textContent =
-        currentBook?.title || "新书";
+    currentLayout =
+        "vertical";
 
 }
 
@@ -64,7 +47,6 @@ function updateLayoutButton() {
     if (!layoutButton) {
         return;
     }
-
 
     if (
         currentLayout === "horizontal"
@@ -84,52 +66,76 @@ function updateLayoutButton() {
 
 
 /* ======================================================
-   执行当前布局
+   执行纵向布局
+====================================================== */
+
+function runVerticalLayout() {
+
+    if (
+        typeof updateVerticalLayout !==
+        "function"
+    ) {
+
+        return;
+
+    }
+
+    try {
+
+        updateVerticalLayout();
+
+    } catch (error) {
+
+        console.error(
+            "纵向布局错误：",
+            error
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   执行横向布局
+====================================================== */
+
+function runHorizontalLayout() {
+
+    if (
+        typeof updateHorizontalLayout !==
+        "function"
+    ) {
+
+        return;
+
+    }
+
+    try {
+
+        updateHorizontalLayout();
+
+    } catch (error) {
+
+        console.error(
+            "横向布局错误：",
+            error
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   应用当前布局
 ====================================================== */
 
 function applyCurrentLayout() {
 
 
     /* ==================================================
-       纵向布局
-    ================================================== */
-
-    if (
-        currentLayout === "vertical"
-    ) {
-
-        if (
-            typeof updateVerticalLayout ===
-            "function"
-        ) {
-
-            updateVerticalLayout();
-
-        }
-
-    }
-
-
-    /* ==================================================
-       横向布局
-    ================================================== */
-
-    else {
-
-        if (
-            typeof updateHorizontalLayout ===
-            "function"
-        ) {
-
-            updateHorizontalLayout();
-
-        }
-
-    }
-
-
-    /* ==================================================
-       保存当前布局
+       先保存
     ================================================== */
 
     localStorage.setItem(
@@ -139,52 +145,27 @@ function applyCurrentLayout() {
 
 
     /* ==================================================
-       更新按钮文字
+       更新按钮
     ================================================== */
 
     updateLayoutButton();
-
-}
-
-
-/* ======================================================
-   切换布局
-====================================================== */
-
-function toggleLayout() {
-
-
-    /* ==================================================
-       纵向 → 横向
-    ================================================== */
-
-    if (
-        currentLayout === "vertical"
-    ) {
-
-        currentLayout =
-            "horizontal";
-
-    }
-
-
-    /* ==================================================
-       横向 → 纵向
-    ================================================== */
-
-    else {
-
-        currentLayout =
-            "vertical";
-
-    }
 
 
     /* ==================================================
        执行布局
     ================================================== */
 
-    applyCurrentLayout();
+    if (
+        currentLayout === "vertical"
+    ) {
+
+        runVerticalLayout();
+
+    } else {
+
+        runHorizontalLayout();
+
+    }
 
 
     /* ==================================================
@@ -196,7 +177,18 @@ function toggleLayout() {
         "function"
     ) {
 
-        renderNodes();
+        try {
+
+            renderNodes();
+
+        } catch (error) {
+
+            console.error(
+                "节点渲染错误：",
+                error
+            );
+
+        }
 
     }
 
@@ -210,7 +202,18 @@ function toggleLayout() {
         "function"
     ) {
 
-        refreshConnections();
+        try {
+
+            refreshConnections();
+
+        } catch (error) {
+
+            console.error(
+                "连接线刷新错误：",
+                error
+            );
+
+        }
 
     }
 
@@ -218,11 +221,153 @@ function toggleLayout() {
 
 
 /* ======================================================
-   暴露给 HTML
+   切换布局
+====================================================== */
+
+function toggleLayout() {
+
+
+    /* ==================================================
+       切换方向
+    ================================================== */
+
+    if (
+        currentLayout === "vertical"
+    ) {
+
+        currentLayout =
+            "horizontal";
+
+    } else {
+
+        currentLayout =
+            "vertical";
+
+    }
+
+
+    /* ==================================================
+       立即更新按钮
+    ================================================== */
+
+    updateLayoutButton();
+
+
+    /* ==================================================
+       保存
+    ================================================== */
+
+    localStorage.setItem(
+        "bookLayout",
+        currentLayout
+    );
+
+
+    /* ==================================================
+       执行布局
+    ================================================== */
+
+    if (
+        currentLayout === "vertical"
+    ) {
+
+        runVerticalLayout();
+
+    } else {
+
+        runHorizontalLayout();
+
+    }
+
+
+    /* ==================================================
+       重新绘制节点
+    ================================================== */
+
+    if (
+        typeof renderNodes ===
+        "function"
+    ) {
+
+        try {
+
+            renderNodes();
+
+        } catch (error) {
+
+            console.error(
+                "节点重新绘制错误：",
+                error
+            );
+
+        }
+
+    }
+
+
+    /* ==================================================
+       刷新连接线
+    ================================================== */
+
+    if (
+        typeof refreshConnections ===
+        "function"
+    ) {
+
+        try {
+
+            refreshConnections();
+
+        } catch (error) {
+
+            console.error(
+                "连接线重新绘制错误：",
+                error
+            );
+
+        }
+
+    }
+
+}
+
+
+/* ======================================================
+   暴露布局函数
 ====================================================== */
 
 window.toggleLayout =
     toggleLayout;
+
+
+/* ======================================================
+   书名
+====================================================== */
+
+function updateBookTitle() {
+
+    if (!bookTitle) {
+        return;
+    }
+
+    if (
+        typeof currentBook !==
+        "undefined" &&
+        currentBook
+    ) {
+
+        bookTitle.textContent =
+            currentBook.title ||
+            "新书";
+
+    } else {
+
+        bookTitle.textContent =
+            "新书";
+
+    }
+
+}
 
 
 /* ======================================================
@@ -269,7 +414,6 @@ function toggleActionBar() {
         return;
     }
 
-
     if (
         actionBar.classList.contains(
             "show"
@@ -315,11 +459,6 @@ if (bookTitle) {
 
 if (actionBar) {
 
-
-    /* ==================================================
-       防止点击操作栏关闭操作栏
-    ================================================== */
-
     actionBar.addEventListener(
         "click",
         function (event) {
@@ -329,10 +468,6 @@ if (actionBar) {
         }
     );
 
-
-    /* ==================================================
-       操作按钮
-    ================================================== */
 
     const actionButtons =
         actionBar.querySelectorAll(
@@ -356,25 +491,28 @@ if (actionBar) {
                         button.dataset.action;
 
 
-                    /* ==================================
-                       新增节点
-                    ================================== */
-
                     if (
                         typeof addRootNode ===
                         "function"
                     ) {
 
-                        addRootNode(
-                            action
-                        );
+                        try {
+
+                            addRootNode(
+                                action
+                            );
+
+                        } catch (error) {
+
+                            console.error(
+                                "新增节点错误：",
+                                error
+                            );
+
+                        }
 
                     }
 
-
-                    /* ==================================
-                       关闭操作栏
-                    ================================== */
 
                     hideActionBar();
 
@@ -388,7 +526,7 @@ if (actionBar) {
 
 
 /* ======================================================
-   点击其他区域关闭操作栏
+   点击其他区域
 ====================================================== */
 
 document.addEventListener(
@@ -405,9 +543,12 @@ document.addEventListener(
         ============================================== */
 
         if (
-            event.target === bookTitle ||
-            bookTitle?.contains(
-                event.target
+            bookTitle &&
+            (
+                event.target === bookTitle ||
+                bookTitle.contains(
+                    event.target
+                )
             )
         ) {
 
@@ -437,9 +578,12 @@ document.addEventListener(
         ============================================== */
 
         if (
-            event.target === layoutButton ||
-            layoutButton?.contains(
-                event.target
+            layoutButton &&
+            (
+                event.target === layoutButton ||
+                layoutButton.contains(
+                    event.target
+                )
             )
         ) {
 
@@ -448,10 +592,6 @@ document.addEventListener(
         }
 
 
-        /* ==============================================
-           其他地方
-        ============================================== */
-
         hideActionBar();
 
     }
@@ -459,42 +599,36 @@ document.addEventListener(
 
 
 /* ======================================================
-   初始化布局按钮
+   布局按钮
 ====================================================== */
+
+if (layoutButton) {
+
+    layoutButton.onclick =
+        function (event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            toggleLayout();
+
+        };
+
+}
+
+
+/* ======================================================
+   初始化
+====================================================== */
+
+updateBookTitle();
 
 updateLayoutButton();
 
 
 /* ======================================================
-   初始化布局
+   初始化当前布局
 ====================================================== */
 
 applyCurrentLayout();
-
-
-/* ======================================================
-   初始化节点
-====================================================== */
-
-if (
-    typeof renderNodes ===
-    "function"
-) {
-
-    renderNodes();
-
-}
-
-
-/* ======================================================
-   初始化连接线
-====================================================== */
-
-if (
-    typeof refreshConnections ===
-    "function"
-) {
-
-    refreshConnections();
-
-}
