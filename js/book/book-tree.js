@@ -14,7 +14,15 @@ function addRootNode(type) {
     }
 
 
-    if (!Array.isArray(currentBook.nodes)) {
+    /* ==================================================
+       确保节点数组存在
+    ================================================== */
+
+    if (
+        !Array.isArray(
+            currentBook.nodes
+        )
+    ) {
 
         currentBook.nodes = [];
 
@@ -22,16 +30,21 @@ function addRootNode(type) {
 
 
     /* ==================================================
-       序只能有一个
+       序章只能有一个
     ================================================== */
 
-    if (type === "preface") {
+    if (
+        type === "preface"
+    ) {
 
         const exists =
             currentBook.nodes.some(
                 function (node) {
 
-                    return node.type === "preface";
+                    return (
+                        node.type ===
+                        "preface"
+                    );
 
                 }
             );
@@ -86,18 +99,35 @@ function addRootNode(type) {
 
 
     /* ==================================================
-       重新计算布局
-       
-       布局功能统一交给
-       book-layout.js
+       根据当前布局重新排列
     ================================================== */
 
     if (
-        typeof updateVerticalLayout ===
-        "function"
+        typeof currentLayout !==
+        "undefined" &&
+        currentLayout ===
+        "horizontal"
     ) {
 
-        updateVerticalLayout();
+        if (
+            typeof updateHorizontalLayout ===
+            "function"
+        ) {
+
+            updateHorizontalLayout();
+
+        }
+
+    } else {
+
+        if (
+            typeof updateVerticalLayout ===
+            "function"
+        ) {
+
+            updateVerticalLayout();
+
+        }
 
     }
 
@@ -106,7 +136,14 @@ function addRootNode(type) {
        保存
     ================================================== */
 
-    saveBooks();
+    if (
+        typeof saveBooks ===
+        "function"
+    ) {
+
+        saveBooks();
+
+    }
 
 
     /* ==================================================
@@ -119,6 +156,20 @@ function addRootNode(type) {
     ) {
 
         renderNodes();
+
+    }
+
+
+    /* ==================================================
+       刷新连接线
+    ================================================== */
+
+    if (
+        typeof refreshConnections ===
+        "function"
+    ) {
+
+        refreshConnections();
 
     }
 
@@ -138,42 +189,81 @@ function getNodeTitle(
         nodes.filter(
             function (node) {
 
-                return node.type === type;
+                return (
+                    node.type ===
+                    type
+                );
 
             }
         ).length + 1;
 
 
-    if (type === "preface") {
+    /* ==================================================
+       序章
+    ================================================== */
+
+    if (
+        type === "preface"
+    ) {
 
         return "序章";
 
     }
 
 
-    if (type === "volume") {
+    /* ==================================================
+       卷
+    ================================================== */
 
-        return "第" +
-            toChineseNumber(count) +
-            "卷";
+    if (
+        type === "volume"
+    ) {
+
+        return (
+            "第" +
+            toChineseNumber(
+                count
+            ) +
+            "卷"
+        );
 
     }
 
 
-    if (type === "part") {
+    /* ==================================================
+       篇
+    ================================================== */
 
-        return "第" +
-            toChineseNumber(count) +
-            "篇";
+    if (
+        type === "part"
+    ) {
+
+        return (
+            "第" +
+            toChineseNumber(
+                count
+            ) +
+            "篇"
+        );
 
     }
 
 
-    if (type === "chapter") {
+    /* ==================================================
+       章
+    ================================================== */
 
-        return "第" +
-            toChineseNumber(count) +
-            "章";
+    if (
+        type === "chapter"
+    ) {
+
+        return (
+            "第" +
+            toChineseNumber(
+                count
+            ) +
+            "章"
+        );
 
     }
 
@@ -187,7 +277,9 @@ function getNodeTitle(
    中文数字
 ====================================================== */
 
-function toChineseNumber(number) {
+function toChineseNumber(
+    number
+) {
 
     const numbers = [
 
@@ -210,7 +302,9 @@ function toChineseNumber(number) {
        1～10
     ================================================== */
 
-    if (number <= 10) {
+    if (
+        number <= 10
+    ) {
 
         return numbers[number];
 
@@ -221,10 +315,16 @@ function toChineseNumber(number) {
        11～19
     ================================================== */
 
-    if (number < 20) {
+    if (
+        number < 20
+    ) {
 
-        return "十" +
-            numbers[number - 10];
+        return (
+            "十" +
+            numbers[
+                number - 10
+            ]
+        );
 
     }
 
@@ -233,7 +333,9 @@ function toChineseNumber(number) {
        20～99
     ================================================== */
 
-    if (number < 100) {
+    if (
+        number < 100
+    ) {
 
         const tens =
             Math.floor(
@@ -257,6 +359,12 @@ function toChineseNumber(number) {
     }
 
 
-    return String(number);
+    /* ==================================================
+       100以上
+    ================================================== */
+
+    return String(
+        number
+    );
 
 }
