@@ -792,6 +792,10 @@ function openEditBook(bookId) {
 
 function deleteBook(bookId) {
 
+    /* ==================================================
+       1. 找到书籍
+    ================================================== */
+
     const book =
         getBookById(bookId);
 
@@ -801,10 +805,18 @@ function deleteBook(bookId) {
     }
 
 
+    /* ==================================================
+       2. 获取书名
+    ================================================== */
+
     const title =
         book.title ||
         "未命名小说";
 
+
+    /* ==================================================
+       3. 确认删除
+    ================================================== */
 
     const confirmed =
         window.confirm(
@@ -821,9 +833,12 @@ function deleteBook(bookId) {
     }
 
 
+    /* ==================================================
+       4. 获取书籍位置
+    ================================================== */
+
     const index =
         getBookIndex(bookId);
-
 
     if (index === -1) {
 
@@ -832,7 +847,7 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       1. 从内存中的 books 删除
+       5. 从内存删除
     ================================================== */
 
     books.splice(
@@ -842,17 +857,41 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       2. 立即写入 localStorage
+       6. 保存到 localStorage
     ================================================== */
 
-    localStorage.setItem(
-        "novelBooks",
-        JSON.stringify(books)
-    );
+    try {
+
+        localStorage.setItem(
+            "novelBooks",
+            JSON.stringify(books)
+        );
+
+    } catch (error) {
+
+        /* 保存失败则恢复 */
+
+        books.splice(
+            index,
+            0,
+            book
+        );
+
+        console.error(
+            "删除书籍保存失败：",
+            error
+        );
+
+        alert(
+            "删除失败，请稍后重试。"
+        );
+
+        return;
+    }
 
 
     /* ==================================================
-       3. 删除当前书籍记录
+       7. 删除当前书籍记录
     ================================================== */
 
     const currentBookId =
@@ -873,58 +912,120 @@ function deleteBook(bookId) {
 
 
     /* ==================================================
-       4. 关闭菜单
+       8. 直接找到页面上的书卡
+    ================================================== */
+
+    let deletedCard =
+        null;
+
+
+    if (bookGrid) {
+
+        const cards =
+            bookGrid.querySelectorAll(
+                ".book-card"
+            );
+
+
+        cards.forEach(
+            function(card) {
+
+                if (
+                    String(
+                        card.dataset.bookId
+                    ) ===
+                    String(bookId)
+                ) {
+
+                    deletedCard =
+                        card;
+                }
+
+            }
+        );
+    }
+
+
+    /* ==================================================
+       9. 立即从页面删除书卡
+    ================================================== */
+
+    if (deletedCard) {
+
+        deletedCard.remove();
+    }
+
+
+    /* ==================================================
+       10. 关闭书籍菜单
     ================================================== */
 
     closeBookContextMenu();
 
 
     /* ==================================================
-       5. 清除长按状态
+       11. 清除长按状态
     ================================================== */
 
     cancelLongPress();
 
 
     /* ==================================================
-       6. 立即重新渲染书架
+       12. 如果没有书籍了
     ================================================== */
 
     if (
-        typeof renderBooks ===
-        "function"
+        Array.isArray(books) &&
+        books.length === 0
     ) {
 
-        renderBooks();
+        const emptyShelf =
+            document.getElementById(
+                "emptyShelf"
+            );
+
+        if (emptyShelf) {
+
+            emptyShelf.style.display =
+                "block";
+        }
     }
 
 
     /* ==================================================
-       7. 重新应用当前视图
+       13. 清除选中状态
     ================================================== */
 
     if (
-        typeof applyShelfViewMode ===
-        "function"
+        typeof selectedBookId !==
+        "undefined"
     ) {
 
-        applyShelfViewMode();
+        if (
+            String(selectedBookId) ===
+            String(bookId)
+        ) {
+
+            selectedBookId =
+                null;
+        }
     }
 
 
-    applyViewClass();
-
-
     /* ==================================================
-       8. 刷新排序状态
+       14. 如果删除的是最后一本
     ================================================== */
 
     if (
-        typeof renderSortingMode ===
-        "function"
+        Array.isArray(books) &&
+        books.length === 0
     ) {
 
-        renderSortingMode();
+        if (bookGrid) {
+
+            bookGrid.innerHTML =
+                "";
+        }
     }
 }
 
@@ -1301,8 +1402,6 @@ function contextDeleteBook() {
 
     const bookId =
         longPressBookId;
-
-    closeBookContextMenu();
 
     if (!bookId) {
 
