@@ -26,10 +26,180 @@ const TREE_HORIZONTAL_CENTER_Y = 1500;
 
 
 /* ======================================================
-   纵向自动排列
+   当前布局方向
+====================================================== */
+
+let currentLayoutDirection = "vertical";
+
+
+/* ======================================================
+   读取当前布局方向
+====================================================== */
+
+if (
+    currentBook &&
+    currentBook.layoutDirection === "horizontal"
+) {
+
+    currentLayoutDirection =
+        "horizontal";
+
+} else {
+
+    currentLayoutDirection =
+        "vertical";
+
+}
+
+
+/* ======================================================
+   统一布局入口
+====================================================== */
+
+function updateLayout() {
+
+    if (
+        currentLayoutDirection ===
+        "horizontal"
+    ) {
+
+        updateHorizontalLayout();
+
+        return;
+
+    }
+
+
+    updateVerticalLayoutOnly();
+
+}
+
+
+/* ======================================================
+   兼容旧函数
 ====================================================== */
 
 function updateVerticalLayout() {
+
+    updateLayout();
+
+}
+
+
+/* ======================================================
+   设置布局方向
+====================================================== */
+
+function setLayoutDirection(
+    direction
+) {
+
+    if (
+        direction === "horizontal"
+    ) {
+
+        currentLayoutDirection =
+            "horizontal";
+
+    } else {
+
+        currentLayoutDirection =
+            "vertical";
+
+    }
+
+
+    /* ==================================================
+       保存当前布局方向
+    ================================================== */
+
+    if (currentBook) {
+
+        currentBook.layoutDirection =
+            currentLayoutDirection;
+
+    }
+
+
+    /* ==================================================
+       重新排列
+    ================================================== */
+
+    updateLayout();
+
+
+    /* ==================================================
+       保存
+    ================================================== */
+
+    if (
+        typeof saveBooks ===
+        "function"
+    ) {
+
+        saveBooks();
+
+    }
+
+
+    /* ==================================================
+       重新绘制节点
+    ================================================== */
+
+    if (
+        typeof renderNodes ===
+        "function"
+    ) {
+
+        renderNodes();
+
+    }
+
+}
+
+
+/* ======================================================
+   获取当前布局方向
+====================================================== */
+
+function getLayoutDirection() {
+
+    return currentLayoutDirection;
+
+}
+
+
+/* ======================================================
+   切换布局方向
+====================================================== */
+
+function toggleLayoutDirection() {
+
+    if (
+        currentLayoutDirection ===
+        "vertical"
+    ) {
+
+        setLayoutDirection(
+            "horizontal"
+        );
+
+    } else {
+
+        setLayoutDirection(
+            "vertical"
+        );
+
+    }
+
+}
+
+
+/* ======================================================
+   纵向自动排列
+====================================================== */
+
+function updateVerticalLayoutOnly() {
 
     if (
         !currentBook ||
@@ -100,7 +270,7 @@ function updateVerticalLayout() {
     rootNodes.forEach(
         function (rootNode) {
 
-            layoutChildren(
+            layoutVerticalChildren(
                 rootNode
             );
 
@@ -114,7 +284,9 @@ function updateVerticalLayout() {
    子节点纵向排列
 ====================================================== */
 
-function layoutChildren(parentNode) {
+function layoutVerticalChildren(
+    parentNode
+) {
 
     if (
         !currentBook ||
@@ -181,7 +353,7 @@ function layoutChildren(parentNode) {
     children.forEach(
         function (child) {
 
-            layoutChildren(
+            layoutVerticalChildren(
                 child
             );
 
@@ -319,7 +491,7 @@ function layoutHorizontalChildren(
     ================================================== */
 
     const startY =
-        parentNode.y +
+        parentNode.y -
         (
             (children.length - 1) *
             TREE_SAME_LEVEL_GAP
@@ -334,7 +506,7 @@ function layoutHorizontalChildren(
                 TREE_LEVEL_GAP;
 
             child.y =
-                startY -
+                startY +
                 index *
                 TREE_SAME_LEVEL_GAP;
 
