@@ -19,7 +19,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-base.css?v=50004"
+        href="./css/book-base.css?v=60001"
     >
 
 
@@ -29,7 +29,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-node.css?v=50006"
+        href="./css/book-node.css?v=60001"
     >
 
 
@@ -39,7 +39,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-line.css?v=50004"
+        href="./css/book-line.css?v=60001"
     >
 
 
@@ -49,7 +49,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-layout.css?v=50005"
+        href="./css/book-layout.css?v=60001"
     >
 
 
@@ -59,7 +59,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-action.css?v=50004"
+        href="./css/book-action.css?v=60001"
     >
 
 </head>
@@ -106,17 +106,16 @@
 
         <!-- ==================================================
              布局切换
+             
+             注意：
+             这里不再使用 onclick。
+             由 book-main.js 统一处理。
         ================================================== -->
 
         <button
             id="layoutButton"
             class="top-button"
             type="button"
-            onclick="
-                if (typeof toggleLayout === 'function') {
-                    toggleLayout();
-                }
-            "
         >
             ↕ 纵向
         </button>
@@ -228,7 +227,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-data.js?v=50004"
+        src="./js/book/book-data.js?v=60001"
     ></script>
 
 
@@ -237,7 +236,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-storage.js?v=50004"
+        src="./js/book/book-storage.js?v=60001"
     ></script>
 
 
@@ -246,7 +245,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-tree.js?v=50005"
+        src="./js/book/book-tree.js?v=60001"
     ></script>
 
 
@@ -255,7 +254,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-node.js?v=50004"
+        src="./js/book/book-node.js?v=60001"
     ></script>
 
 
@@ -264,7 +263,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-line.js?v=50004"
+        src="./js/book/book-line.js?v=60001"
     ></script>
 
 
@@ -273,7 +272,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-layout.js?v=50005"
+        src="./js/book/book-layout.js?v=60001"
     ></script>
 
 
@@ -282,7 +281,7 @@
     ================================================== -->
 
     <script
-        src="./js/book/book-main.js?v=50006"
+        src="./js/book/book-main.js?v=60001"
     ></script>
 
 
