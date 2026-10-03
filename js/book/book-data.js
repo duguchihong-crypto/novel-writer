@@ -4,67 +4,101 @@
 
 
 /* ======================================================
-   读取全部书籍
+   全部书籍
 ====================================================== */
 
 let books = [];
 
-try {
-
-    books =
-        JSON.parse(
-            localStorage.getItem("novelBooks") || "[]"
-        );
-
-} catch (error) {
-
-    books = [];
-
-}
-
 
 /* ======================================================
-   确保 books 是数组
+   读取本地书籍
 ====================================================== */
 
-if (!Array.isArray(books)) {
+const savedBooks =
+    localStorage.getItem(
+        "novelBooks"
+    );
 
-    books = [];
+
+if (savedBooks) {
+
+    try {
+
+        const parsedBooks =
+            JSON.parse(
+                savedBooks
+            );
+
+
+        if (
+            Array.isArray(parsedBooks)
+        ) {
+
+            books =
+                parsedBooks;
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "读取小说数据失败：",
+            error
+        );
+
+        books = [];
+
+    }
 
 }
 
 
 /* ======================================================
-   读取当前书籍 ID
+   当前书籍 ID
 ====================================================== */
 
 let currentBookId =
-    localStorage.getItem("currentBookId");
-
-
-/* ======================================================
-   获取当前书籍
-====================================================== */
-
-let currentBook =
-    books.find(
-        book =>
-            String(book.id) ===
-            String(currentBookId)
+    localStorage.getItem(
+        "currentBookId"
     );
 
 
 /* ======================================================
-   如果没有当前书籍
-   → 尝试使用第一本书
+   查找当前书籍
 ====================================================== */
 
-if (!currentBook && books.length > 0) {
+let currentBook =
+    books.find(
+        function (book) {
 
-    currentBook = books[0];
+            return (
+                String(book.id) ===
+                String(currentBookId)
+            );
+
+        }
+    );
+
+
+/* ======================================================
+   没有当前书籍
+   → 使用第一本书
+====================================================== */
+
+if (
+    !currentBook &&
+    books.length > 0
+) {
+
+    currentBook =
+        books[0];
+
 
     currentBookId =
-        String(currentBook.id);
+        String(
+            currentBook.id
+        );
+
 
     localStorage.setItem(
         "currentBookId",
@@ -75,8 +109,8 @@ if (!currentBook && books.length > 0) {
 
 
 /* ======================================================
-   如果连一本书都没有
-   → 创建一本默认书
+   没有任何书籍
+   → 创建默认书籍
 ====================================================== */
 
 if (!currentBook) {
@@ -101,7 +135,9 @@ if (!currentBook) {
 
 
     currentBookId =
-        String(currentBook.id);
+        String(
+            currentBook.id
+        );
 
 
     localStorage.setItem(
@@ -109,33 +145,59 @@ if (!currentBook) {
         currentBookId
     );
 
-
-    localStorage.setItem(
-        "novelBooks",
-        JSON.stringify(books)
-    );
-
 }
 
 
 /* ======================================================
-   确保当前书籍拥有节点数组
+   确保书名存在
 ====================================================== */
 
 if (
-    !Array.isArray(currentBook.nodes)
+    typeof currentBook.title !==
+    "string"
 ) {
 
-    currentBook.nodes = [];
+    currentBook.title =
+        "新书";
 
 }
 
 
 /* ======================================================
-   保存当前书籍
+   确保节点数组存在
+====================================================== */
+
+if (
+    !Array.isArray(
+        currentBook.nodes
+    )
+) {
+
+    currentBook.nodes =
+        [];
+
+}
+
+
+/* ======================================================
+   保存数据
 ====================================================== */
 
 localStorage.setItem(
     "novelBooks",
-    JSON.stringify(books)
+    JSON.stringify(
+        books
+    )
+);
+
+
+/* ======================================================
+   保存当前书籍 ID
+====================================================== */
+
+localStorage.setItem(
+    "currentBookId",
+    String(
+        currentBook.id
+    )
 );
