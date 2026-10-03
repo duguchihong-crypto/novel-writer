@@ -33,21 +33,26 @@ let currentLayoutDirection = "vertical";
 
 
 /* ======================================================
-   读取当前布局方向
+   初始化布局方向
 ====================================================== */
 
-if (
-    currentBook &&
-    currentBook.layoutDirection === "horizontal"
-) {
+function initializeLayoutDirection() {
 
-    currentLayoutDirection =
-        "horizontal";
+    if (
+        typeof currentBook !== "undefined" &&
+        currentBook &&
+        currentBook.layoutDirection === "horizontal"
+    ) {
 
-} else {
+        currentLayoutDirection =
+            "horizontal";
 
-    currentLayoutDirection =
-        "vertical";
+    } else {
+
+        currentLayoutDirection =
+            "vertical";
+
+    }
 
 }
 
@@ -65,12 +70,53 @@ function updateLayout() {
 
         updateHorizontalLayout();
 
-        return;
+    } else {
+
+        updateVerticalLayoutOnly();
 
     }
 
 
-    updateVerticalLayoutOnly();
+    /* ==================================================
+       布局完成后重新绘制
+    ================================================== */
+
+    if (
+        typeof renderNodes ===
+        "function"
+    ) {
+
+        renderNodes();
+
+    }
+
+
+    /* ==================================================
+       更新连接线
+    ================================================== */
+
+    if (
+        typeof drawConnections ===
+        "function"
+    ) {
+
+        drawConnections();
+
+    } else if (
+        typeof updateConnections ===
+        "function"
+    ) {
+
+        updateConnections();
+
+    }
+
+
+    /* ==================================================
+       更新按钮
+    ================================================== */
+
+    updateLayoutButton();
 
 }
 
@@ -95,7 +141,8 @@ function setLayoutDirection(
 ) {
 
     if (
-        direction === "horizontal"
+        direction ===
+        "horizontal"
     ) {
 
         currentLayoutDirection =
@@ -110,10 +157,13 @@ function setLayoutDirection(
 
 
     /* ==================================================
-       保存当前布局方向
+       保存布局方向
     ================================================== */
 
-    if (currentBook) {
+    if (
+        typeof currentBook !== "undefined" &&
+        currentBook
+    ) {
 
         currentBook.layoutDirection =
             currentLayoutDirection;
@@ -122,7 +172,7 @@ function setLayoutDirection(
 
 
     /* ==================================================
-       重新排列
+       执行布局
     ================================================== */
 
     updateLayout();
@@ -141,20 +191,6 @@ function setLayoutDirection(
 
     }
 
-
-    /* ==================================================
-       重新绘制节点
-    ================================================== */
-
-    if (
-        typeof renderNodes ===
-        "function"
-    ) {
-
-        renderNodes();
-
-    }
-
 }
 
 
@@ -165,6 +201,43 @@ function setLayoutDirection(
 function getLayoutDirection() {
 
     return currentLayoutDirection;
+
+}
+
+
+/* ======================================================
+   更新顶部布局按钮
+====================================================== */
+
+function updateLayoutButton() {
+
+    const button =
+        document.getElementById(
+            "layoutButton"
+        );
+
+
+    if (!button) {
+
+        return;
+
+    }
+
+
+    if (
+        currentLayoutDirection ===
+        "horizontal"
+    ) {
+
+        button.textContent =
+            "↔ 横向";
+
+    } else {
+
+        button.textContent =
+            "↕ 纵向";
+
+    }
 
 }
 
@@ -196,12 +269,30 @@ function toggleLayoutDirection() {
 
 
 /* ======================================================
+   暴露给 HTML 按钮
+====================================================== */
+
+window.toggleLayoutDirection =
+    toggleLayoutDirection;
+
+window.setLayoutDirection =
+    setLayoutDirection;
+
+window.getLayoutDirection =
+    getLayoutDirection;
+
+window.updateLayout =
+    updateLayout;
+
+
+/* ======================================================
    纵向自动排列
 ====================================================== */
 
 function updateVerticalLayoutOnly() {
 
     if (
+        typeof currentBook === "undefined" ||
         !currentBook ||
         !Array.isArray(currentBook.nodes)
     ) {
@@ -289,6 +380,7 @@ function layoutVerticalChildren(
 ) {
 
     if (
+        typeof currentBook === "undefined" ||
         !currentBook ||
         !Array.isArray(currentBook.nodes)
     ) {
@@ -311,7 +403,9 @@ function layoutVerticalChildren(
         );
 
 
-    if (children.length === 0) {
+    if (
+        children.length === 0
+    ) {
 
         return;
 
@@ -370,6 +464,7 @@ function layoutVerticalChildren(
 function updateHorizontalLayout() {
 
     if (
+        typeof currentBook === "undefined" ||
         !currentBook ||
         !Array.isArray(currentBook.nodes)
     ) {
@@ -457,6 +552,7 @@ function layoutHorizontalChildren(
 ) {
 
     if (
+        typeof currentBook === "undefined" ||
         !currentBook ||
         !Array.isArray(currentBook.nodes)
     ) {
@@ -479,7 +575,9 @@ function layoutHorizontalChildren(
         );
 
 
-    if (children.length === 0) {
+    if (
+        children.length === 0
+    ) {
 
         return;
 
@@ -529,3 +627,32 @@ function layoutHorizontalChildren(
     );
 
 }
+
+
+/* ======================================================
+   页面加载后初始化
+====================================================== */
+
+if (
+    typeof currentBook !== "undefined"
+) {
+
+    initializeLayoutDirection();
+
+}
+
+
+/* ======================================================
+   页面加载后更新按钮
+====================================================== */
+
+window.addEventListener(
+    "load",
+    function () {
+
+        initializeLayoutDirection();
+
+        updateLayoutButton();
+
+    }
+);
