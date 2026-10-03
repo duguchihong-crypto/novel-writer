@@ -40,13 +40,19 @@ if (
 
 
 /* ======================================================
-   更新布局按钮文字
+   更新布局按钮
 ====================================================== */
 
 function updateLayoutButton() {
 
     if (!layoutButton) {
+
+        console.warn(
+            "找不到 layoutButton"
+        );
+
         return;
+
     }
 
 
@@ -150,6 +156,10 @@ function redrawNodes() {
         "function"
     ) {
 
+        console.warn(
+            "renderNodes 不存在"
+        );
+
         return;
 
     }
@@ -182,6 +192,10 @@ function redrawConnections() {
         "function"
     ) {
 
+        console.warn(
+            "refreshConnections 不存在"
+        );
+
         return;
 
     }
@@ -209,27 +223,14 @@ function redrawConnections() {
 
 function applyCurrentLayout() {
 
-
-    /* ==================================================
-       保存当前方向
-    ================================================== */
-
     localStorage.setItem(
         "bookLayout",
         currentLayout
     );
 
 
-    /* ==================================================
-       更新按钮
-    ================================================== */
-
     updateLayoutButton();
 
-
-    /* ==================================================
-       执行布局
-    ================================================== */
 
     if (
         currentLayout === "horizontal"
@@ -244,16 +245,7 @@ function applyCurrentLayout() {
     }
 
 
-    /* ==================================================
-       重新绘制节点
-    ================================================== */
-
     redrawNodes();
-
-
-    /* ==================================================
-       刷新连接线
-    ================================================== */
 
     redrawConnections();
 
@@ -266,9 +258,13 @@ function applyCurrentLayout() {
 
 function toggleLayout() {
 
+    console.log(
+        "布局按钮被点击"
+    );
+
 
     /* ==================================================
-       切换方向
+       切换
     ================================================== */
 
     if (
@@ -296,8 +292,14 @@ function toggleLayout() {
     );
 
 
+    console.log(
+        "当前布局：",
+        currentLayout
+    );
+
+
     /* ==================================================
-       立即改变按钮文字
+       立即更新按钮
     ================================================== */
 
     updateLayoutButton();
@@ -321,15 +323,10 @@ function toggleLayout() {
 
 
     /* ==================================================
-       重新绘制节点
+       重新绘制
     ================================================== */
 
     redrawNodes();
-
-
-    /* ==================================================
-       刷新连接线
-    ================================================== */
 
     redrawConnections();
 
@@ -351,7 +348,9 @@ window.toggleLayout =
 function updateBookTitle() {
 
     if (!bookTitle) {
+
         return;
+
     }
 
 
@@ -382,7 +381,9 @@ function updateBookTitle() {
 function showActionBar() {
 
     if (!actionBar) {
+
         return;
+
     }
 
 
@@ -400,7 +401,9 @@ function showActionBar() {
 function hideActionBar() {
 
     if (!actionBar) {
+
         return;
+
     }
 
 
@@ -418,7 +421,9 @@ function hideActionBar() {
 function toggleActionBar() {
 
     if (!actionBar) {
+
         return;
+
     }
 
 
@@ -534,7 +539,7 @@ if (actionBar) {
 
 
 /* ======================================================
-   点击其他区域
+   页面其他区域点击
 ====================================================== */
 
 document.addEventListener(
@@ -542,13 +547,11 @@ document.addEventListener(
     function (event) {
 
         if (!actionBar) {
+
             return;
+
         }
 
-
-        /* ==============================================
-           书名
-        ============================================== */
 
         if (
             bookTitle &&
@@ -565,12 +568,7 @@ document.addEventListener(
         }
 
 
-        /* ==============================================
-           操作栏
-        ============================================== */
-
         if (
-            event.target === actionBar ||
             actionBar.contains(
                 event.target
             )
@@ -581,17 +579,10 @@ document.addEventListener(
         }
 
 
-        /* ==============================================
-           布局按钮
-        ============================================== */
-
         if (
             layoutButton &&
-            (
-                event.target === layoutButton ||
-                layoutButton.contains(
-                    event.target
-                )
+            layoutButton.contains(
+                event.target
             )
         ) {
 
