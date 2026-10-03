@@ -16,6 +16,17 @@ const actionBar =
 const tree =
     document.getElementById("tree");
 
+const layoutButton =
+    document.getElementById("layoutButton");
+
+
+/* ======================================================
+   当前布局方向
+====================================================== */
+
+let currentLayout =
+    localStorage.getItem("bookLayout") || "vertical";
+
 
 /* ======================================================
    显示书名
@@ -25,6 +36,150 @@ if (bookTitle) {
 
     bookTitle.textContent =
         currentBook?.title || "新书";
+
+}
+
+
+/* ======================================================
+   更新布局按钮
+====================================================== */
+
+function updateLayoutButton() {
+
+    if (!layoutButton) {
+        return;
+    }
+
+    if (currentLayout === "horizontal") {
+
+        layoutButton.textContent =
+            "→ 横向";
+
+    } else {
+
+        layoutButton.textContent =
+            "↕ 纵向";
+
+    }
+
+}
+
+
+/* ======================================================
+   切换布局方向
+====================================================== */
+
+function toggleLayout() {
+
+    if (
+        currentLayout === "vertical"
+    ) {
+
+        currentLayout =
+            "horizontal";
+
+    } else {
+
+        currentLayout =
+            "vertical";
+
+    }
+
+
+    /* ==================================================
+       保存布局状态
+    ================================================== */
+
+    localStorage.setItem(
+        "bookLayout",
+        currentLayout
+    );
+
+
+    /* ==================================================
+       重新布局
+    ================================================== */
+
+    if (
+        currentLayout === "vertical"
+    ) {
+
+        if (
+            typeof updateVerticalLayout ===
+            "function"
+        ) {
+
+            updateVerticalLayout();
+
+        }
+
+    } else {
+
+        if (
+            typeof updateHorizontalLayout ===
+            "function"
+        ) {
+
+            updateHorizontalLayout();
+
+        }
+
+    }
+
+
+    /* ==================================================
+       重新显示节点
+    ================================================== */
+
+    if (
+        typeof renderNodes ===
+        "function"
+    ) {
+
+        renderNodes();
+
+    }
+
+
+    /* ==================================================
+       更新连接线
+    ================================================== */
+
+    if (
+        typeof refreshConnections ===
+        "function"
+    ) {
+
+        refreshConnections();
+
+    }
+
+
+    /* ==================================================
+       更新按钮
+    ================================================== */
+
+    updateLayoutButton();
+
+}
+
+
+/* ======================================================
+   绑定布局按钮
+====================================================== */
+
+if (layoutButton) {
+
+    layoutButton.onclick =
+        function (event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            toggleLayout();
+
+        };
 
 }
 
@@ -208,12 +363,64 @@ document.onclick = function (event) {
 
 
     /* ==============================================
+       点击布局按钮
+    ============================================== */
+
+    if (
+        event.target === layoutButton ||
+        layoutButton?.contains(event.target)
+    ) {
+
+        return;
+
+    }
+
+
+    /* ==============================================
        点击其他区域
     ============================================== */
 
     hideActionBar();
 
 };
+
+
+/* ======================================================
+   初始化布局按钮
+====================================================== */
+
+updateLayoutButton();
+
+
+/* ======================================================
+   初始化布局
+====================================================== */
+
+if (
+    currentLayout === "vertical"
+) {
+
+    if (
+        typeof updateVerticalLayout ===
+        "function"
+    ) {
+
+        updateVerticalLayout();
+
+    }
+
+} else {
+
+    if (
+        typeof updateHorizontalLayout ===
+        "function"
+    ) {
+
+        updateHorizontalLayout();
+
+    }
+
+}
 
 
 /* ======================================================
