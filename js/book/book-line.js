@@ -15,17 +15,20 @@ const workspace =
 
 
 /* ======================================================
-   连接线展开状态
+   整棵书名树的展开状态
+
+   true  = 展开
+   false = 收起
 ====================================================== */
 
-const connectionStates = {};
+let bookTreeExpanded = true;
 
 
 /* ======================================================
-   连接线固定位置
+   普通节点展开状态
 ====================================================== */
 
-const connectionPositions = {};
+const connectionStates = {};
 
 
 /* ======================================================
@@ -41,47 +44,31 @@ function getSVGPointFromScreen(
         return null;
     }
 
+
     const point =
         connections.createSVGPoint();
 
-    point.x = screenX;
-    point.y = screenY;
+
+    point.x =
+        screenX;
+
+    point.y =
+        screenY;
+
 
     const matrix =
         connections.getScreenCTM();
+
 
     if (!matrix) {
         return null;
     }
 
+
     return point.matrixTransform(
         matrix.inverse()
     );
-}
 
-
-/* ======================================================
-   获取元素中心
-====================================================== */
-
-function getElementCenter(element) {
-
-    if (!element) {
-        return null;
-    }
-
-    const rect =
-        element.getBoundingClientRect();
-
-    return getSVGPointFromScreen(
-
-        rect.left +
-        rect.width / 2,
-
-        rect.top +
-        rect.height / 2
-
-    );
 }
 
 
@@ -89,14 +76,18 @@ function getElementCenter(element) {
    获取元素边界
 ====================================================== */
 
-function getElementBounds(element) {
+function getElementBounds(
+    element
+) {
 
     if (!element) {
         return null;
     }
 
+
     const rect =
         element.getBoundingClientRect();
+
 
     const topLeft =
         getSVGPointFromScreen(
@@ -104,11 +95,13 @@ function getElementBounds(element) {
             rect.top
         );
 
+
     const bottomRight =
         getSVGPointFromScreen(
             rect.right,
             rect.bottom
         );
+
 
     if (
         !topLeft ||
@@ -117,15 +110,20 @@ function getElementBounds(element) {
         return null;
     }
 
+
     return {
 
-        left: topLeft.x,
+        left:
+            topLeft.x,
 
-        right: bottomRight.x,
+        right:
+            bottomRight.x,
 
-        top: topLeft.y,
+        top:
+            topLeft.y,
 
-        bottom: bottomRight.y,
+        bottom:
+            bottomRight.y,
 
         centerX:
             (
@@ -159,11 +157,13 @@ function createLine(
         return;
     }
 
+
     const line =
         document.createElementNS(
             "http://www.w3.org/2000/svg",
             "line"
         );
+
 
     line.setAttribute(
         "x1",
@@ -185,6 +185,7 @@ function createLine(
         y2
     );
 
+
     line.setAttribute(
         "stroke",
         "#888888"
@@ -200,8 +201,10 @@ function createLine(
         "round"
     );
 
+
     line.style.pointerEvents =
         "none";
+
 
     connections.appendChild(
         line
@@ -211,19 +214,21 @@ function createLine(
 
 
 /* ======================================================
-   创建展开 / 收起按钮
+   创建 + / - 按钮
 ====================================================== */
 
 function createToggleButton(
-    nodeId,
+    stateKey,
     x,
     y,
-    isExpanded
+    isExpanded,
+    onToggle
 ) {
 
     if (!connections) {
         return;
     }
+
 
     /* ==================================================
        点击区域
@@ -234,6 +239,7 @@ function createToggleButton(
             "http://www.w3.org/2000/svg",
             "circle"
         );
+
 
     hitArea.setAttribute(
         "cx",
@@ -247,7 +253,7 @@ function createToggleButton(
 
     hitArea.setAttribute(
         "r",
-        "22"
+        "24"
     );
 
     hitArea.setAttribute(
@@ -265,16 +271,13 @@ function createToggleButton(
         "all"
     );
 
+
     hitArea.style.pointerEvents =
         "all";
 
     hitArea.style.cursor =
         "pointer";
 
-
-    /* ==================================================
-       点击
-    ================================================== */
 
     hitArea.addEventListener(
         "click",
@@ -285,38 +288,14 @@ function createToggleButton(
             event.stopPropagation();
 
 
-            connectionStates[nodeId] =
-                !isExpanded;
+            if (
+                typeof onToggle ===
+                "function"
+            ) {
 
-
-            const nodeElement =
-                document.querySelector(
-                    '.node[data-id="' +
-                    nodeId +
-                    '"]'
-                );
-
-
-            if (nodeElement) {
-
-                if (
-                    connectionStates[nodeId]
-                ) {
-
-                    nodeElement.style.display =
-                        "flex";
-
-                } else {
-
-                    nodeElement.style.display =
-                        "none";
-
-                }
+                onToggle();
 
             }
-
-
-            refreshConnections();
 
         }
     );
@@ -328,7 +307,7 @@ function createToggleButton(
 
 
     /* ==================================================
-       背景圆
+       白色圆
     ================================================== */
 
     const circle =
@@ -336,6 +315,7 @@ function createToggleButton(
             "http://www.w3.org/2000/svg",
             "circle"
         );
+
 
     circle.setAttribute(
         "cx",
@@ -367,8 +347,10 @@ function createToggleButton(
         "2"
     );
 
+
     circle.style.pointerEvents =
         "none";
+
 
     connections.appendChild(
         circle
@@ -377,7 +359,6 @@ function createToggleButton(
 
     /* ==================================================
        横线
-       +
        -
     ================================================== */
 
@@ -386,6 +367,7 @@ function createToggleButton(
             "http://www.w3.org/2000/svg",
             "line"
         );
+
 
     horizontal.setAttribute(
         "x1",
@@ -422,8 +404,10 @@ function createToggleButton(
         "round"
     );
 
+
     horizontal.style.pointerEvents =
         "none";
+
 
     connections.appendChild(
         horizontal
@@ -441,6 +425,7 @@ function createToggleButton(
                 "http://www.w3.org/2000/svg",
                 "line"
             );
+
 
         vertical.setAttribute(
             "x1",
@@ -462,6 +447,7 @@ function createToggleButton(
             y + 6
         );
 
+
         vertical.setAttribute(
             "stroke",
             "#222222"
@@ -477,8 +463,10 @@ function createToggleButton(
             "round"
         );
 
+
         vertical.style.pointerEvents =
             "none";
+
 
         connections.appendChild(
             vertical
@@ -490,10 +478,12 @@ function createToggleButton(
 
 
 /* ======================================================
-   获取节点
+   获取节点元素
 ====================================================== */
 
-function getNodeElement(nodeId) {
+function getNodeElement(
+    nodeId
+) {
 
     return document.querySelector(
         '.node[data-id="' +
@@ -508,20 +498,29 @@ function getNodeElement(nodeId) {
    获取子节点
 ====================================================== */
 
-function getChildren(parentId) {
+function getChildren(
+    parentId
+) {
 
     if (
         !currentBook ||
-        !Array.isArray(currentBook.nodes)
+        !Array.isArray(
+            currentBook.nodes
+        )
     ) {
+
         return [];
+
     }
+
 
     return currentBook.nodes.filter(
         function (node) {
 
-            return String(node.parentId) ===
-                String(parentId);
+            return (
+                String(node.parentId) ===
+                String(parentId)
+            );
 
         }
     );
@@ -530,10 +529,479 @@ function getChildren(parentId) {
 
 
 /* ======================================================
-   绘制一个父节点的树状分支
+   获取根节点
 ====================================================== */
 
-function renderBranch(
+function getRootNodes() {
+
+    if (
+        !currentBook ||
+        !Array.isArray(
+            currentBook.nodes
+        )
+    ) {
+
+        return [];
+
+    }
+
+
+    return currentBook.nodes.filter(
+        function (node) {
+
+            return (
+                node.parentId === null ||
+                node.parentId === undefined
+            );
+
+        }
+    );
+
+}
+
+
+/* ======================================================
+   书名树：纵向
+
+   第一卷固定在书名正下方
+
+   新卷向左增加：
+
+           书名
+            │
+   第三卷 ─ 第二卷 ─ 第一卷
+====================================================== */
+
+function renderBookTreeVertical(
+    bookElement,
+    rootNodes
+) {
+
+    if (
+        !bookElement ||
+        rootNodes.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    if (!bookTreeExpanded) {
+
+        return;
+
+    }
+
+
+    const bookBounds =
+        getElementBounds(
+            bookElement
+        );
+
+
+    if (!bookBounds) {
+        return;
+    }
+
+
+    /* ==================================================
+       第一卷 / 最右边根节点
+    ================================================== */
+
+    const firstRoot =
+        rootNodes[0];
+
+
+    const firstElement =
+        getNodeElement(
+            firstRoot.id
+        );
+
+
+    if (!firstElement) {
+        return;
+    }
+
+
+    const firstBounds =
+        getElementBounds(
+            firstElement
+        );
+
+
+    if (!firstBounds) {
+        return;
+    }
+
+
+    /* ==================================================
+       书名 → 第一卷
+
+       书名永远只连接第一卷
+    ================================================== */
+
+    createLine(
+
+        bookBounds.centerX,
+
+        bookBounds.bottom,
+
+        firstBounds.centerX,
+
+        firstBounds.top
+
+    );
+
+
+    /* ==================================================
+       后续根节点
+
+       向左连接
+    ================================================== */
+
+    for (
+        let index = 1;
+        index < rootNodes.length;
+        index++
+    ) {
+
+        const currentRoot =
+            rootNodes[index];
+
+
+        const previousRoot =
+            rootNodes[index - 1];
+
+
+        const currentElement =
+            getNodeElement(
+                currentRoot.id
+            );
+
+
+        const previousElement =
+            getNodeElement(
+                previousRoot.id
+            );
+
+
+        if (
+            !currentElement ||
+            !previousElement
+        ) {
+
+            continue;
+
+        }
+
+
+        const currentBounds =
+            getElementBounds(
+                currentElement
+            );
+
+
+        const previousBounds =
+            getElementBounds(
+                previousElement
+            );
+
+
+        if (
+            !currentBounds ||
+            !previousBounds
+        ) {
+
+            continue;
+
+        }
+
+
+        /* ==============================================
+           第一卷 ← 第二卷 ← 第三卷
+        ============================================== */
+
+        createLine(
+
+            currentBounds.right,
+
+            currentBounds.centerY,
+
+            previousBounds.left,
+
+            previousBounds.centerY
+
+        );
+
+    }
+
+
+    /* ==================================================
+       整棵书名树唯一的 + / -
+       
+       放在书名 → 第一卷的连接线上
+    ================================================== */
+
+    const toggleX =
+        (
+            bookBounds.centerX +
+            firstBounds.centerX
+        ) / 2;
+
+
+    const toggleY =
+        (
+            bookBounds.bottom +
+            firstBounds.top
+        ) / 2;
+
+
+    createToggleButton(
+
+        "book-tree",
+
+        toggleX,
+
+        toggleY,
+
+        bookTreeExpanded,
+
+        function () {
+
+            bookTreeExpanded =
+                !bookTreeExpanded;
+
+
+            refreshConnections();
+
+        }
+
+    );
+
+}
+
+
+/* ======================================================
+   书名树：横向
+
+   第一卷固定在书名正右方
+
+   新卷向下增加：
+
+        书名 → 第一卷
+                    │
+                    ↓
+                 第二卷
+                    │
+                    ↓
+                 第三卷
+
+   注意：
+   用户要求横向时同级节点上下排列。
+====================================================== */
+
+function renderBookTreeHorizontal(
+    bookElement,
+    rootNodes
+) {
+
+    if (
+        !bookElement ||
+        rootNodes.length === 0
+    ) {
+
+        return;
+
+    }
+
+
+    if (!bookTreeExpanded) {
+
+        return;
+
+    }
+
+
+    const bookBounds =
+        getElementBounds(
+            bookElement
+        );
+
+
+    if (!bookBounds) {
+        return;
+    }
+
+
+    const firstRoot =
+        rootNodes[0];
+
+
+    const firstElement =
+        getNodeElement(
+            firstRoot.id
+        );
+
+
+    if (!firstElement) {
+        return;
+    }
+
+
+    const firstBounds =
+        getElementBounds(
+            firstElement
+        );
+
+
+    if (!firstBounds) {
+        return;
+    }
+
+
+    /* ==================================================
+       书名 → 第一卷
+    ================================================== */
+
+    createLine(
+
+        bookBounds.right,
+
+        bookBounds.centerY,
+
+        firstBounds.left,
+
+        firstBounds.centerY
+
+    );
+
+
+    /* ==================================================
+       后续根节点向下
+    ================================================== */
+
+    for (
+        let index = 1;
+        index < rootNodes.length;
+        index++
+    ) {
+
+        const currentRoot =
+            rootNodes[index];
+
+
+        const previousRoot =
+            rootNodes[index - 1];
+
+
+        const currentElement =
+            getNodeElement(
+                currentRoot.id
+            );
+
+
+        const previousElement =
+            getNodeElement(
+                previousRoot.id
+            );
+
+
+        if (
+            !currentElement ||
+            !previousElement
+        ) {
+
+            continue;
+
+        }
+
+
+        const currentBounds =
+            getElementBounds(
+                currentElement
+            );
+
+
+        const previousBounds =
+            getElementBounds(
+                previousElement
+            );
+
+
+        if (
+            !currentBounds ||
+            !previousBounds
+        ) {
+
+            continue;
+
+        }
+
+
+        createLine(
+
+            previousBounds.centerX,
+
+            previousBounds.bottom,
+
+            currentBounds.centerX,
+
+            currentBounds.top
+
+        );
+
+    }
+
+
+    /* ==================================================
+       唯一 + / -
+    ================================================== */
+
+    const toggleX =
+        (
+            bookBounds.right +
+            firstBounds.left
+        ) / 2;
+
+
+    const toggleY =
+        (
+            bookBounds.centerY +
+            firstBounds.centerY
+        ) / 2;
+
+
+    createToggleButton(
+
+        "book-tree",
+
+        toggleX,
+
+        toggleY,
+
+        bookTreeExpanded,
+
+        function () {
+
+            bookTreeExpanded =
+                !bookTreeExpanded;
+
+
+            refreshConnections();
+
+        }
+
+    );
+
+}
+
+
+/* ======================================================
+   普通节点树
+====================================================== */
+
+function renderNormalBranch(
     parentElement,
     children
 ) {
@@ -543,289 +1011,66 @@ function renderBranch(
         !children ||
         children.length === 0
     ) {
+
         return;
+
     }
 
-
-    /* ==================================================
-       父节点位置
-    ================================================== */
 
     const parentBounds =
         getElementBounds(
             parentElement
         );
 
+
     if (!parentBounds) {
         return;
     }
 
 
-    /* ==================================================
-       获取所有子节点位置
-    ================================================== */
-
-    const childData = [];
-
-
     children.forEach(
         function (child) {
 
-            const nodeId =
-                String(child.id);
-
-            const element =
+            const childElement =
                 getNodeElement(
-                    nodeId
+                    child.id
                 );
 
 
-            /* ==========================================
-               第一次默认展开
-            ========================================== */
-
-            if (
-                connectionStates[nodeId] ===
-                undefined
-            ) {
-
-                connectionStates[nodeId] =
-                    true;
-
-            }
-
-
-            const isExpanded =
-                connectionStates[nodeId];
-
-
-            const bounds =
-                element
-                    ? getElementBounds(
-                        element
-                    )
-                    : null;
-
-
-            /* ==========================================
-               可见节点
-            ========================================== */
-
-            if (bounds) {
-
-                childData.push({
-
-                    node: child,
-
-                    element: element,
-
-                    bounds: bounds,
-
-                    visible: true,
-
-                    expanded: isExpanded
-
-                });
-
+            if (!childElement) {
                 return;
-
             }
 
 
-            /* ==========================================
-               隐藏节点
-
-               使用之前保存的位置
-            ========================================== */
-
-            const saved =
-                connectionPositions[
-                    nodeId
-                ];
+            const childBounds =
+                getElementBounds(
+                    childElement
+                );
 
 
-            if (saved) {
-
-                childData.push({
-
-                    node: child,
-
-                    element: null,
-
-                    bounds: {
-
-                        left:
-                            saved.endX,
-
-                        right:
-                            saved.endX,
-
-                        top:
-                            saved.endY,
-
-                        bottom:
-                            saved.endY,
-
-                        centerX:
-                            saved.endX,
-
-                        centerY:
-                            saved.endY
-
-                    },
-
-                    visible: false,
-
-                    expanded: false
-
-                });
-
+            if (!childBounds) {
+                return;
             }
 
-        }
-    );
+
+            const isHorizontal =
+                typeof currentLayout !==
+                "undefined" &&
+                currentLayout ===
+                "horizontal";
 
 
-    if (childData.length === 0) {
-        return;
-    }
-
-
-    /* ==================================================
-       子节点横向位置
-    ================================================== */
-
-    const childXs =
-        childData.map(
-            function (item) {
-
-                return item.bounds.centerX;
-
-            }
-        );
-
-
-    const minX =
-        Math.min.apply(
-            null,
-            childXs
-        );
-
-    const maxX =
-        Math.max.apply(
-            null,
-            childXs
-        );
-
-
-    /* ==================================================
-       分支横线高度
-
-       父节点下面留出空间
-    ================================================== */
-
-    const branchY =
-        parentBounds.bottom + 70;
-
-
-    /* ==================================================
-       父节点 → 横向分支中心
-    ================================================== */
-
-    const centerX =
-        (
-            minX +
-            maxX
-        ) / 2;
-
-
-    createLine(
-
-        parentBounds.centerX,
-
-        parentBounds.bottom,
-
-        parentBounds.centerX,
-
-        branchY
-
-    );
-
-
-    /* ==================================================
-       横向分支线
-    ================================================== */
-
-    if (childData.length > 1) {
-
-        createLine(
-
-            minX,
-
-            branchY,
-
-            maxX,
-
-            branchY
-
-        );
-
-    }
-
-
-    /* ==================================================
-       每个子节点的竖线
-    ================================================== */
-
-    childData.forEach(
-        function (item) {
-
-            const node =
-                item.node;
-
-            const nodeId =
-                String(node.id);
-
-            const bounds =
-                item.bounds;
-
-            const childX =
-                bounds.centerX;
-
-
-            /* ==========================================
-               横线 → 子节点
-            ========================================== */
-
-            const childTop =
-                item.visible
-                    ? bounds.top
-                    : branchY;
-
-
-            if (
-                Math.abs(
-                    childX -
-                    centerX
-                ) < 0.5 &&
-                childData.length === 1
-            ) {
-
-                /* ======================================
-                   只有一个子节点
-
-                   直接连接
-                ====================================== */
+            if (isHorizontal) {
 
                 createLine(
 
-                    parentBounds.centerX,
+                    parentBounds.right,
 
-                    parentBounds.bottom,
+                    parentBounds.centerY,
 
-                    childX,
+                    childBounds.left,
 
-                    childTop
+                    childBounds.centerY
 
                 );
 
@@ -833,13 +1078,13 @@ function renderBranch(
 
                 createLine(
 
-                    childX,
+                    parentBounds.centerX,
 
-                    branchY,
+                    parentBounds.bottom,
 
-                    childX,
+                    childBounds.centerX,
 
-                    childTop
+                    childBounds.top
 
                 );
 
@@ -847,91 +1092,28 @@ function renderBranch(
 
 
             /* ==========================================
-               保存连接位置
+               继续子树
             ========================================== */
-
-            const toggleY =
-                branchY +
-                (
-                    childTop -
-                    branchY
-                ) / 2;
-
-
-            connectionPositions[nodeId] = {
-
-                startX:
-                    parentBounds.centerX,
-
-                startY:
-                    parentBounds.bottom,
-
-                middleX:
-                    childX,
-
-                middleY:
-                    toggleY,
-
-                endX:
-                    childX,
-
-                endY:
-                    childTop
-
-            };
-
-
-            /* ==========================================
-               显示 +/- 
-            ========================================== */
-
-            createToggleButton(
-
-                nodeId,
-
-                childX,
-
-                toggleY,
-
-                item.expanded
-
-            );
-
-        }
-    );
-
-
-    /* ==================================================
-       递归绘制子节点
-    ================================================== */
-
-    childData.forEach(
-        function (item) {
-
-            if (!item.visible) {
-                return;
-            }
 
             const childrenOfChild =
                 getChildren(
-                    item.node.id
+                    child.id
                 );
 
 
             if (
-                childrenOfChild.length === 0
+                childrenOfChild.length > 0
             ) {
-                return;
+
+                renderNormalBranch(
+
+                    childElement,
+
+                    childrenOfChild
+
+                );
+
             }
-
-
-            renderBranch(
-
-                item.element,
-
-                childrenOfChild
-
-            );
 
         }
     );
@@ -949,6 +1131,7 @@ function clearConnections() {
         return;
     }
 
+
     connections.innerHTML = "";
 
 }
@@ -965,7 +1148,9 @@ function renderConnections() {
         !workspace ||
         !currentBook
     ) {
+
         return;
+
     }
 
 
@@ -973,7 +1158,7 @@ function renderConnections() {
 
 
     /* ==================================================
-       SVG 尺寸
+       SVG
     ================================================== */
 
     connections.setAttribute(
@@ -981,10 +1166,12 @@ function renderConnections() {
         "3000"
     );
 
+
     connections.setAttribute(
         "height",
         "3000"
     );
+
 
     connections.setAttribute(
         "viewBox",
@@ -1012,35 +1199,97 @@ function renderConnections() {
     ================================================== */
 
     const rootNodes =
-        currentBook.nodes.filter(
-            function (node) {
-
-                return (
-                    node.parentId === null ||
-                    node.parentId === undefined
-                );
-
-            }
-        );
+        getRootNodes();
 
 
-    if (rootNodes.length === 0) {
+    if (
+        rootNodes.length === 0
+    ) {
+
         return;
+
     }
 
 
     /* ==================================================
-       书名 → 根节点
-
-       使用统一树状分支
+       书名树
     ================================================== */
 
-    renderBranch(
+    if (
+        typeof currentLayout !==
+        "undefined" &&
+        currentLayout ===
+        "horizontal"
+    ) {
 
-        bookElement,
+        renderBookTreeHorizontal(
 
-        rootNodes
+            bookElement,
 
+            rootNodes
+
+        );
+
+    } else {
+
+        renderBookTreeVertical(
+
+            bookElement,
+
+            rootNodes
+
+        );
+
+    }
+
+
+    /* ==================================================
+       书名树下面的普通子树
+    ================================================== */
+
+    if (!bookTreeExpanded) {
+        return;
+    }
+
+
+    rootNodes.forEach(
+        function (rootNode) {
+
+            const rootElement =
+                getNodeElement(
+                    rootNode.id
+                );
+
+
+            if (!rootElement) {
+                return;
+            }
+
+
+            const children =
+                getChildren(
+                    rootNode.id
+                );
+
+
+            if (
+                children.length === 0
+            ) {
+
+                return;
+
+            }
+
+
+            renderNormalBranch(
+
+                rootElement,
+
+                children
+
+            );
+
+        }
     );
 
 }
