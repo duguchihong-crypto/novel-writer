@@ -19,7 +19,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-base.css?v=60001"
+        href="./css/book-base.css?v=60002"
     >
 
 
@@ -29,7 +29,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-node.css?v=60001"
+        href="./css/book-node.css?v=60002"
     >
 
 
@@ -39,7 +39,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-line.css?v=60001"
+        href="./css/book-line.css?v=60002"
     >
 
 
@@ -49,7 +49,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-layout.css?v=70001"
+        href="./css/book-layout.css?v=70002"
     >
 
 
@@ -59,7 +59,7 @@
 
     <link
         rel="stylesheet"
-        href="./css/book-action.css?v=60001"
+        href="./css/book-action.css?v=60002"
     >
 
 </head>
@@ -79,14 +79,13 @@
 
 
         <!-- ==================================================
-             返回
+             返回书架
         ================================================== -->
 
         <button
             id="backButton"
             class="top-button"
             type="button"
-            onclick="window.location.href='./index.html';"
         >
             ← 返回
         </button>
@@ -105,36 +104,19 @@
 
 
         <!-- ==================================================
-             布局测试按钮
+             布局切换
         ================================================== -->
 
         <button
             id="layoutButton"
             class="top-button"
             type="button"
-            style="
-                position: fixed;
-                top: 8px;
-                right: 8px;
-                z-index: 9999999;
-                width: 120px;
-                height: 40px;
-                background: blue;
-                color: white;
-                border: 2px solid white;
-                border-radius: 9px;
-                display: block;
-                pointer-events: auto;
-            "
-            onclick="
-                document.body.style.background = 'yellow';
-                alert('按钮真的被点击了');
-            "
         >
-            测试按钮
+            ↕ 纵向
         </button>
 
     </header>
+
 
 
     <!-- ==================================================
@@ -153,13 +135,14 @@
 
 
             <!-- ==================================================
-                 连接线
+                 SVG 连接线
             ================================================== -->
 
             <svg
                 id="connections"
                 class="connections"
             ></svg>
+
 
 
             <!-- ==================================================
@@ -174,6 +157,7 @@
             </div>
 
 
+
             <!-- ==================================================
                  书名操作栏
             ================================================== -->
@@ -182,6 +166,9 @@
                 id="actionBar"
                 class="action-bar"
             >
+
+
+                <!-- 序 -->
 
                 <button
                     type="button"
@@ -192,6 +179,8 @@
                 </button>
 
 
+                <!-- 章 -->
+
                 <button
                     type="button"
                     class="action-chapter"
@@ -201,6 +190,8 @@
                 </button>
 
 
+                <!-- 篇 -->
+
                 <button
                     type="button"
                     class="action-part"
@@ -209,6 +200,8 @@
                     ＋篇
                 </button>
 
+
+                <!-- 卷 -->
 
                 <button
                     type="button"
@@ -221,8 +214,9 @@
             </div>
 
 
+
             <!-- ==================================================
-                 节点树
+                 树
             ================================================== -->
 
             <div
@@ -235,67 +229,75 @@
     </main>
 
 
+
     <!-- ==================================================
-         数据模块
+         全书数据
     ================================================== -->
 
     <script
-        src="./js/book/book-data.js?v=60001"
+        src="./js/book/book-data.js?v=60002"
     ></script>
+
 
 
     <!-- ==================================================
-         存储模块
+         全书存储
     ================================================== -->
 
     <script
-        src="./js/book/book-storage.js?v=60001"
+        src="./js/book/book-storage.js?v=60002"
     ></script>
+
 
 
     <!-- ==================================================
-         树结构模块
+         树结构
     ================================================== -->
 
     <script
-        src="./js/book/book-tree.js?v=60001"
+        src="./js/book/book-tree.js?v=60002"
     ></script>
+
 
 
     <!-- ==================================================
-         节点模块
+         节点
     ================================================== -->
 
     <script
-        src="./js/book/book-node.js?v=60001"
+        src="./js/book/book-node.js?v=60002"
     ></script>
+
 
 
     <!-- ==================================================
-         连接线模块
+         连接线
     ================================================== -->
 
     <script
-        src="./js/book/book-line.js?v=60001"
+        src="./js/book/book-line.js?v=60002"
     ></script>
+
 
 
     <!-- ==================================================
-         布局模块
+         布局
     ================================================== -->
 
     <script
-        src="./js/book/book-layout.js?v=70001"
+        src="./js/book/book-layout.js?v=70002"
     ></script>
+
 
 
     <!-- ==================================================
-         主程序模块
+         主程序
     ================================================== -->
 
     <script
-        src="./js/book/book-main.js?v=90002"
+        src="./js/book/book-main.js?v=90003"
     ></script>
+
 
 
     <!-- ==================================================
@@ -318,8 +320,38 @@
         }
 
 
+
         /* ==================================================
-           将书名滚动到可视区域中央
+           返回书架
+        ================================================== */
+
+        const backButton =
+            document.getElementById(
+                "backButton"
+            );
+
+
+        if (backButton) {
+
+            backButton.addEventListener(
+                "click",
+                function (event) {
+
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    window.location.href =
+                        "./index.html";
+
+                }
+            );
+
+        }
+
+
+
+        /* ==================================================
+           居中书名
         ================================================== */
 
         function centerBookOnEnter() {
@@ -350,8 +382,9 @@
         }
 
 
+
         /* ==================================================
-           页面加载完成
+           页面加载
         ================================================== */
 
         window.addEventListener(
@@ -362,6 +395,7 @@
 
             }
         );
+
 
 
         /* ==================================================
@@ -383,6 +417,7 @@
 
             }
         );
+
 
 
         /* ==================================================
