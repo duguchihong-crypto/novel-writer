@@ -10,8 +10,10 @@
 const bookTitle =
     document.getElementById("bookTitle");
 
+
 const actionBar =
     document.getElementById("actionBar");
+
 
 const layoutButton =
     document.getElementById("layoutButton");
@@ -67,103 +69,101 @@ function updateLayoutButton() {
 
 
 /* ======================================================
-   执行纵向布局
-====================================================== */
-
-function runVerticalLayout() {
-
-    if (
-        typeof updateVerticalLayout !==
-        "function"
-    ) {
-
-        return;
-
-    }
-
-
-    updateVerticalLayout();
-
-}
-
-
-/* ======================================================
-   执行横向布局
-====================================================== */
-
-function runHorizontalLayout() {
-
-    if (
-        typeof updateHorizontalLayout !==
-        "function"
-    ) {
-
-        return;
-
-    }
-
-
-    updateHorizontalLayout();
-
-}
-
-
-/* ======================================================
-   重新绘制节点
-====================================================== */
-
-function redrawNodes() {
-
-    if (
-        typeof renderNodes !==
-        "function"
-    ) {
-
-        return;
-
-    }
-
-
-    renderNodes();
-
-}
-
-
-/* ======================================================
-   重新绘制连接线
-====================================================== */
-
-function redrawConnections() {
-
-    if (
-        typeof refreshConnections !==
-        "function"
-    ) {
-
-        return;
-
-    }
-
-
-    refreshConnections();
-
-}
-
-
-/* ======================================================
    应用当前布局
 ====================================================== */
 
 function applyCurrentLayout() {
 
     /* ==================================================
-       保存
+       检查布局方向
     ================================================== */
 
-    localStorage.setItem(
-        "bookLayout",
-        currentLayout
-    );
+    if (
+        currentLayout !== "vertical" &&
+        currentLayout !== "horizontal"
+    ) {
+
+        currentLayout =
+            "vertical";
+
+    }
+
+
+    /* ==================================================
+       交给 book-layout.js
+    ================================================== */
+
+    if (
+        typeof setLayoutDirection ===
+        "function"
+    ) {
+
+        setLayoutDirection(
+            currentLayout
+        );
+
+        return;
+
+    }
+
+
+    /* ==================================================
+       备用布局
+    ================================================== */
+
+    if (
+        currentLayout === "horizontal"
+    ) {
+
+        if (
+            typeof updateHorizontalLayout ===
+            "function"
+        ) {
+
+            updateHorizontalLayout();
+
+        }
+
+    } else {
+
+        if (
+            typeof updateVerticalLayout ===
+            "function"
+        ) {
+
+            updateVerticalLayout();
+
+        }
+
+    }
+
+
+    /* ==================================================
+       重新绘制节点
+    ================================================== */
+
+    if (
+        typeof renderNodes ===
+        "function"
+    ) {
+
+        renderNodes();
+
+    }
+
+
+    /* ==================================================
+       刷新连接线
+    ================================================== */
+
+    if (
+        typeof refreshConnections ===
+        "function"
+    ) {
+
+        refreshConnections();
+
+    }
 
 
     /* ==================================================
@@ -171,32 +171,6 @@ function applyCurrentLayout() {
     ================================================== */
 
     updateLayoutButton();
-
-
-    /* ==================================================
-       排列节点
-    ================================================== */
-
-    if (
-        currentLayout === "horizontal"
-    ) {
-
-        runHorizontalLayout();
-
-    } else {
-
-        runVerticalLayout();
-
-    }
-
-
-    /* ==================================================
-       重新绘制
-    ================================================== */
-
-    redrawNodes();
-
-    redrawConnections();
 
 }
 
@@ -220,6 +194,7 @@ function toggleLayout() {
 
     }
 
+
     /* ==================================================
        横向 → 纵向
     ================================================== */
@@ -233,7 +208,17 @@ function toggleLayout() {
 
 
     /* ==================================================
-       立即应用
+       保存当前选择
+    ================================================== */
+
+    localStorage.setItem(
+        "bookLayout",
+        currentLayout
+    );
+
+
+    /* ==================================================
+       应用布局
     ================================================== */
 
     applyCurrentLayout();
@@ -380,6 +365,10 @@ if (bookTitle) {
 
 if (actionBar) {
 
+    /* ==================================================
+       防止操作栏点击传到页面
+    ================================================== */
+
     actionBar.addEventListener(
         "click",
         function (event) {
@@ -390,11 +379,19 @@ if (actionBar) {
     );
 
 
+    /* ==================================================
+       获取操作按钮
+    ================================================== */
+
     const actionButtons =
         actionBar.querySelectorAll(
             "button[data-action]"
         );
 
+
+    /* ==================================================
+       注册操作按钮
+    ================================================== */
 
     actionButtons.forEach(
         function (button) {
@@ -412,6 +409,10 @@ if (actionBar) {
                         button.dataset.action;
 
 
+                    /* ==================================
+                       创建根节点
+                    ================================== */
+
                     if (
                         typeof addRootNode ===
                         "function"
@@ -423,6 +424,10 @@ if (actionBar) {
 
                     }
 
+
+                    /* ==================================
+                       创建完成后关闭操作栏
+                    ================================== */
 
                     hideActionBar();
 
@@ -503,6 +508,10 @@ document.addEventListener(
         }
 
 
+        /* ==================================================
+           其他位置
+        ================================================== */
+
         hideActionBar();
 
     }
@@ -523,6 +532,11 @@ if (layoutButton) {
 
             event.stopPropagation();
 
+
+            /* ==========================================
+               切换布局
+            ========================================== */
+
             toggleLayout();
 
         }
@@ -536,6 +550,7 @@ if (layoutButton) {
 ====================================================== */
 
 updateBookTitle();
+
 
 updateLayoutButton();
 
