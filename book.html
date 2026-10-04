@@ -105,16 +105,33 @@
 
 
         <!-- ==================================================
-             布局切换
+             布局测试按钮
         ================================================== -->
 
         <button
             id="layoutButton"
             class="top-button"
             type="button"
-            onclick="alert('按钮真的被点击了');"
+            style="
+                position: fixed;
+                top: 8px;
+                right: 8px;
+                z-index: 9999999;
+                width: 120px;
+                height: 40px;
+                background: blue;
+                color: white;
+                border: 2px solid white;
+                border-radius: 9px;
+                display: block;
+                pointer-events: auto;
+            "
+            onclick="
+                document.body.style.background = 'yellow';
+                alert('按钮真的被点击了');
+            "
         >
-            ↕ 纵向
+            测试按钮
         </button>
 
     </header>
@@ -274,7 +291,6 @@
 
     <!-- ==================================================
          主程序模块
-         版本号：90002
     ================================================== -->
 
     <script
