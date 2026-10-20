@@ -61,9 +61,6 @@ const shelfNav =
 const toolsNav =
     document.getElementById("toolsNav");
 
-const meNav =
-    document.getElementById("meNav");
-
 
 /* ==================================================
    初始化
@@ -323,7 +320,9 @@ function bindShelfEvents() {
 
 
     /* ==================================================
-       底部
+       底部导航
+       保留：书架、工具
+       删除：我的
     ================================================== */
 
     if (shelfNav) {
@@ -339,14 +338,6 @@ function bindShelfEvents() {
         toolsNav.addEventListener(
             "click",
             goTools
-        );
-    }
-
-    if (meNav) {
-
-        meNav.addEventListener(
-            "click",
-            goMe
         );
     }
 
@@ -2079,14 +2070,6 @@ function goTools() {
 
     alert(
         "工具功能正在开发中。"
-    );
-}
-
-
-function goMe() {
-
-    alert(
-        "我的功能正在开发中。"
     );
 }
 
